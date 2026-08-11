@@ -45,6 +45,39 @@ def plainTextAction(self,text):
 
 	return tsAction
 
+class MenuLabel(QLabel):
+	clicked=pyqtSignal()
+
+	def __init__(self, parent=None):
+		QLabel.__init__(self, parent)
+		self.installEventFilter(self)
+
+	def mousePressEvent(self, ev):
+		self.clicked.emit()
+
+	def eventFilter(self, object, event):
+		if event.type() == QEvent.Enter:
+			col = self.palette().highlight().color().name()
+			highlight = QColor(col).name()
+
+			col = self.palette().highlightedText().color().name()
+			highlight_text = QColor(col).name()
+			
+			self.setStyleSheet(f"background-color: {highlight}; color: {highlight_text};")
+			return True
+		elif event.type() == QEvent.Leave:
+			self.setStyleSheet('')
+			return True
+		return False
+
+def plainTextClickable(self,text,func):
+	tsLabel = MenuLabel( PLAIN_TEXT.replace("!TEXT!",text) )
+	tsAction = QWidgetAction(self)
+	tsAction.setDefaultWidget(tsLabel)
+	tsLabel.clicked.connect(func)
+
+	return tsAction
+
 NS_PLAIN_TEXT = f'''
 <table width="100%" border="0" cellspacing="1" cellpadding="1">
 	<tbody>

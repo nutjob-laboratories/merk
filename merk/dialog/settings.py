@@ -2729,8 +2729,8 @@ class Dialog(QDialog):
 		self.darkDescription = QLabel("""
 			<small>
 			<b>Dark mode</b> changes the application palette to darker colors.
-			<b><i>If dark mode is enabled or disabled, the application must be restarted to use the
-			new palette.</i></b><br>
+			<b><i>If dark mode is enabled or disabled, <u>the application must be restarted to use the
+			new palette</u>.</i></b><br>
 			</small>
 			
 			""")

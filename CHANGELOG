@@ -1,4 +1,31 @@
 |------------------------------------------------------------------------------|
+|                                   0.052.200                                  |
+|------------------------------------------------------------------------------|
+
+What's new:
+
+- **The channel banlist is now useful**. Users with channel privileges can now unban users directly from the banlist, or just copy the banlist entry to the clipboard. All entries in the banlist can be unbanned at once, or copied to the clipboard.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Users can be unbanned from the "banned users" menu now, but only if they have
+  the proper channel status. If the user is not privileged, they will only see
+  a list of banned users. Each entry in the banlist gets a submenu that will
+  allow privileged users to either copy the banlist entry to the clipboard or
+  unban the user. The entire banlist can be copied to the clipboard, and if
+  the user is able, all entries in the banlist can be unbanned.
+* Changed the "kick & ban" menu entry icon in the userlist menu to the "close"
+  icon.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Bugfix: fixed a bug in the Window and Plugin class methods for script().
+
+|------------------------------------------------------------------------------|
 |                                   0.052.150                                  |
 |------------------------------------------------------------------------------|
 

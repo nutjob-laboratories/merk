@@ -45,7 +45,7 @@ from .. import config
 from .. import styles
 from .. import render
 from .. import logs
-from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction,noSpacePlainTextActionBorder
+from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction,noSpacePlainTextActionBorder,plainTextClickable
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
@@ -241,7 +241,6 @@ class Window(QMainWindow):
 		self.user_colors = {}
 		self.banlist = []
 		self.away = {}
-		self.userlist_visible = True
 		self.force_close = False
 		self.connected = False
 		self.part_message = None
@@ -458,10 +457,10 @@ class Window(QMainWindow):
 
 		if self.window_type==CHANNEL_WINDOW:
 
-			if self.parent.dark_mode:
-				border_color = "lightGray"
-			else:
+			if test_if_window_background_is_light(self):
 				border_color = "darkGray"
+			else:
+				border_color = "lightGray"
 
 			# Channel name display
 			self.channel_mode_display = QLabel("<small><b>"+self.name+"</b></small>")
@@ -515,7 +514,6 @@ class Window(QMainWindow):
 
 			if not config.SHOW_USERLIST:
 				self.userlist.hide()
-				self.userlist_visible = False
 
 			if not config.SHOW_USER_COUNT_DISPLAY:
 				self.channel_users_display.hide()
@@ -1002,6 +1000,19 @@ class Window(QMainWindow):
 			# To determine if the menu label has been shown
 			show_seperator = False
 
+			if len(self.banlist)>0:
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				banMenu = opmenu.addMenu("Channel bans")
+				banMenu.setStyle(ScrollableMenuStyle())
+				bl = []
+				for b in self.banlist:
+					bl.append(b[0])
+					e = plainTextAction(self,f"{b[0]}")
+					banMenu.addAction(e)
+
 			if self.name in self.client.channelkeys:
 				if show_seperator==False:
 					show_seperator = True
@@ -1127,6 +1138,39 @@ class Window(QMainWindow):
 
 			e = textSeparator(self,"Change Channel Modes")
 			opmenu.addAction(e)
+
+			if len(self.banlist)>0:
+				banMenu = opmenu.addMenu(QIcon(BAN_ICON),"Channel bans")
+
+				banMenu.setStyle(ScrollableMenuStyle())
+
+				bl = []
+				for b in self.banlist:
+					bl.append(b[0])
+					uMenu = banMenu.addMenu(QIcon(PRIVATE_ICON),f"{b[0]}")
+					act = QAction(QIcon(CLIPBOARD_ICON),"Copy entry to clipboard", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(b[0]))
+					uMenu.addAction(act)
+
+					uMenu.addSeparator()
+					act = QAction(QIcon(SHOW_ICON),f"Unban {b[0]}", self)
+					act.triggered.connect(lambda : self.unbanUser(b[0],opmenu))
+					f = act.font()
+					f.setBold(True)
+					act.setFont(f)
+					uMenu.addAction(act)
+
+				if len(self.banlist)>0:
+					banMenu.addSeparator()
+					act = QAction(QIcon(CLIPBOARD_ICON),"Copy all entries to clipboard", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard("\n".join(bl)))
+					banMenu.addAction(act)
+					act = QAction(QIcon(SHOW_ICON),f"Unban all users", self)
+					act.triggered.connect(lambda : self.unbanAll(bl))
+					f = act.font()
+					f.setBold(True)
+					act.setFont(f)
+					banMenu.addAction(act)
 
 			if 'm' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Unmoderate channel",self)
@@ -1266,17 +1310,15 @@ class Window(QMainWindow):
 				entry.triggered.connect(lambda state,h='V': self.set_mode(h))
 				opmenu.addAction(entry)
 
-		if len(self.banlist)>0:
-			opmenu.addSeparator()
-			banMenu = opmenu.addMenu(QIcon(BAN_ICON),"Banned Users")
-
-			banMenu.setStyle(ScrollableMenuStyle())
-
-			for b in self.banlist:
-				e = plainTextAction(self,f"<b>{b[0]}</b>")
-				banMenu.addAction(e)
-
 		action = opmenu.exec_(self.channel_mode_display.mapToGlobal(position))
+
+	def unbanAll(self,users):
+		for u in users:
+			self.client.batch.append(f"MODE {self.name} -b {u}")
+
+	def unbanUser(self,user,menu):
+		self.client.sendLine(f"MODE {self.name} -b {user}")
+		menu.close()
 
 	def rerenderChatLogMenu(self):
 		self.buildUserColors()
@@ -2847,7 +2889,7 @@ class Window(QMainWindow):
 			act.triggered.connect(lambda : self.menuBanUser(user_nick,user_hostmask))
 			opMenu.addAction(act)
 
-			act = QAction(QIcon(BAN_ICON),f"Kick && Ban {user_nick}", self)
+			act = QAction(QIcon(CLOSE_ICON),f"Kick && Ban {user_nick}", self)
 			act.triggered.connect(lambda : self.menuKickBackUser(user_nick,user_hostmask))
 			opMenu.addAction(act)
 
@@ -4164,20 +4206,14 @@ class Window(QMainWindow):
 
 			if not config.SHOW_USERLIST:
 				self.userlist.hide()
-				self.userlist_visible = False
-				self.buildInputOptionsMenu()
 
 		return super(Window, self).resizeEvent(event)
 
 	def showHideUserlist(self):
 		if config.SHOW_USERLIST:
 			self.userlist.show()
-			self.userlist_visible = True
-			self.buildInputOptionsMenu()
 		else:
 			self.userlist.hide()
-			self.userlist_visible = False
-			self.buildInputOptionsMenu()
 		self.moveChatToBottom(True)
 
 	def swapUserlist(self):
@@ -4211,21 +4247,6 @@ class Window(QMainWindow):
 			self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
 
 		self.moveChatToBottom(True)
-
-def buildBanMenu(self,client):
-
-	banlist = self.banlist
-
-	optionsMenu = QMenu("Banned Users")
-
-	e = textSeparator(self,"Banned Users")
-	optionsMenu.addAction(e)
-
-	for b in banlist:
-		e = plainTextAction(self,f"<b>{b[0]}</b>")
-		optionsMenu.addAction(e)
-
-	return optionsMenu
 
 def buildServerSettingsMenu(self,client):
 

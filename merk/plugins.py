@@ -245,7 +245,7 @@ class Window():
 			script = s.read()
 			s.close()
 		
-		commands.executeScript(self._gui,self._window,script,f,arguments)
+			commands.executeScript(self._gui,self._window,script,f,arguments)
 
 	def size(self,width=None,height=None):
 		w = self._gui.getSubWindow(self._window.name,self._window.client)
@@ -794,10 +794,10 @@ class Plugin():
 				script = s.read()
 				s.close()
 		
-			w = self._gui.getServerSubWindow(client)
-			if w:
-				commands.executeScript(self._gui,w.widget(),script,f,arguments)
-				return True
+				w = self._gui.getServerSubWindow(client)
+				if w:
+					commands.executeScript(self._gui,w.widget(),script,f,arguments)
+					return True
 		return False
 		
 	def is_ignored(self,nickname,hostmask):
