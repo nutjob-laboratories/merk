@@ -23,6 +23,13 @@ What's new:
   and be a bit easier to read.
 * Added the ability to en/disable KNOCK on channels to the channel mode right
   click menu (for channel operators).
+* Bugfix: the server information menu is now disabled until server registration
+  is complete.
+* Bugfix: the "view network logs" and "view/refresh channel list" options in the
+  "Windows" menu are now no longer visible if a server connection has not
+  finished server registration.
+* Bugfix: the "view network logs" option in the "Windows" menu is only visible
+  if the client actually has logs for that network.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

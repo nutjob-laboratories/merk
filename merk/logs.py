@@ -169,6 +169,18 @@ def encodeLogName(network,name=None):
 		name = escape_for_filename(name)
 		return f"{network}{LOG_AND_STYLE_FILENAME_DELIMITER}{name}.json"
 
+# Finds log files for a specific network
+def find_network_logs(network):
+	log_list = []
+	for root, dirs, files in os.walk(LOG_DIRECTORY):
+		for file in files:
+			p = file.split(LOG_AND_STYLE_FILENAME_DELIMITER,1)
+			file_path = os.path.join(root, file)
+			if len(p)==2:
+				if p[0].lower()==network.lower():
+					log_list.append(file_path)
+	return log_list
+
 # Takes an array of Message() objects, converts it to
 # an AoA, and appens the AoA to a file containing
 # AoAs on disk

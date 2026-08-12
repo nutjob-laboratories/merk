@@ -5452,32 +5452,24 @@ class Merk(QMainWindow):
 						entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 						sm.addAction(entry)
 
-						if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU:
+						if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU and c.client.registered:
 							ssetting = sm.addMenu(c.server_info_menu)
 							ssetting.setIcon(QIcon(CONNECT_ICON))
 
-						if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
+						if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU and c.client.registered:
 							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
 							entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
 							sm.addAction(entry)
-
-							if not c.list_button.isEnabled():
-								entry.setEnabled(False)
 
 							entry = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
 							entry.triggered.connect(lambda state,u=sw: self.menuRefreshList(u))
 							sm.addAction(entry)
 
-							if not c.list_button.isEnabled():
-								entry.setEnabled(False)
-
-						if config.SHOW_LOGS_IN_WINDOWS_MENU:
-							entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
-							entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
-							sm.addAction(entry)
-
-							if mynet==config.UNKNOWN_NETWORK_NAME: entry.setVisible(False)
-							if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
+						if config.SHOW_LOGS_IN_WINDOWS_MENU and c.client.registered and (len(os.listdir(logs.LOG_DIRECTORY))>0):
+							if len(logs.find_network_logs(f"{mynet}"))>0:
+								entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
+								entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+								sm.addAction(entry)
 
 						if config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU:
 							hostid = c.client.server+":"+str(c.client.port)

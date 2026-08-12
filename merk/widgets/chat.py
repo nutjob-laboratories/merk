@@ -1237,17 +1237,17 @@ class Window(QMainWindow):
 					act.setFont(f)
 					uMenu.addAction(act)
 
-				if len(self.banlist)>0:
-					banMenu.addSeparator()
-					act = QAction(QIcon(CLIPBOARD_ICON),"Copy all entries to clipboard", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard("\n".join(bl)))
-					banMenu.addAction(act)
-					act = QAction(QIcon(SHOW_ICON),f"Unban all users", self)
-					act.triggered.connect(lambda : self.unbanAll(bl))
-					f = act.font()
-					f.setBold(True)
-					act.setFont(f)
-					banMenu.addAction(act)
+				act = QAction(QIcon(CLIPBOARD_ICON),"Copy all entries to clipboard", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard("\n".join(bl)))
+				banMenu.addAction(act)
+				
+				banMenu.addSeparator()
+				act = QAction(QIcon(SHOW_ICON),f"Unban all users", self)
+				act.triggered.connect(lambda : self.unbanAll(bl))
+				f = act.font()
+				f.setBold(True)
+				act.setFont(f)
+				banMenu.addAction(act)
 
 		action = opmenu.exec_(self.channel_mode_display.mapToGlobal(position))
 
@@ -4207,9 +4207,6 @@ def buildServerSettingsMenu(self,client):
 
 	optionsMenu = QMenu("Server information")
 
-	e = textSeparator(self,"Server")
-	optionsMenu.addAction(e)
-
 	if client.hostname:
 		name = client.hostname
 	else:
@@ -4219,12 +4216,6 @@ def buildServerSettingsMenu(self,client):
 		mynet = client.network
 	else:
 		mynet = config.UNKNOWN_NETWORK_NAME
-
-	if client.kwargs["ssl"]:
-		e = plainTextAction(self,"<b>Connection:</b> SSL/TLS")
-	else:
-		e = plainTextAction(self,"<b>Connection:</b> TCP/IP")
-	optionsMenu.addAction(e)
 
 	if config.TIMESTAMP_24_HOUR:
 		if config.SHOW_TIMESTAMPS_IN_UTC:
@@ -4236,84 +4227,98 @@ def buildServerSettingsMenu(self,client):
 			pretty_timestamp = datetime.fromtimestamp(self.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+'%p UTC %m/%d/%Y')
 		else:
 			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+'%p %m/%d/%Y')
-	e = plainTextAction(self,f"<b>Connected:</b> {pretty_timestamp}")
+	e = plainTextAction(self,f"<b>Connected</b>: {pretty_timestamp}")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Host"+f":</b> {name}")
+	e = plainTextAction(self,"<b>Hostname"+f"</b>: {name}")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Port"+f":</b> {client.port}")
+	e = plainTextAction(self,"<b>Server"+f"</b>: {client.server}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Port"+f"</b>: {client.port}")
+	optionsMenu.addAction(e)
+
+	if client.kwargs["ssl"]:
+		e = plainTextAction(self,"<b>Connection</b>: SSL/TLS")
+	else:
+		e = plainTextAction(self,"<b>Connection</b>: TCP/IP")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Network"+f"</b>: {mynet}")
 	optionsMenu.addAction(e)
 
 	if client.server_software:
-		e = plainTextAction(self,"<b>Software"+f":</b> {client.server_software}")
+		e = plainTextAction(self,"<b>Software"+f"</b>: {client.server_software}")
 	else:
-		e = plainTextAction(self,"<b>Software"+f":</b> Unknown")
-	optionsMenu.addAction(e)
-
-	e = plainTextAction(self,"<b>Network"+f":</b> {mynet}")
+		e = plainTextAction(self,"<b>Software"+f"</b>: Unknown")
 	optionsMenu.addAction(e)
 
 	if client.server_user_count==0:
-		e = plainTextAction(self,"<b>Users"+f":</b> Unknown")
+		e = plainTextAction(self,"<b>Users"+f"</b>: Unknown")
 	else:
-		e = plainTextAction(self,"<b>Users"+f":</b> {client.server_user_count:,}")
+		e = plainTextAction(self,"<b>Users"+f"</b>: {client.server_user_count:,}")
 	optionsMenu.addAction(e)
 
 	if client.server_op_count==0:
-		e = plainTextAction(self,"<b>Operators"+f":</b> Unknown")
+		e = plainTextAction(self,"<b>Operators"+f"</b>: Unknown")
 	else:
-		e = plainTextAction(self,"<b>Operators"+f":</b> {client.server_op_count:,}")
+		e = plainTextAction(self,"<b>Operators"+f"</b>: {client.server_op_count:,}")
 	optionsMenu.addAction(e)
 
 	if client.actual_server_channel_count==0:
 		if client.server_channel_count==0:
-			e = plainTextAction(self,"<b>Channels"+f":</b> Unknown")
+			e = plainTextAction(self,"<b>Channels"+f"</b>: Unknown")
 		else:
-			e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,}")
+			e = plainTextAction(self,"<b>Channels"+f"</b>: {client.server_channel_count:,}")
 		optionsMenu.addAction(e)
 	else:
 		diff = client.actual_server_channel_count - client.server_channel_count
 		if client.server_channel_count==0:
-			e = plainTextAction(self,"<b>Channels"+f":</b> {client.actual_server_channel_count:,}")
+			e = plainTextAction(self,"<b>Channels"+f"</b>: {client.actual_server_channel_count:,}")
 		else:
-			e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,} ({diff:,} hidden)")
+			e = plainTextAction(self,"<b>Channels"+f"</b>: {client.server_channel_count:,} ({diff:,} hidden)")
 		optionsMenu.addAction(e)
 
-	e = textSeparator(self,"Limits")
+	e = textSeparator(self,"Configuration")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum channels"+f":</b> {maxchannels}")
+	if maxchannels==0: maxchannels = "no limit"
+	e = plainTextAction(self,"Maximum channels"+f": <b>{maxchannels}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum nickname length"+f":</b> {maxnicklen}")
+	if maxnicklen==0: maxnicklen = "no limit"
+	e = plainTextAction(self,"Maximum nickname length"+f": <b>{maxnicklen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum channel length"+f":</b> {channellen}")
+	if channellen==0: channellen = "no limit"
+	e = plainTextAction(self,"Maximum channel length"+f": <b>{channellen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum topic length"+f":</b> {topiclen}")
+	if topiclen==0: topiclen = "no limit"
+	e = plainTextAction(self,"Maximum topic length"+f": <b>{topiclen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum kick length"+f":</b> {kicklen}")
+	if kicklen==0: kicklen = "no limit"
+	e = plainTextAction(self,"Maximum kick length"+f": <b>{kicklen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum away length"+f":</b> {awaylen}")
+	if awaylen==0: awaylen = "no limit"
+	e = plainTextAction(self,"Maximum away length"+f": <b>{awaylen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum message targets"+f":</b> {maxtargets}")
+	if maxtargets==0: maxtargets = "no limit"
+	e = plainTextAction(self,"Maximum message targets"+f": <b>{maxtargets}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Maximum modes per user"+f":</b> {modes}")
-	optionsMenu.addAction(e)
-
-	e = textSeparator(self,"Miscellaneous")
+	if modes==0: modes = "no limit"
+	e = plainTextAction(self,"Maximum modes per user"+f": <b>{modes}</b>")
 	optionsMenu.addAction(e)
 
 	if len(maxmodes)>0:
 		maxmodesmenu = QMenu("Maximum modes",self)
 		for c in maxmodes:
-			e = plainTextAction(self,f"{c[0]}: {c[1]}")
+			e = plainTextAction(self,f"<b>{c[0]}</b>: {c[1]}")
 			maxmodesmenu.addAction(e)
 		optionsMenu.addMenu(maxmodesmenu)
 
@@ -4322,6 +4327,7 @@ def buildServerSettingsMenu(self,client):
 		for c in cmds:
 			e = plainTextAction(self,f"{c}")
 			cmdmenu.addAction(e)
+		cmdmenu.setStyle(ScrollableMenuStyle())
 		optionsMenu.addMenu(cmdmenu)
 
 	if len(supports)>0:
@@ -4329,6 +4335,7 @@ def buildServerSettingsMenu(self,client):
 		for c in supports:
 			e = plainTextAction(self,f"{c}")
 			supportsmenu.addAction(e)
+		supportsmenu.setStyle(ScrollableMenuStyle())
 		optionsMenu.addMenu(supportsmenu)
 
 	if len(chanmodes)>0:
@@ -4343,27 +4350,27 @@ def buildServerSettingsMenu(self,client):
 				ctype = "C"
 			elif ct==3:
 				ctype = "D"
-			e = plainTextAction(self,f"{ctype}: {c}")
+			e = plainTextAction(self,f"<b>{ctype}</b>: {c}")
 			chanmodemenu.addAction(e)
 			ct = ct + 1
 		optionsMenu.addMenu(chanmodemenu)
 
 	if len(prefix)>0:
-		prefixmenu = QMenu("Status prefixes",self)
+		prefixmenu = QMenu("Channel status prefixes",self)
 		for c in prefix:
 			m = c[0]
 			s = c[1]
-			if m=="o": e = PlainIconTextAction(QIcon(OP_USER), f"Operator (<b>{s}</b>)", self)
-			if m=="v": e = PlainIconTextAction(QIcon(VOICE_USER), f"Voiced (<b>{s}</b>)", self)
-			if m=="a": e = PlainIconTextAction(QIcon(ADMIN_USER), f"Administrator (<b>{s}</b>)", self)
-			if m=="q": e = PlainIconTextAction(QIcon(OWNER_USER), f"Owner (<b>{s}</b>)", self)
-			if m=="h": e = PlainIconTextAction(QIcon(HALFOP_USER), f"Half-Operator (<b>{s}</b>)", self)
-			if m=="Y": e = PlainIconTextAction(QIcon(PROTECTED_USER), f"Protected (<b>{s}</b>)", self)
+			if m=="a": e = PlainIconTextAction(QIcon(ADMIN_USER), f"<b>{s}</b> (Administrator)", self)
+			if m=="q": e = PlainIconTextAction(QIcon(OWNER_USER), f"<b>{s}</b> (Owner)", self)
+			if m=="o": e = PlainIconTextAction(QIcon(OP_USER), f"<b>{s}</b> (Operator)", self)
+			if m=="h": e = PlainIconTextAction(QIcon(HALFOP_USER), f"<b>{s}</b> (Half-Operator)", self)
+			if m=="Y": e = PlainIconTextAction(QIcon(PROTECTED_USER), f"<b>{s}</b> (Protected)", self)
+			if m=="v": e = PlainIconTextAction(QIcon(VOICE_USER), f"<b>{s}</b> (Voiced)", self)
 			prefixmenu.addAction(e)
 		optionsMenu.addMenu(prefixmenu)
 
 	if len(ircv3)>0:
-		ircv3menu = QMenu("IRCv3 capabilities",self)
+		ircv3menu = QMenu("IRCv3 extensions",self)
 		for c in ircv3:
 			if '=' in c:
 				po = c.split('=')
@@ -4375,6 +4382,7 @@ def buildServerSettingsMenu(self,client):
 			else:
 				e = plainTextAction(self,f"{c}")
 				ircv3menu.addAction(e)
+		ircv3menu.setStyle(ScrollableMenuStyle())
 		optionsMenu.addMenu(ircv3menu)
 
 	return optionsMenu
