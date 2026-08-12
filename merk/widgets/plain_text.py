@@ -28,6 +28,30 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
+class PlainIconTextAction(QWidgetAction):
+	def __init__(self, icon, text, parent=None):
+		super().__init__(parent)
+		
+		widget = QWidget()
+		layout = QHBoxLayout()
+		layout.setContentsMargins(2, 2, 2, 2)
+
+		font_metrics = QFontMetrics(self.font())
+		icon_size = font_metrics.height()
+		
+		icon_label = QLabel()
+		icon_label.setPixmap(icon.pixmap(icon_size, icon_size))
+		layout.addWidget(icon_label)
+		
+		data_label = QLabel()
+		data_label.setText("<small>&nbsp;</small>"+text+"&nbsp;")
+		layout.addWidget(data_label)
+
+		layout.addStretch()
+		
+		widget.setLayout(layout)
+		self.setDefaultWidget(widget)
+
 PLAIN_TEXT = f'''
 <table width="100%" border="0" cellspacing="1" cellpadding="1">
 	<tbody>

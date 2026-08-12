@@ -45,7 +45,7 @@ from .. import config
 from .. import styles
 from .. import render
 from .. import logs
-from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction,noSpacePlainTextActionBorder,plainTextClickable
+from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction,noSpacePlainTextActionBorder,plainTextClickable,PlainIconTextAction
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
@@ -997,180 +997,78 @@ class Window(QMainWindow):
 
 		if not self.is_privileged() and not self.is_operator():
 
-			# To determine if the menu label has been shown
-			show_seperator = False
-
-			if len(self.banlist)>0:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				banMenu = opmenu.addMenu("Channel bans")
-				banMenu.setStyle(ScrollableMenuStyle())
-				bl = []
-				for b in self.banlist:
-					bl.append(b[0])
-					e = plainTextAction(self,f"{b[0]}")
-					banMenu.addAction(e)
-
 			if self.name in self.client.channelkeys:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Channel is locked")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(VISITED_SECURE_ICON), "Channel is locked", self)
+				opmenu.addAction(action)
 
 			if 'm' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Channel is moderated")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(VOICE_USER), "Channel is moderated", self)
+				opmenu.addAction(action)
 
 			if 'R' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Registered users only")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(PRIVATE_ICON), "Registered users only", self)
+				opmenu.addAction(action)
 
 			if 'n' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"No external messages")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(HIDE_ICON), "External messages are forbidden", self)
+				opmenu.addAction(action)
 
 			if 't' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Only operators can change topic")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(OP_USER), "Only operators can change topic", self)
+				opmenu.addAction(action)
 
 			if 'c' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"IRC colors are fobidden")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(HIDE_ICON), "IRC colors are forbidden", self)
+				opmenu.addAction(action)
 
 			if 'S' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"IRC colors are stripped")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(COLOR_ICON), "IRC colors are stripped", self)
+				opmenu.addAction(action)
 
 			if 'C' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"CTCP is forbidden")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(HIDE_ICON), "CTCP is forbidden", self)
+				opmenu.addAction(action)
 
 			if 'KNOCK' in self.client.supports:
 				if 'K' in channel_modes:
-					if show_seperator==False:
-						show_seperator = True
-						e = textSeparator(self,"Channel Modes")
-						opmenu.addAction(e)
-					entry = plainTextAction(self,"KNOCK is forbidden")
-					opmenu.addAction(entry)
+					action = PlainIconTextAction(QIcon(HIDE_ICON), "KNOCK is forbidden", self)
+					opmenu.addAction(action)
 
 			if 'i' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Only invited users")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(PRIVATE_ICON), "Only invited users", self)
+				opmenu.addAction(action)
 
 			if 'p' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Channel is private")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(CHANNEL_ICON), "Channel is private", self)
+				opmenu.addAction(action)
 
 			if 's' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Channel is secret")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(CHANNEL_ICON), "Channel is secret", self)
+				opmenu.addAction(action)
 
 			if 'T' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Channel notices are forbidden")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(HIDE_ICON), "Channel notices are forbidden", self)
+				opmenu.addAction(action)
 
 			if 'V' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"Channel invites are forbidden")
-				opmenu.addAction(entry)
+				action = PlainIconTextAction(QIcon(HIDE_ICON), "Channel invites are forbidden", self)
+				opmenu.addAction(action)
 
 			if 'z' in channel_modes:
-				if show_seperator==False:
-					show_seperator = True
-					e = textSeparator(self,"Channel Modes")
-					opmenu.addAction(e)
-				entry = plainTextAction(self,"SSL/TLS users only")
-				opmenu.addAction(entry)
-
-		if self.is_privileged():
-
-			e = textSeparator(self,"Change Channel Modes")
-			opmenu.addAction(e)
+				action = PlainIconTextAction(QIcon(VISITED_SECURE_ICON), "SSL/TLS users only", self)
+				opmenu.addAction(action)
 
 			if len(self.banlist)>0:
+				opmenu.addSeparator()
 				banMenu = opmenu.addMenu(QIcon(BAN_ICON),"Channel bans")
-
 				banMenu.setStyle(ScrollableMenuStyle())
-
 				bl = []
 				for b in self.banlist:
 					bl.append(b[0])
-					uMenu = banMenu.addMenu(QIcon(PRIVATE_ICON),f"{b[0]}")
-					act = QAction(QIcon(CLIPBOARD_ICON),"Copy entry to clipboard", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard(b[0]))
-					uMenu.addAction(act)
+					e = PlainIconTextAction(QIcon(PRIVATE_ICON), f"{b[0]}", self)
+					banMenu.addAction(e)
 
-					uMenu.addSeparator()
-					act = QAction(QIcon(SHOW_ICON),f"Unban {b[0]}", self)
-					act.triggered.connect(lambda : self.unbanUser(b[0],opmenu))
-					f = act.font()
-					f.setBold(True)
-					act.setFont(f)
-					uMenu.addAction(act)
-
-				if len(self.banlist)>0:
-					banMenu.addSeparator()
-					act = QAction(QIcon(CLIPBOARD_ICON),"Copy all entries to clipboard", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard("\n".join(bl)))
-					banMenu.addAction(act)
-					act = QAction(QIcon(SHOW_ICON),f"Unban all users", self)
-					act.triggered.connect(lambda : self.unbanAll(bl))
-					f = act.font()
-					f.setBold(True)
-					act.setFont(f)
-					banMenu.addAction(act)
+		if self.is_privileged() or self.is_operator():
 
 			if 'm' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Unmoderate channel",self)
@@ -1180,8 +1078,6 @@ class Window(QMainWindow):
 				entry = QAction(QIcon(PLUS_ICON),"Moderate channel",self)
 				entry.triggered.connect(lambda state,h='m': self.set_mode(h))
 				opmenu.addAction(entry)
-
-		if self.is_operator():
 
 			if 'R' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Allow unregistered users",self)
@@ -1309,6 +1205,49 @@ class Window(QMainWindow):
 				entry = QAction(QIcon(PLUS_ICON),"Forbid invites",self)
 				entry.triggered.connect(lambda state,h='V': self.set_mode(h))
 				opmenu.addAction(entry)
+
+			if 'KNOCK' in self.client.supports:
+				if 'K' in channel_modes:
+					entry = QAction(QIcon(MINUS_ICON),"Allow KNOCK",self)
+					entry.triggered.connect(lambda state,h='K': self.unset_mode(h))
+					opmenu.addAction(entry)
+				else:
+					entry = QAction(QIcon(PLUS_ICON),"Forbid KNOCK",self)
+					entry.triggered.connect(lambda state,h='K': self.set_mode(h))
+					opmenu.addAction(entry)
+
+			if len(self.banlist)>0:
+				opmenu.addSeparator()
+				banMenu = opmenu.addMenu(QIcon(BAN_ICON),"Channel bans")
+				banMenu.setStyle(ScrollableMenuStyle())
+
+				bl = []
+				for b in self.banlist:
+					bl.append(b[0])
+					uMenu = banMenu.addMenu(QIcon(PRIVATE_ICON),f"{b[0]}")
+					act = QAction(QIcon(CLIPBOARD_ICON),"Copy entry to clipboard", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(b[0]))
+					uMenu.addAction(act)
+
+					uMenu.addSeparator()
+					act = QAction(QIcon(SHOW_ICON),f"Unban {b[0]}", self)
+					act.triggered.connect(lambda : self.unbanUser(b[0],opmenu))
+					f = act.font()
+					f.setBold(True)
+					act.setFont(f)
+					uMenu.addAction(act)
+
+				if len(self.banlist)>0:
+					banMenu.addSeparator()
+					act = QAction(QIcon(CLIPBOARD_ICON),"Copy all entries to clipboard", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard("\n".join(bl)))
+					banMenu.addAction(act)
+					act = QAction(QIcon(SHOW_ICON),f"Unban all users", self)
+					act.triggered.connect(lambda : self.unbanAll(bl))
+					f = act.font()
+					f.setBold(True)
+					act.setFont(f)
+					banMenu.addAction(act)
 
 		action = opmenu.exec_(self.channel_mode_display.mapToGlobal(position))
 
@@ -4414,14 +4353,12 @@ def buildServerSettingsMenu(self,client):
 		for c in prefix:
 			m = c[0]
 			s = c[1]
-			if s=="&": s="&&"
-			e = QAction(F"{m}: {s}", self)
-			if m=="o": e.setIcon(QIcon(OP_USER))
-			if m=="v": e.setIcon(QIcon(VOICE_USER))
-			if m=="a": e.setIcon(QIcon(ADMIN_USER))
-			if m=="q": e.setIcon(QIcon(OWNER_USER))
-			if m=="h": e.setIcon(QIcon(HALFOP_USER))
-			if m=="Y": e.setIcon(QIcon(PROTECTED_USER))
+			if m=="o": e = PlainIconTextAction(QIcon(OP_USER), f"Operator (<b>{s}</b>)", self)
+			if m=="v": e = PlainIconTextAction(QIcon(VOICE_USER), f"Voiced (<b>{s}</b>)", self)
+			if m=="a": e = PlainIconTextAction(QIcon(ADMIN_USER), f"Administrator (<b>{s}</b>)", self)
+			if m=="q": e = PlainIconTextAction(QIcon(OWNER_USER), f"Owner (<b>{s}</b>)", self)
+			if m=="h": e = PlainIconTextAction(QIcon(HALFOP_USER), f"Half-Operator (<b>{s}</b>)", self)
+			if m=="Y": e = PlainIconTextAction(QIcon(PROTECTED_USER), f"Protected (<b>{s}</b>)", self)
 			prefixmenu.addAction(e)
 		optionsMenu.addMenu(prefixmenu)
 

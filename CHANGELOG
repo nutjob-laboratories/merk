@@ -18,6 +18,11 @@ What's new:
   the user is able, all entries in the banlist can be unbanned.
 * Changed the "kick & ban" menu entry icon in the userlist menu to the "close"
   icon.
+* Added icons to the non-privileged user channel mode display.
+* Modified the "server information menu" to use icons in the status display,
+  and be a bit easier to read.
+* Added the ability to en/disable KNOCK on channels to the channel mode right
+  click menu (for channel operators).
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
