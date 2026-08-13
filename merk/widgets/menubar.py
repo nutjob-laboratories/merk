@@ -709,9 +709,6 @@ class Menubar(QToolBar):
 
 		menu = QMenu(self)
 
-		e = textSeparator(self,"Menubar Settings")
-		menu.addAction(e)
-
 		if config.MENUBAR_CAN_FLOAT:
 			entry = QAction(QIcon(self.parent.checked_icon),"Movable", self)
 		else:
@@ -780,9 +777,6 @@ class Windowbar(QToolBar):
 
 		menu = QMenu(self)
 
-		e = textSeparator(self,"Windowbar Settings")
-		menu.addAction(e)
-
 		if config.WINDOWBAR_CAN_FLOAT:
 			entry = QAction(QIcon(self.parent.checked_icon),"Movable", self)
 		else:
@@ -797,41 +791,6 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.autohide)
 		menu.addAction(entry)
 
-		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show active first", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active first", self)
-		entry.triggered.connect(self.first)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_BOLD_ACTIVE_WINDOW:
-			entry = QAction(QIcon(self.parent.checked_icon),"Bold active window", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Bold active window", self)
-		entry.triggered.connect(self.doBold)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW:
-			entry = QAction(QIcon(self.parent.checked_icon),"Underline active window", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Underline active window", self)
-		entry.triggered.connect(self.underline)
-		menu.addAction(entry)
-		
-		if config.WINDOWBAR_SHOW_ICONS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show icons", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show icons", self)
-		entry.triggered.connect(self.icons)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show topic in tooltip", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show topic in tooltip", self)
-		entry.triggered.connect(self.showTopic)
-		menu.addAction(entry)
-
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 			entry = QAction(QIcon(self.parent.checked_icon),"Double click to maximize", self)
 		else:
@@ -839,24 +798,10 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.doubleclick)
 		menu.addAction(entry)
 
-		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show unread messages", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread messages", self)
-		entry.triggered.connect(self.showUnread)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show unread mentions", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread mentions", self)
-		entry.triggered.connect(self.showMention)
-		menu.addAction(entry)
-
 		if config.WINDOWBAR_ENTRY_MENU:
-			entry = QAction(QIcon(self.parent.checked_icon),"Entry context menu", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Entry right click menu", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Entry context menu", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Entry right click menu", self)
 		entry.triggered.connect(self.showMenu)
 		menu.addAction(entry)
 
@@ -915,7 +860,7 @@ class Windowbar(QToolBar):
 		menu.addMenu(self.includesMenu)
 
 		self.hiddenMenu = QMenu("Display hidden...")
-		self.hiddenMenu.setIcon(QIcon(SHOW_ICON))
+		self.hiddenMenu.setIcon(QIcon(SUBWINDOW_ICON))
 
 		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR:
 			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
@@ -967,34 +912,64 @@ class Windowbar(QToolBar):
 
 		menu.addMenu(self.hiddenMenu)
 
-		self.justifyMenu = QMenu("Alignment")
-		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+		self.appearanceMenu = QMenu("Behavior")
+		self.appearanceMenu.setIcon(QIcon(COMMAND_ICON))
 
-		if config.WINDOWBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
+		if config.WINDOWBAR_BOLD_ACTIVE_WINDOW:
+			entry = QAction(QIcon(self.parent.checked_icon),"Bold active window", self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
-		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Bold active window", self)
+		entry.triggered.connect(self.doBold)
+		self.appearanceMenu.addAction(entry)
 
-		if config.WINDOWBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
+		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW:
+			entry = QAction(QIcon(self.parent.checked_icon),"Underline active window", self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
-		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Underline active window", self)
+		entry.triggered.connect(self.underline)
+		self.appearanceMenu.addAction(entry)
+		
+		if config.WINDOWBAR_SHOW_ICONS:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show window icons", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show window icons", self)
+		entry.triggered.connect(self.icons)
+		self.appearanceMenu.addAction(entry)
 
-		if config.WINDOWBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
+		if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show topic in tooltip", self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
-		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-	
-		menu.addMenu(self.justifyMenu)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show topic in tooltip", self)
+		entry.triggered.connect(self.showTopic)
+		self.appearanceMenu.addAction(entry)
+
+		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show unread messages", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread messages", self)
+		entry.triggered.connect(self.showUnread)
+		self.appearanceMenu.addAction(entry)
+
+		if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show unread mentions", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread mentions", self)
+		entry.triggered.connect(self.showMention)
+		self.appearanceMenu.addAction(entry)
+
+		self.appearanceMenu.addSeparator()
 
 		self.sortMenu = QMenu("Sorting")
 		self.sortMenu.setIcon(QIcon(SORT_ICON))
+
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show active window first", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active window first", self)
+		entry.triggered.connect(self.first)
+		self.sortMenu.addAction(entry)
+
+		self.sortMenu.addSeparator()
 
 		if config.WINDOWBAR_SORT=='creation':
 			entry = QAction(QIcon(self.parent.round_checked_icon),"Creation",self)
@@ -1024,7 +999,35 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(lambda state,u="ralpha": self.setSorting(u))
 		self.sortMenu.addAction(entry)
 	
-		menu.addMenu(self.sortMenu)
+		self.appearanceMenu.addMenu(self.sortMenu)
+
+		self.justifyMenu = QMenu("Alignment")
+		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+
+		if config.WINDOWBAR_JUSTIFY=='left':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
+		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='center':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
+		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='right':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
+		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		self.appearanceMenu.addMenu(self.justifyMenu)
+
+		menu.addMenu(self.appearanceMenu)
 
 		menu.addSeparator()
 

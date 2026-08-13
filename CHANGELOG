@@ -30,6 +30,17 @@ What's new:
   finished server registration.
 * Bugfix: the "view network logs" option in the "Windows" menu is only visible
   if the client actually has logs for that network.
+* The menubar right click menu is now turned off by default.
+* Removed the label from the "widowbar" and "menubar" context menus.
+* Changed the configuration file setting names for the windowbar and menubar
+  context menu toggles.
+* Removed references to "context" menus from the "settings" dialog, and
+  replaced them with "right click menu".
+* Removed the reference to "context" menus from the windowbar settings menu.
+* Moved the "show active window first" setting in the windowbar context menu to
+  the "sorting" submenu.
+* Consolidated the "appearance" settings in the windowbar context menu into its
+  own submenu.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -133,7 +133,7 @@ WINDOWBAR_INCLUDE_EDITORS = True
 SHOW_CHAT_CONTEXT_MENUS = True
 ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
 MENUBAR_JUSTIFY = 'left'
-MENUBAR_MENU = True
+MENUBAR_MENU = False
 WINDOWBAR_MENU = True
 MAIN_MENU_IRC_NAME = "IRC"
 MAIN_MENU_TOOLS_NAME = "Tools"
@@ -901,8 +901,8 @@ def build_settings():
 		"show_chat_context_menu_options": SHOW_CHAT_CONTEXT_MENUS,
 		"always_show_current_first_in_windowbar": ALWAYS_SHOW_CURRENT_WINDOW_FIRST,
 		"menubar_justify": MENUBAR_JUSTIFY,
-		"show_menubar_context_menu": MENUBAR_MENU,
-		"show_windowbar_context_menu": WINDOWBAR_MENU,
+		"show_menubar_right_click_menu": MENUBAR_MENU,
+		"show_windowbar_right_click_menu": WINDOWBAR_MENU,
 		"main_menu_irc_name": MAIN_MENU_IRC_NAME,
 		"main_menu_tools_name": MAIN_MENU_TOOLS_NAME,
 		"main_menu_windows_name": MAIN_MENU_WINDOWS_NAME,
@@ -1610,10 +1610,10 @@ def patch_settings(settings):
 		settings["main_menu_windows_name"] = MAIN_MENU_WINDOWS_NAME
 	if not "main_menu_help_name" in settings:
 		settings["main_menu_help_name"] = MAIN_MENU_HELP_NAME
-	if not "show_menubar_context_menu" in settings:
-		settings["show_menubar_context_menu"] = MENUBAR_MENU
-	if not "show_windowbar_context_menu" in settings:
-		settings["show_windowbar_context_menu"] = WINDOWBAR_MENU
+	if not "show_menubar_right_click_menu" in settings:
+		settings["show_menubar_right_click_menu"] = MENUBAR_MENU
+	if not "show_windowbar_right_click_menu" in settings:
+		settings["show_windowbar_right_click_menu"] = WINDOWBAR_MENU
 	if not "menubar_justify" in settings:
 		settings["menubar_justify"] = MENUBAR_JUSTIFY
 	if not "always_show_current_first_in_windowbar" in settings:
@@ -2587,8 +2587,8 @@ def load_settings(filename):
 		MAIN_MENU_TOOLS_NAME = settings["main_menu_tools_name"]
 		MAIN_MENU_WINDOWS_NAME = settings["main_menu_windows_name"]
 		MAIN_MENU_HELP_NAME = settings["main_menu_help_name"]
-		MENUBAR_MENU = settings["show_menubar_context_menu"]
-		WINDOWBAR_MENU = settings["show_windowbar_context_menu"]
+		MENUBAR_MENU = settings["show_menubar_right_click_menu"]
+		WINDOWBAR_MENU = settings["show_windowbar_right_click_menu"]
 		MENUBAR_JUSTIFY = settings["menubar_justify"]
 		ALWAYS_SHOW_CURRENT_WINDOW_FIRST = settings["always_show_current_first_in_windowbar"]
 		SHOW_CHAT_CONTEXT_MENUS = settings["show_chat_context_menu_options"]

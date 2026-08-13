@@ -2982,7 +2982,7 @@ class Dialog(QDialog):
 		if config.MENUBAR_JUSTIFY!='right': self.menubarJustify.addItem('right')
 		self.menubarJustify.currentIndexChanged.connect(self.menuJustifyChange)
 
-		self.menubarMenu = QCheckBox("Context menu",self)
+		self.menubarMenu = QCheckBox("Right click menu",self)
 		if config.MENUBAR_MENU: self.menubarMenu.setChecked(True)
 		self.menubarMenu.stateChanged.connect(self.menuChange)
 
@@ -3309,7 +3309,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES: self.windowbarUnread.setChecked(True)
 		self.windowbarUnread.stateChanged.connect(self.menuChange)
 
-		self.windowbarEntryMenu = QCheckBox("Entry context menu",self)
+		self.windowbarEntryMenu = QCheckBox("Entry right click menu",self)
 		if config.WINDOWBAR_ENTRY_MENU: self.windowbarEntryMenu.setChecked(True)
 		self.windowbarEntryMenu.stateChanged.connect(self.menuChange)
 
@@ -3533,7 +3533,7 @@ class Dialog(QDialog):
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSettingInputMenu)
 
-		self.showContext = QCheckBox("Context menus on channel, private, and server\ntext displays",self)
+		self.showContext = QCheckBox("Right click menus on channel, private, and\nserver text displays",self)
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
 
@@ -4428,7 +4428,7 @@ class Dialog(QDialog):
 		if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT: self.elideHostmask.setChecked(True)
 		self.elideHostmask.stateChanged.connect(self.changedSetting)
 
-		self.ulistContext = QCheckBox("Context menu",self)
+		self.ulistContext = QCheckBox("User right click menu",self)
 		if config.USERLIST_CONTEXT_MENU: self.ulistContext.setChecked(True)
 		self.ulistContext.stateChanged.connect(self.changedSettingContext)
 

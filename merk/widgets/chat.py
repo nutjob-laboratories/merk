@@ -4283,35 +4283,27 @@ def buildServerSettingsMenu(self,client):
 	e = textSeparator(self,"Configuration")
 	optionsMenu.addAction(e)
 
-	if maxchannels==0: maxchannels = "no limit"
 	e = plainTextAction(self,"Maximum channels"+f": <b>{maxchannels}</b>")
 	optionsMenu.addAction(e)
 
-	if maxnicklen==0: maxnicklen = "no limit"
 	e = plainTextAction(self,"Maximum nickname length"+f": <b>{maxnicklen}</b>")
 	optionsMenu.addAction(e)
 
-	if channellen==0: channellen = "no limit"
 	e = plainTextAction(self,"Maximum channel length"+f": <b>{channellen}</b>")
 	optionsMenu.addAction(e)
 
-	if topiclen==0: topiclen = "no limit"
 	e = plainTextAction(self,"Maximum topic length"+f": <b>{topiclen}</b>")
 	optionsMenu.addAction(e)
 
-	if kicklen==0: kicklen = "no limit"
 	e = plainTextAction(self,"Maximum kick length"+f": <b>{kicklen}</b>")
 	optionsMenu.addAction(e)
 
-	if awaylen==0: awaylen = "no limit"
 	e = plainTextAction(self,"Maximum away length"+f": <b>{awaylen}</b>")
 	optionsMenu.addAction(e)
 
-	if maxtargets==0: maxtargets = "no limit"
 	e = plainTextAction(self,"Maximum message targets"+f": <b>{maxtargets}</b>")
 	optionsMenu.addAction(e)
 
-	if modes==0: modes = "no limit"
 	e = plainTextAction(self,"Maximum modes per user"+f": <b>{modes}</b>")
 	optionsMenu.addAction(e)
 
