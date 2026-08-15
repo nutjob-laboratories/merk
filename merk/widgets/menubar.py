@@ -716,31 +716,29 @@ class Menubar(QToolBar):
 		entry.triggered.connect(self.float)
 		menu.addAction(entry)
 
-		self.justifyMenu = QMenu("Alignment")
-		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+		e = textSeparator(self,"Alignment")
+		menu.addAction(e)
 
 		if config.MENUBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries appear on left",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries appear on left",self)
 		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
+		menu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries are centered",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries are centered",self)
 		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
+		menu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries appear on right",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries appear on right",self)
 		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-	
-		menu.addMenu(self.justifyMenu)
+		menu.addAction(entry)
 
 		menu.exec_(self.mapToGlobal(event.pos()))
 
@@ -799,9 +797,9 @@ class Windowbar(QToolBar):
 		menu.addAction(entry)
 
 		if config.WINDOWBAR_ENTRY_MENU:
-			entry = QAction(QIcon(self.parent.checked_icon),"Entry right click menu", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Window right click menu", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Entry right click menu", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Window right click menu", self)
 		entry.triggered.connect(self.showMenu)
 		menu.addAction(entry)
 
@@ -912,8 +910,51 @@ class Windowbar(QToolBar):
 
 		menu.addMenu(self.hiddenMenu)
 
-		self.appearanceMenu = QMenu("Behavior")
-		self.appearanceMenu.setIcon(QIcon(COMMAND_ICON))
+		self.sortMenu = QMenu("Sorting")
+		self.sortMenu.setIcon(QIcon(SORT_ICON))
+
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show active window first", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active window first", self)
+		entry.triggered.connect(self.first)
+		self.sortMenu.addAction(entry)
+
+		e = textSeparator(self,"Sort windows by...")
+		self.sortMenu.addAction(e)
+
+		if config.WINDOWBAR_SORT=='creation':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Window creation",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Window creation",self)
+		entry.triggered.connect(lambda state,u="creation": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+
+		if config.WINDOWBAR_SORT=='reverse':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse window creation",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse window creation",self)
+		entry.triggered.connect(lambda state,u="reverse": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+
+		if config.WINDOWBAR_SORT=='alpha':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Alphabetical",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Alphabetical",self)
+		entry.triggered.connect(lambda state,u="alpha": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+
+		if config.WINDOWBAR_SORT=='ralpha':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse alphabetical",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse alphabetical",self)
+		entry.triggered.connect(lambda state,u="ralpha": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+	
+		menu.addMenu(self.sortMenu)
+
+		self.appearanceMenu = QMenu("Appearance")
+		self.appearanceMenu.setIcon(QIcon(STYLE_ICON))
 
 		if config.WINDOWBAR_BOLD_ACTIVE_WINDOW:
 			entry = QAction(QIcon(self.parent.checked_icon),"Bold active window", self)
@@ -957,75 +998,29 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.showMention)
 		self.appearanceMenu.addAction(entry)
 
-		self.appearanceMenu.addSeparator()
-
-		self.sortMenu = QMenu("Sorting")
-		self.sortMenu.setIcon(QIcon(SORT_ICON))
-
-		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show active window first", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active window first", self)
-		entry.triggered.connect(self.first)
-		self.sortMenu.addAction(entry)
-
-		self.sortMenu.addSeparator()
-
-		if config.WINDOWBAR_SORT=='creation':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Creation",self)
-		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Creation",self)
-		entry.triggered.connect(lambda state,u="creation": self.setSorting(u))
-		self.sortMenu.addAction(entry)
-
-		if config.WINDOWBAR_SORT=='reverse':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse creation",self)
-		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse creation",self)
-		entry.triggered.connect(lambda state,u="reverse": self.setSorting(u))
-		self.sortMenu.addAction(entry)
-
-		if config.WINDOWBAR_SORT=='alpha':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Alphabetical",self)
-		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Alphabetical",self)
-		entry.triggered.connect(lambda state,u="alpha": self.setSorting(u))
-		self.sortMenu.addAction(entry)
-
-		if config.WINDOWBAR_SORT=='ralpha':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse alphabetical",self)
-		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse alphabetical",self)
-		entry.triggered.connect(lambda state,u="ralpha": self.setSorting(u))
-		self.sortMenu.addAction(entry)
-	
-		self.appearanceMenu.addMenu(self.sortMenu)
-
-		self.justifyMenu = QMenu("Alignment")
-		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+		e = textSeparator(self,"Alignment")
+		self.appearanceMenu.addAction(e)
 
 		if config.WINDOWBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries appear on left",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries appear on left",self)
 		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
+		self.appearanceMenu.addAction(entry)
 
 		if config.WINDOWBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries are centered",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries are centered",self)
 		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
+		self.appearanceMenu.addAction(entry)
 
 		if config.WINDOWBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries appear on right",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries appear on right",self)
 		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-
-		self.appearanceMenu.addMenu(self.justifyMenu)
+		self.appearanceMenu.addAction(entry)
 
 		menu.addMenu(self.appearanceMenu)
 

@@ -303,7 +303,7 @@ class Window(QMainWindow):
 		
 		self.window_type = TIPS_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
-		self.setWindowIcon(QIcon(APPLICATION_ICON))
+		self.setWindowIcon(QIcon(LIGHTBULB_ICON))
 
 		self.name = f"Tip of the Day"
 		self.setWindowTitle(f"Tip of the Day")
