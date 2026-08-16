@@ -5147,7 +5147,7 @@ class Merk(QMainWindow):
 			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Logs','No logs to export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 			entry.setEnabled(False)
 		else:
-			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Logs','View, manage or export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Logs','View, manage, or export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 		self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_HOTKEYS:
@@ -5171,10 +5171,10 @@ class Merk(QMainWindow):
 					file_paths.append(os.path.join(root, file))
 			file_paths = list(set(file_paths))
 			if len(file_paths)>0:
-				sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Scripts")
+				sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Installed Scripts")
 
 				for f in file_paths:
-					entry = QAction(QIcon(COMMAND_ICON),os.path.basename(f),self)
+					entry = QAction(QIcon(COMMAND_ICON),f"{os.path.basename(f)}",self)
 					entry.triggered.connect(lambda state,h=f: self.openEditor(h))
 					sm.addAction(entry)
 
@@ -5182,13 +5182,13 @@ class Merk(QMainWindow):
 				sm = self.toolsMenu.addMenu(QIcon(CONNECT_ICON),"Connection Scripts")
 
 				for f in user.COMMANDS:
-					entry = QAction(QIcon(COMMAND_ICON),f,self)
+					entry = QAction(QIcon(COMMAND_ICON),f"{f}",self)
 					entry.triggered.connect(lambda state,h=f: self.openEditorConnect(h))
 					sm.addAction(entry)
 
 		if config.ENABLE_PLUGINS:
 			if len(plugins.PLUGINS)>0:
-				sm = self.toolsMenu.addMenu(QIcon(PLUGIN_ICON),"Installed plugins")
+				sm = self.toolsMenu.addMenu(QIcon(PLUGIN_ICON),"Installed Plugins")
 				for obj in plugins.PLUGINS:
 					filename = obj._filename
 					basename = obj._basename
@@ -5201,9 +5201,9 @@ class Merk(QMainWindow):
 					if icon==None: icon = PYTHON_ICON
 
 					if plugins.paused(obj):
-						entry = QAction(QIcon(icon),f"{NAME} {VERSION} (Paused)",self)
+						entry = QAction(QIcon(icon),f"Edit {NAME} {VERSION} (Paused)",self)
 					else:
-						entry = QAction(QIcon(icon),f"{NAME} {VERSION}",self)
+						entry = QAction(QIcon(icon),f"Edit {NAME} {VERSION}",self)
 					if config.ENABLE_PLUGIN_EDITOR:
 						entry.triggered.connect(lambda state,h=filename: self.openPythonEditor(h))
 					else:
@@ -5401,6 +5401,7 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.clear()
 
+		# List all server connections
 		listOfConnections = {}
 		for i in irc.CONNECTIONS:
 			add_to_list = True
@@ -5432,7 +5433,6 @@ class Merk(QMainWindow):
 
 				if len(total)>0:
 					if hasattr(sw,"widget"):
-						sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
 
 						c = sw.widget()
 						if hasattr(c.client,"network"):
@@ -5440,21 +5440,24 @@ class Merk(QMainWindow):
 						else:
 							mynet = config.UNKNOWN_NETWORK_NAME
 
+						sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
+
 						if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 							netlink = get_network_link(mynet)
 							if netlink!=None:
-								desc = f"<a href=\"{netlink}\">Network Website</a>"
+								desc = f"<b><a href=\"{netlink}\">Network Website</a></b>"
 							else:
-								desc = "IRC Network"
+								desc = "<b>IRC Network</b>"
 						else:
-							desc = "IRC Network"
+							desc = "<b>IRC Network</b>"
 
-						entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
-						sm.addAction(entry)
+						if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
+							entry = widgets.ExtendedMenuItemNoAction(self,CONNECT_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
+							sm.addAction(entry)
 
 						if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU and c.client.registered:
 							ssetting = sm.addMenu(c.server_info_menu)
-							ssetting.setIcon(QIcon(CONNECT_ICON))
+							ssetting.setIcon(QIcon(NETWORK_ICON))
 
 						if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU and c.client.registered:
 							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
@@ -5473,7 +5476,10 @@ class Merk(QMainWindow):
 
 						if config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU:
 							hostid = c.client.server+":"+str(c.client.port)
-							entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+							if hostid in user.COMMANDS:
+								entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",self)
+							else:
+								entry = QAction(QIcon(EDIT_ICON),"Create connection script",self)
 							entry.triggered.connect(lambda state,h=hostid: self.openEditorConnect(h))
 							sm.addAction(entry)
 
@@ -5497,6 +5503,9 @@ class Merk(QMainWindow):
 							entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
 							sm.addAction(entry)
 
+		self.windowsMenu.addSeparator()
+
+		# List all editor windows
 		edwins = self.getAllEditorWindows()
 		if len(edwins)>0:
 			for win in edwins:
@@ -5509,6 +5518,7 @@ class Merk(QMainWindow):
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
+		# List all plugin consoles
 		for window in self.MDI.subWindowList():
 			if hasattr(window,"widget"):
 				c = window.widget()
@@ -5520,6 +5530,7 @@ class Merk(QMainWindow):
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
 					self.windowsMenu.addAction(entry)
 
+		# The log manager, if it's open
 		if self.log_manager!=None:
 			if self.log_manager.isVisible():
 				c = self.log_manager.widget()
@@ -5527,6 +5538,7 @@ class Merk(QMainWindow):
 				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
+		# The README window, if it's open
 		if self.readme_window!=None:
 			if self.readme_window.isVisible():
 				c = self.readme_window.widget()

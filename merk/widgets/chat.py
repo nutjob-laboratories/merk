@@ -1229,7 +1229,6 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.menuPasteClipboard(b[0]))
 					uMenu.addAction(act)
 
-					uMenu.addSeparator()
 					act = QAction(QIcon(SHOW_ICON),f"Unban {b[0]}", self)
 					act.triggered.connect(lambda : self.unbanUser(b[0],opmenu))
 					f = act.font()
@@ -1237,11 +1236,12 @@ class Window(QMainWindow):
 					act.setFont(f)
 					uMenu.addAction(act)
 
+				banMenu.addSeparator()
+
 				act = QAction(QIcon(CLIPBOARD_ICON),"Copy all entries to clipboard", self)
 				act.triggered.connect(lambda : self.menuPasteClipboard("\n".join(bl)))
 				banMenu.addAction(act)
 				
-				banMenu.addSeparator()
 				act = QAction(QIcon(SHOW_ICON),f"Unban all users", self)
 				act.triggered.connect(lambda : self.unbanAll(bl))
 				f = act.font()
@@ -1252,8 +1252,22 @@ class Window(QMainWindow):
 		action = opmenu.exec_(self.channel_mode_display.mapToGlobal(position))
 
 	def unbanAll(self,users):
-		for u in users:
-			self.client.batch.append(f"MODE {self.name} -b {u}")
+		do_unban = True
+
+		msgBox = QMessageBox()
+		msgBox.setIconPixmap(QPixmap(SHOW_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setText("Unban all banned users in <b>"+self.name+"</b>?")
+		msgBox.setWindowTitle("Unban All")
+		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		rval = msgBox.exec()
+		if rval == QMessageBox.Cancel:
+			do_unban = False
+
+		if do_unban:
+			for u in users:
+				self.client.batch.append(f"MODE {self.name} -b {u}")
 
 	def unbanUser(self,user,menu):
 		self.client.sendLine(f"MODE {self.name} -b {user}")
@@ -1280,18 +1294,6 @@ class Window(QMainWindow):
 			if self.window_type==SERVER_WINDOW:
 
 				menu.addSeparator()
-
-				if config.ENABLE_STYLE_EDITOR:
-					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
-						entry.triggered.connect(self.pressedStyleButton)
-						menu.addAction(entry)
-
-				if config.SCRIPTING_ENGINE_ENABLED:
-					hostid = self.client.server+":"+str(self.client.port)
-					entry = QAction(QIcon(EDIT_ICON),"Edit connection script",menu)
-					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
-					menu.addAction(entry)
 
 				entry = QAction(QIcon(UP_ICON),"Scroll log to top",menu)
 				entry.triggered.connect(lambda state: self.moveChatToTop())
@@ -1323,14 +1325,6 @@ class Window(QMainWindow):
 
 				if not self.client.registered: self.contextJoin.setEnabled(False)
 
-				if config.SCRIPTING_ENGINE_ENABLED:
-
-					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
-					self.contextRun.triggered.connect(self.loadScript)
-					menu.addAction(self.contextRun)
-
-					if not self.client.registered: self.contextRun.setEnabled(False)
-
 				if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
 					self.contextList = QAction(QIcon(LIST_ICON),"Show channel list",menu)
 					self.contextList.triggered.connect(self.showChannelList)
@@ -1347,55 +1341,34 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",menu)
-				entry.triggered.connect(self.disconnect)
-				menu.addAction(entry)
-
-			if self.window_type!=SERVER_WINDOW:
-
-				menu.addSeparator()
-
-				mopts = False
-
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
 						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
-						mopts = True
 
-				if self.window_type==CHANNEL_WINDOW:
-					if config.EXECUTE_CHANNEL_SCRIPTS and config.SCRIPTING_ENGINE_ENABLED:
-						entry = QAction(QIcon(EDIT_ICON),"Edit channel script",menu)
-						entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
-						menu.addAction(entry)
-						mopts = True
+				if config.SCRIPTING_ENGINE_ENABLED:
+					hostid = self.client.server+":"+str(self.client.port)
+					if hostid in user.COMMANDS:
+						entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",menu)
+					else:
+						entry = QAction(QIcon(EDIT_ICON),"Create connection script",menu)
+					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
+					menu.addAction(entry)
 
-				if mopts==True: menu.addSeparator()
-
-				entry = QAction(QIcon(UP_ICON),"Scroll chat to top",menu)
-				entry.triggered.connect(lambda state: self.moveChatToTop())
-				menu.addAction(entry)
-				scrollbar = self.chat.verticalScrollBar()
-				if scrollbar.value() == scrollbar.minimum(): entry.setEnabled(False)
-
-				entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
-				entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
-				menu.addAction(entry)
-				scrollbar = self.chat.verticalScrollBar()
-				if scrollbar.value() == scrollbar.maximum(): entry.setEnabled(False)
-
-				entry = QAction(QIcon(CLEAR_ICON),"Clear chat display",menu)
-				entry.triggered.connect(self.clearChat)
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide server window",menu)
+				entry.triggered.connect(lambda state: self.parent.hideSubWindow(self.subwindow_id))
 				menu.addAction(entry)
 
-				entry = QAction(QIcon(RELOAD_ICON),"Re-render chat display",menu)
-				entry.triggered.connect(self.rerenderChatLogMenu)
+				menu.addSeparator()
+				entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),"Disconnect from server",menu)
+				entry.triggered.connect(self.disconnect)
+				f = entry.font()
+				f.setBold(True)
+				entry.setFont(f)
 				menu.addAction(entry)
 
-				entry = QAction(QIcon(LOG_ICON),"Save log",menu)
-				entry.triggered.connect(self.menuSaveLogs)
-				menu.addAction(entry)
+			if self.window_type!=SERVER_WINDOW:
 
 				menu.addSeparator()
 
@@ -1537,13 +1510,56 @@ class Window(QMainWindow):
 
 						menu.addMenu(fMenu)
 
-				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",menu)
-				entry.triggered.connect(lambda state: self.parent.hideSubWindow(self.subwindow_id))
-				menu.addAction(entry)
+						cdMenu = menu.addMenu(QIcon(LOG_ICON),"Chat display")
+
+						entry = QAction(QIcon(UP_ICON),"Scroll chat to top",menu)
+						entry.triggered.connect(lambda state: self.moveChatToTop())
+						cdMenu.addAction(entry)
+						scrollbar = self.chat.verticalScrollBar()
+						if scrollbar.value() == scrollbar.minimum(): entry.setEnabled(False)
+
+						entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
+						entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
+						cdMenu.addAction(entry)
+						scrollbar = self.chat.verticalScrollBar()
+						if scrollbar.value() == scrollbar.maximum(): entry.setEnabled(False)
+
+						cdMenu.addSeparator()
+
+						entry = QAction(QIcon(CLEAR_ICON),"Clear chat display",menu)
+						entry.triggered.connect(self.clearChat)
+						cdMenu.addAction(entry)
+
+						entry = QAction(QIcon(RELOAD_ICON),"Re-render chat display",menu)
+						entry.triggered.connect(self.rerenderChatLogMenu)
+						cdMenu.addAction(entry)
+
+						entry = QAction(QIcon(LOG_ICON),"Save log",menu)
+						entry.triggered.connect(self.menuSaveLogs)
+						cdMenu.addAction(entry)
+
+						copyMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
+
+						act = QAction(QIcon(PRIVATE_ICON),"Channel name", self)
+						act.triggered.connect(lambda : self.menuPasteClipboard(self.name))
+						copyMenu.addAction(act)
+
+						if self.client.hostname:
+							act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
+							copyMenu.addAction(act)
+
+						if self.client.network:
+							if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+								act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+								act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
+								copyMenu.addAction(act)
+
+						act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
+						copyMenu.addAction(act)
 
 				if self.window_type==PRIVATE_WINDOW:
-
-					menu.addSeparator()
 
 					act = QAction(QIcon(WHOIS_ICON),"Request WHOIS", self)
 					act.triggered.connect(lambda : self.client.sendLine("WHOIS "+self.name))
@@ -1574,6 +1590,63 @@ class Window(QMainWindow):
 					act = QAction(QIcon(CONNECT_ICON),"PING", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('PING', '')]))
 					ctcpMenu.addAction(act)
+
+					user_hostmask = None
+					if self.name in self.hostmasks:
+						user_hostmask = self.hostmasks[self.name]
+					if user_hostmask==None:
+						user_hostmask = self.parent.getHostmask(self.client,self.name)
+
+					igMenu = menu.addMenu(QIcon(HIDE_ICON),"Ignore user")
+					if not self.is_ignored(self.name,user_hostmask):
+						act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
+						act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
+						igMenu.addAction(act)
+
+						act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
+						act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+						igMenu.addAction(act)
+
+						if user_hostmask==None: act.setEnabled(False)
+					else:
+						if self.is_hidden_by_nickname(self.name):
+							act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
+							act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
+							igMenu.addAction(act)
+						else:
+							if user_hostmask!=None:
+								if self.is_hidden_by_hostmask(self.parent.getHostmask(self.client,self.name)):
+									act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
+									act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+									igMenu.addAction(act)
+
+					cdMenu = menu.addMenu(QIcon(LOG_ICON),"Chat display")
+
+					entry = QAction(QIcon(UP_ICON),"Scroll chat to top",menu)
+					entry.triggered.connect(lambda state: self.moveChatToTop())
+					cdMenu.addAction(entry)
+					scrollbar = self.chat.verticalScrollBar()
+					if scrollbar.value() == scrollbar.minimum(): entry.setEnabled(False)
+
+					entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
+					entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
+					cdMenu.addAction(entry)
+					scrollbar = self.chat.verticalScrollBar()
+					if scrollbar.value() == scrollbar.maximum(): entry.setEnabled(False)
+
+					cdMenu.addSeparator()
+
+					entry = QAction(QIcon(CLEAR_ICON),"Clear chat display",menu)
+					entry.triggered.connect(self.clearChat)
+					cdMenu.addAction(entry)
+
+					entry = QAction(QIcon(RELOAD_ICON),"Re-render chat display",menu)
+					entry.triggered.connect(self.rerenderChatLogMenu)
+					cdMenu.addAction(entry)
+
+					entry = QAction(QIcon(LOG_ICON),"Save log",menu)
+					entry.triggered.connect(self.menuSaveLogs)
+					cdMenu.addAction(entry)
 
 					copyMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 
@@ -1606,29 +1679,26 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				copyMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
+				if config.ENABLE_STYLE_EDITOR:
+					if not config.FORCE_DEFAULT_STYLE:
+						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
+						entry.triggered.connect(self.pressedStyleButton)
+						menu.addAction(entry)
 
-				act = QAction(QIcon(PRIVATE_ICON),"Channel name", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(self.name))
-				copyMenu.addAction(act)
+				if config.EXECUTE_CHANNEL_SCRIPTS and config.SCRIPTING_ENGINE_ENABLED:
+					cscript = commands.find_script(self.encodeScriptFilename(),None)
+					if cscript!=None:
+						entry = QAction(QIcon(SCRIPT_ICON),"Edit channel script",menu)
+					else:
+						entry = QAction(QIcon(EDIT_ICON),"Create channel script",menu)
+					entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
+					menu.addAction(entry)
 
-				if self.client.hostname:
-					act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
-					copyMenu.addAction(act)
-
-				if self.client.network:
-					if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
-						act = QAction(QIcon(NETWORK_ICON),"Server network", self)
-						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
-						copyMenu.addAction(act)
-
-				act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
-				copyMenu.addAction(act)
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide channel window",menu)
+				entry.triggered.connect(lambda state: self.parent.hideSubWindow(self.subwindow_id))
+				menu.addAction(entry)
 
 				menu.addSeparator()
-
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",menu)
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
@@ -1645,36 +1715,18 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				user_hostmask = None
-				if self.name in self.hostmasks:
-					user_hostmask = self.hostmasks[self.name]
-				if user_hostmask==None:
-					user_hostmask = self.parent.getHostmask(self.client,self.name)
+				if config.ENABLE_STYLE_EDITOR:
+					if not config.FORCE_DEFAULT_STYLE:
+						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
+						entry.triggered.connect(self.pressedStyleButton)
+						menu.addAction(entry)
 
-				igMenu = menu.addMenu(QIcon(HIDE_ICON),"Ignore user")
-				if not self.is_ignored(self.name,user_hostmask):
-					act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
-					act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
-					igMenu.addAction(act)
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide private chat window",menu)
+				entry.triggered.connect(lambda state: self.parent.hideSubWindow(self.subwindow_id))
+				menu.addAction(entry)
 
-					act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
-					act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-					igMenu.addAction(act)
-
-					if user_hostmask==None: act.setEnabled(False)
-				else:
-					if self.is_hidden_by_nickname(self.name):
-						act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
-						act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
-						igMenu.addAction(act)
-					else:
-						if user_hostmask!=None:
-							if self.is_hidden_by_hostmask(self.parent.getHostmask(self.client,self.name)):
-								act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
-								act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-								igMenu.addAction(act)
-
-				entry = QAction(QIcon(CLOSE_ICON),"Close window",menu)
+				menu.addSeparator()
+				entry = QAction(QIcon(CLOSE_ICON),"Close private chat window",menu)
 				entry.triggered.connect(self.close)
 				menu.addAction(entry)
 

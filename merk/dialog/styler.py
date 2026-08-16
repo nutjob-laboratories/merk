@@ -512,16 +512,11 @@ class Dialog(QDialog):
 			addedDefault = True
 		else:
 			if self.wchat.window_type==SERVER_WINDOW:
-				name = self.wchat.name
+				name = f"{self.wchat.client.server}:{self.wchat.client.port}"
 			else:
-				if hasattr(self.wchat.client,"hostname"):
-					hostid = f"{self.wchat.client.hostname}"
-					hostid = elide_text(hostid,20)
-					name = f"{self.wchat.name} ({hostid})"
-				else:
-					hostid = f"{self.wchat.client.server}:{self.wchat.client.port}"
-					hostid = elide_text(hostid,20)
-					name = f"{self.wchat.name} ({hostid})"
+				hostid = f"{self.wchat.client.server}:{self.wchat.client.port}"
+				hostid = elide_text(hostid,20)
+				name = f"{self.wchat.name} ({hostid})"
 			self.selectWindow.addItem(name,self.wchat)
 		if not addedDefault:
 			if self.parent.dark_mode:
@@ -531,16 +526,11 @@ class Dialog(QDialog):
 		for e in self.parent.getAllAllConnectedWindows():
 			if e != self.wchat:
 				if e.window_type==SERVER_WINDOW:
-					name = e.name
+					name = f"{e.client.server}:{e.client.port}"
 				else:
-					if hasattr(e.client,"hostname"):
-						hostid = f"{e.client.hostname}"
-						hostid = elide_text(hostid,20)
-						name = f"{e.name} ({hostid})"
-					else:
-						hostid = f"{e.client.server}:{e.client.port}"
-						hostid = elide_text(hostid,20)
-						name = f"{e.name} ({hostid})"
+					hostid = f"{e.client.server}:{e.client.port}"
+					hostid = elide_text(hostid,20)
+					name = f"{e.name} ({hostid})"
 				self.selectWindow.addItem(name,e)
 		self.selectWindow.currentIndexChanged.connect(self.windowChange)
 		self.selectWindow.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 

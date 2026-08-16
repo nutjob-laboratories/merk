@@ -1637,8 +1637,8 @@ class Window(QMainWindow):
 		self.filename = None
 		self.editor.clear()
 		self.changed = False
-		self.menuSave.setShortcut(QKeySequence())
-		self.menuSaveAs.setShortcut("Ctrl+S")
+		self.menuSave.setShortcut("Ctrl+S")
+		self.menuSaveAs.setShortcut(QKeySequence())
 		self.editing_user_script = True
 		self.current_user_script = hostid
 		self.updateApplicationTitle()

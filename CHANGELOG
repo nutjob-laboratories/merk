@@ -5,6 +5,8 @@
 What's new:
 
 - **The channel banlist is now useful**. Users with channel privileges can now unban users directly from the banlist, or just copy the banlist entry to the clipboard. All entries in the banlist can be unbanned at once, or copied to the clipboard.
+- **The channel mode menu is now "prettier" for unprivileged users**. Icons have been added to the different recognized modes to give hints to the user about what the mode does.
+- **Most menus have been "cleaned up"**. This includes main application menus, and all right click menus.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -41,7 +43,23 @@ What's new:
   the "sorting" submenu.
 * Consolidated the "appearance" settings in the windowbar context menu into its
   own submenu.
-* Changed some of the right click menu icons.
+* Cleaned up the resource file, and removed some unused icons.
+* Rearranged the right click chat display menus for server, channel, and
+  private chat subwindows.
+* The "unban all" option in the channel mode menu now asks users if they are
+  sure they want to unban all banned users before doing it.
+* Cleaned up the "Tools" menu entries.
+* Cleaned up the "Windows" menu.
+* Bugfix: opening up a connection script in the editor would not "activate" the
+  proper file save shortcut.
+* Various menus will now let the user know if they want to "edit" or "create"
+  channel and connection scripts; if the desired script exists, they will be
+  prompted to "edit" the script, and if the script does NOT exist, they will be
+  prompted the "create" the script.
+* Bugfix: the text style editor now shows the actual hostID of windows rather
+  than the reported hostname of the server.
+* Removed the "run script" option from server subwindow chat display right click
+  menus.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
