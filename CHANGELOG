@@ -60,6 +60,14 @@ What's new:
   than the reported hostname of the server.
 * Removed the "run script" option from server subwindow chat display right click
   menus.
+* The text style editor now displays the network of the different active
+  subwindows, reflecting how text style files are actually saved and loaded.
+* Server windows are now displayed in bold in the "window selection" widget in
+  the text style editor. Server windows also will have their network name (if
+  the server is part of a network) shown in the title of the dialog; otherwise,
+  the title will just have "(SERVER)" appended to it.
+* The default "save style as" directory is now set to the current "styles"
+  directory.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

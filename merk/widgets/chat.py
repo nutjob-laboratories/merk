@@ -1709,6 +1709,9 @@ class Window(QMainWindow):
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
 				entry.triggered.connect(lambda state,u=self.name,w=msg: self.client.leave(u,w))
+				f = entry.font()
+				f.setBold(True)
+				entry.setFont(f)
 				menu.addAction(entry)
 
 			if self.window_type==PRIVATE_WINDOW:

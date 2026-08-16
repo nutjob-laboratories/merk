@@ -128,7 +128,7 @@ class Dialog(QDialog):
 	def saveAsStyle(self):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getSaveFileName(self,"Save style as...","","Style File (*.style);;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getSaveFileName(self,"Save style as...",styles.STYLE_DIRECTORY,"Style File (*.style);;All Files (*)", options=options)
 		if fileName:
 			efl = len("style")+1
 			if fileName[-efl:].lower()!=f".style": fileName = fileName+f".style"
@@ -249,14 +249,21 @@ class Dialog(QDialog):
 			self.style = self.selected_window.style
 			if self.selected_window.window_type==SERVER_WINDOW:
 				name = self.selected_window.client.server+":"+str(self.selected_window.client.port)
-				self.setWindowTitle(f"Text style for {name}")
-			else:
-				if self.selected_window.client.hostname:
-					hostid = f"{self.selected_window.client.hostname}"
+				if hasattr(self.selected_window.client,"network"):
+					if self.selected_window.client.network.lower()!=UNKNOWN_NETWORK.lower():
+						self.setWindowTitle(f"Text style for {name} ({self.selected_window.client.network} server)")
+					else:
+						self.setWindowTitle(f"Text style for {name} (SERVER)")
 				else:
-					hostid = f"{self.selected_window.client.server}:{self.selected_window.client.port}"
-				name = self.selected_window.name
-				self.setWindowTitle(f"Text style for {name} ({hostid})")
+					self.setWindowTitle(f"Text style for {name} (SERVER)")
+			else:
+				if hasattr(self.selected_window.client,"network"):
+					hostid = self.selected_window.client.network
+					name = self.selected_window.name
+					self.setWindowTitle(f"Text style for {name} ({hostid})")
+				else:
+					name = self.selected_window.name
+					self.setWindowTitle(f"Text style for {name}")
 			self.default = False
 
 			if self.selected_window.window_type==SERVER_WINDOW or self.selected_window.window_type==PRIVATE_WINDOW:
@@ -314,14 +321,21 @@ class Dialog(QDialog):
 			self.style = self.wchat.style
 			if self.wchat.window_type==SERVER_WINDOW:
 				name = self.wchat.client.server+":"+str(self.wchat.client.port)
-				self.setWindowTitle("Text style for "+name)
-			else:
-				if self.wchat.client.hostname:
-					hostid = f"{self.wchat.client.hostname}"
+				if hasattr(self.wchat.client,"network"):
+					if self.wchat.client.network.lower()!=UNKNOWN_NETWORK.lower():
+						self.setWindowTitle(f"Text style for {name} ({self.wchat.client.network} server)")
+					else:
+						self.setWindowTitle("Text style for "+name+" (SERVER)")
 				else:
-					hostid = f"{self.wchat.client.server}:{self.wchat.client.port}"
-				name = self.wchat.name
-				self.setWindowTitle(f"Text style for {name} ({hostid})")
+					self.setWindowTitle("Text style for "+name+" (SERVER)")
+			else:
+				if hasattr(self.wchat.client,"network"):
+					hostid = self.wchat.client.network
+					name = self.wchat.name
+					self.setWindowTitle(f"Text style for {name} ({hostid})")
+				else:
+					name = self.wchat.name
+					self.setWindowTitle(f"Text style for {name}")
 
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
@@ -514,10 +528,18 @@ class Dialog(QDialog):
 			if self.wchat.window_type==SERVER_WINDOW:
 				name = f"{self.wchat.client.server}:{self.wchat.client.port}"
 			else:
-				hostid = f"{self.wchat.client.server}:{self.wchat.client.port}"
-				hostid = elide_text(hostid,20)
-				name = f"{self.wchat.name} ({hostid})"
+				if hasattr(self.wchat.client,"network"):
+					hostid = self.wchat.client.network
+					hostid = elide_text(hostid,20)
+					name = f"{self.wchat.name} ({hostid})"
+				else:
+					name = f"{self.wchat.name}"
 			self.selectWindow.addItem(name,self.wchat)
+			# Display server windows in bold
+			if self.wchat.window_type==SERVER_WINDOW:
+				bold_font = QFont()
+				bold_font.setBold(True)
+				self.selectWindow.setItemData(self.selectWindow.count() - 1, bold_font, Qt.FontRole)
 		if not addedDefault:
 			if self.parent.dark_mode:
 				self.selectWindow.addItem("Default dark mode text style",None)
@@ -528,10 +550,18 @@ class Dialog(QDialog):
 				if e.window_type==SERVER_WINDOW:
 					name = f"{e.client.server}:{e.client.port}"
 				else:
-					hostid = f"{e.client.server}:{e.client.port}"
-					hostid = elide_text(hostid,20)
-					name = f"{e.name} ({hostid})"
+					if hasattr(e.client,"network"):
+						hostid = e.client.network
+						hostid = elide_text(hostid,20)
+						name = f"{e.name} ({hostid})"
+					else:
+						name = f"{e.name}"
 				self.selectWindow.addItem(name,e)
+				# Display server windows in bold
+				if e.window_type==SERVER_WINDOW:
+					bold_font = QFont()
+					bold_font.setBold(True)
+					self.selectWindow.setItemData(self.selectWindow.count() - 1, bold_font, Qt.FontRole)
 		self.selectWindow.currentIndexChanged.connect(self.windowChange)
 		self.selectWindow.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 
 
