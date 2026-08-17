@@ -718,18 +718,18 @@ class Merk(QMainWindow):
 					icon = LIST_ICON
 					serv_name = "Channel list"
 					if c.client.hostname:
-						wname = c.client.hostname + " channels"
+						wname = c.client.hostname + " channel list"
 						serv_name = c.client.hostname
 					else:
-						wname = c.client.server+":"+str(entry.port) + " channels"
+						wname = c.client.server+":"+str(entry.port) + " channel list"
 						serv_name = c.client.server+":"+str(entry.port)
 				elif c.window_type==LOG_MANAGER_WINDOW:
 					icon = LOG_ICON
-					serv_name = "Log Manager"
-					wname = "Log Manager"
+					serv_name = "Logs"
+					wname = "Logs"
 					if c.target!=None:
-						wname = f"Log Manager ({c.target})"
-						serv_name = f"Log Manager ({c.target})"
+						wname = f"Logs ({c.target})"
+						serv_name = f"Logs ({c.target})"
 				elif c.window_type==README_WINDOW:
 					icon = README_ICON
 					serv_name = c.name
@@ -860,19 +860,19 @@ class Merk(QMainWindow):
 					icon = LIST_ICON
 					serv_name = "Channel list"
 					if c.client.hostname:
-						wname = name = c.client.hostname
+						wname = name = c.client.hostname+" channel list"
 					else:
-						wname = c.client.server+":"+str(entry.port)
+						wname = c.client.server+":"+str(entry.port)+" channel list"
 
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==LOG_MANAGER_WINDOW:
 					icon = LOG_ICON
-					serv_name = "Log Manager"
-					wname = "Log Manager"
+					serv_name = "Logs"
+					wname = "Logs"
 					if c.target!=None:
-						wname = f"Log Manager ({c.target})"
-						serv_name = f"Log Manager ({c.target})"
+						wname = f"Logs ({c.target})"
+						serv_name = f"Logs ({c.target})"
 				elif c.window_type==README_WINDOW:
 					icon = README_ICON
 					serv_name = c.name
@@ -3613,6 +3613,7 @@ class Merk(QMainWindow):
 	def showSubWindow(self,window):
 		window.showNormal()
 		self.MDI.setActiveSubWindow(window)
+		self.buildWindowsMenu()
 
 	def showSubWindowMaximized(self,window):
 		if window.isMaximized():
@@ -5440,7 +5441,7 @@ class Merk(QMainWindow):
 						else:
 							mynet = config.UNKNOWN_NETWORK_NAME
 
-						sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
+						sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
 
 						if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 							netlink = get_network_link(mynet)
@@ -5459,13 +5460,11 @@ class Merk(QMainWindow):
 							ssetting = sm.addMenu(c.server_info_menu)
 							ssetting.setIcon(QIcon(NETWORK_ICON))
 
+						sm.addSeparator()
+
 						if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU and c.client.registered:
 							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
 							entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
-							sm.addAction(entry)
-
-							entry = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
-							entry.triggered.connect(lambda state,u=sw: self.menuRefreshList(u))
 							sm.addAction(entry)
 
 						if config.SHOW_LOGS_IN_WINDOWS_MENU and c.client.registered and (len(os.listdir(logs.LOG_DIRECTORY))>0):
@@ -5505,7 +5504,67 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.addSeparator()
 
-		# List all editor windows
+		# Show server subwindows first
+		counter = 0
+		for window in self.MDI.subWindowList():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				icon = None
+				if c.window_type==SERVER_WINDOW:
+					counter = counter + 1
+					if c.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+						target = f"{c.name}"
+					else:
+						target = f"{c.name} ({c.client.network})"
+					entry = QAction(QIcon(CONSOLE_ICON),target,self)
+					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
+					if not window.isVisible():
+						f = entry.font()
+						f.setItalic(True)
+						entry.setFont(f)
+					entry.setShortcut(QKeySequence(f"Alt+{counter}"))
+					self.windowsMenu.addAction(entry)
+
+		# Step through IRC subwindows
+		for window in self.MDI.subWindowList():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				# Channel and private chat subwindows
+				icon = None
+				if c.window_type==CHANNEL_WINDOW:
+					icon = CHANNEL_ICON
+				elif c.window_type==PRIVATE_WINDOW:
+					icon = PRIVATE_ICON
+				if icon!=None:
+					counter = counter + 1
+					entry = QAction(QIcon(icon),f"{c.name} ({c.client.network})",self)
+					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
+					if not window.isVisible():
+						f = entry.font()
+						f.setItalic(True)
+						entry.setFont(f)
+					entry.setShortcut(QKeySequence(f"Alt+{counter}"))
+					self.windowsMenu.addAction(entry)
+
+		# Step through channel list windows
+		for window in self.MDI.subWindowList():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				# Channel list subwindows
+				if c.window_type==LIST_WINDOW:
+					if c.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+						if c.client.hostname:
+							target = c.client.hostname
+						else:
+							target = c.client.server+":"+str(c.client.port)
+					else:
+						target = c.client.network
+					title = f"Channel list for {target}"
+					entry = QAction(QIcon(LIST_ICON),title,self)
+					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
+					self.windowsMenu.addAction(entry)
+
+		# List all editor subwindows
 		edwins = self.getAllEditorWindows()
 		if len(edwins)>0:
 			for win in edwins:
@@ -5518,10 +5577,31 @@ class Merk(QMainWindow):
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
-		# List all plugin consoles
+		# The log manager, if it's open
+		if self.log_manager!=None:
+			if self.log_manager.isVisible():
+				c = self.log_manager.widget()
+				if c.target!=None:
+					entry = QAction(QIcon(LOG_ICON),f"Logs ({c.target})",self)
+				else:
+					entry = QAction(QIcon(LOG_ICON),"Logs",self)
+				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
+				self.windowsMenu.addAction(entry)
+
+		# The README subwindow, if it's open
+		if self.readme_window!=None:
+			if self.readme_window.isVisible():
+				c = self.readme_window.widget()
+				entry = QAction(QIcon(README_ICON),c.name,self)
+				entry.triggered.connect(lambda state,u=self.readme_window: self.showSubWindow(u))
+				self.windowsMenu.addAction(entry)
+
+		# Plugin consoles
 		for window in self.MDI.subWindowList():
 			if hasattr(window,"widget"):
 				c = window.widget()
+
+				# Plugin consoles
 				if c.window_type==PLUGIN_CONSOLE:
 					icon = PLUGIN_ICON
 					if c.plugin._icon!=None: icon = c.plugin._icon
@@ -5530,37 +5610,23 @@ class Merk(QMainWindow):
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
 					self.windowsMenu.addAction(entry)
 
-		# The log manager, if it's open
-		if self.log_manager!=None:
-			if self.log_manager.isVisible():
-				c = self.log_manager.widget()
-				entry = QAction(QIcon(LOG_ICON),c.name,self)
-				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
-				self.windowsMenu.addAction(entry)
-
-		# The README window, if it's open
-		if self.readme_window!=None:
-			if self.readme_window.isVisible():
-				c = self.readme_window.widget()
-				entry = QAction(QIcon(README_ICON),c.name,self)
-				entry.triggered.connect(lambda state,u=self.readme_window: self.showSubWindow(u))
-				self.windowsMenu.addAction(entry)
-
 		self.windowsMenu.addSeparator()
 
-		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
+		entry3 = QAction(QIcon(NEXT_ICON),"Next subwindow",self)
 		entry3.triggered.connect(self.MDI.activateNextSubWindow)
+		entry3.setShortcut(QKeySequence(f"Alt+]"))
 		self.windowsMenu.addAction(entry3)
 
-		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous subwindow",self)
 		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
+		entry4.setShortcut(QKeySequence(f"Alt+["))
 		self.windowsMenu.addAction(entry4)
 
-		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade subwindows",self)
 		entry1.triggered.connect(self.MDI.cascadeSubWindows)
 		self.windowsMenu.addAction(entry1)
 
-		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
+		entry2 = QAction(QIcon(TILE_ICON),"Tile subwindows",self)
 		entry2.triggered.connect(self.MDI.tileSubWindows)
 		self.windowsMenu.addAction(entry2)
 

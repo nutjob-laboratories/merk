@@ -790,8 +790,10 @@ class Dialog(QDialog):
 		self.saveU.setFont(less_smaller_font)
 
 		if self.donotsave:
+			self.SAVE = False
 			self.saveU.setChecked(False)
 		else:
+			self.SAVE = True
 			self.saveU.setChecked(True)
 
 		userPageLayout = QVBoxLayout()

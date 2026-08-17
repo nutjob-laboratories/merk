@@ -170,7 +170,7 @@ class Window(QMainWindow):
 		if self.client.network:
 			network = self.client.network.lower()
 		else:
-			network = UNKNOWN_NETWORK.lower()
+			network = config.UNKNOWN_NETWORK_NAME.lower()
 		return network
 
 	def encodeChannel(self):
@@ -1550,7 +1550,7 @@ class Window(QMainWindow):
 							copyMenu.addAction(act)
 
 						if self.client.network:
-							if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+							if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 								act = QAction(QIcon(NETWORK_ICON),"Server network", self)
 								act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 								copyMenu.addAction(act)
@@ -1666,7 +1666,7 @@ class Window(QMainWindow):
 						copyMenu.addAction(act)
 
 					if self.client.network:
-						if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+						if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 							act = QAction(QIcon(NETWORK_ICON),"Server network", self)
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
@@ -2547,8 +2547,12 @@ class Window(QMainWindow):
 		else:
 			ICON = PRIVATE_MENU_ICON
 			OTHER_TEXT = "Normal User"
-		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT!="": OTHER_TEXT = OTHER_TEXT+" (bot)"
+		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT!="": OTHER_TEXT = OTHER_TEXT+" (Bot)"
 		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT=="": OTHER_TEXT = "Bot"
+
+		# Bold channel status text, if it's going to be displayed
+		OTHER_TEXT = f"<b>{OTHER_TEXT}</b>"
+
 		statusLayout.addStretch()
 
 		is_hidden = False
@@ -2590,10 +2594,10 @@ class Window(QMainWindow):
 						status_text = "Voiced User"
 					elif user_is_protected:
 						status_text = "Protected User"
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (bot)"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (Bot)"
 					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 					if status_text!='':
-						entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+						entry = noSpacePlainTextAction(self,f"<small><center><b>{status_text}</b></center></small>")
 						self.userlist_menu.addAction(entry)
 
 					if is_hidden:
@@ -2634,10 +2638,10 @@ class Window(QMainWindow):
 						status_text = "Voiced User"
 					elif user_is_protected:
 						status_text = "Protected User"
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (bot)"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (Bot)"
 					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 					if status_text!='':
-						entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+						entry = noSpacePlainTextAction(self,f"<small><center><b>{status_text}</b></center></small>")
 						self.userlist_menu.addAction(entry)
 
 					if is_hidden:
@@ -2683,10 +2687,10 @@ class Window(QMainWindow):
 					status_text = "Voiced User"
 				elif user_is_protected:
 					status_text = "Protected User"
-				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (bot)"
+				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (Bot)"
 				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 				if status_text!='':
-					entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+					entry = noSpacePlainTextAction(self,f"<small><center><b>{status_text}</b></center></small>")
 					self.userlist_menu.addAction(entry)
 
 				if is_hidden:
@@ -2828,7 +2832,7 @@ class Window(QMainWindow):
 			copyMenu.addAction(act)
 
 		if self.client.network:
-			if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+			if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 				act = QAction(QIcon(NETWORK_ICON),"Server network", self)
 				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 				copyMenu.addAction(act)
@@ -2845,12 +2849,18 @@ class Window(QMainWindow):
 				icon = OWNER_USER
 			elif self.admin:
 				icon = ADMIN_USER
+			elif self.halfop:
+				icon = HALFOP_USER
 			else:
 				icon = OP_USER
 
 			opMenu = self.userlist_menu.addMenu(QIcon(icon),"Channel administration")
 
-			opMenu.addSeparator()
+			# Bold the channel admin menu title
+			action = self.userlist_menu.actions()[-1]
+			font = QFont()
+			font.setBold(True)
+			action.setFont(font)
 
 			if self.operator or self.owner or self.admin:
 				if user_is_op:

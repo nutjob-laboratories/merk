@@ -7,6 +7,8 @@ What's new:
 - **The channel banlist is now useful**. Users with channel privileges can now unban users directly from the banlist, or just copy the banlist entry to the clipboard. All entries in the banlist can be unbanned at once, or copied to the clipboard.
 - **The channel mode menu is now "prettier" for unprivileged users**. Icons have been added to the different recognized modes to give hints to the user about what the mode does.
 - **Most menus have been "cleaned up"**. This includes main application menus, and all right click menus.
+- **Subwindows can now be navigated with shortcuts**. The "Windows" menu contains specific shortcuts for IRC subwindows, and moving through the subwindow list can be done by pressing `Alt+]` to move to the "next" subwindow and `Alt+[` to move to the "previous" subwindow.
+- **Many, *many* bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -68,6 +70,23 @@ What's new:
   the title will just have "(SERVER)" appended to it.
 * The default "save style as" directory is now set to the current "styles"
   directory.
+* Bugfix: the "default/unknown network name" from the configuration file was
+  not always being used properly in the source.
+* Bugfix: the connection dialog did not always obey the "do not save" option.
+* Bugfix: the "next/previous/etc" subwindow controls still appeared in the
+  windowbar right click menu still appeared even if there were no subwindows
+  open.
+* Bugfix: channel lists did not appear in the "Windows" menu subwindow list.
+* All subwindows are now displayed in the "Windows" menu. Hidden windows are
+  displayed in italics.
+* Stole an idea from GIMP, and assigned a shortcut to every IRC subwindow in
+  the "Windows" menu; now, you can navigate to a window with holding the "alt"
+  key and the number of the window displayed in the menu.
+* Added a shortcut (that actually works!) for moving to the "next" and
+  "previous" subwindow. Hitting "Alt+]" moves to the "next" subwindow, and
+  hittig "Alt+[" moves to the previous subwinndow.
+* Removed the "next", "previous", etc, menu options from the windowbar right
+  click menu.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

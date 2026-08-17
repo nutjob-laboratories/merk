@@ -31,6 +31,7 @@ from PyQt5 import QtCore
 from ..resources import *
 from .. import config
 from .. import commands
+from .. import user
 from .text_separator import textSeparatorLabel,textSeparator
 
 import emoji
@@ -342,23 +343,29 @@ class wMenuButton(QPushButton):
 
 			if config.SCRIPTING_ENGINE_ENABLED:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
-				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+				if hostid in user.COMMANDS:
+					entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",self)
+				else:
+					entry = QAction(QIcon(EDIT_ICON),"Create connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
+				menu.addAction(entry)
+
+			if self.subwindow.isVisible():
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",self)
+				entry.triggered.connect(self.hide_window)
+				menu.addAction(entry)
+			else:
+				entry = QAction(QIcon(SUBWINDOW_ICON),"Show window",self)
+				entry.triggered.connect(self.show_window)
 				menu.addAction(entry)
 
 			menu.addSeparator()
 
-			if self.subwindow.isVisible():
-				entry = QAction(QIcon(HIDE_ICON),"Hide window",self)
-				entry.triggered.connect(self.hide_window)
-				menu.addAction(entry)
-			else:
-				entry = QAction(QIcon(SHOW_ICON),"Show window",self)
-				entry.triggered.connect(self.show_window)
-				menu.addAction(entry)
-
 			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
 			entry.triggered.connect(self.window.disconnect)
+			f = entry.font()
+			f.setBold(True)
+			entry.setFont(f)
 			menu.addAction(entry)
 
 			if not self.window.client.registered:
@@ -384,16 +391,16 @@ class wMenuButton(QPushButton):
 
 		if self.window.window_type==CHANNEL_WINDOW:
 
-			menu.addSeparator()
-
 			if self.subwindow.isVisible():
-				entry = QAction(QIcon(HIDE_ICON),"Hide window",self)
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",self)
 				entry.triggered.connect(self.hide_window)
 				menu.addAction(entry)
 			else:
-				entry = QAction(QIcon(SHOW_ICON),"Show window",self)
+				entry = QAction(QIcon(SUBWINDOW_ICON),"Show window",self)
 				entry.triggered.connect(self.show_window)
 				menu.addAction(entry)
+
+			menu.addSeparator()
 
 			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
 			msg = config.DEFAULT_QUIT_MESSAGE
@@ -405,6 +412,9 @@ class wMenuButton(QPushButton):
 					commands.buildTemporaryAliases(self.window.parent,self.window)
 					msg = commands.interpolateAliases(msg)
 			entry.triggered.connect(lambda state,u=self.window.name,w=msg: self.window.client.leave(u,w))
+			f = entry.font()
+			f.setBold(True)
+			entry.setFont(f)
 			menu.addAction(entry)
 
 		if self.window.window_type==LIST_WINDOW:
@@ -415,10 +425,22 @@ class wMenuButton(QPushButton):
 
 		if self.window.window_type!=CHANNEL_WINDOW and self.window.window_type!=SERVER_WINDOW:
 
+			if self.subwindow.isVisible():
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",self)
+				entry.triggered.connect(self.hide_window)
+				menu.addAction(entry)
+			else:
+				entry = QAction(QIcon(SUBWINDOW_ICON),"Show window",self)
+				entry.triggered.connect(self.show_window)
+				menu.addAction(entry)
+
 			menu.addSeparator()
 
 			entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
 			entry.triggered.connect(self.close_subwindow)
+			f = entry.font()
+			f.setBold(True)
+			entry.setFont(f)
 			menu.addAction(entry)
 
 		menu.exec_(self.mapToGlobal(position))
@@ -527,7 +549,10 @@ class wIconMenuButton(QPushButton):
 
 			if config.SCRIPTING_ENGINE_ENABLED:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
-				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+				if hostid in user.COMMANDS:
+					entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",self)
+				else:
+					entry = QAction(QIcon(EDIT_ICON),"Create connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
 				menu.addAction(entry)
 
@@ -535,6 +560,9 @@ class wIconMenuButton(QPushButton):
 
 			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
 			entry.triggered.connect(self.window.disconnect)
+			f = entry.font()
+			f.setBold(True)
+			entry.setFont(f)
 			menu.addAction(entry)
 
 			if not self.window.client.registered:
@@ -710,37 +738,63 @@ class Menubar(QToolBar):
 		menu = QMenu(self)
 
 		if config.MENUBAR_CAN_FLOAT:
-			entry = QAction(QIcon(self.parent.checked_icon),"Movable", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Allow menubar to move/float", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Movable", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Allow menubar to move/float", self)
 		entry.triggered.connect(self.float)
+		menu.addAction(entry)
+
+		if config.MENUBAR_DOCKED_AT_TOP:
+			entry = QAction(QIcon(self.parent.checked_icon),"Display menubar at top of window", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Display menubar at top of window", self)
+		entry.triggered.connect(self.dotop)
+		menu.addAction(entry)
+
+		if config.MENUBAR_HOVER_EFFECT:
+			entry = QAction(QIcon(self.parent.checked_icon),"Bold menu names on mouse hover", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Bold menu names on mouse hover", self)
+		entry.triggered.connect(self.dobold)
 		menu.addAction(entry)
 
 		e = textSeparator(self,"Alignment")
 		menu.addAction(e)
 
 		if config.MENUBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries appear on left",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Menus appear on left",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries appear on left",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Menus appear on left",self)
 		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
 		menu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries are centered",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Menus are centered",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries are centered",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Menus are centered",self)
 		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
 		menu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Entries appear on right",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Menus appear on right",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Entries appear on right",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Menus appear on right",self)
 		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
 		menu.addAction(entry)
 
 		menu.exec_(self.mapToGlobal(event.pos()))
+
+	def dobold(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.MENUBAR_HOVER_EFFECT:
+			config.MENUBAR_HOVER_EFFECT = False
+		else:
+			config.MENUBAR_HOVER_EFFECT = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildMenu()
+		self.parent.initWindowbar()
+		if len(self.parent.MDI.subWindowList())>0:
+			self.parent.MDI.setActiveSubWindow(w)
 
 	def setJustify(self,justify):
 		w = self.parent.MDI.activeSubWindow()
@@ -763,6 +817,18 @@ class Menubar(QToolBar):
 		if len(self.parent.MDI.subWindowList())>0:
 			self.parent.MDI.setActiveSubWindow(w)
 
+	def dotop(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.MENUBAR_DOCKED_AT_TOP:
+			config.MENUBAR_DOCKED_AT_TOP = False
+		else:
+			config.MENUBAR_DOCKED_AT_TOP = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildMenu()
+		self.parent.initWindowbar()
+		if len(self.parent.MDI.subWindowList())>0:
+			self.parent.MDI.setActiveSubWindow(w)
+
 class Windowbar(QToolBar):
 	def __init__(self, parent=None):
 		super().__init__(parent)
@@ -775,116 +841,88 @@ class Windowbar(QToolBar):
 
 		menu = QMenu(self)
 
-		if config.WINDOWBAR_CAN_FLOAT:
-			entry = QAction(QIcon(self.parent.checked_icon),"Movable", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Movable", self)
-		entry.triggered.connect(self.float)
-		menu.addAction(entry)
-
-		if config.HIDE_WINDOWBAR_IF_EMPTY:
-			entry = QAction(QIcon(self.parent.checked_icon),"Auto-hide", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Auto-hide", self)
-		entry.triggered.connect(self.autohide)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
-			entry = QAction(QIcon(self.parent.checked_icon),"Double click to maximize", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Double click to maximize", self)
-		entry.triggered.connect(self.doubleclick)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_ENTRY_MENU:
-			entry = QAction(QIcon(self.parent.checked_icon),"Window right click menu", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Window right click menu", self)
-		entry.triggered.connect(self.showMenu)
-		menu.addAction(entry)
-
-		self.includesMenu = QMenu("Displays...")
-		self.includesMenu.setIcon(QIcon(WINDOW_ICON))
+		self.includesMenu = QMenu("Display...")
+		self.includesMenu.setIcon(QIcon(SUBWINDOW_ICON))
 
 		if config.WINDOWBAR_INCLUDE_CHANNELS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Channel windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel subwindows", self)
 		entry.triggered.connect(self.channels)
 		self.includesMenu.addAction(entry)
 
 		if config.WINDOWBAR_INCLUDE_PRIVATE:
-			entry = QAction(QIcon(self.parent.checked_icon),"Private windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Private chat subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Private windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Private chat subwindows", self)
 		entry.triggered.connect(self.privates)
 		self.includesMenu.addAction(entry)
 		
 		if config.WINDOWBAR_INCLUDE_SERVERS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Server subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Server windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Server subwindows", self)
 		entry.triggered.connect(self.servers)
 		self.includesMenu.addAction(entry)
 
 		if config.WINDOWBAR_INCLUDE_EDITORS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Editor windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Editor subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Editor windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Editor subwindows", self)
 		entry.triggered.connect(self.editors)
 		self.includesMenu.addAction(entry)
 
 		if config.WINDOWBAR_INCLUDE_LIST:
-			entry = QAction(QIcon(self.parent.checked_icon),"Channel lists", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel list subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel lists", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel list subwindows", self)
 		entry.triggered.connect(self.list_window)
 		self.includesMenu.addAction(entry)
 
 		if config.WINDOWBAR_INCLUDE_MANAGER:
-			entry = QAction(QIcon(self.parent.checked_icon),"Log manager", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Log manager subwindow", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Log manager", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Log manager subwindow", self)
 		entry.triggered.connect(self.list_manager)
 		self.includesMenu.addAction(entry)
 
 		if config.WINDOWBAR_INCLUDE_README:
-			entry = QAction(QIcon(self.parent.checked_icon),"README", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"README subwindow", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"README", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"README subwindow", self)
 		entry.triggered.connect(self.readme)
 		self.includesMenu.addAction(entry)
 
 		menu.addMenu(self.includesMenu)
 
 		self.hiddenMenu = QMenu("Display hidden...")
-		self.hiddenMenu.setIcon(QIcon(SUBWINDOW_ICON))
+		self.hiddenMenu.setIcon(QIcon(HIDE_WINDOW_ICON))
 
 		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR:
-			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Server subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Server windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Server subwindows", self)
 		entry.triggered.connect(self.showHiddenServer)
 		self.hiddenMenu.addAction(entry)
 
 		if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR:
-			entry = QAction(QIcon(self.parent.checked_icon),"Channel windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel subwindows", self)
 		entry.triggered.connect(self.showHiddenChannel)
 		self.hiddenMenu.addAction(entry)
 
 		if config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR:
-			entry = QAction(QIcon(self.parent.checked_icon),"Private chats", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Private chats subwindows", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Private chats", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Private chats subwindows", self)
 		entry.triggered.connect(self.showHiddenPrivate)
 		self.hiddenMenu.addAction(entry)
 
 		wlist = self.parent.getAllHiddenSubWindows()
 		if len(wlist)>0:
 
-			e = textSeparator(self,"Hidden Windows")
+			e = textSeparator(self,"Hidden subwindows")
 			self.hiddenMenu.addAction(e)
 
 			for win in wlist:
@@ -914,9 +952,9 @@ class Windowbar(QToolBar):
 		self.sortMenu.setIcon(QIcon(SORT_ICON))
 
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show active window first", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Show active subwindow first", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active window first", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active subwindow first", self)
 		entry.triggered.connect(self.first)
 		self.sortMenu.addAction(entry)
 
@@ -924,30 +962,30 @@ class Windowbar(QToolBar):
 		self.sortMenu.addAction(e)
 
 		if config.WINDOWBAR_SORT=='creation':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Window creation",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Subwindow creation",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Window creation",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Subwindow creation",self)
 		entry.triggered.connect(lambda state,u="creation": self.setSorting(u))
 		self.sortMenu.addAction(entry)
 
 		if config.WINDOWBAR_SORT=='reverse':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse window creation",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse subwindow creation",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse window creation",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse subwindow creation",self)
 		entry.triggered.connect(lambda state,u="reverse": self.setSorting(u))
 		self.sortMenu.addAction(entry)
 
 		if config.WINDOWBAR_SORT=='alpha':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Alphabetical",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Alphabetical by name",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Alphabetical",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Alphabetical by name",self)
 		entry.triggered.connect(lambda state,u="alpha": self.setSorting(u))
 		self.sortMenu.addAction(entry)
 
 		if config.WINDOWBAR_SORT=='ralpha':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse alphabetical",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse alphabetical by name",self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse alphabetical",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse alphabetical by name",self)
 		entry.triggered.connect(lambda state,u="ralpha": self.setSorting(u))
 		self.sortMenu.addAction(entry)
 	
@@ -957,44 +995,44 @@ class Windowbar(QToolBar):
 		self.appearanceMenu.setIcon(QIcon(STYLE_ICON))
 
 		if config.WINDOWBAR_BOLD_ACTIVE_WINDOW:
-			entry = QAction(QIcon(self.parent.checked_icon),"Bold active window", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Bold active subwindow", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Bold active window", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Bold active subwindow", self)
 		entry.triggered.connect(self.doBold)
 		self.appearanceMenu.addAction(entry)
 
 		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW:
-			entry = QAction(QIcon(self.parent.checked_icon),"Underline active window", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Underline active subwindow", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Underline active window", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Underline active subwindow", self)
 		entry.triggered.connect(self.underline)
 		self.appearanceMenu.addAction(entry)
 		
 		if config.WINDOWBAR_SHOW_ICONS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show window icons", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Show subwindow icons", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show window icons", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show subwindow icons", self)
 		entry.triggered.connect(self.icons)
 		self.appearanceMenu.addAction(entry)
 
 		if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show topic in tooltip", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Show channel topic in tooltip", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show topic in tooltip", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show channel topic in tooltip", self)
 		entry.triggered.connect(self.showTopic)
 		self.appearanceMenu.addAction(entry)
 
 		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show unread messages", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Flash on unread messages", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread messages", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Flash on unread messages", self)
 		entry.triggered.connect(self.showUnread)
 		self.appearanceMenu.addAction(entry)
 
 		if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show unread mentions", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Flash on unread mentions", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread mentions", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Flash on unread mentions", self)
 		entry.triggered.connect(self.showMention)
 		self.appearanceMenu.addAction(entry)
 
@@ -1024,23 +1062,45 @@ class Windowbar(QToolBar):
 
 		menu.addMenu(self.appearanceMenu)
 
-		menu.addSeparator()
+		self.wbSettingsMenu = QMenu("Settings")
+		self.wbSettingsMenu.setIcon(QIcon(SETTINGS_ICON))
 
-		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
-		entry3.triggered.connect(self.parent.MDI.activateNextSubWindow)
-		menu.addAction(entry3)
+		if config.WINDOWBAR_CAN_FLOAT:
+			entry = QAction(QIcon(self.parent.checked_icon),"Allow windowbar to move/float", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Allow windowbar to move/float", self)
+		entry.triggered.connect(self.float)
+		self.wbSettingsMenu.addAction(entry)
 
-		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
-		entry4.triggered.connect(self.parent.MDI.activatePreviousSubWindow)
-		menu.addAction(entry4)
+		if config.WINDOWBAR_TOP_OF_SCREEN:
+			entry = QAction(QIcon(self.parent.checked_icon),"Display windowbar at top of window", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Display windowbar at top of window", self)
+		entry.triggered.connect(self.dotop)
+		self.wbSettingsMenu.addAction(entry)
 
-		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
-		entry1.triggered.connect(self.parent.MDI.cascadeSubWindows)
-		menu.addAction(entry1)
+		if config.HIDE_WINDOWBAR_IF_EMPTY:
+			entry = QAction(QIcon(self.parent.checked_icon),"Hide windowbar when empty", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Hide windowbar when empty", self)
+		entry.triggered.connect(self.autohide)
+		self.wbSettingsMenu.addAction(entry)
 
-		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
-		entry2.triggered.connect(self.parent.MDI.tileSubWindows)
-		menu.addAction(entry2)
+		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
+			entry = QAction(QIcon(self.parent.checked_icon),"Double click subwindow to maximize", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Double click subwindow to maximize", self)
+		entry.triggered.connect(self.doubleclick)
+		self.wbSettingsMenu.addAction(entry)
+
+		if config.WINDOWBAR_ENTRY_MENU:
+			entry = QAction(QIcon(self.parent.checked_icon),"Subwindow right click menu", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Subwindow right click menu", self)
+		entry.triggered.connect(self.showMenu)
+		self.wbSettingsMenu.addAction(entry)
+
+		menu.addMenu(self.wbSettingsMenu)
 
 		menu.exec_(self.mapToGlobal(event.pos()))
 
@@ -1096,6 +1156,16 @@ class Windowbar(QToolBar):
 			config.HIDE_WINDOWBAR_IF_EMPTY = False
 		else:
 			config.HIDE_WINDOWBAR_IF_EMPTY = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def dotop(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_TOP_OF_SCREEN:
+			config.WINDOWBAR_TOP_OF_SCREEN = False
+		else:
+			config.WINDOWBAR_TOP_OF_SCREEN = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)

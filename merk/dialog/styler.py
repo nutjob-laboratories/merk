@@ -250,7 +250,7 @@ class Dialog(QDialog):
 			if self.selected_window.window_type==SERVER_WINDOW:
 				name = self.selected_window.client.server+":"+str(self.selected_window.client.port)
 				if hasattr(self.selected_window.client,"network"):
-					if self.selected_window.client.network.lower()!=UNKNOWN_NETWORK.lower():
+					if self.selected_window.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 						self.setWindowTitle(f"Text style for {name} ({self.selected_window.client.network} server)")
 					else:
 						self.setWindowTitle(f"Text style for {name} (SERVER)")
@@ -322,7 +322,7 @@ class Dialog(QDialog):
 			if self.wchat.window_type==SERVER_WINDOW:
 				name = self.wchat.client.server+":"+str(self.wchat.client.port)
 				if hasattr(self.wchat.client,"network"):
-					if self.wchat.client.network.lower()!=UNKNOWN_NETWORK.lower():
+					if self.wchat.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 						self.setWindowTitle(f"Text style for {name} ({self.wchat.client.network} server)")
 					else:
 						self.setWindowTitle("Text style for "+name+" (SERVER)")
