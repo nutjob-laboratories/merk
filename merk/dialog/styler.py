@@ -260,6 +260,8 @@ class Dialog(QDialog):
 				if hasattr(self.selected_window.client,"network"):
 					hostid = self.selected_window.client.network
 					name = self.selected_window.name
+					if self.selected_window.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+						hostid = self.selected_window.client.server+":"+str(self.selected_window.client.port)
 					self.setWindowTitle(f"Text style for {name} ({hostid})")
 				else:
 					name = self.selected_window.name
@@ -332,6 +334,8 @@ class Dialog(QDialog):
 				if hasattr(self.wchat.client,"network"):
 					hostid = self.wchat.client.network
 					name = self.wchat.name
+					if self.wchat.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+						hostid = self.wchat.client.server+":"+str(self.wchat.client.port)
 					self.setWindowTitle(f"Text style for {name} ({hostid})")
 				else:
 					name = self.wchat.name
@@ -375,6 +379,7 @@ class Dialog(QDialog):
 		self.chat.setLineWrapMode(QTextEdit.NoWrap)
 		self.chat.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.chat.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.chat.setTextInteractionFlags(Qt.NoTextInteraction)
 
 		self.messages = [
 			Message(SERVER_MESSAGE,'','This is a server message'),
@@ -409,6 +414,7 @@ class Dialog(QDialog):
 
 		self.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.userlist.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.userlist.setFocusPolicy(Qt.NoFocus)
 
 		if not config.SHOW_USERLIST:
 			self.userlist.hide()
@@ -422,6 +428,7 @@ class Dialog(QDialog):
 		else:
 			ui.setIcon(QIcon(OWNER_USER))
 			ui.setText('owner')
+		ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 		self.userlist.addItem(ui)
 
 		ui = QListWidgetItem()
@@ -430,6 +437,7 @@ class Dialog(QDialog):
 		else:
 			ui.setIcon(QIcon(ADMIN_USER))
 			ui.setText('admin')
+		ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 		self.userlist.addItem(ui)
 
 		ui = QListWidgetItem()
@@ -438,6 +446,7 @@ class Dialog(QDialog):
 		else:
 			ui.setIcon(QIcon(OP_USER))
 			ui.setText('chanop')
+		ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 		self.userlist.addItem(ui)
 
 		ui = QListWidgetItem()
@@ -446,6 +455,7 @@ class Dialog(QDialog):
 		else:
 			ui.setIcon(QIcon(HALFOP_USER))
 			ui.setText('halfop')
+		ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 		self.userlist.addItem(ui)
 
 		ui = QListWidgetItem()
@@ -454,6 +464,7 @@ class Dialog(QDialog):
 		else:
 			ui.setIcon(QIcon(VOICE_USER))
 			ui.setText('voiced')
+		ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 		self.userlist.addItem(ui)
 
 		if config.SHOW_IGNORE_STATUS_IN_USERLISTS:
@@ -463,6 +474,7 @@ class Dialog(QDialog):
 			else:
 				ui.setIcon(QIcon(NORMAL_USER))
 				ui.setText('user')
+			ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 			self.userlist.addItem(ui)
 
 			ui = QListWidgetItem()
@@ -475,6 +487,7 @@ class Dialog(QDialog):
 			font.setBold(False)
 			font.setStrikeOut(True)
 			ui.setFont(font)
+			ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 			self.userlist.addItem(ui)
 		else:
 			ui = QListWidgetItem()
@@ -483,6 +496,7 @@ class Dialog(QDialog):
 			else:
 				ui.setIcon(QIcon(NORMAL_USER))
 				ui.setText('user')
+			ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 			self.userlist.addItem(ui)
 
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
@@ -496,6 +510,7 @@ class Dialog(QDialog):
 			font.setBold(False)
 			font.setItalic(True)
 			ui.setFont(font)
+			ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 			self.userlist.addItem(ui)
 
 		self.userlist.update()
@@ -530,6 +545,8 @@ class Dialog(QDialog):
 			else:
 				if hasattr(self.wchat.client,"network"):
 					hostid = self.wchat.client.network
+					if self.wchat.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+						hostid = self.wchat.client.server+":"+str(self.wchat.client.port)
 					hostid = elide_text(hostid,20)
 					name = f"{self.wchat.name} ({hostid})"
 				else:
@@ -552,6 +569,8 @@ class Dialog(QDialog):
 				else:
 					if hasattr(e.client,"network"):
 						hostid = e.client.network
+						if e.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+							hostid = e.client.server+":"+str(e.client.port)
 						hostid = elide_text(hostid,20)
 						name = f"{e.name} ({hostid})"
 					else:

@@ -391,12 +391,12 @@ Appearance:
 <td>Prints a system message to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>SERVER</code> to print to all open windows. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
 </tr>
 <tr>
-<td><code>/private NICKNAME [MESSAGE]</code></td>
-<td>Opens a private chat subwindow for <code>NICKNAME</code></td>
-</tr>
-<tr>
 <td><code>/python [FILENAME]</code></td>
 <td>Opens a file in the Python editor</td>
+</tr>
+<tr>
+<td><code>/query NICKNAME [MESSAGE...]</code></td>
+<td>Opens a private chat subwindow for <code>NICKNAME</code></td>
 </tr>
 <tr>
 <td><code>/quit [MESSAGE]</code></td>

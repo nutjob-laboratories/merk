@@ -205,7 +205,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"find",
 			cmdsymbol+"ping",
 			cmdsymbol+"ctcp",
-			cmdsymbol+"private",
+			cmdsymbol+"query",
 			cmdsymbol+"next",
 			cmdsymbol+"previous",
 			cmdsymbol+"delay",

@@ -164,8 +164,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `pool`                        | Ends a `loop` block. *Can only be called from scripts*      |
 | `/print [SERVER] [WINDOW] TEXT...`               | Prints text to a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open subwindows. Pass `*` as `WINDOW` to print to the server subwindow                                                                       |
 | `/prints [SERVER] [WINDOW] TEXT...`               | Prints system message to a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open subwindows. Pass `*` as `WINDOW` to print to the server subwindow              |
-| `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/python [FILENAME]`               | Opens a file in the Python editor                             |
+| `/query NICKNAME [MESSAGE...]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/quote [SERVER] TEXT...`                          | Sends unprocessed data to the current or another server. To specify what server to send the data to, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER` |

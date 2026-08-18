@@ -78,7 +78,7 @@ What's new:
   open.
 * Bugfix: channel lists did not appear in the "Windows" menu subwindow list.
 * All subwindows are now displayed in the "Windows" menu. Hidden windows are
-  displayed in italics.
+  displayed in italics. This includes the individual server menus.
 * Stole an idea from GIMP, and assigned a shortcut to every IRC subwindow in
   the "Windows" menu; now, you can navigate to a window with holding the "alt"
   key and the number of the window displayed in the menu.
@@ -87,6 +87,15 @@ What's new:
   hittig "Alt+[" moves to the previous subwinndow.
 * Removed the "next", "previous", etc, menu options from the windowbar right
   click menu.
+* Bugfix: entries in the userlist in the text style dialog are no longer
+  selectable.
+* Bugfix: text in the text display in the text style dialog is no longer
+  selectable.
+* Bugfix: fixed a bug in the "/private" command; outgoing messages were being
+  displayed twice.
+* Changed the name of the "/private" command to "/query".
+* Bugfix: the "/query" command didn't check to make sure that the target was a
+  nickname and not a channel.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

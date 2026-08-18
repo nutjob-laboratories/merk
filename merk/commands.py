@@ -296,7 +296,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"find": config.ISSUE_COMMAND_SYMBOL+"find ",
 			config.ISSUE_COMMAND_SYMBOL+"ping": config.ISSUE_COMMAND_SYMBOL+"ping ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp": config.ISSUE_COMMAND_SYMBOL+"ctcp ",
-			config.ISSUE_COMMAND_SYMBOL+"private": config.ISSUE_COMMAND_SYMBOL+"private ",
+			config.ISSUE_COMMAND_SYMBOL+"query": config.ISSUE_COMMAND_SYMBOL+"query ",
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
 			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
@@ -484,7 +484,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"find [TERMS]</b>", "Finds filenames that can be found by other commands; use <b>*</b> for multi-character wildcards, and <b>?</b> for single character wildcards" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ping USER [TEXT]</b>", "Sends a CTCP ping to a user" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp REQUEST USER</b>", "Sends a CTCP request; valid requests are TIME, VERSION, USERINFO, SOURCE, or FINGER" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat subwindow for NICKNAME" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"query NICKNAME [MESSAGE...]</b>", "Opens a private chat subwindow for NICKNAME" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow and shifts focus to that subwindow" ],
@@ -6376,20 +6376,60 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |----------|
-	# | /private |
-	# |----------|
+	# |--------|
+	# | /query |
+	# |--------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private' and len(tokens)==2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'query' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+			if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{target}\" appears to be a channel name and not a nickname")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{target}\" appears to be a channel name and not a nickname")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			if not is_allowed_nickname(target):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{target}\" is not a valid nickname")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{target}\" is not a valid nickname")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			w = window.parent.openPrivate(window.client,target)
 			w.show()
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private' and len(tokens)>=3:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'query' and len(tokens)>=3:
 			tokens.pop(0)
 			target = tokens.pop(0)
+			if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: \"{target}\" appears to be a channel name and not a nickname")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{target}\" appears to be a channel name and not a nickname")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			if not is_allowed_nickname(target):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{target}\" is not a valid nickname")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{target}\" is not a valid nickname")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
@@ -6397,19 +6437,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 			w = window.parent.openPrivate(window.client,target)
 			window.client.msg(target,msg)
-			t = Message(SELF_MESSAGE,window.client.nickname,msg)
-			w.widget().writeText(t)
 			w.show()
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private':
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'query':
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"query NICKNAME [MESSAGE...]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"query NICKNAME [MESSAGE...]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

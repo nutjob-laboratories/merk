@@ -158,6 +158,7 @@ class Merk(QMainWindow):
 		self.hostmasks = {}
 		self.log_dump = {}
 		self.log_dump_window = None
+		self.multiple_servers = False
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -1144,16 +1145,21 @@ class Merk(QMainWindow):
 								if not c.client.registered: entry.setEnabled(False)
 
 							if config.SHOW_LOGS_IN_SYSTRAY_MENU:
-								if mynet==config.UNKNOWN_NETWORK_NAME:
+								if len(logs.find_network_logs(f"{mynet}"))>0:
+									if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+										entry = QAction(QIcon(LOG_ICON),f"Logs",self)
+										entry.triggered.connect(self.menuExportLog)
+										sm.addAction(entry)
+									else:
+										entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
+										entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+										sm.addAction(entry)
+								else:
 									entry = QAction(QIcon(LOG_ICON),f"Logs",self)
 									entry.triggered.connect(self.menuExportLog)
 									sm.addAction(entry)
-								else:
-									entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
-									entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
-									sm.addAction(entry)
 
-								if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
+								if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
 
 							sm.addSeparator()
 
@@ -1166,8 +1172,6 @@ class Merk(QMainWindow):
 
 								if c.window_type==CHANNEL_WINDOW:
 									icon = CHANNEL_ICON
-								elif c.window_type==SERVER_WINDOW:
-									icon = CONSOLE_ICON
 								elif c.window_type==PRIVATE_WINDOW:
 									icon = PRIVATE_ICON
 
@@ -5402,6 +5406,8 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.clear()
 
+		self.multiple_servers = False
+
 		# List all server connections
 		listOfConnections = {}
 		for i in irc.CONNECTIONS:
@@ -5418,6 +5424,8 @@ class Merk(QMainWindow):
 				self.setWindowTitle(' ')
 			else:
 				self.setWindowTitle(self.application_title_name)
+
+		if len(listOfConnections)>1: self.multiple_servers = True
 
 		if len(listOfConnections)>0:
 
@@ -5486,6 +5494,10 @@ class Merk(QMainWindow):
 
 						entry = QAction(QIcon(CONSOLE_ICON),name,self)
 						entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
+						if not sw.isVisible():
+							f = entry.font()
+							f.setItalic(True)
+							entry.setFont(f)
 						sm.addAction(entry)
 
 						for w in wl:
@@ -5493,13 +5505,15 @@ class Merk(QMainWindow):
 
 							if c.window_type==CHANNEL_WINDOW:
 								icon = CHANNEL_ICON
-							elif c.window_type==SERVER_WINDOW:
-								icon = CONSOLE_ICON
 							elif c.window_type==PRIVATE_WINDOW:
 								icon = PRIVATE_ICON
 
 							entry = QAction(QIcon(icon),c.name,self)
 							entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+							if not w.isVisible():
+								f = entry.font()
+								f.setItalic(True)
+								entry.setFont(f)
 							sm.addAction(entry)
 
 		self.windowsMenu.addSeparator()
@@ -5512,10 +5526,17 @@ class Merk(QMainWindow):
 				icon = None
 				if c.window_type==SERVER_WINDOW:
 					counter = counter + 1
-					if c.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
-						target = f"{c.name}"
+					if self.multiple_servers:
+						if c.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+							if c.client.hostname:
+								tnet = c.client.hostname
+							else:
+								tnet = c.client.server+":"+str(c.client.port)
+						else:
+							tnet = c.client.network
+						target = f"{c.name} ({tnet})"
 					else:
-						target = f"{c.name} ({c.client.network})"
+						target = f"{c.name}"
 					entry = QAction(QIcon(CONSOLE_ICON),target,self)
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
 					if not window.isVisible():
@@ -5537,7 +5558,17 @@ class Merk(QMainWindow):
 					icon = PRIVATE_ICON
 				if icon!=None:
 					counter = counter + 1
-					entry = QAction(QIcon(icon),f"{c.name} ({c.client.network})",self)
+					if self.multiple_servers:
+						if c.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+							if c.client.hostname:
+								target = c.client.hostname
+							else:
+								target = c.client.server+":"+str(c.client.port)
+						else:
+							target = c.client.network
+						entry = QAction(QIcon(icon),f"{c.name} ({target})",self)
+					else:
+						entry = QAction(QIcon(icon),f"{c.name}",self)
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
 					if not window.isVisible():
 						f = entry.font()
