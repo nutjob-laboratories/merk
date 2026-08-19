@@ -3170,6 +3170,18 @@ class Dialog(QDialog):
 		if config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU: self.showConnScript.setChecked(True)
 		self.showConnScript.stateChanged.connect(self.changedSetting)
 
+		self.showWinAway = QCheckBox(f"Away/Back control",self)
+		if config.SHOW_AWAY_IN_WINDOWS_MENU: self.showWinAway.setChecked(True)
+		self.showWinAway.stateChanged.connect(self.changedSetting)
+
+		self.showWinNick = QCheckBox(f"Nickname control",self)
+		if config.SHOW_NICK_IN_WINDOWS_MENU: self.showWinNick.setChecked(True)
+		self.showWinNick.stateChanged.connect(self.changedSetting)
+
+		self.showWinJoin = QCheckBox(f"Channel join",self)
+		if config.SHOW_JOIN_IN_WINDOWS_MENU: self.showWinJoin.setChecked(True)
+		self.showWinJoin.stateChanged.connect(self.changedSetting)
+
 		menu3Layout = QHBoxLayout()
 		menu3Layout.addWidget(self.showChannelList)
 		menu3Layout.addWidget(self.showLogsInWindows)
@@ -3177,6 +3189,10 @@ class Dialog(QDialog):
 		menu4Layout = QHBoxLayout()
 		menu4Layout.addWidget(self.showServerInfo)
 		menu4Layout.addWidget(self.showConnScript)
+
+		menu5Layout = QHBoxLayout()
+		menu5Layout.addWidget(self.showWinAway)
+		menu5Layout.addWidget(self.showWinNick)
 
 		menu1Layout = QHBoxLayout()
 		menu1Layout.addStretch()
@@ -3210,6 +3226,8 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,f"<b>\"{config.MAIN_MENU_WINDOWS_NAME}\" menu includes...</b>"))
 		menuLayout.addLayout(menu3Layout)
 		menuLayout.addLayout(menu4Layout)
+		menuLayout.addLayout(menu5Layout)
+		menuLayout.addWidget(self.showWinJoin)
 		menuLayout.addStretch()
 
 		self.menuPage.setLayout(menuLayout)
@@ -7762,6 +7780,9 @@ class Dialog(QDialog):
 		config.MAX_LOG_DISPLAY_SIZE = self.MAX_LOG_DISPLAY_SIZE
 		config.SCAN_FOR_LARGE_LOGS = self.scanLogs.isChecked()
 		config.SHOW_CHANNEL_MODES = self.channelModes.isChecked()
+		config.SHOW_AWAY_IN_WINDOWS_MENU = self.showWinAway.isChecked()
+		config.SHOW_NICK_IN_WINDOWS_MENU = self.showWinNick.isChecked()
+		config.SHOW_JOIN_IN_WINDOWS_MENU = self.showWinJoin.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

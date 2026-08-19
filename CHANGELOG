@@ -8,7 +8,8 @@ What's new:
 - **The channel banlist is now useful**. Users with channel privileges can now unban users directly from the banlist, or just copy the banlist entry to the clipboard. All entries in the banlist can be unbanned at once, or copied to the clipboard. For users without channel privileges, the banlist does not offer these options.
 - **The channel mode menu is now "prettier" for unprivileged users**. Icons have been added to the different recognized modes to give hints to the user about what the mode does.
 - **Most menus have been "cleaned up"**. This includes main application menus, and all right click menus.
-- **Subwindows can now be navigated with shortcuts**. The "Windows" menu contains specific shortcuts for IRC subwindows, and moving through the subwindow list can be done by pressing `Alt+]` to move to the "next" subwindow and `Alt+[` to move to the "previous" subwindow. To cascade all subwindows, use "Alt+C", and to tile them, use "Alt+T".
+- **Subwindows can now be navigated with shortcuts**. The "Windows" menu contains specific shortcuts for IRC subwindows, and moving through the subwindow list can be done by pressing `Alt+]` to move to the "next" subwindow and `Alt+[` to move to the "previous" subwindow. To cascade all subwindows, use "Alt+C", and to tile them, use "Alt+T". Shortcuts have also been added for the Log Manager subwindow (`Alt+L`), channel list subwindows (`Ctrl+Alt+NUMBER`), and the README subwindow (`Alt+R`).
+- **Various server status controls have been added to the "Windows" menu**. The ability to toggle "away/back" statuses, to change the user's nickname, and to join a channel have been added to the "Windows" menu. Users can toggle all of these entries in the "Settings" dialog.
 - **Many, *many* bugfixes**.
 
 |==============================================================================|
@@ -104,6 +105,19 @@ What's new:
   disconnect or not.
 * Cleaned up the "ask before disconnect" dialog, as well as other dialogs, to
   make sure that what the application is asking the user is completely clear.
+* Bugfix: individual server submenus in the "Windows" menu are now disabled
+  until registration with that server is complete.
+* Added an option (on by default) to add away/back controls to server submenus
+  in the "Windows" menu.
+* Added an option (on by default) to change the user's nickname to server
+  submenus in the "Windows" menu.
+* Added shortcuts for nearly all subwindows to the "Windows" menu. The only
+  subwindows that are excluded are plugin console windows, though they are still
+  displayed in the subwindow list.
+* Added an option (on by default) to join a channel to the server submenus in
+  the "Windows" menu.
+* Added an option to the channel list dialog to filter channels by 100+ user
+  count.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

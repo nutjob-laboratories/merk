@@ -481,9 +481,15 @@ LIMIT_LOG_VIEW = True
 LOG_WARNING_SIZE = 30
 SCAN_FOR_LARGE_LOGS = True
 SHOW_CHANNEL_MODES = True
+SHOW_AWAY_IN_WINDOWS_MENU = True
+SHOW_NICK_IN_WINDOWS_MENU = True
+SHOW_JOIN_IN_WINDOWS_MENU = True
 
 def build_settings():
 	settings = {
+		"show_join_in_windows_menu": SHOW_JOIN_IN_WINDOWS_MENU,
+		"show_nickname_in_windows_menu": SHOW_NICK_IN_WINDOWS_MENU,
+		"show_away_control_in_windows_menu": SHOW_AWAY_IN_WINDOWS_MENU,
 		"show_channel_modes": SHOW_CHANNEL_MODES,
 		"scan_for_large_logs_on_startup": SCAN_FOR_LARGE_LOGS,
 		"log_warning_size": LOG_WARNING_SIZE,
@@ -924,6 +930,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_join_in_windows_menu" in settings:
+		settings["show_join_in_windows_menu"] = SHOW_JOIN_IN_WINDOWS_MENU
+	if not "show_nickname_in_windows_menu" in settings:
+		settings["show_nickname_in_windows_menu"] = SHOW_NICK_IN_WINDOWS_MENU
+	if not "show_away_control_in_windows_menu" in settings:
+		settings["show_away_control_in_windows_menu"] = SHOW_AWAY_IN_WINDOWS_MENU
 	if not "show_channel_modes" in settings:
 		settings["show_channel_modes"] = SHOW_CHANNEL_MODES
 	if not "scan_for_large_logs_on_startup" in settings:
@@ -2233,6 +2245,9 @@ def load_settings(filename):
 	global LOG_WARNING_SIZE
 	global SCAN_FOR_LARGE_LOGS
 	global SHOW_CHANNEL_MODES
+	global SHOW_AWAY_IN_WINDOWS_MENU
+	global SHOW_NICK_IN_WINDOWS_MENU
+	global SHOW_JOIN_IN_WINDOWS_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2242,6 +2257,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_JOIN_IN_WINDOWS_MENU = settings["show_join_in_windows_menu"]
+		SHOW_NICK_IN_WINDOWS_MENU = settings["show_nickname_in_windows_menu"]
+		SHOW_AWAY_IN_WINDOWS_MENU = settings["show_away_control_in_windows_menu"]
 		SHOW_CHANNEL_MODES = settings["show_channel_modes"]
 		SCAN_FOR_LARGE_LOGS = settings["scan_for_large_logs_on_startup"]
 		LOG_WARNING_SIZE = settings["log_warning_size"]

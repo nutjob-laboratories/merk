@@ -1579,6 +1579,8 @@ class Merk(QMainWindow):
 				t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
 				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
+		self.buildWindowsMenu()
+
 	def back(self,client):
 		w = self.getServerWindow(client)
 		if w:
@@ -1595,6 +1597,8 @@ class Merk(QMainWindow):
 			if config.SHOW_AWAY_AND_BACK_MESSAGES:
 				t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
 				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+		self.buildWindowsMenu()
 
 	def gotServerVersion(self,client,server,version):
 		w = self.getServerWindow(client)
@@ -5452,6 +5456,8 @@ class Merk(QMainWindow):
 
 						sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
 
+						if not c.client.registered: sm.setEnabled(False)
+
 						if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 							netlink = get_network_link(mynet)
 							if netlink!=None:
@@ -5471,8 +5477,26 @@ class Merk(QMainWindow):
 
 						sm.addSeparator()
 
+						if config.SHOW_NICK_IN_WINDOWS_MENU and c.client.registered:
+							entry = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+							entry.triggered.connect(lambda state: sw.widget().changeNick())
+							sm.addAction(entry)
+
+						if config.SHOW_AWAY_IN_WINDOWS_MENU and c.client.registered:
+							if c.client.is_away:
+								entry = QAction(QIcon(GO_BACK_ICON),"Set status to \"back\"",self)
+							else:
+								entry = QAction(QIcon(GO_AWAY_ICON),"Set status to \"away\"",self)
+							entry.triggered.connect(lambda state: sw.widget().changeAway())
+							sm.addAction(entry)
+
+						if config.SHOW_JOIN_IN_WINDOWS_MENU and c.client.registered:
+							entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+							entry.triggered.connect(lambda state: sw.widget().joinChannel())
+							sm.addAction(entry)
+
 						if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU and c.client.registered:
-							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
+							entry = QAction(QIcon(LIST_ICON),"Open channel list",self)
 							entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
 							sm.addAction(entry)
 
@@ -5579,11 +5603,13 @@ class Merk(QMainWindow):
 					self.windowsMenu.addAction(entry)
 
 		# Step through channel list windows
+		counter = 0
 		for window in self.MDI.subWindowList():
 			if hasattr(window,"widget"):
 				c = window.widget()
 				# Channel list subwindows
 				if c.window_type==LIST_WINDOW:
+					counter = counter + 1
 					if c.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
 						if c.client.hostname:
 							target = c.client.hostname
@@ -5594,12 +5620,15 @@ class Merk(QMainWindow):
 					title = f"Channel list for {target}"
 					entry = QAction(QIcon(LIST_ICON),title,self)
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
+					entry.setShortcut(QKeySequence(f"Ctrl+Alt+{counter}"))
 					self.windowsMenu.addAction(entry)
 
 		# List all editor subwindows
+		counter = 0
 		edwins = self.getAllEditorWindows()
 		if len(edwins)>0:
 			for win in edwins:
+				counter = counter + 1
 				c = win.widget()
 				icon = SCRIPT_ICON
 				if hasattr(c,"python"):
@@ -5607,6 +5636,7 @@ class Merk(QMainWindow):
 						icon = PYTHON_ICON
 				entry = QAction(QIcon(icon),c.name,self)
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
+				entry.setShortcut(QKeySequence(f"Shift+Alt+{counter}"))
 				self.windowsMenu.addAction(entry)
 
 		# The log manager, if it's open
@@ -5618,6 +5648,7 @@ class Merk(QMainWindow):
 				else:
 					entry = QAction(QIcon(LOG_ICON),"Logs",self)
 				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
+				entry.setShortcut(QKeySequence(f"Alt+L"))
 				self.windowsMenu.addAction(entry)
 
 		# The README subwindow, if it's open
@@ -5626,13 +5657,13 @@ class Merk(QMainWindow):
 				c = self.readme_window.widget()
 				entry = QAction(QIcon(README_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=self.readme_window: self.showSubWindow(u))
+				entry.setShortcut(QKeySequence(f"Alt+R"))
 				self.windowsMenu.addAction(entry)
 
 		# Plugin consoles
 		for window in self.MDI.subWindowList():
 			if hasattr(window,"widget"):
 				c = window.widget()
-
 				# Plugin consoles
 				if c.window_type==PLUGIN_CONSOLE:
 					icon = PLUGIN_ICON
