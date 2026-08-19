@@ -647,10 +647,13 @@ class Window(QMainWindow):
 				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 				msgBox.setText(f"\"{base}\" already exists. Overwrite script?")
 				msgBox.setWindowTitle("Overwrite File")
-				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+				
+				default_button = msgBox.addButton(" Overwrite script ", QMessageBox.AcceptRole)
+				msgBox.addButton("Cancel", QMessageBox.RejectRole)
+				msgBox.setDefaultButton(default_button)
 
 				rval = msgBox.exec()
-				if rval == QMessageBox.Cancel:
+				if rval == QMessageBox.RejectRole:
 					do_overwrite = False
 			
 			if do_overwrite:

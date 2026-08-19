@@ -4673,10 +4673,13 @@ class Merk(QMainWindow):
 		else:
 			msgBox.setText("Activating dark mode requires a restart!\nThis will disconnect from all servers.\nRestart now?")
 		msgBox.setWindowTitle("Restart")
-		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		default_button = msgBox.addButton(f" Restart {APPLICATION_NAME} ", QMessageBox.AcceptRole)
+		msgBox.addButton("Cancel", QMessageBox.RejectRole)
+		msgBox.setDefaultButton(default_button)
 
 		rval = msgBox.exec()
-		if rval != QMessageBox.Cancel:
+		if rval != QMessageBox.RejectRole:
 			if self.is_hidden: self.toggleHide()
 			if config.DARK_MODE:
 				config.DARK_MODE = False
@@ -4684,12 +4687,10 @@ class Merk(QMainWindow):
 				config.DARK_MODE = True
 			self.save_config()
 			if is_running_from_pyinstaller():
-				# subprocess.Popen([sys.executable] + ["-R"])
 				subprocess.Popen([sys.executable] + [])
 				self.close()
 				app.exit()
 			else:
-				# os.execl(sys.executable, sys.executable,sys.argv[0], "-R")
 				os.execl(sys.executable, sys.executable,sys.argv[0])
 
 	def settingsTimestamps(self):
@@ -5655,10 +5656,12 @@ class Merk(QMainWindow):
 
 		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade subwindows",self)
 		entry1.triggered.connect(self.MDI.cascadeSubWindows)
+		entry1.setShortcut(QKeySequence(f"Alt+C"))
 		self.windowsMenu.addAction(entry1)
 
 		entry2 = QAction(QIcon(TILE_ICON),"Tile subwindows",self)
 		entry2.triggered.connect(self.MDI.tileSubWindows)
+		entry2.setShortcut(QKeySequence(f"Alt+T"))
 		self.windowsMenu.addAction(entry2)
 
 		if len(self.MDI.subWindowList())==0:
@@ -5806,19 +5809,9 @@ class Merk(QMainWindow):
 
 	def disconnectAll(self,disco_msg=None):
 
-		# Hide all windows
-		for window in self.MDI.subWindowList():
-			if hasattr(window,"widget"):
-				c = window.widget()
-				if hasattr(c,"window_type"):
-					if c.window_type==SERVER_WINDOW or c.window_type==PRIVATE_WINDOW or c.window_type==CHANNEL_WINDOW or c.window_type==LIST_WINDOW:
-						window.hide()
-
 		if not isinstance(disco_msg,str): disco_msg = None
 		windows = self.getAllServerWindows()
 		if len(windows)>0:
-
-			QApplication.setOverrideCursor(Qt.WaitCursor)
 
 			dc = []
 			for w in windows:
@@ -5826,6 +5819,17 @@ class Merk(QMainWindow):
 				dc.append(c.client)
 
 			if self.askDisconnectMulti(dc):
+
+				QApplication.setOverrideCursor(Qt.WaitCursor)
+
+				# Hide all windows
+				for window in self.MDI.subWindowList():
+					if hasattr(window,"widget"):
+						c = window.widget()
+						if hasattr(c,"window_type"):
+							if c.window_type==SERVER_WINDOW or c.window_type==PRIVATE_WINDOW or c.window_type==CHANNEL_WINDOW or c.window_type==LIST_WINDOW:
+								window.hide()
+
 				for w in windows:
 					c = w.widget()
 
@@ -5861,7 +5865,7 @@ class Merk(QMainWindow):
 
 					self.buildWindowbar()
 
-			QApplication.restoreOverrideCursor()
+				QApplication.restoreOverrideCursor()
 
 		self.mainMenu.close()
 
@@ -5886,14 +5890,29 @@ class Merk(QMainWindow):
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			if no_hostname:
-				msgBox.setText("Are you sure you want to disconnect from "+client.server+":"+str(client.port)+"?")
+				msgBox.setText(f"""
+					Are you sure you want to disconnect from <b>{client.server}:{client.port}</b>?
+
+					This will leave all channels and close any open private chat sessions.
+					""")
 			else:
-				msgBox.setText("Are you sure you want to disconnect from "+client.hostname+"?")
+				msgBox.setText(f"""
+					Are you sure you want to disconnect from <b>{client.hostname}</b>?
+
+					This will leave all channels and close any open private chat sessions.
+					""")
 			msgBox.setWindowTitle("Disconnect")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			default_button = msgBox.addButton(" Disconnect from server ", QMessageBox.AcceptRole)
+			msgBox.addButton("Cancel", QMessageBox.RejectRole)
+			msgBox.setDefaultButton(default_button)
+
+			label = msgBox.findChild(QLabel)
+			if label:
+				label.setWordWrap(True)
 
 			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
+			if rval == QMessageBox.RejectRole:
 				do_disconnect = False
 
 		return do_disconnect
@@ -5908,9 +5927,9 @@ class Merk(QMainWindow):
 				if not client.hostname: no_hostname = True
 
 				if no_hostname:
-					conns.append(client.server+":"+str(client.port))
+					conns.append(f"<b>{client.server}:{client.port}</b>")
 				else:
-					conns.append(client.hostname)
+					conns.append(f"<b>{client.hostname}</b>")
 
 			last = conns.pop()
 			cstr = ", ".join(conns)+" and "+last
@@ -5921,9 +5940,9 @@ class Merk(QMainWindow):
 			if not c.hostname: no_hostname = True
 
 			if no_hostname:
-				cstr = c.server+":"+str(c.port)
+				cstr = f"<b>{c.server}:{c.port}</b>"
 			else:
-				cstr = c.hostname
+				cstr = f"<b>{c.hostname}</b>"
 
 		do_disconnect = True
 
@@ -5931,12 +5950,26 @@ class Merk(QMainWindow):
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText("Are you sure you want to disconnect from "+cstr+"?")
+			msgBox.setText(f"""
+				Are you sure you want to disconnect from {cstr}?
+
+				This will leave all channels and close any open private chat sessions.
+			""")
 			msgBox.setWindowTitle("Disconnect")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			if len(list_of_client)>1:
+				default_button = msgBox.addButton(" Disconnect from servers ", QMessageBox.AcceptRole)
+			else:
+				default_button = msgBox.addButton(" Disconnect from server ", QMessageBox.AcceptRole)
+			msgBox.addButton("Cancel", QMessageBox.RejectRole)
+			msgBox.setDefaultButton(default_button)
+
+			label = msgBox.findChild(QLabel)
+			if label:
+				label.setWordWrap(True)
 
 			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
+			if rval == QMessageBox.RejectRole:
 				do_disconnect = False
 
 		return do_disconnect
@@ -6090,10 +6123,12 @@ class Merk(QMainWindow):
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText("Are you sure you want to exit?")
 			msgBox.setWindowTitle("Exit")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+			default_button = msgBox.addButton(f" Exit {APPLICATION_NAME} ", QMessageBox.AcceptRole)
+			msgBox.addButton("Cancel", QMessageBox.RejectRole)
+			msgBox.setDefaultButton(default_button)
 
 			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
+			if rval == QMessageBox.RejectRole:
 				do_close = False
 
 		if not do_close:
@@ -6672,10 +6707,13 @@ class MdiArea(QMdiArea):
 					msgBox.setText("The following files already exist. Overwrite?")
 					msgBox.setInformativeText("\n".join(ofiles))
 					msgBox.setWindowTitle("Overwrite")
-					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+					default_button = msgBox.addButton(" Overwrite files ", QMessageBox.AcceptRole)
+					msgBox.addButton("Cancel", QMessageBox.RejectRole)
+					msgBox.setDefaultButton(default_button)
 
 					rval = msgBox.exec()
-					if rval == QMessageBox.Cancel:
+					if rval == QMessageBox.RejectRole:
 						pass
 					else:
 						overwrite = False

@@ -1259,10 +1259,13 @@ class Window(QMainWindow):
 		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 		msgBox.setText("Unban all banned users in <b>"+self.name+"</b>?")
 		msgBox.setWindowTitle("Unban All")
-		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+		
+		default_button = msgBox.addButton(" Unban all users ", QMessageBox.AcceptRole)
+		msgBox.addButton("Cancel", QMessageBox.RejectRole)
+		msgBox.setDefaultButton(default_button)
 
 		rval = msgBox.exec()
-		if rval == QMessageBox.Cancel:
+		if rval == QMessageBox.RejectRole:
 			do_unban = False
 
 		if do_unban:
@@ -1361,7 +1364,7 @@ class Window(QMainWindow):
 				menu.addAction(entry)
 
 				menu.addSeparator()
-				entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),"Disconnect from server",menu)
+				entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),f"Disconnect from {self.client.server}:{self.client.port}",menu)
 				entry.triggered.connect(self.disconnect)
 				f = entry.font()
 				f.setBold(True)
@@ -1699,7 +1702,7 @@ class Window(QMainWindow):
 				menu.addAction(entry)
 
 				menu.addSeparator()
-				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",menu)
+				entry = QAction(QIcon(CHANNEL_ICON),f"Leave {self.name}",menu)
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)

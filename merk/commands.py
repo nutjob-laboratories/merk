@@ -110,10 +110,13 @@ def ShowHaltDialog(msg=None):
 	if msg!= None:
 		msgBox.setInformativeText(msg)
 	msgBox.setWindowTitle("Halt")
-	msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+	default_button = msgBox.addButton(" Halt script ", QMessageBox.AcceptRole)
+	msgBox.addButton("Cancel", QMessageBox.RejectRole)
+	msgBox.setDefaultButton(default_button)
 
 	rval = msgBox.exec()
-	if rval == QMessageBox.Cancel:
+	if rval == QMessageBox.RejectRole:
 		return False
 	else:
 		return True
@@ -6081,12 +6084,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msgBox.setIconPixmap(QPixmap(QUIT_ICON))
 				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 				msgBox.setText(msg)
-				msgBox.setInformativeText("Click \"OK\" to restart, or \"Cancel\" to abort restart.")
-				msgBox.setWindowTitle(f"{config.ISSUE_COMMAND_SYMBOL}reboot")
-				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+				msgBox.setWindowTitle(f"{config.ISSUE_COMMAND_SYMBOL}window restart")
+
+				default_button = msgBox.addButton(f" Restart {APPLICATION_NAME} ", QMessageBox.AcceptRole)
+				msgBox.addButton("Cancel", QMessageBox.RejectRole)
+				msgBox.setDefaultButton(default_button)
 
 				rval = msgBox.exec()
-				if rval == QMessageBox.Cancel:
+				if rval == QMessageBox.RejectRole:
 					pass
 				else:
 					if is_running_from_pyinstaller():

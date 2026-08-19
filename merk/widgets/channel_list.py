@@ -111,16 +111,28 @@ class Window(QMainWindow):
 		self.moreAny.toggled.connect(self.doReset)
 		self.moreFifty.toggled.connect(self.doReset)
 
+		smaller_size = self.parent.app.font().pointSize() - 2
+		if smaller_size<8: smaller_size = 8
+		f = self.font()
+		f.setPointSize(smaller_size)
+		self.moreFive.setFont(f)
+		self.moreTen.setFont(f)
+		self.moreTwenty.setFont(f)
+		self.moreAny.setFont(f)
+		self.moreFifty.setFont(f)
+
 		self.reset_button = QPushButton("Reset")
 		self.reset_button.clicked.connect(self.doResetButton)
 
 		self.searchTopic = QCheckBox("Search topics",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.searchTopic.setChecked(True)
 		self.searchTopic.stateChanged.connect(self.changedSearchTopic)
+		self.searchTopic.setFont(f)
 
 		self.allTerms = QCheckBox("Search all terms",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.allTerms.setChecked(True)
 		self.allTerms.stateChanged.connect(self.changedAllTerms)
+		self.allTerms.setFont(f)
 
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
@@ -146,8 +158,14 @@ class Window(QMainWindow):
 		self.sLayout.addWidget(self.reset_button)
 		self.sLayout.setContentsMargins(1,1,1,1)
 
+		ulabel = QLabel("<b>Users:</b> ")
+		ulabel.setFont(f)
+
+		spacer = QLabel(' ')
+		spacer.setFont(f)
+
 		self.oLayout = QHBoxLayout()
-		self.oLayout.addWidget(QLabel("<b>Users:</b> "))
+		self.oLayout.addWidget(ulabel)
 		self.oLayout.addWidget(self.moreAny)
 		self.oLayout.addWidget(self.moreFive)
 		self.oLayout.addWidget(self.moreTen)
@@ -155,6 +173,7 @@ class Window(QMainWindow):
 		self.oLayout.addWidget(self.moreFifty)
 		self.oLayout.addStretch()
 		self.oLayout.addWidget(self.allTerms)
+		self.oLayout.addWidget(spacer)
 		self.oLayout.addWidget(self.searchTopic)
 		
 

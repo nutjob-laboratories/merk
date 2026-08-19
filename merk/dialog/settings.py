@@ -8118,9 +8118,13 @@ class Dialog(QDialog):
 					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 					msgBox.setText("You have changed the fallback decoding codec, and should disconnect from all servers. Disconnect from all servers?")
 					msgBox.setWindowTitle("Disconnect")
-					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+					default_button = msgBox.addButton(f" Disconnect from all servers ", QMessageBox.AcceptRole)
+					msgBox.addButton("Cancel", QMessageBox.RejectRole)
+					msgBox.setDefaultButton(default_button)
+
 					rval = msgBox.exec()
-					if rval == QMessageBox.Cancel:
+					if rval == QMessageBox.RejectRole:
 						disconnect_all_servers = False
 
 					if disconnect_all_servers: self.parent.disconnectAll()

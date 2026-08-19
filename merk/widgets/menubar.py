@@ -361,7 +361,7 @@ class wMenuButton(QPushButton):
 
 			menu.addSeparator()
 
-			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
+			entry = QAction(QIcon(CLOSE_ICON),f"Disconnect from {self.window.client.server}:{self.window.client.port}",self)
 			entry.triggered.connect(self.window.disconnect)
 			f = entry.font()
 			f.setBold(True)
@@ -402,7 +402,7 @@ class wMenuButton(QPushButton):
 
 			menu.addSeparator()
 
-			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
+			entry = QAction(QIcon(CHANNEL_ICON),f"Leave {self.window.name}",self)
 			msg = config.DEFAULT_QUIT_MESSAGE
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)

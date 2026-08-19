@@ -4,10 +4,11 @@
 
 What's new:
 
-- **The channel banlist is now useful**. Users with channel privileges can now unban users directly from the banlist, or just copy the banlist entry to the clipboard. All entries in the banlist can be unbanned at once, or copied to the clipboard.
+- **MERK is much more user friendly**. Dialogs are much clearer about how exactly they work and what they do, as are various menus.
+- **The channel banlist is now useful**. Users with channel privileges can now unban users directly from the banlist, or just copy the banlist entry to the clipboard. All entries in the banlist can be unbanned at once, or copied to the clipboard. For users without channel privileges, the banlist does not offer these options.
 - **The channel mode menu is now "prettier" for unprivileged users**. Icons have been added to the different recognized modes to give hints to the user about what the mode does.
 - **Most menus have been "cleaned up"**. This includes main application menus, and all right click menus.
-- **Subwindows can now be navigated with shortcuts**. The "Windows" menu contains specific shortcuts for IRC subwindows, and moving through the subwindow list can be done by pressing `Alt+]` to move to the "next" subwindow and `Alt+[` to move to the "previous" subwindow.
+- **Subwindows can now be navigated with shortcuts**. The "Windows" menu contains specific shortcuts for IRC subwindows, and moving through the subwindow list can be done by pressing `Alt+]` to move to the "next" subwindow and `Alt+[` to move to the "previous" subwindow. To cascade all subwindows, use "Alt+C", and to tile them, use "Alt+T".
 - **Many, *many* bugfixes**.
 
 |==============================================================================|
@@ -96,6 +97,13 @@ What's new:
 * Changed the name of the "/private" command to "/query".
 * Bugfix: the "/query" command didn't check to make sure that the target was a
   nickname and not a channel.
+* Added shortcuts for cascading and tiling subwindows.
+* Made some of the "filters" on the channel list dialog slightly smaller.
+* Bugfix: attempting to disconnect from all servers while "ask before
+  disconnect" is turned on would hide all windows whether users accepted the
+  disconnect or not.
+* Cleaned up the "ask before disconnect" dialog, as well as other dialogs, to
+  make sure that what the application is asking the user is completely clear.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

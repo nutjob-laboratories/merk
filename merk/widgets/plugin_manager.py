@@ -62,12 +62,15 @@ class Window(QMainWindow):
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
 				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				msgBox.setText("Plugin does not have an icon. Do you want to add one? Press \"Cancel\" to skip adding an icon.")
+				msgBox.setText("Plugin does not have an icon. Do you want to add one?")
 				msgBox.setWindowTitle("Add icon")
-				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+				default_button = msgBox.addButton(f" Add icon to plugin ", QMessageBox.AcceptRole)
+				msgBox.addButton("Cancel", QMessageBox.RejectRole)
+				msgBox.setDefaultButton(default_button)
 
 				rval = msgBox.exec()
-				if rval == QMessageBox.Cancel:
+				if rval == QMessageBox.RejectRole:
 					pass
 				else:
 					options = QFileDialog.Options()
@@ -164,10 +167,13 @@ class Window(QMainWindow):
 			msgBox.setText("The following files already exist. Overwrite?")
 			msgBox.setInformativeText("\n".join(ofiles))
 			msgBox.setWindowTitle("Overwrite")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			default_button = msgBox.addButton(f" Overwrite ", QMessageBox.AcceptRole)
+			msgBox.addButton("Cancel", QMessageBox.RejectRole)
+			msgBox.setDefaultButton(default_button)
 
 			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
+			if rval == QMessageBox.RejectRole:
 				pass
 			else:
 				overwrite = False
@@ -247,10 +253,13 @@ class Window(QMainWindow):
 		if len(multiple)>0:
 			msgBox.setInformativeText("\n".join(multiple))
 		msgBox.setWindowTitle("Delete plugin")
-		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		default_button = msgBox.addButton(f" Delete {pid} ", QMessageBox.AcceptRole)
+		msgBox.addButton("Cancel", QMessageBox.RejectRole)
+		msgBox.setDefaultButton(default_button)
 
 		rval = msgBox.exec()
-		if rval == QMessageBox.Cancel:
+		if rval == QMessageBox.RejectRole:
 			pass
 		else:
 

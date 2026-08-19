@@ -730,9 +730,9 @@ class Dialog(QDialog):
 		serverInfoLayout = QVBoxLayout()
 		if self.not_simplified:
 			serverInfoLayout.addWidget(self.serverDescription)
+			serverInfoLayout.addWidget(QLabel(' '))
 		else:
 			serverInfoLayout.addStretch()
-		serverInfoLayout.addWidget(QLabel(f"<center><small><b>{self.servers.count()} servers available</b></small></center>"))
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)

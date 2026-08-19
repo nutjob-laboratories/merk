@@ -193,10 +193,13 @@ class Window(QMainWindow):
 		msgBox.setWindowIcon(QIcon(LOG_ICON))
 		msgBox.setText("Are you sure you want to back up this log?")
 		msgBox.setWindowTitle("Back up log for "+item.channel+" ("+item.network+")")
-		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		default_button = msgBox.addButton(" Back up log ", QMessageBox.AcceptRole)
+		msgBox.addButton("Cancel", QMessageBox.RejectRole)
+		msgBox.setDefaultButton(default_button)
 
 		rval = msgBox.exec()
-		if rval != QMessageBox.Cancel:
+		if rval != QMessageBox.RejectRole:
 
 			options = QFileDialog.Options()
 			options |= QFileDialog.DontUseNativeDialog
@@ -221,10 +224,13 @@ class Window(QMainWindow):
 		msgBox.setWindowIcon(QIcon(LOG_ICON))
 		msgBox.setText("Are you sure you want to delete this log?")
 		msgBox.setWindowTitle("Delete log for "+item.channel+" ("+item.network+")")
-		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		default_button = msgBox.addButton(" Delete log ", QMessageBox.AcceptRole)
+		msgBox.addButton("Cancel", QMessageBox.RejectRole)
+		msgBox.setDefaultButton(default_button)
 
 		rval = msgBox.exec()
-		if rval != QMessageBox.Cancel:
+		if rval != QMessageBox.RejectRole:
 			self.packlist.takeItem(self.packlist.row(item))
 			os.remove(item.file)
 
