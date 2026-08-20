@@ -1913,7 +1913,6 @@ class Merk(QMainWindow):
 			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
 
-
 	def gotTime(self,client,server,time):
 		w = self.getServerWindow(client)
 		if w:
@@ -1949,6 +1948,11 @@ class Merk(QMainWindow):
 
 	def nickChanged(self,client):
 		plugins.call(self,"nick",client=client,nickname=client.nickname)
+
+		write_to_server_window = True
+		wid = None
+		already_wrote = False
+
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -1957,16 +1961,16 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					c.client.sendLine("NAMES "+c.name)
 
-		# Write a notification to the current window
-		write_to_server_window = True
-		wid = None
-
-		if self.current_window!=None:
-			if hasattr(c,"client"):
-				if self.current_window.client == client:
-					t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
-					self.current_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					wid = self.current_window.subwindow_id
+			if self.current_window!=None:
+				if hasattr(c,"client") and hasattr(self.current_window,"client"):
+					if self.current_window.client == client:
+						if hasattr(self.current_window,"window_type"):
+							if self.current_window.window_type==SERVER_WINDOW or self.current_window.window_type==CHANNEL_WINDOW or self.current_window.window_type==PRIVATE_WINDOW:
+								if not already_wrote:
+									t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
+									self.current_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+									wid = self.current_window.subwindow_id
+									already_wrote = True
 
 		# Write a notification to the server window,
 		# but *only* if the current window is *not*
@@ -2000,7 +2004,6 @@ class Merk(QMainWindow):
 						if c.name==channel:
 							c.setTopic(newTopic)
 							newTopic = html.escape(newTopic)
-							w = c
 							if user!='':
 								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
 								c.writeText(t,config.LOG_CHANNEL_TOPICS)
@@ -2174,7 +2177,7 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 		if client.nickname in argument:
-			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
+			if config.FLASH_SYSTRAY_MODE: self.show_notifications(udisplay+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
 			if config.SOUND_NOTIFICATIONS:
 				if config.SOUND_NOTIFICATION_MODE:
@@ -2219,7 +2222,7 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 		if client.nickname in argument:
-			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
+			if config.FLASH_SYSTRAY_MODE: self.show_notifications(udisplay+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
 
 			if config.SOUND_NOTIFICATIONS:
 				if config.SOUND_NOTIFICATION_MODE:
@@ -5181,10 +5184,10 @@ class Merk(QMainWindow):
 					file_paths.append(os.path.join(root, file))
 			file_paths = list(set(file_paths))
 			if len(file_paths)>0:
-				sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Installed Scripts")
+				sm = self.toolsMenu.addMenu(QIcon(COMMAND_ICON),"Installed Scripts")
 
 				for f in file_paths:
-					entry = QAction(QIcon(COMMAND_ICON),f"{os.path.basename(f)}",self)
+					entry = QAction(QIcon(SCRIPT_ICON),f"{os.path.basename(f)}",self)
 					entry.triggered.connect(lambda state,h=f: self.openEditor(h))
 					sm.addAction(entry)
 
@@ -5192,13 +5195,13 @@ class Merk(QMainWindow):
 				sm = self.toolsMenu.addMenu(QIcon(CONNECT_ICON),"Connection Scripts")
 
 				for f in user.COMMANDS:
-					entry = QAction(QIcon(COMMAND_ICON),f"{f}",self)
+					entry = QAction(QIcon(SCRIPT_ICON),f"{f}",self)
 					entry.triggered.connect(lambda state,h=f: self.openEditorConnect(h))
 					sm.addAction(entry)
 
 		if config.ENABLE_PLUGINS:
 			if len(plugins.PLUGINS)>0:
-				sm = self.toolsMenu.addMenu(QIcon(PLUGIN_ICON),"Installed Plugins")
+				sm = self.toolsMenu.addMenu(QIcon(PYTHON_ICON),"Installed Plugins")
 				for obj in plugins.PLUGINS:
 					filename = obj._filename
 					basename = obj._basename
@@ -5208,7 +5211,7 @@ class Merk(QMainWindow):
 					VERSION = obj.VERSION
 					icon = obj._icon
 
-					if icon==None: icon = PYTHON_ICON
+					if icon==None: icon = PLUGIN_ICON
 
 					if plugins.paused(obj):
 						entry = QAction(QIcon(icon),f"Edit {NAME} {VERSION} (Paused)",self)
@@ -5568,7 +5571,7 @@ class Merk(QMainWindow):
 						f = entry.font()
 						f.setItalic(True)
 						entry.setFont(f)
-					entry.setShortcut(QKeySequence(f"Alt+{counter}"))
+					if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Alt+{counter}"))
 					self.windowsMenu.addAction(entry)
 
 		# Step through IRC subwindows
@@ -5599,7 +5602,7 @@ class Merk(QMainWindow):
 						f = entry.font()
 						f.setItalic(True)
 						entry.setFont(f)
-					entry.setShortcut(QKeySequence(f"Alt+{counter}"))
+					if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Alt+{counter}"))
 					self.windowsMenu.addAction(entry)
 
 		# Step through channel list windows
@@ -5620,7 +5623,11 @@ class Merk(QMainWindow):
 					title = f"Channel list for {target}"
 					entry = QAction(QIcon(LIST_ICON),title,self)
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
-					entry.setShortcut(QKeySequence(f"Ctrl+Alt+{counter}"))
+					if not window.isVisible():
+						f = entry.font()
+						f.setItalic(True)
+						entry.setFont(f)
+					if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Ctrl+Alt+{counter}"))
 					self.windowsMenu.addAction(entry)
 
 		# List all editor subwindows
@@ -5636,7 +5643,7 @@ class Merk(QMainWindow):
 						icon = PYTHON_ICON
 				entry = QAction(QIcon(icon),c.name,self)
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
-				entry.setShortcut(QKeySequence(f"Shift+Alt+{counter}"))
+				if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Shift+Alt+{counter}"))
 				self.windowsMenu.addAction(entry)
 
 		# The log manager, if it's open
@@ -5648,7 +5655,7 @@ class Merk(QMainWindow):
 				else:
 					entry = QAction(QIcon(LOG_ICON),"Logs",self)
 				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
-				entry.setShortcut(QKeySequence(f"Alt+L"))
+				if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Alt+L"))
 				self.windowsMenu.addAction(entry)
 
 		# The README subwindow, if it's open
@@ -5657,42 +5664,29 @@ class Merk(QMainWindow):
 				c = self.readme_window.widget()
 				entry = QAction(QIcon(README_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=self.readme_window: self.showSubWindow(u))
-				entry.setShortcut(QKeySequence(f"Alt+R"))
+				if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Alt+R"))
 				self.windowsMenu.addAction(entry)
-
-		# Plugin consoles
-		for window in self.MDI.subWindowList():
-			if hasattr(window,"widget"):
-				c = window.widget()
-				# Plugin consoles
-				if c.window_type==PLUGIN_CONSOLE:
-					icon = PLUGIN_ICON
-					if c.plugin._icon!=None: icon = c.plugin._icon
-					title = window.windowTitle()
-					entry = QAction(QIcon(icon),title,self)
-					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
-					self.windowsMenu.addAction(entry)
 
 		self.windowsMenu.addSeparator()
 
 		entry3 = QAction(QIcon(NEXT_ICON),"Next subwindow",self)
 		entry3.triggered.connect(self.MDI.activateNextSubWindow)
-		entry3.setShortcut(QKeySequence(f"Alt+]"))
+		if config.WINDOWS_MENU_MANAGEMENT_SHORTCUTS: entry3.setShortcut(QKeySequence(f"Alt+]"))
 		self.windowsMenu.addAction(entry3)
 
 		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous subwindow",self)
 		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
-		entry4.setShortcut(QKeySequence(f"Alt+["))
+		if config.WINDOWS_MENU_MANAGEMENT_SHORTCUTS: entry4.setShortcut(QKeySequence(f"Alt+["))
 		self.windowsMenu.addAction(entry4)
 
 		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade subwindows",self)
 		entry1.triggered.connect(self.MDI.cascadeSubWindows)
-		entry1.setShortcut(QKeySequence(f"Alt+C"))
+		if config.WINDOWS_MENU_MANAGEMENT_SHORTCUTS: entry1.setShortcut(QKeySequence(f"Alt+C"))
 		self.windowsMenu.addAction(entry1)
 
 		entry2 = QAction(QIcon(TILE_ICON),"Tile subwindows",self)
 		entry2.triggered.connect(self.MDI.tileSubWindows)
-		entry2.setShortcut(QKeySequence(f"Alt+T"))
+		if config.WINDOWS_MENU_MANAGEMENT_SHORTCUTS: entry2.setShortcut(QKeySequence(f"Alt+T"))
 		self.windowsMenu.addAction(entry2)
 
 		if len(self.MDI.subWindowList())==0:

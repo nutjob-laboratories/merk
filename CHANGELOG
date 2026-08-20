@@ -8,7 +8,7 @@ What's new:
 - **The channel banlist is now useful**. Users with channel privileges can now unban users directly from the banlist, or just copy the banlist entry to the clipboard. All entries in the banlist can be unbanned at once, or copied to the clipboard. For users without channel privileges, the banlist does not offer these options.
 - **The channel mode menu is now "prettier" for unprivileged users**. Icons have been added to the different recognized modes to give hints to the user about what the mode does.
 - **Most menus have been "cleaned up"**. This includes main application menus, and all right click menus.
-- **Subwindows can now be navigated with shortcuts**. The "Windows" menu contains specific shortcuts for IRC subwindows, and moving through the subwindow list can be done by pressing `Alt+]` to move to the "next" subwindow and `Alt+[` to move to the "previous" subwindow. To cascade all subwindows, use "Alt+C", and to tile them, use "Alt+T". Shortcuts have also been added for the Log Manager subwindow (`Alt+L`), channel list subwindows (`Ctrl+Alt+NUMBER`), and the README subwindow (`Alt+R`).
+- **Subwindows can now be navigated with shortcuts**. The "Windows" menu contains specific shortcuts for IRC subwindows, and moving through the subwindow list can be done by pressing `Alt+]` to move to the "next" subwindow and `Alt+[` to move to the "previous" subwindow. To cascade all subwindows, use "Alt+C", and to tile them, use "Alt+T". Shortcuts have also been added for the Log Manager subwindow (`Alt+L`), channel list subwindows (`Ctrl+Alt+NUMBER`), and the README subwindow (`Alt+R`). All of these shortcuts can be enabled (the default) or disabled from the "Settings" dialog or with the `/config` command.
 - **Various server status controls have been added to the "Windows" menu**. The ability to toggle "away/back" statuses, to change the user's nickname, and to join a channel have been added to the "Windows" menu. Users can toggle all of these entries in the "Settings" dialog.
 - **Many, *many* bugfixes**.
 
@@ -118,6 +118,16 @@ What's new:
   the "Windows" menu.
 * Added an option to the channel list dialog to filter channels by 100+ user
   count.
+* Added options to en/disable the subwindow and subwindow management shortcuts
+  in the "Windows" menu. By default, both are enabled.
+* Removed plugin consoles from the "Windows" subwindow list.
+* Bugfix: if a console window appeared before any other window, the client
+  could crash on connection.
+* Bugfix: calling /nick could "confuse" the client.
+* Bugfix: systray notifications now follow the "show whole nick+hostmask"
+  setting in mode setting notifications.
+* Changed the script editor icon.
+* Changed the log manager icon.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

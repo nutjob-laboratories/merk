@@ -3154,7 +3154,7 @@ class Dialog(QDialog):
 			self.menubarTop.setEnabled(False)
 			self.menubarBold.setEnabled(False)
 
-		self.showChannelList = QCheckBox(f"Channel list options",self)
+		self.showChannelList = QCheckBox(f"Channel list",self)
 		if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU: self.showChannelList.setChecked(True)
 		self.showChannelList.stateChanged.connect(self.changedSetting)
 		
@@ -3182,6 +3182,14 @@ class Dialog(QDialog):
 		if config.SHOW_JOIN_IN_WINDOWS_MENU: self.showWinJoin.setChecked(True)
 		self.showWinJoin.stateChanged.connect(self.changedSetting)
 
+		self.showWinShortcuts = QCheckBox(f"Subwindow shortcuts",self)
+		if config.WINDOWS_MENU_WINDOW_SHORTCUTS: self.showWinShortcuts.setChecked(True)
+		self.showWinShortcuts.stateChanged.connect(self.changedSetting)
+
+		self.showWinManShort = QCheckBox(f"Subwindow management shortcuts",self)
+		if config.WINDOWS_MENU_MANAGEMENT_SHORTCUTS: self.showWinManShort.setChecked(True)
+		self.showWinManShort.stateChanged.connect(self.changedSetting)
+
 		menu3Layout = QHBoxLayout()
 		menu3Layout.addWidget(self.showChannelList)
 		menu3Layout.addWidget(self.showLogsInWindows)
@@ -3193,6 +3201,10 @@ class Dialog(QDialog):
 		menu5Layout = QHBoxLayout()
 		menu5Layout.addWidget(self.showWinAway)
 		menu5Layout.addWidget(self.showWinNick)
+
+		menu6Layout = QHBoxLayout()
+		menu6Layout.addWidget(self.showWinJoin)
+		menu6Layout.addWidget(self.showWinShortcuts)
 
 		menu1Layout = QHBoxLayout()
 		menu1Layout.addStretch()
@@ -3227,7 +3239,8 @@ class Dialog(QDialog):
 		menuLayout.addLayout(menu3Layout)
 		menuLayout.addLayout(menu4Layout)
 		menuLayout.addLayout(menu5Layout)
-		menuLayout.addWidget(self.showWinJoin)
+		menuLayout.addLayout(menu6Layout)
+		menuLayout.addWidget(self.showWinManShort)
 		menuLayout.addStretch()
 
 		self.menuPage.setLayout(menuLayout)
@@ -7150,7 +7163,7 @@ class Dialog(QDialog):
 		self.presSpaces.setEnabled(False)
 
 		encodings_list = sorted({
-			name for _, name, ispkg in pkgutil.iter_modules(encodings.__path__)
+			name.replace('_', '-') for _, name, ispkg in pkgutil.iter_modules(encodings.__path__)
 			if not ispkg
 		})
 
@@ -7234,11 +7247,11 @@ class Dialog(QDialog):
 		advancedLayout.setSpacing(0)
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
+		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(self.advanceSection)
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
 		advancedLayout.addLayout(asetLayout)
-		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(self.decodeSection)
 		advancedLayout.addWidget(self.codecDescription)
 		advancedLayout.addWidget(QLabel(' '))
@@ -7783,6 +7796,8 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_IN_WINDOWS_MENU = self.showWinAway.isChecked()
 		config.SHOW_NICK_IN_WINDOWS_MENU = self.showWinNick.isChecked()
 		config.SHOW_JOIN_IN_WINDOWS_MENU = self.showWinJoin.isChecked()
+		config.WINDOWS_MENU_WINDOW_SHORTCUTS = self.showWinShortcuts.isChecked()
+		config.WINDOWS_MENU_MANAGEMENT_SHORTCUTS = self.showWinManShort.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

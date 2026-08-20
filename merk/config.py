@@ -484,9 +484,13 @@ SHOW_CHANNEL_MODES = True
 SHOW_AWAY_IN_WINDOWS_MENU = True
 SHOW_NICK_IN_WINDOWS_MENU = True
 SHOW_JOIN_IN_WINDOWS_MENU = True
+WINDOWS_MENU_WINDOW_SHORTCUTS = True
+WINDOWS_MENU_MANAGEMENT_SHORTCUTS = True
 
 def build_settings():
 	settings = {
+		"subwindow_management_shortcuts_in_windows_menu": WINDOWS_MENU_MANAGEMENT_SHORTCUTS,
+		"subwindow_shortcuts_in_windows_menu": WINDOWS_MENU_WINDOW_SHORTCUTS,
 		"show_join_in_windows_menu": SHOW_JOIN_IN_WINDOWS_MENU,
 		"show_nickname_in_windows_menu": SHOW_NICK_IN_WINDOWS_MENU,
 		"show_away_control_in_windows_menu": SHOW_AWAY_IN_WINDOWS_MENU,
@@ -930,6 +934,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "subwindow_management_shortcuts_in_windows_menu" in settings:
+		settings["subwindow_management_shortcuts_in_windows_menu"] = WINDOWS_MENU_MANAGEMENT_SHORTCUTS
+	if not "subwindow_shortcuts_in_windows_menu" in settings:
+		settings["subwindow_shortcuts_in_windows_menu"] = WINDOWS_MENU_WINDOW_SHORTCUTS
 	if not "show_join_in_windows_menu" in settings:
 		settings["show_join_in_windows_menu"] = SHOW_JOIN_IN_WINDOWS_MENU
 	if not "show_nickname_in_windows_menu" in settings:
@@ -2248,6 +2256,8 @@ def load_settings(filename):
 	global SHOW_AWAY_IN_WINDOWS_MENU
 	global SHOW_NICK_IN_WINDOWS_MENU
 	global SHOW_JOIN_IN_WINDOWS_MENU
+	global WINDOWS_MENU_WINDOW_SHORTCUTS
+	global WINDOWS_MENU_MANAGEMENT_SHORTCUTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2257,6 +2267,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWS_MENU_MANAGEMENT_SHORTCUTS = settings["subwindow_management_shortcuts_in_windows_menu"]
+		WINDOWS_MENU_WINDOW_SHORTCUTS = settings["subwindow_shortcuts_in_windows_menu"]
 		SHOW_JOIN_IN_WINDOWS_MENU = settings["show_join_in_windows_menu"]
 		SHOW_NICK_IN_WINDOWS_MENU = settings["show_nickname_in_windows_menu"]
 		SHOW_AWAY_IN_WINDOWS_MENU = settings["show_away_control_in_windows_menu"]
