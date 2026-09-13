@@ -2400,17 +2400,17 @@ class Window(QMainWindow):
 	def menuBanUser(self,nick,hostmask):
 		if hostmask!=None:
 			h = hostmask.split('@')[1]
-			banmask = "*@"+h
+			banmask = f"*@{h}"
 		else:
-			banmask = nick
+			banmask = f"{nick}@*"
 		self.client.mode(self.name,True,"b",None,None,banmask)
 
 	def menuKickBackUser(self,nick,hostmask):
 		if hostmask!=None:
 			h = hostmask.split('@')[1]
-			banmask = "*@"+h
+			banmask = f"*@{h}"
 		else:
-			banmask = nick
+			banmask = f"{nick}@*"
 		self.client.mode(self.name,True,"b",None,None,banmask)
 		self.client.kick(self.name,nick)
 

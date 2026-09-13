@@ -7,6 +7,8 @@ What's new:
 - **Many icons have been changed**. The icons for "open file", "folder", "bold" and "italics", "new file", "save", and "save as" are all new, from the public domain Tango icon set.
 - **Log snippets can be copied from the Log Manager with color/formatting stripped**. Use the "Ctrl+X" shortcut in the Log Manager to copy text from the log viewer with all IRC colors/formatting stripped from the text.
 - **Results from `/ctcp PING` now show the round-trip time the request took in milliseconds**. Showing a user's full username (`nickname!hostmask`) in CTCP replies can now be toggled; this is turned off by default, and will only display the user's nickname.
+- **The "Windows" menu has been streamlined**.
+- **Many more IRC networks now have "known" websites**. The network website URLs will appear in server information menus, and in status bars. Nearly all of the "built-in" server networks now have a URL, if we could find one. 
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -60,6 +62,13 @@ What's new:
 * CTCP replies no longer display the user's "full" username (nick!hostmask).
 * Added an option to toggle showing "full" user data in CTCP replies to the
   "Settings" dialog.
+* Server submenus in the "Windows" menu now don't reproduce a per-server 
+  subwindow list when only one server is connected to. All the other options are
+  there (as set in the "Settings" dialog/config file).
+* Added a link to every network in the "built-in" server list that I could find.
+* Changed how users are banned from channels via the right click userlist menu;
+  if the hostmask is not known, the user will be banned via nickname, with the
+  banmask entry being "NICK@*".
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
