@@ -258,6 +258,49 @@ class Merk(QMainWindow):
 		# Windowbar
 		self.initWindowbar()
 
+		# Application shortcuts
+		self.new_connection_shortcut = QShortcut(QKeySequence("Ctrl+N"), self)
+		self.new_connection_shortcut.activated.connect(self.connectMainMenu)
+
+		self.log_manager_shortcut = QShortcut(QKeySequence("Ctrl+L"), self)
+		self.log_manager_shortcut.activated.connect(self.menuExportLog)
+
+		self.style_shortcut = QShortcut(QKeySequence("Ctrl+E"), self)
+		self.style_shortcut.activated.connect(self.menuEditStyle)
+
+		self.hotkey_shortcut = QShortcut(QKeySequence("Ctrl+H"), self)
+		self.hotkey_shortcut.activated.connect(self.openHotkeys)
+
+		self.ignore_shortcut = QShortcut(QKeySequence("Ctrl+I"), self)
+		self.ignore_shortcut.activated.connect(self.openIgnore)
+
+		if not config.APPLICATION_SHORTCUTS:
+			self.style_shortcut.setEnabled(False)
+			self.hotkey_shortcut.setEnabled(False)
+			self.ignore_shortcut.setEnabled(False)
+			self.new_connection_shortcut.setEnabled(False)
+			self.log_manager_shortcut.setEnabled(False)
+		else:
+			self.new_connection_shortcut.setEnabled(True)
+			self.log_manager_shortcut.setEnabled(True)
+
+			if config.ENABLE_STYLE_EDITOR:
+				self.style_shortcut.setEnabled(True)
+			else:
+				self.style_shortcut.setEnabled(False)
+
+			if config.ENABLE_HOTKEYS:
+				self.hotkey_shortcut.setEnabled(True)
+			else:
+				self.hotkey_shortcut.setEnabled(False)
+
+			if config.ENABLE_IGNORE:
+				self.ignore_shortcut.setEnabled(True)
+			else:
+				self.ignore_shortcut.setEnabled(False)
+
+		# self.new_connection_shortcut.setEnabled(False)
+
 		# Tips 'n Tricks
 		if config.SHOW_TIPS_AT_START: self.openTips()
 
@@ -4708,6 +4751,14 @@ class Merk(QMainWindow):
 						c.force_close = True
 						c.close()
 
+	def settingsShortcuts(self):
+		if config.APPLICATION_SHORTCUTS:
+			config.APPLICATION_SHORTCUTS = False
+		else:
+			config.APPLICATION_SHORTCUTS = True
+		self.save_config()
+		self.buildSettingsMenu()
+
 	def settingsScripting(self):
 		if config.ENABLE_SCRIPTING_ENGINE:
 			config.ENABLE_SCRIPTING_ENGINE = False
@@ -4986,16 +5037,83 @@ class Merk(QMainWindow):
 		self.buildSettingsMenu()
 
 	def menuSetWidget(self,newstyle):
-		self.app.setStyle(newstyle)
-		font = self.app.font()
-		self.app.setFont(font)
-		self.setAllFont(font)
-		if config.QT_WINDOW_STYLE:
-			config.QT_WINDOW_STYLE = newstyle
-		else:
-			config.QT_WINDOW_STYLE = newstyle
-		self.save_config()
-		self.buildSettingsMenu()
+		do_reconnect = False
+		msgBox = QMessageBox()
+		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
+		msgBox.setText(f"Apply widget style <b>{newstyle}</b> now?")
+		if self.connected_to_something:
+			reconnect = QCheckBox("Reconnect to all servers")
+			msgBox.setCheckBox(reconnect)
+		msgBox.setWindowTitle("Widget style")
+
+		default_button = msgBox.addButton(" Apply && Restart ", QMessageBox.YesRole)
+		apply_button = msgBox.addButton(" Apply ", QMessageBox.NoRole)
+		cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
+
+		msgBox.setDefaultButton(default_button)
+
+		rval = msgBox.exec_()
+		if self.connected_to_something: do_reconnect = reconnect.isChecked()
+		if msgBox.clickedButton() == cancel_button:
+			return
+		elif msgBox.clickedButton() == apply_button:
+			self.app.setStyle(newstyle)
+			font = self.app.font()
+			self.app.setFont(font)
+			self.setAllFont(font)
+			if config.QT_WINDOW_STYLE:
+				config.QT_WINDOW_STYLE = newstyle
+			else:
+				config.QT_WINDOW_STYLE = newstyle
+			self.save_config()
+			self.buildSettingsMenu()
+		elif msgBox.clickedButton() == default_button:
+			if do_reconnect:
+
+				config.QT_WINDOW_STYLE = newstyle
+				self.save_config()
+
+				listOfConnections = {}
+				for i in irc.CONNECTIONS:
+					add_to_list = True
+					for j in self.hiding:
+						if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+					for j in self.quitting:
+						if irc.CONNECTIONS[i].client_id == j: add_to_list = False
+					if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+
+				args = []
+				if not is_running_from_pyinstaller(): args.append(sys.argv[0])
+				for i in listOfConnections:
+					entry = listOfConnections[i]
+
+					if entry.kwargs["ssl"]:
+						args.append("-S")
+						args.append(f"{entry.server}:{entry.port}")
+					else:
+						args.append("-C")
+						args.append(f"{entry.server}:{entry.port}")
+
+				if self.is_hidden: self.toggleHide()
+				if is_running_from_pyinstaller():
+					subprocess.Popen([sys.executable] + args)
+					self.close()
+					app.exit()
+				else:
+					os.execl(sys.executable, sys.executable,*args)
+			else:
+
+				config.QT_WINDOW_STYLE = newstyle
+				self.save_config()
+
+				if self.is_hidden: self.toggleHide()
+				if is_running_from_pyinstaller():
+					subprocess.Popen([sys.executable] + ["-R"])
+					self.close()
+					app.exit()
+				else:
+					os.execl(sys.executable, sys.executable,sys.argv[0],"-R")
 
 	def menuSetOrder(self,order):
 		config.SET_SUBWINDOW_ORDER = order
@@ -5228,6 +5346,18 @@ class Merk(QMainWindow):
 
 		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
 
+
+
+		if config.APPLICATION_SHORTCUTS:
+			entry = QAction(QIcon(self.checked_icon),"Enable shortcuts", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable shortcuts", self)
+		entry.triggered.connect(self.settingsShortcuts)
+		sm.addAction(entry)
+
+
+
+
 		if config.ENABLE_SCRIPTING_ENGINE:
 			entry = QAction(QIcon(self.checked_icon),"Enable scripting", self)
 		else:
@@ -5409,19 +5539,31 @@ class Merk(QMainWindow):
 		self.toolsMenu.clear()
 
 		if config.ENABLE_STYLE_EDITOR:
-			entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style Editor','Edit text styles&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
+			if not config.APPLICATION_SHORTCUTS:
+				entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style Editor','Edit text styles&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
+			else:
+				entry = widgets.ExtendedMenuItemShortcut(self,STYLE_MENU_ICON,'Style Editor','Edit text styles&nbsp;&nbsp;','Ctrl+E',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
 			self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_HOTKEYS:
-			entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, edit, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
+			if not config.APPLICATION_SHORTCUTS:
+				entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, edit, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
+			else:
+				entry = widgets.ExtendedMenuItemShortcut(self,HOTKEY_MENU_ICON,'Hotkeys','Create, edit, and save&nbsp;&nbsp;','Ctrl+H',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
 			self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_IGNORE:
-			entry = widgets.ExtendedMenuItem(self,HIDE_MENU_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
+			if not config.APPLICATION_SHORTCUTS:
+				entry = widgets.ExtendedMenuItem(self,HIDE_MENU_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
+			else:
+				entry = widgets.ExtendedMenuItemShortcut(self,HIDE_MENU_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;','Ctrl+I',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
 			self.toolsMenu.addAction(entry)
 
 		if(len(os.listdir(logs.LOG_DIRECTORY))!=0):
-			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Logs','View, manage, or export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+			if not config.APPLICATION_SHORTCUTS:
+				entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Logs','View, manage, or export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+			else:
+				entry = widgets.ExtendedMenuItemShortcut(self,LOG_MENU_ICON,'Logs','View, manage, or export&nbsp;&nbsp;','Ctrl+L',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 			self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_SCRIPTING_ENGINE:
@@ -6074,7 +6216,10 @@ class Merk(QMainWindow):
 
 		self.mainMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,CONNECT_MENU_ICON,'Connect','Connect to an IRC server  ',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
+		if not config.APPLICATION_SHORTCUTS:
+			entry = widgets.ExtendedMenuItem(self,CONNECT_MENU_ICON,'Connect','Connect to an IRC server  ',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
+		else:
+			entry = widgets.ExtendedMenuItemShortcut(self,CONNECT_MENU_ICON,'Connect','Connect to an IRC server  ','Ctrl+N',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
 		self.mainMenu.addAction(entry)
 
 		windows = self.getAllServerWindows()
@@ -6128,6 +6273,7 @@ class Merk(QMainWindow):
 		f = entry.font()
 		f.setBold(True)
 		entry.setFont(f)
+		# if config.APPLICATION_SHORTCUTS: entry.setShortcut("Ctrl+Shift+Q")
 		self.mainMenu.addAction(entry)
 
 	def menuDocked(self,is_floating):

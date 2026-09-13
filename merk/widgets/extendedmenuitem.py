@@ -30,6 +30,64 @@ from PyQt5 import QtCore
 
 from ..resources import *
 
+def ExtendedMenuItemShortcut(self,icon,title,description,shortcut,icon_size,func):
+
+	erkmenuLabel = MenuLabel( menuHtmlShortcut(icon,title,description,shortcut,icon_size) )
+	erkmenuAction = QWidgetAction(self)
+	erkmenuAction.setDefaultWidget(erkmenuLabel)
+	erkmenuLabel.clicked.connect(func)
+
+	return erkmenuAction
+
+def menuHtml2(icon,text,description,icon_size):
+	return f'''
+<table style="width: 100%" border="0" cellspacing="2" cellpadding="0">
+	  <tbody>
+		<tr>
+		  <td style="text-align: center; vertical-align: middle;">&nbsp;<img src="{icon}" width="{icon_size}" height="{icon_size}">&nbsp;</td>
+		  <td>
+			<table style="width: 100%" border="0">
+			  <tbody>
+				<tr>
+				  <td style="font-weight: bold;"><big>{text}</big></td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;">{description}</td>
+				</tr>
+			  </tbody>
+			</table>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	'''
+
+def menuHtmlShortcut(icon,text,description,shortcut,icon_size):
+	return f'''
+<table style="width: 100%" border="0" cellspacing="2" cellpadding="0">
+	  <tbody>
+		<tr>
+		  <td style="text-align: center; vertical-align: middle;">&nbsp;<img src="{icon}" width="{icon_size}" height="{icon_size}">&nbsp;</td>
+		  <td>
+			<table style="width: 100%" border="0">
+			  <tbody>
+				<tr>
+				  <td style="font-weight: bold;"><big>{text}</big></td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;">{description}</td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;"><small><i>{shortcut}</i></small></td>
+				</tr>
+			  </tbody>
+			</table>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	'''
+
 def menuHtml(icon,text,description,icon_size):
 	return f'''
 <table style="width: 100%" border="0" cellspacing="2" cellpadding="0">
@@ -250,7 +308,7 @@ class DisabledMenuLabel(QLabel):
 
 def ExtendedMenuItem(self,icon,title,description,icon_size,func):
 
-	erkmenuLabel = MenuLabel( menuHtml(icon,title,description,icon_size) )
+	erkmenuLabel = MenuLabel( menuHtml2(icon,title,description,icon_size) )
 	erkmenuAction = QWidgetAction(self)
 	erkmenuAction.setDefaultWidget(erkmenuLabel)
 	erkmenuLabel.clicked.connect(func)

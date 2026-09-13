@@ -371,7 +371,7 @@ class Dialog(QDialog):
 		self.user_style.qssChanged.connect(self.qssChanged)
 		self.server_style.qssChanged.connect(self.qssChanged)
 
-		self.chat = QTextBrowser(self)
+		self.chat = NoScrollTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
 		self.chat.setLineWrapMode(QTextEdit.NoWrap)
 		self.chat.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

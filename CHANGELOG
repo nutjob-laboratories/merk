@@ -9,6 +9,7 @@ What's new:
 - **Results from `/ctcp PING` now show the round-trip time the request took in milliseconds**. Showing a user's full username (`nickname!hostmask`) in CTCP replies can now be toggled; this is turned off by default, and will only display the user's nickname.
 - **The "Windows" menu has been streamlined**.
 - **Many more IRC networks now have "known" websites**. The network website URLs will appear in server information menus, and in status bars. Nearly all of the "built-in" server networks now have a URL, if we could find one. 
+- **All new application shortcuts**. Press `Ctrl+N` to open the connection dialog, `Ctrl+L` to open the Log Manager, `Ctrl+E` to open the text style editor, `Ctrl+I` to open the Ignore Manager, and `Ctrl+H` to open the Hotkey Manager. The shortcuts are turned on by default; they can be turned off in the "Settings" dialog, in the "Settings" menu, or with the `/config` command.
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -66,9 +67,20 @@ What's new:
   subwindow list when only one server is connected to. All the other options are
   there (as set in the "Settings" dialog/config file).
 * Added a link to every network in the "built-in" server list that I could find.
-* Changed how users are banned from channels via the right click userlist menu;
-  if the hostmask is not known, the user will be banned via nickname, with the
-  banmask entry being "NICK@*".
+* The "cleanlooks" Qt widget style is now allowed for use.
+* Added a message box that asks the user if they want to restart the
+  application when they change the Qt widget style. Much like with other message
+  boxes, the option to reconnect to all currently connected servers on restart
+  is offered to the user.
+* Added application shortcuts to bring up the connection dialog, log manager,
+  style editor, hotkey manager, and ignore manager. This option can be turned
+  off in the Settings dialog, or by using "/config" to set
+  "application_shortcuts" to "false". The shortcuts, if enabled, are shown in
+  menu entries.
+* Bugfix: the chat display in the text style editor could be scrolled.
+* Added a toggle for application shortcuts to the "Settings" menu, in the
+  "Tools" submenu.
+* Changed the font size in main menu entries.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

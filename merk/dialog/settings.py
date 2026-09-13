@@ -2703,8 +2703,13 @@ class Dialog(QDialog):
 		if config.SAVE_MAIN_WINDOW_LOCATION: self.saveLocation.setChecked(True)
 		self.saveLocation.stateChanged.connect(self.changedSetting)
 
+		self.appShortcuts = QCheckBox("Application shortcuts",self)
+		if config.APPLICATION_SHORTCUTS: self.appShortcuts.setChecked(True)
+		self.appShortcuts.stateChanged.connect(self.changedSetting)
+
 		misLayout = QVBoxLayout()
 		misLayout.setSpacing(0)
+		misLayout.addWidget(self.appShortcuts)
 		misLayout.addWidget(self.simpleConnect)
 		misLayout.addWidget(self.showConnect)
 		misLayout.addWidget(self.noConnectLogo)
@@ -7912,6 +7917,7 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_IN_WINDOWS_MENU = self.showAwayControls.isChecked()
 		config.SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU = self.showJoinNick.isChecked()
 		config.SHOW_FULL_USER_IN_CTCP_REPLY = self.showFullUser.isChecked()
+		config.APPLICATION_SHORTCUTS = self.appShortcuts.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True
@@ -8243,6 +8249,30 @@ class Dialog(QDialog):
 							c.refreshHighlighter()
 
 			irc.reset_environment()
+
+			if not config.APPLICATION_SHORTCUTS:
+				self.parent.style_shortcut.setEnabled(False)
+				self.parent.hotkey_shortcut.setEnabled(False)
+				self.parent.ignore_shortcut.setEnabled(False)
+				self.parent.new_connection_shortcut.setEnabled(False)
+				self.parent.log_manager_shortcut.setEnabled(False)
+			else:
+				self.parent.new_connection_shortcut.setEnabled(True)
+				self.parent.log_manager_shortcut.setEnabled(True)
+				if config.ENABLE_STYLE_EDITOR:
+					self.parent.style_shortcut.setEnabled(True)
+				else:
+					self.parent.style_shortcut.setEnabled(False)
+
+				if config.ENABLE_HOTKEYS:
+					self.parent.hotkey_shortcut.setEnabled(True)
+				else:
+					self.parent.hotkey_shortcut.setEnabled(False)
+
+				if config.ENABLE_IGNORE:
+					self.parent.ignore_shortcut.setEnabled(True)
+				else:
+					self.parent.ignore_shortcut.setEnabled(False)
 
 			w = self.parent.MDI.activeSubWindow()
 			self.parent.merk_subWindowActivated(w)

@@ -491,9 +491,11 @@ SHOW_RESTART_IN_SETTINGS_MENU = False
 SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU = True
 SHOW_AWAY_IN_WINDOWS_MENU = True
 SHOW_FULL_USER_IN_CTCP_REPLY = False
+APPLICATION_SHORTCUTS = True
 
 def build_settings():
 	settings = {
+		"application_shortcuts": APPLICATION_SHORTCUTS,
 		"show_full_user_data_in_ctcp_reply": SHOW_FULL_USER_IN_CTCP_REPLY,
 		"show_join_and_nick_in_windows_menu": SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU,
 		"show_away_control_in_windows_menu": SHOW_AWAY_IN_WINDOWS_MENU,
@@ -944,6 +946,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "application_shortcuts" in settings:
+		settings["application_shortcuts"] = APPLICATION_SHORTCUTS
 	if not "show_full_user_data_in_ctcp_reply" in settings:
 		settings["show_full_user_data_in_ctcp_reply"] = SHOW_FULL_USER_IN_CTCP_REPLY
 	if not "show_join_and_nick_in_windows_menu" in settings:
@@ -2283,6 +2287,7 @@ def load_settings(filename):
 	global SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU
 	global SHOW_AWAY_IN_WINDOWS_MENU
 	global SHOW_FULL_USER_IN_CTCP_REPLY
+	global APPLICATION_SHORTCUTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2292,6 +2297,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		APPLICATION_SHORTCUTS = settings["application_shortcuts"]
 		SHOW_FULL_USER_IN_CTCP_REPLY = settings["show_full_user_data_in_ctcp_reply"]
 		SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU = settings["show_join_and_nick_in_windows_menu"]
 		SHOW_AWAY_IN_WINDOWS_MENU = settings["show_away_control_in_windows_menu"]

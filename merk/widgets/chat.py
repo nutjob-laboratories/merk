@@ -2402,7 +2402,7 @@ class Window(QMainWindow):
 			h = hostmask.split('@')[1]
 			banmask = f"*@{h}"
 		else:
-			banmask = f"{nick}@*"
+			banmask = f"{nick}"
 		self.client.mode(self.name,True,"b",None,None,banmask)
 
 	def menuKickBackUser(self,nick,hostmask):
@@ -2410,7 +2410,7 @@ class Window(QMainWindow):
 			h = hostmask.split('@')[1]
 			banmask = f"*@{h}"
 		else:
-			banmask = f"{nick}@*"
+			banmask = f"{nick}"
 		self.client.mode(self.name,True,"b",None,None,banmask)
 		self.client.kick(self.name,nick)
 

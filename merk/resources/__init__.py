@@ -110,11 +110,6 @@ for line in NETWORK_LINKS.split("\n"):
 		p = line.split(":",1)
 		LIST_OF_NETWORK_LINKS.append(p)
 
-def get_network_link(network):
-	for ent in LIST_OF_NETWORK_LINKS:
-		if ent[0].lower()==network.lower(): return ent[1]
-	return None
-
 # Sort the emoji autocomplete list by length
 EMOJI_AUTOCOMPLETE.sort(key=len)
 
@@ -126,7 +121,6 @@ OTHER_BUNDLED_FONTS = [
 BUNDLED_FONT_SIZE = 10
 
 QT_STYLES = QStyleFactory.keys()
-if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
 if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
 
 CHANNEL_WINDOW = 0
@@ -523,6 +517,11 @@ class UserMacro:
 		self.script = script
 		
 # Functions
+
+def get_network_link(network):
+	for ent in LIST_OF_NETWORK_LINKS:
+		if ent[0].lower()==network.lower(): return ent[1]
+	return None
 
 def random_alphanumeric_string(length):
 	return ''.join(
@@ -1476,3 +1475,13 @@ class StylerButton(QPushButton):
 		size = super().sizeHint()
 		size.setHeight(size.height() - 2)
 		return size
+
+class NoScrollTextBrowser(QTextBrowser):
+	def wheelEvent(self, event):
+		event.ignore()
+	
+	def keyPressEvent(self, event):
+		if event.key() in (Qt.Key_Up, Qt.Key_Down, Qt.Key_PageUp, Qt.Key_PageDown):
+			event.ignore()
+		else:
+			super().keyPressEvent(event)
