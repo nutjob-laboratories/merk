@@ -708,10 +708,10 @@ class Merk(QMainWindow):
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
 					else:
-						serv_name = c.client.server+":"+str(entry.port)
+						serv_name = f"{c.client.server}:{entry.port}"
 
 					if c.client.network:
-						serv_name = serv_name + " ("+c.client.network+")"
+						serv_name = f"{serv_name} ({c.client.network})"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
 					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==PRIVATE_WINDOW:
@@ -720,10 +720,10 @@ class Merk(QMainWindow):
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
 					else:
-						serv_name = c.client.server+":"+str(entry.port)
+						serv_name = f"{c.client.server}:{entry.port}"
 
 					if c.client.network:
-						serv_name = serv_name + " ("+c.client.network+")"
+						serv_name = f"{serv_name} ({c.client.network})"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
 					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==SERVER_WINDOW:
@@ -732,11 +732,11 @@ class Merk(QMainWindow):
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
 					else:
-						serv_name = c.client.server+":"+str(entry.port)
+						serv_name = f"{c.client.server}:{entry.port}"
 
 					if hasattr(c.client,"network"):
 						if c.client.network:
-							serv_name = serv_name + " ("+c.client.network+")"
+							serv_name = f"{serv_name} ({c.client.network})"
 				elif c.window_type==EDITOR_WINDOW:
 					icon = SCRIPT_ICON
 					sname = f"{APPLICATION_NAME}"
@@ -758,11 +758,11 @@ class Merk(QMainWindow):
 					icon = LIST_ICON
 					serv_name = "Channel list"
 					if c.client.hostname:
-						wname = c.client.hostname + " channel list"
+						wname = f"{c.client.hostname} channel list"
 						serv_name = c.client.hostname
 					else:
-						wname = c.client.server+":"+str(entry.port) + " channel list"
-						serv_name = c.client.server+":"+str(entry.port)
+						wname = f"{c.client.server}:{entry.port} channel list"
+						serv_name = f"{c.client.server}:{entry.port}"
 				elif c.window_type==LOG_MANAGER_WINDOW:
 					icon = LOG_ICON
 					serv_name = "Logs"
@@ -850,10 +850,10 @@ class Merk(QMainWindow):
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
 					else:
-						serv_name = c.client.server+":"+str(entry.port)
+						serv_name = f"{c.client.server}:{entry.port}"
 
 					if c.client.network:
-						serv_name = serv_name + " ("+c.client.network+")"
+						serv_name = f"{serv_name} ({c.client.network})"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
 					if self.has_unread_mentions(c.client,c.name): do_mention = True
 
@@ -863,10 +863,10 @@ class Merk(QMainWindow):
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
 					else:
-						serv_name = c.client.server+":"+str(entry.port)
+						serv_name = f"{c.client.server}:{entry.port}"
 
 					if c.client.network:
-						serv_name = serv_name + " ("+c.client.network+")"
+						serv_name = f"{serv_name} ({c.client.network})"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
 					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==SERVER_WINDOW:
@@ -875,10 +875,10 @@ class Merk(QMainWindow):
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
 					else:
-						serv_name = c.client.server+":"+str(entry.port)
+						serv_name = f"{c.client.server}:{entry.port}"
 
 					if c.client.network:
-						serv_name = serv_name + " ("+c.client.network+")"
+						serv_name = f"{serv_name} ({c.client.network})"
 				elif c.window_type==EDITOR_WINDOW:
 					icon = SCRIPT_ICON
 					sname = f"{APPLICATION_NAME}"
@@ -900,12 +900,12 @@ class Merk(QMainWindow):
 					icon = LIST_ICON
 					serv_name = "Channel list"
 					if c.client.hostname:
-						wname = name = c.client.hostname+" channel list"
+						wname = name = f"{c.client.hostname} channel list"
 					else:
-						wname = c.client.server+":"+str(entry.port)+" channel list"
+						wname = f"{c.client.server}:{entry.port} channel list"
 
 					if c.client.network:
-						serv_name = serv_name + " ("+c.client.network+")"
+						serv_name = f"{serv_name} ({c.client.network})"
 				elif c.window_type==LOG_MANAGER_WINDOW:
 					icon = LOG_ICON
 					serv_name = "Logs"
@@ -1160,7 +1160,7 @@ class Merk(QMainWindow):
 					if entry.hostname:
 						name = entry.hostname
 					else:
-						name = entry.server+":"+str(entry.port)
+						name = f"{entry.server}:{entry.port}"
 
 					sw = self.getServerSubWindow(entry)
 					wl = self.getAllSubChatWindows(entry)
@@ -1346,7 +1346,7 @@ class Merk(QMainWindow):
 	# |==================|
 
 	def connectionMade(self,client):
-		w = self.newServerWindow(client.server+":"+str(client.port),client)
+		w = self.newServerWindow(f"{client.server}:{client.port}",client)
 		c = w.widget()
 		t = Message(SYSTEM_MESSAGE,'',f"Connecting to {client.server}:{client.port}...")
 		c.writeText(t)
@@ -1385,7 +1385,7 @@ class Merk(QMainWindow):
 
 		# Trigger notifications
 		try:
-			if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications("Connection to "+client.hostname+" lost")
+			if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications(f"Connection to {client.hostname} lost")
 		except:
 			pass
 
@@ -1444,7 +1444,7 @@ class Merk(QMainWindow):
 		if config.ENABLE_SCRIPTING_ENGINE:
 			if client.kwargs["execute_script"]==True:
 
-				hostid = client.server+":"+str(client.port)
+				hostid = f"{client.server}:{client.port}"
 				script = connection_script.get_connection_script(hostid)
 				
 				if len(script)>0:
@@ -5130,7 +5130,7 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Configure '+APPLICATION_NAME+' preferences&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openSettings)
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings',f'Configure {APPLICATION_NAME} preferences&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openSettings)
 		self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
@@ -5188,9 +5188,9 @@ class Merk(QMainWindow):
 			away_time = "3 hours"
 
 		if config.USE_AUTOAWAY:
-			entry = QAction(QIcon(self.checked_icon),"Auto-away after "+away_time, self)
+			entry = QAction(QIcon(self.checked_icon),f"Auto-away after {away_time}", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Auto-away after "+away_time, self)
+			entry = QAction(QIcon(self.unchecked_icon),f"Auto-away after {away_time}", self)
 		entry.triggered.connect(self.settingsAway)
 		self.settingsMenu.addAction(entry)
 
@@ -5346,17 +5346,12 @@ class Merk(QMainWindow):
 
 		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
 
-
-
 		if config.APPLICATION_SHORTCUTS:
 			entry = QAction(QIcon(self.checked_icon),"Enable shortcuts", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Enable shortcuts", self)
 		entry.triggered.connect(self.settingsShortcuts)
 		sm.addAction(entry)
-
-
-
 
 		if config.ENABLE_SCRIPTING_ENGINE:
 			entry = QAction(QIcon(self.checked_icon),"Enable scripting", self)
@@ -5455,9 +5450,9 @@ class Merk(QMainWindow):
 			if config.LOG_SAVE_INTERVAL==3600000: interval = "hour"
 			if config.LOG_SAVE_INTERVAL==7200000: interval = "2 hours"
 			if config.LOG_SAVE_INTERVAL==10800000: interval = "3 hours"
-			entry = QAction(QIcon(self.checked_icon),"Save logs every "+interval, self)
+			entry = QAction(QIcon(self.checked_icon),f"Save logs every {interval}", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Save logs every "+interval, self)
+			entry = QAction(QIcon(self.unchecked_icon),f"Save logs every {interval}", self)
 		entry.triggered.connect(self.settingsIntermittent)
 		sm.addAction(entry)
 
@@ -5666,13 +5661,13 @@ class Merk(QMainWindow):
 
 		self.helpMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE,self.showAbout)
+		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,f'About {APPLICATION_NAME}',f"Version {APPLICATION_VERSION}",CUSTOM_MENU_ICON_SIZE,self.showAbout)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,INFO_MENU_ICON,APPLICATION_NAME+" User Guide","A manual for using "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.openScripting)
+		entry = widgets.ExtendedMenuItem(self,INFO_MENU_ICON,f"{APPLICATION_NAME} User Guide",f"A manual for using {APPLICATION_NAME}",CUSTOM_MENU_ICON_SIZE,self.openScripting)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,"README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
+		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,"README",f"Information about {APPLICATION_NAME}",CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
 		self.helpMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,LINK_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
@@ -5880,7 +5875,7 @@ class Merk(QMainWindow):
 							if c.client.hostname:
 								target = c.client.hostname
 							else:
-								target = c.client.server+":"+str(c.client.port)
+								target = f"{c.client.server}:{c.client.port}"
 						else:
 							target = c.client.network
 						entry = QAction(QIcon(icon),f"{c.name} ({target})",self)
@@ -5916,7 +5911,7 @@ class Merk(QMainWindow):
 						if c.client.hostname:
 							target = c.client.hostname
 						else:
-							target = c.client.server+":"+str(c.client.port)
+							target = f"{c.client.server}:{c.client.port}"
 					else:
 						target = c.client.network
 					title = f"Channel list for {target}"
@@ -6038,7 +6033,7 @@ class Merk(QMainWindow):
 					if sentry.hostname:
 						name = sentry.hostname
 					else:
-						name = sentry.server+":"+str(sentry.port)
+						name = f"{sentry.server}:{sentry.port}"
 
 					sw = self.getServerSubWindow(sentry)
 					wl = self.getAllSubChatWindows(sentry)
@@ -6129,7 +6124,7 @@ class Merk(QMainWindow):
 									wentry.triggered.connect(c.scriptDialog)
 									sm.addAction(wentry)
 
-									hostid = c.client.server+":"+str(c.client.port)
+									hostid = f"{c.client.server}:{c.client.port}"
 									wentry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",self)
 									wentry.triggered.connect(lambda state,h=hostid: self.openEditorConnect(h))
 									sm.addAction(wentry)
@@ -6262,7 +6257,7 @@ class Merk(QMainWindow):
 						sname = f"{c.client.hostname}"
 					else:
 						sname = f"{c.client.server}:{c.client.port}"
-					entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),"Disconnect from "+sname,self)
+					entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),f"Disconnect from {sname}",self)
 					entry.triggered.connect(lambda state,u=c: u.disconnect())
 					self.mainMenu.addAction(entry)
 
@@ -6855,9 +6850,9 @@ class Merk(QMainWindow):
 		if config.DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE:
 			if w.window_type==EDITOR_WINDOW:
 				if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-					self.setWindowTitle("Editing \""+w.name+"\"")
+					self.setWindowTitle(f"Editing \"{w.name}\"")
 				else:
-					self.setWindowTitle(self.application_title_name+" - Editing \""+w.name+"\"")
+					self.setWindowTitle(f"{self.application_title_name} - Editing \"{w.name}\"")
 				return
 
 		if hasattr(w,"name"):
@@ -6867,7 +6862,7 @@ class Merk(QMainWindow):
 					if w.client.hostname:
 						server = w.client.hostname
 					else:
-						server = w.client.server+":"+str(w.client.port)
+						server = f"{w.client.server}:{w.client.port}"
 
 					# If the current window is not visible, or the
 					# client associated with that window is in the
@@ -6889,73 +6884,75 @@ class Merk(QMainWindow):
 							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 								self.setWindowTitle(server)
 							else:
-								self.setWindowTitle(self.application_title_name+" - "+server)
+								self.setWindowTitle(f"{self.application_title_name} - {server}")
 						elif w.window_type==LIST_WINDOW:
 							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 								self.setWindowTitle("Channels on "+server)
 							else:
-								self.setWindowTitle(self.application_title_name+" - Channels on "+server)
+								self.setWindowTitle(f"{self.application_title_name} - Channels on {server}")
 						elif w.window_type==PRIVATE_WINDOW:
 							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 								if config.DO_NOT_SHOW_SERVER_IN_TITLE:
-									self.setWindowTitle("Private chat with "+w.name)
+									self.setWindowTitle(f"Private chat with {w.name}")
 								else:
-									self.setWindowTitle("Private chat with "+w.name+" ("+server+")")
+									self.setWindowTitle(f"Private chat with {w.name} ({server})")
 							else:
 								if config.DO_NOT_SHOW_SERVER_IN_TITLE:
-									self.setWindowTitle(self.application_title_name+" - Private chat with "+w.name)
+									self.setWindowTitle(f"{self.application_title_name} - Private chat with {w.name}")
 								else:
-									self.setWindowTitle(self.application_title_name+" - Private chat with "+w.name+" ("+server+")")
+									self.setWindowTitle(f"{self.application_title_name} - Private chat with {w.name} ({server})")
 						else:
 							if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
 								if hasattr(w,'topic'):
 									if hasattr(w.topic,"text"):
 										if w.topic.text().strip()!='':
+											channel_topic = strip_color(w.topic.text().strip())
 											if config.DO_NOT_SHOW_SERVER_IN_TITLE:
 												if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-													self.setWindowTitle(w.name+" - "+w.topic.text().strip())
+													self.setWindowTitle(f"{w.name} - {channel_topic}")
 												else:
-													self.setWindowTitle(self.application_title_name+" - "+w.name+" - "+w.topic.text().strip())
+													self.setWindowTitle(f"{self.application_title_name} - {w.name} - {channel_topic}")
 											else:
 												if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-													self.setWindowTitle(w.name+" ("+server+") - "+w.topic.text().strip())
+													self.setWindowTitle(f"{w.name} ({server}) - {channel_topic}")
 												else:
-													self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+") - "+w.topic.text().strip())
+													self.setWindowTitle(f"{self.application_title_name} - {w.name} ({server}) - {channel_topic}")
 										else:
 											if config.DO_NOT_SHOW_SERVER_IN_TITLE:
 												if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 													self.setWindowTitle(w.name)
 												else:
-													self.setWindowTitle(self.application_title_name+" - "+w.name)
+													self.setWindowTitle(f"{self.application_title_name} - {w.name}")
 											else:
 												if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-													self.setWindowTitle(w.name+" ("+server+")")
+													self.setWindowTitle(f"{w.name} ({server})")
 												else:
-													self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
+													self.setWindowTitle(f"{self.application_title_name} - {w.name} ({server})")
 							else:
 								if config.DO_NOT_SHOW_SERVER_IN_TITLE:
 									if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 										self.setWindowTitle(w.name)
 									else:
-										self.setWindowTitle(self.application_title_name+" - "+w.name)
+										self.setWindowTitle(f"{self.application_title_name} - {w.name}")
 								else:
 									if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-										self.setWindowTitle(w.name+" ("+server+")")
+										self.setWindowTitle(f"{w.name} ({server})")
 									else:
-										self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
+										self.setWindowTitle(f"{self.application_title_name} - {w.name} ({server})")
 				else:
 					if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 						self.setWindowTitle(w.name)
 					else:
-						self.setWindowTitle(self.application_title_name+" - "+w.name)
+						self.setWindowTitle(f"{self.application_title_name} - {w.name}")
 			elif config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
 				if hasattr(w,'topic'):
 					if hasattr(w.topic,"text"):
 						if w.topic.text().strip()!='':
+							channel_topic = strip_color(w.topic.text().strip())
 							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-								self.setWindowTitle(w.topic.text().strip())
+								self.setWindowTitle(channel_topic)
 							else:
-								self.setWindowTitle(self.application_title_name+" - "+w.topic.text().strip())
+								self.setWindowTitle(f"{self.application_title_name} - {channel_topic}")
 						else:
 							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 								self.setWindowTitle(' ')

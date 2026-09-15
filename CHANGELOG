@@ -81,6 +81,11 @@ What's new:
 * Added a toggle for application shortcuts to the "Settings" menu, in the
   "Tools" submenu.
 * Changed the font size in main menu entries.
+* Code cleanup: moved more functionality using string concatenation to
+  f-strings.
+* Bugfix: channel topics with IRC colors/formatting could show up "strange" if
+  they are shown in the application title. The colors/formatting are now
+  stripped before being shown in the title.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
