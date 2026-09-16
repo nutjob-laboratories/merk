@@ -69,7 +69,7 @@ class Window(QMainWindow):
 				cancel_button = msgBox.addButton(" No icon ", QMessageBox.RejectRole)
 				msgBox.setDefaultButton(cancel_button)
 
-				f = default_button.font()
+				f = cancel_button.font()
 				f.setBold(True)
 				default_button.setFont(f)
 
@@ -176,7 +176,7 @@ class Window(QMainWindow):
 			cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 			msgBox.setDefaultButton(cancel_button)
 
-			f = default_button.font()
+			f = cancel_button.font()
 			f.setBold(True)
 			default_button.setFont(f)
 
@@ -266,7 +266,7 @@ class Window(QMainWindow):
 		cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 		msgBox.setDefaultButton(cancel_button)
 
-		f = default_button.font()
+		f = cancel_button.font()
 		f.setBold(True)
 		default_button.setFont(f)
 

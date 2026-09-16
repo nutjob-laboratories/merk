@@ -471,7 +471,7 @@ class Window(QMainWindow):
 				border_color = "lightGray"
 
 			# Channel name display
-			self.channel_mode_display = QLabel("<small><b>"+self.name+"</b></small>")
+			self.channel_mode_display = QLabel(f"<small><b>{self.name}</b></small>")
 			self.channel_mode_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
 
 			self.channel_mode_display.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -542,14 +542,14 @@ class Window(QMainWindow):
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel("<b>"+self.client.nickname+"&nbsp;</b>")
+		self.nick_display = QLabel(f"<b>{self.client.nickname}&nbsp;</b>")
 		self.mode_display = QLabel("")
 		self.nick_display.setFocusPolicy(Qt.NoFocus)
 		self.mode_display.setFocusPolicy(Qt.NoFocus)
 		self.nick_display.installEventFilter(self)
 
 		if len(self.client.usermodes)>0:
-			self.mode_display.setText("<small>+"+self.client.usermodes+"&nbsp;</small>")
+			self.mode_display.setText(f"<small>+{self.client.usermodes}&nbsp;</small>")
 		else:
 			self.mode_display.hide()
 
@@ -889,7 +889,7 @@ class Window(QMainWindow):
 						pretty_timestamp = datetime.fromtimestamp(t,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p UTC')
 					else:
 						pretty_timestamp = datetime.fromtimestamp(t).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p')
-				self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
+				self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Resumed on {pretty_timestamp}"))
 		# Now, rerender all text in the log, so that
 		# the loaded log data is displayed
 		self.rerenderChatLog()
@@ -1424,7 +1424,7 @@ class Window(QMainWindow):
 					if not self.client.registered: entry.setEnabled(False)
 
 				if config.ENABLE_SCRIPTING_ENGINE:
-					hostid = self.client.server+":"+str(self.client.port)
+					hostid = f"{self.client.server}:{self.client.port}"
 					if hostid in user.COMMANDS:
 						entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",menu)
 					else:
@@ -1519,7 +1519,7 @@ class Window(QMainWindow):
 				if self.window_type==PRIVATE_WINDOW:
 
 					act = QAction(QIcon(WHOIS_ICON),f"Request WHOIS on {self.name}", self)
-					act.triggered.connect(lambda : self.client.sendLine("WHOIS "+self.name))
+					act.triggered.connect(lambda : self.client.sendLine(f"WHOIS {self.name}"))
 					menu.addAction(act)
 
 					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),f"Send CTCP request to {self.name}")
@@ -2275,7 +2275,7 @@ class Window(QMainWindow):
 						pretty_timestamp = datetime.fromtimestamp(line.timestamp,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p UTC')
 					else:
 						pretty_timestamp = datetime.fromtimestamp(line.timestamp).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p')
-				line = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp,line.timestamp)
+				line = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Resumed on {pretty_timestamp}",line.timestamp)
 
 			if self.window_type==CHANNEL_WINDOW:
 
@@ -2331,7 +2331,7 @@ class Window(QMainWindow):
 			self.mode_display.setText("")
 			self.mode_display.hide()
 		else:
-			self.mode_display.setText("<small>+"+self.client.usermodes+"&nbsp;</small>")
+			self.mode_display.setText(f"<small>+{self.client.usermodes}&nbsp;</small>")
 			if config.SHOW_USER_INFO_ON_CHAT_WINDOWS and self.window_type!=SERVER_WINDOW:
 				self.mode_display.show()
 			if config.DISPLAY_NICK_ON_SERVER_WINDOWS and self.window_type==SERVER_WINDOW:
@@ -2343,7 +2343,7 @@ class Window(QMainWindow):
 				self.key_icon.show()
 				self.key_icon.setToolTip(f"{self.name} is locked")
 				if hasattr(self,"key_value"):
-					self.key_value.setText("<small><b>"+self.client.channelkeys[self.name]+"</b></small>")
+					self.key_value.setText(f"<small><b>{self.client.channelkeys[self.name]}</b></small>")
 					self.key_value.show()
 					self.key_spacer.show()
 			else:
@@ -2843,7 +2843,7 @@ class Window(QMainWindow):
 		if user_nick!=self.client.nickname:
 
 			act = QAction(QIcon(WHOIS_ICON),"Request WHOIS", self)
-			act.triggered.connect(lambda : self.client.sendLine("WHOIS "+user_nick))
+			act.triggered.connect(lambda : self.client.sendLine(f"WHOIS {user_nick}"))
 			self.userlist_menu.addAction(act)
 
 			act = QAction(QIcon(PRIVATE_WINDOW_ICON),"Open private chat", self)
@@ -3698,7 +3698,7 @@ class Window(QMainWindow):
 		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
 			if self.client.is_away:
 				if config.SHOW_AWAY_NICKNAME_IN_ITALICS:
-					self.nick_display.setText("<i>"+self.client.nickname+"&nbsp;</i>")
+					self.nick_display.setText(f"<i>{self.client.nickname}&nbsp;</i>")
 				else:
 					self.nick_display.setText(self.client.nickname+" ")
 				if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP:
@@ -3706,10 +3706,10 @@ class Window(QMainWindow):
 				else:
 					self.nick_display.setToolTip("")
 			else:
-				self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+				self.nick_display.setText(f"<b>{self.client.nickname}&nbsp;</b>")
 				self.nick_display.setToolTip("")
 		else:
-			self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+			self.nick_display.setText(f"<b>{self.client.nickname}&nbsp;</b>")
 			self.nick_display.setToolTip("")
 
 	def writeText(self,message,write_to_log=True):
@@ -4364,7 +4364,7 @@ def buildServerSettingsMenu(self,client):
 	if client.hostname:
 		name = client.hostname
 	else:
-		name = client.server+":"+str(client.port)
+		name = f"{client.server}:{client.port}"
 
 	if hasattr(client,"network"):
 		mynet = client.network
@@ -4384,13 +4384,13 @@ def buildServerSettingsMenu(self,client):
 	e = plainTextAction(self,f"<b>Connected</b>: {pretty_timestamp}")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Hostname"+f"</b>: {name}")
+	e = plainTextAction(self,f"<b>Hostname</b>: {name}")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Server"+f"</b>: {client.server}")
+	e = plainTextAction(self,f"<b>Server</b>: {client.server}")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Port"+f"</b>: {client.port}")
+	e = plainTextAction(self,f"<b>Port</b>: {client.port}")
 	optionsMenu.addAction(e)
 
 	if client.kwargs["ssl"]:
@@ -4400,71 +4400,71 @@ def buildServerSettingsMenu(self,client):
 	optionsMenu.addAction(e)
 
 	if mynet.lower()!= config.UNKNOWN_NETWORK_NAME.lower():
-		e = plainTextAction(self,"<b>Network"+f"</b>: {mynet}")
+		e = plainTextAction(self,f"<b>Network</b>: {mynet}")
 		optionsMenu.addAction(e)
 
 		netlink = get_network_link(mynet)
 		if netlink!=None:
-			e = plainTextAction(self,"<b>Website"+f"</b>: <a href=\"{netlink}\">{netlink}</a>")
+			e = plainTextAction(self,f"<b>Website</b>: <a href=\"{netlink}\">{netlink}</a>")
 			optionsMenu.addAction(e)
 
 	if client.server_software:
-		e = plainTextAction(self,"<b>Software"+f"</b>: {client.server_software}")
+		e = plainTextAction(self,f"<b>Software</b>: {client.server_software}")
 	else:
-		e = plainTextAction(self,"<b>Software"+f"</b>: Unknown")
+		e = plainTextAction(self,"<b>Software</b>: Unknown")
 	optionsMenu.addAction(e)
 
 	if client.server_user_count==0:
-		e = plainTextAction(self,"<b>Users"+f"</b>: Unknown")
+		e = plainTextAction(self,"<b>Users</b>: Unknown")
 	else:
-		e = plainTextAction(self,"<b>Users"+f"</b>: {client.server_user_count:,}")
+		e = plainTextAction(self,f"<b>Users</b>: {client.server_user_count:,}")
 	optionsMenu.addAction(e)
 
 	if client.server_op_count==0:
-		e = plainTextAction(self,"<b>Operators"+f"</b>: Unknown")
+		e = plainTextAction(self,"<b>Operators</b>: Unknown")
 	else:
-		e = plainTextAction(self,"<b>Operators"+f"</b>: {client.server_op_count:,}")
+		e = plainTextAction(self,f"<b>Operators</b>: {client.server_op_count:,}")
 	optionsMenu.addAction(e)
 
 	if client.actual_server_channel_count==0:
 		if client.server_channel_count==0:
-			e = plainTextAction(self,"<b>Channels"+f"</b>: Unknown")
+			e = plainTextAction(self,"<b>Channels</b>: Unknown")
 		else:
-			e = plainTextAction(self,"<b>Channels"+f"</b>: {client.server_channel_count:,}")
+			e = plainTextAction(self,f"<b>Channels</b>: {client.server_channel_count:,}")
 		optionsMenu.addAction(e)
 	else:
 		diff = client.actual_server_channel_count - client.server_channel_count
 		if client.server_channel_count==0:
-			e = plainTextAction(self,"<b>Channels"+f"</b>: {client.actual_server_channel_count:,}")
+			e = plainTextAction(self,f"<b>Channels</b>: {client.actual_server_channel_count:,}")
 		else:
-			e = plainTextAction(self,"<b>Channels"+f"</b>: {client.server_channel_count:,} ({diff:,} hidden)")
+			e = plainTextAction(self,f"<b>Channels</b>: {client.server_channel_count:,} ({diff:,} hidden)")
 		optionsMenu.addAction(e)
 
 	e = textSeparator(self,"settings")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum channels"+f": <b>{maxchannels}</b>")
+	e = plainTextAction(self,f"Maximum channels: <b>{maxchannels}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum nickname length"+f": <b>{maxnicklen}</b>")
+	e = plainTextAction(self,f"Maximum nickname length: <b>{maxnicklen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum channel length"+f": <b>{channellen}</b>")
+	e = plainTextAction(self,f"Maximum channel length: <b>{channellen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum topic length"+f": <b>{topiclen}</b>")
+	e = plainTextAction(self,f"Maximum topic length: <b>{topiclen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum kick length"+f": <b>{kicklen}</b>")
+	e = plainTextAction(self,f"Maximum kick length: <b>{kicklen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum away length"+f": <b>{awaylen}</b>")
+	e = plainTextAction(self,f"Maximum away length: <b>{awaylen}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum message targets"+f": <b>{maxtargets}</b>")
+	e = plainTextAction(self,f"Maximum message targets: <b>{maxtargets}</b>")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"Maximum modes per user"+f": <b>{modes}</b>")
+	e = plainTextAction(self,f"Maximum modes per user: <b>{modes}</b>")
 	optionsMenu.addAction(e)
 
 	if len(maxmodes)>0:
@@ -4570,7 +4570,7 @@ class TopicEdit(QPlainTextEdit):
 			text = strip_color(self.parent.channel_topic)
 			if len(text)>0:
 				if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
-					self.parent.setWindowTitle(self.parent.name+" - "+text)
+					self.parent.setWindowTitle(f"{self.parent.name} - {text}")
 				else:
 					self.parent.setWindowTitle(text)
 			else:

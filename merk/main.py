@@ -2816,6 +2816,22 @@ class Merk(QMainWindow):
 	# | END IRC EVENTS |
 	# |================|
 
+	def alreadyConnected(self,server,port):
+		listOfConnections = {}
+		for i in irc.CONNECTIONS:
+			add_to_list = True
+			for j in self.hiding:
+				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			for j in self.quitting:
+				if irc.CONNECTIONS[i].client_id == j: add_to_list = False
+			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+
+		for i in listOfConnections:
+			entry = listOfConnections[i]
+			if f"{entry.server}:{entry.port}".lower()==f"{server}:{port}".lower(): return True
+
+		return False
+
 	def connectToIrcFail(self,message,reason):
 		connection = ConnectInfo(CONNECTION_MISSING_INFO_ERROR,None,None,None,None,None,None,None,None,None)
 		while connection.nickname==CONNECTION_MISSING_INFO_ERROR:
@@ -2829,6 +2845,30 @@ class Merk(QMainWindow):
 			# User has canceled the dialog, so
 			# we return without connecting to anything
 			if connection.nickname==CONNECTION_DIALOG_CANCELED: return
+
+			# Check to see if we're already connected to this server
+			if config.ASK_BEFORE_MULTIPLE_CONNECTIONS:
+				if self.alreadyConnected(connection.host,connection.port):
+					msgBox = QMessageBox()
+					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setText(f"""
+						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
+
+						Are you sure you want to connect to this server again?
+						""")
+					msgBox.setWindowTitle("Already Connected")
+
+					default_button = msgBox.addButton(" Connect anyway ", QMessageBox.AcceptRole)
+					cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
+					msgBox.setDefaultButton(cancel_button)
+
+					f = cancel_button.font()
+					f.setBold(True)
+					cancel_button.setFont(f)
+
+					rval = msgBox.exec()
+					if rval == QMessageBox.RejectRole: return
 
 			# Make sure we save the user's "do not save" choice
 			self.donotsave = bool(config.DO_NOT_SAVE)
@@ -2915,6 +2955,30 @@ class Merk(QMainWindow):
 			# User has canceled the dialog, so
 			# we return without connecting to anything
 			if connection.nickname==CONNECTION_DIALOG_CANCELED: return
+
+			# Check to see if we're already connected to this server
+			if config.ASK_BEFORE_MULTIPLE_CONNECTIONS:
+				if self.alreadyConnected(connection.host,connection.port):
+					msgBox = QMessageBox()
+					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setText(f"""
+						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
+
+						Are you sure you want to connect to this server again?
+						""")
+					msgBox.setWindowTitle("Already Connected")
+
+					default_button = msgBox.addButton(" Connect anyway ", QMessageBox.AcceptRole)
+					cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
+					msgBox.setDefaultButton(cancel_button)
+
+					f = cancel_button.font()
+					f.setBold(True)
+					cancel_button.setFont(f)
+
+					rval = msgBox.exec()
+					if rval == QMessageBox.RejectRole: return
 
 			# Make sure we save the user's "do not save" choice
 			self.donotsave = bool(config.DO_NOT_SAVE)
@@ -5051,6 +5115,10 @@ class Merk(QMainWindow):
 		apply_button = msgBox.addButton(" Apply ", QMessageBox.NoRole)
 		cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 
+		f = default_button.font()
+		f.setBold(True)
+		default_button.setFont(f)
+
 		msgBox.setDefaultButton(default_button)
 
 		rval = msgBox.exec_()
@@ -6438,13 +6506,13 @@ class Merk(QMainWindow):
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			if no_hostname:
 				msgBox.setText(f"""
-					Are you sure you want to disconnect from <b>{client.server}:{client.port}</b>?
+					Are you sure you want to disconnect from <b>{client.server}:{client.port}</b>?<br><br>
 
 					This will leave all channels and close any open private chat sessions.
 					""")
 			else:
 				msgBox.setText(f"""
-					Are you sure you want to disconnect from <b>{client.hostname}</b>?
+					Are you sure you want to disconnect from <b>{client.hostname}</b>?<br><br>
 
 					This will leave all channels and close any open private chat sessions.
 					""")
@@ -6453,6 +6521,10 @@ class Merk(QMainWindow):
 			default_button = msgBox.addButton(" Disconnect from server ", QMessageBox.AcceptRole)
 			msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 			msgBox.setDefaultButton(default_button)
+
+			f = default_button.font()
+			f.setBold(True)
+			default_button.setFont(f)
 
 			label = msgBox.findChild(QLabel)
 			if label:
@@ -6498,18 +6570,22 @@ class Merk(QMainWindow):
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(f"""
-				Are you sure you want to disconnect from {cstr}?
+				Are you sure you want to disconnect from {cstr}?<br><br>
 
 				This will leave all channels and close any open private chat sessions.
 			""")
 			msgBox.setWindowTitle("Disconnect")
 
 			if len(list_of_client)>1:
-				default_button = msgBox.addButton(" Disconnect from servers ", QMessageBox.AcceptRole)
+				default_button = msgBox.addButton(" Disconnect from all servers ", QMessageBox.AcceptRole)
 			else:
 				default_button = msgBox.addButton(" Disconnect from server ", QMessageBox.AcceptRole)
 			msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 			msgBox.setDefaultButton(default_button)
+
+			f = default_button.font()
+			f.setBold(True)
+			default_button.setFont(f)
 
 			label = msgBox.findChild(QLabel)
 			if label:
@@ -6673,6 +6749,10 @@ class Merk(QMainWindow):
 			default_button = msgBox.addButton(f" Exit {APPLICATION_NAME} ", QMessageBox.AcceptRole)
 			msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 			msgBox.setDefaultButton(default_button)
+
+			f = default_button.font()
+			f.setBold(True)
+			default_button.setFont(f)
 
 			rval = msgBox.exec()
 			if rval == QMessageBox.RejectRole:
@@ -7262,6 +7342,10 @@ class MdiArea(QMdiArea):
 					default_button = msgBox.addButton(" Overwrite files ", QMessageBox.AcceptRole)
 					cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 					msgBox.setDefaultButton(cancel_button)
+
+					f = cancel_button.font()
+					f.setBold(True)
+					default_button.setFont(f)
 
 					rval = msgBox.exec()
 					if rval == QMessageBox.RejectRole:

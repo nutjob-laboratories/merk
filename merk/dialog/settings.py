@@ -2709,8 +2709,8 @@ class Dialog(QDialog):
 
 		misLayout = QVBoxLayout()
 		misLayout.setSpacing(0)
-		misLayout.addWidget(self.appShortcuts)
 		misLayout.addWidget(self.simpleConnect)
+		misLayout.addWidget(self.appShortcuts)
 		misLayout.addWidget(self.showConnect)
 		misLayout.addWidget(self.noConnectLogo)
 		misLayout.addWidget(self.enableDnD)
@@ -4870,7 +4870,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Connection")
+		entry.setText("Connections")
 		entry.widget = self.connectionsPage
 		entry.setIcon(QIcon(CONSOLE_ICON))
 		self.selector.addItem(entry)
@@ -5017,6 +5017,10 @@ class Dialog(QDialog):
 		if config.SHOW_FULL_USER_IN_CTCP_REPLY: self.showFullUser.setChecked(True)
 		self.showFullUser.stateChanged.connect(self.changedSetting)
 
+		self.connectMultiple = QCheckBox("Ask before connecting to a server more than once",self)
+		if config.ASK_BEFORE_MULTIPLE_CONNECTIONS: self.connectMultiple.setChecked(True)
+		self.connectMultiple.stateChanged.connect(self.changedSetting)
+
 		lspacer = QLabel()
 		lspacer.setFixedWidth(self.doConnectionTimeout.style().pixelMetric(QStyle.PM_IndicatorWidth) * 2)
 
@@ -5040,6 +5044,7 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.askBeforeReconnect)
 		csLayout.addLayout(delayLayout)
 		csLayout.addWidget(self.notifyRepeated)
+		csLayout.addWidget(self.connectMultiple)
 		csLayout.addWidget(self.useSasl)
 		csLayout.addWidget(self.failSasl)
 		csLayout.addLayout(connTimeoutLayout)
@@ -5060,8 +5065,7 @@ class Dialog(QDialog):
 		self.erroneousDescription = QLabel(f"""
 			<small>
 			If your <b>nickname</b> "breaks" the rules of a given <b>server</b>, this is the <b>nickname</b> that will
-			be used, limited to 8 characters. The
-			default is <b>Guest</b>.<br>
+			be used, limited to 8 characters.<br>
 			</small>
 			""")
 		self.erroneousDescription.setWordWrap(True)
@@ -7918,6 +7922,7 @@ class Dialog(QDialog):
 		config.SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU = self.showJoinNick.isChecked()
 		config.SHOW_FULL_USER_IN_CTCP_REPLY = self.showFullUser.isChecked()
 		config.APPLICATION_SHORTCUTS = self.appShortcuts.isChecked()
+		config.ASK_BEFORE_MULTIPLE_CONNECTIONS = self.connectMultiple.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

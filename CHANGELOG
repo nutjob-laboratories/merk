@@ -86,6 +86,12 @@ What's new:
 * Bugfix: channel topics with IRC colors/formatting could show up "strange" if
   they are shown in the application title. The colors/formatting are now
   stripped before being shown in the title.
+* Added an option to prompt the user if they try to connect to the same server
+  more than once; the user can still connect anyways, but they will be prompted
+  to make sure. This option is enabled by default, but can be disabled in the
+  "Settings" dialog or the "/config" command.
+* Unified the "visual language" of the application by making the default button
+  in various dialogs bold.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
