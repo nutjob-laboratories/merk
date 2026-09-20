@@ -248,7 +248,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>hostmask ALIAS NICKNAME</code></td>
-<td>Retrieves the hostmask of <code>NICKNAME</code> and stores it in <code>ALIAS</code>. If the hostmask is not known or cannot be found, <code>ALIAS</code> is set to <code>unknown</code>. <strong>Can only be called from scripts</strong></td>
+<td>Retrieves the hostmask of <code>NICKNAME</code> and stores it in <code>ALIAS</code>. If the hostmask is not known or cannot be found, <code>ALIAS</code> is set to <code>*</code>. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>if VALUE1 OPERATOR VALUE2 COMMAND...</code></td>

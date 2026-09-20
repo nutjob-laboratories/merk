@@ -6941,13 +6941,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if check!=ALL_VALID_SETTINGS:
 					if check==INVALID_STYLE:
 						qlist = [f"\"{item}\"" for item in QT_STYLES]
-						reason = f"must be {', '.join(qlist[:-1]) + ' or ' + qlist[-1]}"
+						reason = f"must be {join_with_and(qlist,"or")}"
 					elif check==INVALID_JUSTIFY:
 						reason = "must be \"center\", \"left\", or \"right\""
 					elif check==INVALID_COLOR:
 						reason = f"not a recognized color"
 					elif check==INVALID_LANGUAGE:
-						v = ["en","fr","es","de","pt","it","nl","ru"]
+						v = ["\"en\"","\"fr\"","\"es\"","\"de\"","\"pt\"","\"it\"","\"nl\"","\"ru\""]
 						reason = f"not a valid spellchecker language: {join_with_and(v,"or")}"
 					elif check==INVALID_TEXT_STYLE:
 						reason = f"not a valid text style"
@@ -6958,17 +6958,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					elif check==INVALID_TIME:
 						reason = "must be a valid strptime format: https://linux.die.net/man/3/strptime"
 					elif check==INVALID_NICK_LENGTH:
-						reason = "must be less than 9 characters"
+						reason = "must be 8 or less characters"
 					elif check==INVALID_NICK:
 						reason = "invalid nickname"
 					elif check==INVALID_NICK_NUMBER:
 						reason = "nicknames can't start with numbers"
-					elif check==INVALID_NEGATIVE_NUMBER:
-						reason = "must be a positive number"
-					elif check==INVALID_ZERO_NUMBER:
-						reason = "must be at least 1"
-					elif check==INVALID_BIG_NUMBER:
-						reason = "must be at less than or equal to 9"
 					elif check==INVALID_SORTING:
 						reason = "must be \"creation\", \"reverse\", \"alpha\", or \"ralpha\""
 					elif check==INVALID_CODEC:
@@ -6980,14 +6974,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							ext = fmt.data().decode()
 							if ext.upper()=='CUR': continue
 							if ext.upper()=='ICO': continue
-							all_filetypes.append(f"{ext.upper()}")
+							all_filetypes.append(f"\"*.{ext.upper()}\"")
 						reason = f"must be a supported image format: {join_with_and(all_filetypes,"or")}"
 					elif check==INVALID_VALUE:
 						reason = "invalid value for setting"
 					elif check==INVALID_MDI_STYLE:
 						reason = "must be \"scale\", \"center\", or \"tile\""
 					else:
-						reason = "unknown"
+						reason = "unknown reason"
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
@@ -7003,7 +6997,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(SYSTEM_MESSAGE,'',f"Use \"{config.ISSUE_COMMAND_SYMBOL}window restart\" to restart {APPLICATION_NAME} or \"{config.ISSUE_COMMAND_SYMBOL}reload\" to reload and apply settings")
+				t = Message(SYSTEM_MESSAGE,'',f"Use \"{config.ISSUE_COMMAND_SYMBOL}window restart\" to restart {APPLICATION_NAME}, or \"{config.ISSUE_COMMAND_SYMBOL}reload\" to reload and apply settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:
@@ -10699,7 +10693,7 @@ class ScriptThread(QThread):
 														self.addAlias(a,f"{h}")
 														script_only_command = True
 													else:
-														self.addAlias(a,f"unknown")
+														self.addAlias(a,f"*")
 														script_only_command = True
 												else:
 													error_message = f"\"{a}\" is not a valid alias token"
@@ -10710,7 +10704,7 @@ class ScriptThread(QThread):
 														self.addAlias(a,f"{h}")
 														script_only_command = True
 													else:
-														self.addAlias(a,f"unknown")
+														self.addAlias(a,f"*")
 														script_only_command = True
 												else:
 													error_message = f"\"{a}\" already exists in another scope"

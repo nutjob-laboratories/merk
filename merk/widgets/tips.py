@@ -121,7 +121,7 @@ TIPS = [
  f'Change the displayed names of the menus in the <b>Settings</b> dialog!',
  f'IRC lets people all over the world talk to each other in real-time, completely free!',
  f'<b>{APPLICATION_NAME}</b> can run completely from a USB thumb drive. Check out the <b>{APPLICATION_NAME} User Guide</b> for how!',
- f'Join us on the official <b>#merk</b> channel, on <a href=\"https://libera.chat/\">Libera.chat</a>!',
+ f'Join us on the official <b>#MERK</b> channel, on <a href=\"https://inthemansion.com//\">TheMansion</a>!',
  f'IRC nicknames can\'t have the !, @, $, %, &, *, (, ), ., ,, /, ?, <, >, +, = characters or spaces in them!',
  f'IRC nicknames can\'t start with numbers!',
  f'IRC channel names can\'t contain spaces, control characters (like colors), or commas!',
@@ -156,7 +156,33 @@ TIPS = [
  f'View your saved logs (with IRC colors and clickable links) in the <b>Log Manager</b>!',
  f'The <b>Log Manager</b> can export your saved logs to text, JSON, or your own custom format!',
  f'Timestamps can optionally be displayed in Coordinated Universal Time (UTC)!',
+ f'<b>{APPLICATION_NAME}</b> can log into user services with <b>Simple Authentication and Security Layer (SASL)</b>!',
+ f'Use <b>server profiles</b> to set custom nicknames and usernames for specific servers!',
 ]
+
+if config.APPLICATION_SHORTCUTS:
+	i = [
+		f'Press <b>Ctrl+N</b> to <b>connect to a server</b>!',
+	]
+	TIPS = TIPS + i
+
+if config.APPLICATION_SHORTCUTS and config.ENABLE_IGNORE:
+	i = [
+		f'Press <b>Ctrl+I</b> to manage <b>user ignores</b>!',
+	]
+	TIPS = TIPS + i
+
+if config.APPLICATION_SHORTCUTS and config.ENABLE_HOTKEYS:
+	i = [
+		f'Press <b>Ctrl+H</b> to open the <b>hotkey manager</b>!',
+	]
+	TIPS = TIPS + i
+
+if config.APPLICATION_SHORTCUTS and config.ENABLE_STYLE_EDITOR:
+	i = [
+		f'Press <b>Ctrl+E</b> to open the <b>text style editor</b>!',
+	]
+	TIPS = TIPS + i
 
 if config.SHOW_COLORS_IN_USERLISTS or config.USER_COLORS:
 	i = [

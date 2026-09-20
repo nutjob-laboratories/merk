@@ -5011,7 +5011,7 @@ class Merk(QMainWindow):
 			reconnect = QCheckBox("Reconnect to all servers")
 			msgBox.setCheckBox(reconnect)
 		else:
-			msgBox.setText(f"<b>Restart {APPLICATION_NAME} now?</b><br>")
+			msgBox.setText(f"<b>Restart {APPLICATION_NAME} now?</b>")
 		msgBox.setWindowTitle(f"Restart {APPLICATION_NAME}")
 
 		default_button = msgBox.addButton(f" Restart {APPLICATION_NAME} ", QMessageBox.AcceptRole)
@@ -5105,7 +5105,7 @@ class Merk(QMainWindow):
 		msgBox = QMessageBox()
 		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-		msgBox.setText(f"Apply widget style <b>{newstyle}</b> now?")
+		msgBox.setText(f"Apply widget style \"<b>{newstyle}</b>\" now?<br>")
 		if self.connected_to_something:
 			reconnect = QCheckBox("Reconnect to all servers")
 			msgBox.setCheckBox(reconnect)

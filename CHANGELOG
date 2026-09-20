@@ -10,6 +10,9 @@ What's new:
 - **The "Windows" menu has been streamlined**.
 - **Many more IRC networks now have "known" websites**. The network website URLs will appear in server information menus, and in status bars. Nearly all of the "built-in" server networks now have a URL, if we could find one. 
 - **All new application shortcuts**. Press `Ctrl+N` to open the connection dialog, `Ctrl+L` to open the Log Manager, `Ctrl+E` to open the text style editor, `Ctrl+I` to open the Ignore Manager, and `Ctrl+H` to open the Hotkey Manager. The shortcuts are turned on by default; they can be turned off in the "Settings" dialog, in the "Settings" menu, or with the `/config` command.
+- **Users are now asked before connecting to the same server more than once**. MERK will connect to servers more than once, it will only ask the user if they are sure they want to. This option is enabled by default, but can be disabled in the "Settings" dialog, or with the `/config` command.
+- **New "tips" have been added to the "tips and tricks" dialog**.
+- **Many prompt dialogs have been updated**. Dialogs that prompt the user for a "yes or no" question have been changed to be clearer and easier to understand; the default button is always in "bold".
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -92,6 +95,9 @@ What's new:
   "Settings" dialog or the "/config" command.
 * Unified the "visual language" of the application by making the default button
   in various dialogs bold.
+* The "hostmask" script only command will now "return" "*" if the requested
+  hostmask is not known.
+* Added new "tips" to the "tips and tricks" dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

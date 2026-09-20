@@ -2181,13 +2181,15 @@ class Dialog(QDialog):
 	def do_restart(self, link):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(WARN_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-		msgBox.setText(f"<b>Save settings and restart {APPLICATION_NAME} now?</b>")
-
 		if self.parent.connected_to_something:
+			msgBox.setText(f"<b>Save settings and restart {APPLICATION_NAME} now?</b><br><br>This will disconnect {APPLICATION_NAME} from all servers.<br>")
 			reconnect = QCheckBox("Reconnect to all servers")
 			msgBox.setCheckBox(reconnect)
+
+		else:
+			msgBox.setText(f"<b>Save settings and restart {APPLICATION_NAME} now?</b>")
 
 		msgBox.setWindowTitle("Restart")
 		default_button = msgBox.addButton(f" Restart {APPLICATION_NAME} ", QMessageBox.AcceptRole)
@@ -2710,12 +2712,12 @@ class Dialog(QDialog):
 		misLayout = QVBoxLayout()
 		misLayout.setSpacing(0)
 		misLayout.addWidget(self.simpleConnect)
+		misLayout.addWidget(self.showTips)
 		misLayout.addWidget(self.appShortcuts)
 		misLayout.addWidget(self.showConnect)
 		misLayout.addWidget(self.noConnectLogo)
 		misLayout.addWidget(self.enableDnD)
 		misLayout.addWidget(self.managerTop)
-		misLayout.addWidget(self.showTips)
 		
 		titleLayout = QVBoxLayout()
 		titleLayout.setSpacing(0)
