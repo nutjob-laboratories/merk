@@ -784,8 +784,8 @@ class IRC_Connection(irc.IRCClient):
 			w.writeText(t)
 
 	def joined(self, channel):
-		self.sendLine(f"MODE {channel}")
-		self.sendLine(f"MODE {channel} +b")
+		self.batch.append(f"MODE {channel}")
+		self.batch.append(f"MODE {channel} +b")
 
 		self.channels.append(channel)
 		self.gui.joined(self,channel)
@@ -978,8 +978,8 @@ class IRC_Connection(irc.IRCClient):
 
 	def modeChanged(self, user, channel, mset, modes, args):
 		if channel!=self.nickname:
-			if "b" in modes: self.sendLine(f"MODE {channel} +b")
-			if "o" in modes or "v" in modes: self.sendLine("NAMES "+channel)
+			if "b" in modes: self.batch.append(f"MODE {channel} +b")
+			if "o" in modes or "v" in modes or "a" in modes or "q" in modes or "h" in modes or "Y" in modes: self.batch.append(f"NAMES {channel}")
 
 		largs = list(args)
 		cleaned = []
@@ -1100,7 +1100,7 @@ class IRC_Connection(irc.IRCClient):
 		self.do_whois = list(set(self.do_whois))
 
 		# Request a channel userlist from the server
-		self.sendLine("NAMES "+channel)
+		self.sendLine(f"NAMES {channel}")
 
 		self.gui.userJoined(self,user,channel)
 
@@ -1118,7 +1118,7 @@ class IRC_Connection(irc.IRCClient):
 				self.do_whois.remove(p[0])
 
 		# Request a channel userlist from the server
-		self.sendLine("NAMES "+channel)
+		self.sendLine(f"NAMES {channel}")
 
 		self.gui.userLeft(self,user,channel)
 
@@ -1204,7 +1204,7 @@ class IRC_Connection(irc.IRCClient):
 	def userKicked(self, kickee, channel, kicker, message):
 		if kickee!=self.nickname:
 			# Request a channel userlist from the server
-			self.sendLine("NAMES "+channel)
+			self.sendLine(f"NAMES {channel}")
 
 		self.gui.userKicked(self,kickee,channel,kicker,message)
 

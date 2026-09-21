@@ -85,7 +85,7 @@ Appearance:
   -L, --light           Run in light mode
 </code></pre>
 <h1 id="commands">Commands</h1>
-<p>All of these commands can be issued from the text input widget, or from scripts. Commands that start with <code>/_</code> are usually limited to IRCops, and usually display their output in server windows.</p>
+<p>All of these commands can be issued from the text input widget, or from scripts. Commands that start with <code>/_</code> are usually limited to IRCops, and usually display their output in server windows. Commands that do <i>not</i> start with <code>/</code> can only be used in scripts.</p>
 <table>
 <thead>
 <tr>
@@ -467,12 +467,16 @@ Appearance:
 <td>Resizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's size. Pass <code>*</code> as <code>WINDOW</code> to resize the server window</td>
 </tr>
 <tr>
+<td><code>strip ALIAS TEXT...</code></td>
+<td>Strips IRC color and formatting in <code>TEXT</code> and stores it in <code>ALIAS</code>. <strong>Can only be called from scripts</strong></td>
+</tr>
+<tr>
 <td><code>/style [SERVER] [WINDOW]</code></td>
 <td>Opens a window's text style editor. Pass <code>*</code> as <code>WINDOW</code> to select the server window</td>
 </tr>
 <tr>
 <td><code>target LABEL</code></td>
-<td>Creates a target for the <code>goto</code> command. If used as a target for <code>goto</code>, script execution will move to the line this appears on. <code>LABEL</code> cannot contain spaces. Can only be called from scripts</td>
+<td>Creates a target for the <code>goto</code> command. If used as a target for <code>goto</code>, script execution will move to the line this appears on. <code>LABEL</code> cannot contain spaces. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/time</code></td>

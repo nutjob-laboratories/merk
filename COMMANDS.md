@@ -86,7 +86,7 @@ Appearance:
 
 # Commands
 
-All of these commands can be issued in the client or from scripts, unless otherwise noted. Commands that do not start with `/` can only be issued in scripts. Commands that start with `/_` are commands that are usually limited to [IRCops](https://en.wikipedia.org/wiki/IRC_operator), and usually display all output in server subwindows.
+All of these commands can be issued in the client or from scripts, unless otherwise noted. Commands that do not start with `/` can only be issued in scripts. Commands that start with `/_` are commands that are usually limited to [IRCops](https://en.wikipedia.org/wiki/IRC_operator), and usually display all output in server subwindows. Commands that do *not* start with `/` can only be used in scripts.
 
 | Commands                                | Description                                                                                                                      |
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
@@ -183,6 +183,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden, and shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to show the server subwindow  |
 | `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size. Pass `*` as `WINDOW` to resize the server subwindow |
+| `strip ALIAS TEXT...`       | Strips IRC color and formatting in `TEXT`, and stores it in `ALIAS`; *can only be called from scripts*             |
 | `/style [SERVER] [WINDOW]`                                | Opens a subwindow's text style editor. Pass `*` as `WINDOW` to select the server subwindow                                  |
 | `target LABEL`                                 | Creates a target for the `goto` command. If used as a target for `goto`, script execution will move to the line this appears on. `LABEL` cannot contain spaces. Can only be called from scripts      |
 | `/time`                                 | Requests server time                                                                                                             |

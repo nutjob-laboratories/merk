@@ -13,6 +13,10 @@ What's new:
 - **Users are now asked before connecting to the same server more than once**. MERK will connect to servers more than once, it will only ask the user if they are sure they want to. This option is enabled by default, but can be disabled in the "Settings" dialog, or with the `/config` command.
 - **New "tips" have been added to the "tips and tricks" dialog**.
 - **Many prompt dialogs have been updated**. Dialogs that prompt the user for a "yes or no" question have been changed to be clearer and easier to understand; the default button is always in "bold".
+- **New script-only command: `strip`**. This command strips IRC colors and formatting from text and stores the result in an alias.
+- **The `_TOPIC` and `_COUNT` built-in aliases work slightly different**. More details can be found in the MERK User Guide.
+- **New built-in alias: `_CMODE`**. This built-in aliases contains any channel modes that are set in the current channel, or to `*` if used in a non-channel window or if no channel modes are set.
+- **The "large log" warning has been set to 15 MB (down from 30 MB)**. This is the new limit MERK will look for before prompting the user the back up the large logs.
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -98,6 +102,23 @@ What's new:
 * The "hostmask" script only command will now "return" "*" if the requested
   hostmask is not known.
 * Added new "tips" to the "tips and tricks" dialog.
+* Bugfix: channel user list refreshes didn't always occur for some "ununsual"
+  or uncommon channel statuses.
+* Some server requests were moved to the newer "batch" system, to limit how
+  much information we request from the server at one time.
+* New built-in alias: "_CMODE", which contains any set channel modes, or is set
+  to "*" if there are no modes set or the window is not a channel window.
+* Change to the "_COUNT" built-in alias: the alias works the same for channel
+  windows, but is set to "0" for server windows, and "2" for private chat
+  windows.
+* Change to the "_TOPIC" built-in alias: if there is no topic set, or if the
+  window is not a channel window, "_TOPIC" will be set to "*".
+* Bugfix: fixed several error messages for script-only commands.
+* New script-only command: "strip", which strips IRC colors and formatting from
+  a string and stores it in an alias.
+* Changed the default "large log warning" size to 15 MB (down from 30 MB). The
+  variable name in the configuration file has been changed so that the new
+  default it updated for all users.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

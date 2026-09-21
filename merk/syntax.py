@@ -347,6 +347,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"setfile",
 			"append",
 			"decimal",
+			"strip",
 		]
 
 		script_full = [

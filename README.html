@@ -1,4 +1,4 @@
-<h1>MERK 0.052.290</h1>
+<h1>MERK 0.052.295</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -9,7 +9,7 @@
 <li><a href="#example-commandline-usage">Example commandline usage</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.052.290</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.052.295</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on TheMansion network! Connect to TheMansion in the client as one of the built-in server suggestions, or at <strong>irc.inthemansion.chat</strong>, port <strong>6697</strong> (via SSL). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!</p>
 <p>If you'd like to help with <strong>MERK</strong>'s development, but don't write code, <a href="buymeacoffee.com/danhetrick">feel free to donate to <strong>MERK</strong></a>! Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in the "About" dialog.</p>
@@ -85,7 +85,7 @@ Appearance:
   -L, --light           Run in light mode
 </code></pre>
 <h1 id="commands">Commands</h1>
-<p>All of these commands can be issued from the text input widget, or from scripts. Commands that start with <code>/_</code> are usually limited to IRCops, and usually display their output in server windows.</p>
+<p>All of these commands can be issued from the text input widget, or from scripts. Commands that start with <code>/_</code> are usually limited to IRCops, and usually display their output in server windows. Commands that do <i>not</i> start with <code>/</code> can only be used in scripts.</p>
 <table>
 <thead>
 <tr>
@@ -467,12 +467,16 @@ Appearance:
 <td>Resizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's size. Pass <code>*</code> as <code>WINDOW</code> to resize the server window</td>
 </tr>
 <tr>
+<td><code>strip ALIAS TEXT...</code></td>
+<td>Strips IRC color and formatting in <code>TEXT</code> and stores it in <code>ALIAS</code>. <strong>Can only be called from scripts</strong></td>
+</tr>
+<tr>
 <td><code>/style [SERVER] [WINDOW]</code></td>
 <td>Opens a window's text style editor. Pass <code>*</code> as <code>WINDOW</code> to select the server window</td>
 </tr>
 <tr>
 <td><code>target LABEL</code></td>
-<td>Creates a target for the <code>goto</code> command. If used as a target for <code>goto</code>, script execution will move to the line this appears on. <code>LABEL</code> cannot contain spaces. Can only be called from scripts</td>
+<td>Creates a target for the <code>goto</code> command. If used as a target for <code>goto</code>, script execution will move to the line this appears on. <code>LABEL</code> cannot contain spaces. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/time</code></td>

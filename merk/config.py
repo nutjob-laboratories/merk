@@ -478,7 +478,7 @@ SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = True
 SHOW_TIMESTAMPS_IN_UTC = False
 MAX_LOG_DISPLAY_SIZE = 5000
 LIMIT_LOG_VIEW = True
-LOG_WARNING_SIZE = 30
+LOG_WARNING_SIZE = 15
 SCAN_FOR_LARGE_LOGS = True
 SHOW_CHANNEL_MODES = True
 WINDOWS_MENU_WINDOW_SHORTCUTS = True
@@ -510,7 +510,7 @@ def build_settings():
 		"subwindow_shortcuts_in_windows_menu": WINDOWS_MENU_WINDOW_SHORTCUTS,
 		"show_channel_modes": SHOW_CHANNEL_MODES,
 		"scan_for_large_logs_on_startup": SCAN_FOR_LARGE_LOGS,
-		"log_warning_size": LOG_WARNING_SIZE,
+		"large_log_warning_size": LOG_WARNING_SIZE,
 		"use_maximum_log_view_size": LIMIT_LOG_VIEW,
 		"maximum_log_view_size": MAX_LOG_DISPLAY_SIZE,
 		"timestamps_in_utc": SHOW_TIMESTAMPS_IN_UTC,
@@ -976,8 +976,8 @@ def patch_settings(settings):
 		settings["show_channel_modes"] = SHOW_CHANNEL_MODES
 	if not "scan_for_large_logs_on_startup" in settings:
 		settings["scan_for_large_logs_on_startup"] = SCAN_FOR_LARGE_LOGS
-	if not "log_warning_size" in settings:
-		settings["log_warning_size"] = LOG_WARNING_SIZE
+	if not "large_log_warning_size" in settings:
+		settings["large_log_warning_size"] = LOG_WARNING_SIZE
 	if not "use_maximum_log_view_size" in settings:
 		settings["use_maximum_log_view_size"] = LIMIT_LOG_VIEW
 	if not "maximum_log_view_size" in settings:
@@ -2316,7 +2316,7 @@ def load_settings(filename):
 		WINDOWS_MENU_WINDOW_SHORTCUTS = settings["subwindow_shortcuts_in_windows_menu"]
 		SHOW_CHANNEL_MODES = settings["show_channel_modes"]
 		SCAN_FOR_LARGE_LOGS = settings["scan_for_large_logs_on_startup"]
-		LOG_WARNING_SIZE = settings["log_warning_size"]
+		LOG_WARNING_SIZE = settings["large_log_warning_size"]
 		LIMIT_LOG_VIEW = settings["use_maximum_log_view_size"]
 		MAX_LOG_DISPLAY_SIZE = settings["maximum_log_view_size"]
 		SHOW_TIMESTAMPS_IN_UTC = settings["timestamps_in_utc"]

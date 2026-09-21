@@ -723,6 +723,7 @@ def clearTemporaryAliases():
 
 BUILT_IN_ALIAS_LIST = [
 	"_CLIENT",
+	"_CMODE",
 	"_CONNECTION",
 	"_CONNECTED",
 	"_COUNT",
@@ -796,6 +797,13 @@ def buildTemporaryAliases(gui,window):
 		all_servers.append(f"{c.client.server}:{c.client.port}")
 
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
+	if window.name in window.client.channelmodes and window.window_type==CHANNEL_WINDOW:
+		if window.client.channelmodes[window.name].strip()=='':
+			addTemporaryAlias('_CMODE',"*")
+		else:
+			addTemporaryAlias('_CMODE',f"{window.client.channelmodes[window.name]}")
+	else:
+		addTemporaryAlias('_CMODE',"*")
 	if window.client.kwargs["ssl"]:
 		addTemporaryAlias('_CONNECTION',"SSL/TLS")
 	else:
@@ -804,7 +812,10 @@ def buildTemporaryAliases(gui,window):
 	if window.window_type==CHANNEL_WINDOW:
 		addTemporaryAlias('_COUNT',f"{len(window.nicks)}")
 	else:
-		addTemporaryAlias('_COUNT',f"0")
+		if window.window_type==SERVER_WINDOW:
+			addTemporaryAlias('_COUNT',f"0")
+		else:
+			addTemporaryAlias('_COUNT',f"2")
 	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
 	addTemporaryAlias('_HOSTID',window.client.server+":"+str(window.client.port))
 	if hasattr(window.client,"hostname"):
@@ -901,9 +912,9 @@ def buildTemporaryAliases(gui,window):
 		if window.channel_topic!='':
 			addTemporaryAlias('_TOPIC',window.channel_topic)
 		else:
-			addTemporaryAlias('_TOPIC','No topic')
+			addTemporaryAlias('_TOPIC','*')
 	else:
-		addTemporaryAlias('_TOPIC','No topic')
+		addTemporaryAlias('_TOPIC','*')
 	if hasattr(window,"uptime"):
 		addTemporaryAlias('_UPTIME',str(window.uptime))
 	else:
@@ -9845,6 +9856,20 @@ class ScriptThread(QThread):
 						no_errors = False
 						break
 
+			# |=======|
+			# | strip |
+			# |=======|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='strip':
+					if not config.ENABLE_ALIASES:
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: strip: aliases are disabled"])
+						no_errors = False
+						break
+					elif len(tokens)<3:
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: strip called without enough arguments"])
+						no_errors = False
+						break
+
 			# |==========|
 			# | hostmask |
 			# |==========|
@@ -10108,6 +10133,7 @@ class ScriptThread(QThread):
 									"setfile",
 									"append",
 									"decimal",
+									"strip",
 								]
 								if stokens[0].lower() in script_only:
 									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
@@ -10605,6 +10631,56 @@ class ScriptThread(QThread):
 										loop = False
 								continue
 
+						# |=======|
+						# | strip |
+						# |=======|
+						# 
+						# This command strips all IRC colors and formatting,
+						# and stores the result in an alias.
+						#
+						if len(tokens)>=1:
+							if tokens[0].lower()=='strip' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+
+									message = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									message = self.interpolateAliases(message)
+
+									message = strip_color(message)
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									error_message = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													self.addAlias(a,f"{message}")
+												else:
+													error_message = f"\"{a}\" is not a valid alias token"
+											else:
+												if a in self.CREATED:
+													self.addAlias(a,f"{message}")
+												else:
+													error_message = f"\"{a}\" already exists in another scope"
+										else:
+											error_message = f"\"{a}\" is not a valid alias token"
+									if error_message!=None:
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: strip: {error_message}"])
+										loop = False
+								continue
+
 						# |========|
 						# | escape |
 						# |========|
@@ -10653,7 +10729,7 @@ class ScriptThread(QThread):
 										else:
 											error_message = f"\"{a}\" is not a valid alias token"
 									if error_message!=None:
-										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: escape: {error_message}"])
 										loop = False
 								continue
 
@@ -10712,7 +10788,7 @@ class ScriptThread(QThread):
 											error_message = f"\"{a}\" is not a valid alias token"
 
 									if error_message!=None:
-										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask: {error_message}"])
 										loop = False
 								continue
 
