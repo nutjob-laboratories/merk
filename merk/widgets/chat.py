@@ -3834,25 +3834,34 @@ class Window(QMainWindow):
 
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
-			if self.part_message==None:
-				msg = config.DEFAULT_QUIT_MESSAGE
-				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
-				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-					commands.buildTemporaryAliases(self.parent,self)
-					msg = commands.interpolateAliases(msg)
-			else:
-				msg = self.part_message
-				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
-				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-					commands.buildTemporaryAliases(self.parent,self)
-					msg = commands.interpolateAliases(msg)
-			self.client.leave(self.name,msg)
+
+			# Only send a part if we weren't kicked from
+			# the channel
+			send_part = True
+			if self.name in self.parent.recently_kicked:
+				send_part = False
+				self.parent.recently_kicked.remove(self.name)
+
+			if send_part:
+				if self.part_message==None:
+					msg = config.DEFAULT_QUIT_MESSAGE
+					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
+					if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+						commands.buildTemporaryAliases(self.parent,self)
+						msg = commands.interpolateAliases(msg)
+				else:
+					msg = self.part_message
+					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
+					if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+						commands.buildTemporaryAliases(self.parent,self)
+						msg = commands.interpolateAliases(msg)
+				self.client.leave(self.name,msg)
 
 		if self.force_close:
 			# Let the parent know that this subwindow

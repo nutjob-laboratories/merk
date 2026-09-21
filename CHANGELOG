@@ -2,23 +2,6 @@
 |                                   0.052.300                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **Many icons have been changed**. The icons for "open file", "folder", "bold" and "italics", "new file", "save", and "save as" are all new, from the public domain Tango icon set.
-- **Log snippets can be copied from the Log Manager with color/formatting stripped**. Use the "Ctrl+X" shortcut in the Log Manager to copy text from the log viewer with all IRC colors/formatting stripped from the text.
-- **Results from `/ctcp PING` now show the round-trip time the request took in milliseconds**. Showing a user's full username (`nickname!hostmask`) in CTCP replies can now be toggled; this is turned off by default, and will only display the user's nickname.
-- **The "Windows" menu has been streamlined**.
-- **Many more IRC networks now have "known" websites**. The network website URLs will appear in server information menus, and in status bars. Nearly all of the "built-in" server networks now have a URL, if we could find one. 
-- **All new application shortcuts**. Press `Ctrl+N` to open the connection dialog, `Ctrl+L` to open the Log Manager, `Ctrl+E` to open the text style editor, `Ctrl+I` to open the Ignore Manager, and `Ctrl+H` to open the Hotkey Manager. The shortcuts are turned on by default; they can be turned off in the "Settings" dialog, in the "Settings" menu, or with the `/config` command.
-- **Users are now asked before connecting to the same server more than once**. MERK will connect to servers more than once, it will only ask the user if they are sure they want to. This option is enabled by default, but can be disabled in the "Settings" dialog, or with the `/config` command.
-- **New "tips" have been added to the "tips and tricks" dialog**.
-- **Many prompt dialogs have been updated**. Dialogs that prompt the user for a "yes or no" question have been changed to be clearer and easier to understand; the default button is always in "bold".
-- **New script-only command: `strip`**. This command strips IRC colors and formatting from text and stores the result in an alias.
-- **The `_TOPIC` and `_COUNT` built-in aliases work slightly different**. More details can be found in the MERK User Guide.
-- **New built-in alias: `_CMODE`**. This built-in aliases contains any channel modes that are set in the current channel, or to `*` if used in a non-channel window or if no channel modes are set.
-- **The "large log" warning has been set to 15 MB (down from 30 MB)**. This is the new limit MERK will look for before prompting the user the back up the large logs.
-- **Many bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -119,6 +102,14 @@ What's new:
 * Changed the default "large log warning" size to 15 MB (down from 30 MB). The
   variable name in the configuration file has been changed so that the new
   default it updated for all users.
+* Rewrote some of the message display code for setting and unsetting modes.
+* Bugfix: sometimes the client would display a "mangled" set or unset mode
+  message from servers.
+* The "/time" command now displays the reply to it in the active subwindow as
+  well as the server subwindow; the same change has been made with the
+  "/version" command.
+* Bugfix: being kicked from a channel could trigger a 442 error from the server
+  (as the client tried to issue a PART command when a channel window is closed).
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
