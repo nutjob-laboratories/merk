@@ -3720,7 +3720,7 @@ class Window(QMainWindow):
 
 		if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
 			if message.type==ERROR_MESSAGE:
-				if "Error on line" in message.contents:
+				if "error on line" in message.contents.lower():
 					sys.stdout.write(f"{message.contents}\n")
 
 		try:

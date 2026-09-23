@@ -3540,7 +3540,7 @@ class Merk(QMainWindow):
 		return None
 
 	def getSubWindowCommand(self,channel,client):
-		if channel=='*':
+		if channel=='&':
 			for window in self.MDI.subWindowList():
 				c = window.widget()
 				if hasattr(c,"client"):

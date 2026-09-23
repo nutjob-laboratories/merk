@@ -1,4 +1,22 @@
 |------------------------------------------------------------------------------|
+|                                   0.052.350                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Bugfix: not all scripting errors would be written to STDOUT if that option was
+  turned on.
+* Cleaned up some script error messages.
+* Bugfix: commands that took * as an argument now use the & character to do the
+  same thing (with the exception of arguments that contain wildcards). This is
+  considered a bug because users would have to escape markdown (or turn it off)
+  if they wanted to use these commands in the text input widget.
+* Bugfix: built-in aliases and script-only commands now use the & character as
+  a return rather than *.
+
+|------------------------------------------------------------------------------|
 |                                   0.052.300                                  |
 |------------------------------------------------------------------------------|
 

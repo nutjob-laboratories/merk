@@ -36,27 +36,27 @@ readme = readme.replace("!_RELEASE_URL_!",rurl)
 dist_file_size =  os.path.getsize("./downloads/merk-latest.zip")
 file_size_kb = dist_file_size / 1024
 file_size_mb = file_size_kb / 1024
-readme = readme.replace("!_PYSIZE_!",f"{file_size_mb:.2f} MB")
+readme = readme.replace("!_PYSIZE_!",f"~{file_size_mb:.0f} MB")
 # !_WINZIP_!
 win_latest_file_size =  os.path.getsize("./downloads/merk-windows-latest.zip")
 file_size_kb = win_latest_file_size / 1024
 file_size_mb = file_size_kb / 1024
-readme = readme.replace("!_WINZIP_!",f"{file_size_mb:.2f} MB")
+readme = readme.replace("!_WINZIP_!",f"~{file_size_mb:.0f} MB")
 # !_WINSETUP_!
 win_setup_file_size =  os.path.getsize("./downloads/merk-windows-setup.zip")
 file_size_kb = win_setup_file_size / 1024
 file_size_mb = file_size_kb / 1024
-readme = readme.replace("!_WINSETUP_!",f"{file_size_mb:.2f} MB")
+readme = readme.replace("!_WINSETUP_!",f"~{file_size_mb:.0f} MB")
 # !_LINZIP_!
 win_latest_file_size =  os.path.getsize("D:/Stuff/Dropbox/Public/merk-linux-latest.zip")
 file_size_kb = win_latest_file_size / 1024
 file_size_mb = file_size_kb / 1024
-readme = readme.replace("!_LINZIP_!",f"{file_size_mb:.2f} MB")
+readme = readme.replace("!_LINZIP_!",f"~{file_size_mb:.0f} MB")
 # !_LINFLAT_!
 win_latest_file_size =  os.path.getsize("D:/Stuff/Dropbox/Public/merk-latest.flatpak")
 file_size_kb = win_latest_file_size / 1024
 file_size_mb = file_size_kb / 1024
-readme = readme.replace("!_LINFLAT_!",f"{file_size_mb:.2f} MB")
+readme = readme.replace("!_LINFLAT_!",f"~{file_size_mb:.0f} MB")
 
 os.remove("README.md")
 f = open("README.md",mode="w", encoding='latin-1')
