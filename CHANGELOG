@@ -14,7 +14,13 @@
   considered a bug because users would have to escape markdown (or turn it off)
   if they wanted to use these commands in the text input widget.
 * Bugfix: built-in aliases and script-only commands now use the & character as
-  a return rather than *.
+  a "return" rather than *.
+* Bugfix: passing "*" to the "/list" command could cause some errors.
+* Removed the option to filter channels by 100+ users in the channel list
+  dialog.
+* Bugfix: the "/toggle" command would not automatically rebuild the input menus.
+* Bugfix: changing some settings in the "Settings" dialog would also not rebuild
+  the input menus of subwindows.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.300                                  |

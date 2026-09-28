@@ -104,7 +104,6 @@ class Window(QMainWindow):
 		self.moreTwenty = QRadioButton("20+",self)
 		self.moreFifty	= QRadioButton("50+",self)
 		self.moreAny	= QRadioButton("1+",self)
-		self.moreHundred= QRadioButton("100+",self)
 		self.moreAny.setChecked(True)
 		self.moreFive.toggled.connect(self.doReset)
 		self.moreTen.toggled.connect(self.doReset)
@@ -121,7 +120,6 @@ class Window(QMainWindow):
 		self.moreTwenty.setFont(f)
 		self.moreAny.setFont(f)
 		self.moreFifty.setFont(f)
-		self.moreHundred.setFont(f)
 
 		self.reset_button = QPushButton("Reset")
 		self.reset_button.clicked.connect(self.doResetButton)
@@ -173,7 +171,6 @@ class Window(QMainWindow):
 		self.oLayout.addWidget(self.moreTen)
 		self.oLayout.addWidget(self.moreTwenty)
 		self.oLayout.addWidget(self.moreFifty)
-		self.oLayout.addWidget(self.moreHundred)
 		self.oLayout.addStretch()
 		self.oLayout.addWidget(self.allTerms)
 		self.oLayout.addWidget(spacer)
@@ -259,12 +256,12 @@ class Window(QMainWindow):
 
 		self.table_widget.clear()
 
-		target = self.search_terms.text()
-
-		self.setWindowTitle(self.window_title+" - "+target)
+		self.setWindowTitle(self.window_title)
 
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
-			target = "*"+"*".join(target.split())+"*"
+			target = f"*{'*'.join(self.search_terms.text().split())}*"
+		else:
+			target = self.search_terms.text()
 
 		results = []
 		for entry in self.client.server_channel_list:
@@ -305,9 +302,6 @@ class Window(QMainWindow):
 					add_entry = False
 			if self.moreFifty.isChecked():
 				if icount<50:
-					add_entry = False
-			if self.moreHundred.isChecked():
-				if icount<100:
 					add_entry = False
 
 			if icount==0: add_entry = False
@@ -401,9 +395,6 @@ class Window(QMainWindow):
 					add_entry = False
 			if self.moreFifty.isChecked():
 				if icount<50:
-					add_entry = False
-			if self.moreHundred.isChecked():
-				if icount<100:
 					add_entry = False
 
 			if icount==0: add_entry = False

@@ -244,6 +244,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"toggle protection": config.ISSUE_COMMAND_SYMBOL+"toggle protection",
 			config.ISSUE_COMMAND_SYMBOL+"toggle audio": config.ISSUE_COMMAND_SYMBOL+"toggle audio",
 			config.ISSUE_COMMAND_SYMBOL+"toggle systray": config.ISSUE_COMMAND_SYMBOL+"toggle systray",
+			config.ISSUE_COMMAND_SYMBOL+"toggle merkdown": config.ISSUE_COMMAND_SYMBOL+"toggle merkdown",
+			config.ISSUE_COMMAND_SYMBOL+"toggle tray": config.ISSUE_COMMAND_SYMBOL+"toggle tray",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -2034,6 +2036,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned on")
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
+			gui.rebuildAllInputMenus()
 			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2046,6 +2049,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned on")
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
+			gui.rebuildAllInputMenus()
 			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2058,6 +2062,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned on")
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
+			gui.rebuildAllInputMenus()
 			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2070,6 +2075,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned on")
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
+			gui.rebuildAllInputMenus()
 			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2082,6 +2088,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned on")
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
+			gui.rebuildAllInputMenus()
 			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2094,6 +2101,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Audio notifications have been turned on")
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
+			gui.rebuildAllInputMenus()
 			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2108,6 +2116,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon is no longer hidden")
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
+			gui.rebuildAllInputMenus()
 			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -7171,6 +7180,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			tokens.pop(0)
 			target = ' '.join(tokens)
+
+			# BUGFIX: this prevents bad data from being passed to
+			# the channel list search
+			target = target.replace("\x0f", "")
 
 			# Check for list "freshness"
 			refresh_list = False

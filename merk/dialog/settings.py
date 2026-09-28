@@ -1647,6 +1647,7 @@ class Dialog(QDialog):
 			self.autoEmojiAway.setEnabled(False)
 			self.autoEmojiQuit.setEnabled(False)
 
+		self.do_input_menu = True
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -7102,11 +7103,11 @@ class Dialog(QDialog):
 
 		self.useMd = QCheckBox("Enable markdown",self)
 		if config.ENABLE_MARKDOWN_MARKUP: self.useMd.setChecked(True)
-		self.useMd.stateChanged.connect(self.changedSetting)
+		self.useMd.stateChanged.connect(self.changedSettingInputMenu)
 
 		self.useIRCc = QCheckBox("Enable IRC color",self)
 		if config.ENABLE_IRC_COLOR_MARKUP: self.useIRCc.setChecked(True)
-		self.useIRCc.stateChanged.connect(self.changedSetting)
+		self.useIRCc.stateChanged.connect(self.changedSettingInputMenu)
 
 		self.resetColors = SmallButton("User colors")
 		self.resetColors.clicked.connect(self.deleteColors)
@@ -8164,7 +8165,9 @@ class Dialog(QDialog):
 			if self.swapUserlists: self.parent.swapAllUserlists()
 			if self.toggleUserlist: self.parent.toggleAllUserlists()
 			if self.do_spellcheck: self.parent.toggleSpellcheck()
-			if self.do_input_menu: self.parent.toggleInputMenu()
+			if self.do_input_menu:
+				self.parent.toggleInputMenu()
+				self.parent.rebuildAllInputMenus()
 			if self.do_rubberband: self.parent.toggleRubberbanding()
 			if self.do_scrollbar: self.parent.toggleScrollbar()
 			if update_cursors: self.parent.toggleCursorWidth()

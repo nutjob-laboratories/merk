@@ -269,7 +269,7 @@ class Window(QMainWindow):
 		# The window's opacity starts at 100%
 		self.opacity = 100
 
-		if self.window_type==CHANNEL_WINDOW:
+		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 			# Set the rerender timer to a random
 			# amount of seconds from 2 minutes to
 			# 3 minutes
@@ -2160,7 +2160,7 @@ class Window(QMainWindow):
 						d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 						self.chat.append(d2)
 
-			if self.window_type==CHANNEL_WINDOW:
+			if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 				# Rerender the chat after a little bit
 				if config.HIGHLIGHT_NICKS_IN_CHAT and config.AUTOMATICALLY_RERENDER_CHAT:
 					if self.uptime>self.force_chat_log_rerender and self.force_chat_log_rerender!=0:
@@ -2171,7 +2171,7 @@ class Window(QMainWindow):
 							self.rerenderChatLog(True)
 
 	def toggleChatRerender(self):
-		if self.window_type==CHANNEL_WINDOW and config.AUTOMATICALLY_RERENDER_CHAT and config.HIGHLIGHT_NICKS_IN_CHAT:
+		if (self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW) and config.AUTOMATICALLY_RERENDER_CHAT and config.HIGHLIGHT_NICKS_IN_CHAT:
 			if self.force_chat_log_rerender==0 or self.rerendered_chat==True:
 				self.rerendered_chat = False
 				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP)
