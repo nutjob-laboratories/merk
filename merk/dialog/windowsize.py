@@ -55,7 +55,7 @@ class Dialog(QDialog):
 		self.parent = parent
 
 		self.setWindowTitle("Set initial window size")
-		self.setWindowIcon(QIcon(RESIZE_ICON))
+		self.setWindowIcon(QIcon(WINDOW_ICON))
 
 		widthLayout = QHBoxLayout()
 		self.widthLabel = QLabel("Width")

@@ -1521,7 +1521,7 @@ class Window(QMainWindow):
 				else:
 					cname = c.name
 
-				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE) )
+				runmenuLabel = MenuLabel( menuHtml(CONNECT_DIALOG_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE) )
 				runmenuAction = QWidgetAction(self)
 				runmenuAction.setDefaultWidget(runmenuLabel)
 				runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))

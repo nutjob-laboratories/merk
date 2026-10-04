@@ -5,6 +5,8 @@
 What's new:
 
 - **Logs can now be exported to CSV**. The Log Manager has been partially re-written, and is now simpler and easier to use. Logs can be exported to human readable text, JSON, or CSV.
+- **New icons**. Many application icons have been changed, using (primarily) the public domain [Tango](https://openhub.net/p/tango) icon set. Many icons have been removed from the application's resource file.
+- **Many bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -28,6 +30,22 @@ What's new:
 * Rewrote a large portion of the Log Manager. Logs can now be exported to human
   readable text, JSON, or CSV.
 * Bugfix: CSV and JSON export did not add in nicknames in CTCP ACTION messages.
+* Changed the "log" icon.
+* Changed the "undo" and "redo" icons.
+* Changed the "console" icon.
+* Changed the "channel" icon, for both windows and menus.
+* Changed the "cut", "copy", and "clipboard" icons.
+* Changed the "info" icon.
+* Removed the "network" icons from the resource file; now, we just use the
+  "connect" icon in its place.
+* Changed the "plugin" icons.
+* Removed the "resize" icon, as it was only used once, and wasn't really needed
+  anymore.
+* Changed the "select all" icon.
+* Changed the "spellcheck" icon.
+* Changed the "miscellaneous" icon.
+* Removed the "about" icon from the resource file.
+* Changed the "dictionary" icon.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.300                                  |

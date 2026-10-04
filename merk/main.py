@@ -6159,7 +6159,7 @@ class Merk(QMainWindow):
 
 								display_shown = False
 								if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-									wentry = widgets.ExtendedMenuItemNoAction(self,CONNECT_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
+									wentry = widgets.ExtendedMenuItemNoAction(self,CONNECT_DIALOG_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 									sm.addAction(wentry)
 									display_shown = True
 
