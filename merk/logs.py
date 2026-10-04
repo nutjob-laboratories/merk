@@ -242,13 +242,14 @@ def pretty_timestamp_time(ts):
 		else:
 			return datetime.fromtimestamp(ts).strftime(config.TIMESTAMP_FORMAT+' %p')
 
-# Loads an AoA from disk, converts it to a string
-def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
+# Loads an AoA from disk, converts it to a CSV string
+def dumpLogCSV(filename,linedelim="\n"):
 	if os.path.isfile(filename):
 		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
 			logs = json.load(logentries)
 	if logs:
-		out = []
+		# out = []
+		out = ['"Timestamp","User","Message"']
 		for l in logs:
 			if l[2]!=None:
 				l[2] = l[2].strip()
@@ -258,14 +259,22 @@ def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 				l[3] = l[3].strip()
 			else:
 				l[3] = ''
-			if l[2]=='': l[2] = '***'
-			if l[2].startswith('&rarr;'): l[2] = l[2].replace('&rarr;','-> ',1)
+			if l[2]=='': l[2] = '*'
+			if l[2].startswith('&rarr;'): l[2] = l[2].replace('&rarr;','->',1)
 
-			if not epoch:
-				pretty_timestamp = pretty_timestamp_date(l[0])
-				entry = pretty_timestamp+delimiter+l[2]+delimiter+l[3]
+			if l[1]==ACTION_MESSAGE:
+				p = l[2].split('!')
+				if len(p)==2:
+					if len(l[3].strip())>0: l[3] = f"{p[0]} {l[3]}"
+				else:
+					if len(l[3].strip())>0: l[3] = f"{l[2]} {l[3]}"
+
+			if '"' in l[3]:
+				l[3] = f'""{l[3]}""'
 			else:
-				entry = str(l[0])+delimiter+l[2]+delimiter+l[3]
+				l[3] = f'"{l[3]}"'
+
+			entry = f"{l[0]},{l[2]},{l[3]}"
 			if l[3]!="": out.append(entry)
 		return linedelim.join(out)
 	else:
@@ -302,7 +311,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 				l[3] = l[3].strip()
 			else:
 				l[3] = ''
-			if l[2]=='': l[2] = '***'
+			if l[2]=='': l[2] = '*'
 
 			u = l[2].split('!')
 			if len(u)==2:
@@ -329,7 +338,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 			# representation
 			if message_type==SELF_MESSAGE:
 				if username.startswith('&rarr;'):
-					username = username.replace('&rarr;','-> ',1)
+					username = username.replace('&rarr;','->',1)
 
 			# Since the background of the log viewer is white,
 			# we need to make sure that white colored text is
@@ -458,6 +467,14 @@ def dumpLogJson(filename,epoch=True):
 				l[3] = ''
 			if l[2]=='': l[2] = '*'
 			if l[2].startswith('&rarr;'): l[2] = l[2].replace('&rarr;','-> ',1)
+
+			if l[1]==ACTION_MESSAGE:
+				p = l[2].split('!')
+				if len(p)==2:
+					if len(l[3].strip())>0: l[3] = f"{p[0]} {l[3]}"
+				else:
+					if len(l[3].strip())>0: l[3] = f"{l[2]} {l[3]}"
+
 			if not epoch:
 				l[0] = pretty_timestamp_date(l[0])
 			entry = [ l[0],l[2],l[3] ]

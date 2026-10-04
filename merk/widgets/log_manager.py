@@ -46,85 +46,74 @@ from ..resources import *
 
 class Window(QMainWindow):
 
-	def do_export(self):
+	def do_export_csv(self):
 
 		item = self.packlist.currentItem()
-
 		elog = item.file
 		channel = item.channel
-		dlog = self.delimiter
-		llog = self.linedelim
-		do_json = self.do_json
-		do_epoch = self.epoch
-
-		if self.export_format=='human':
-			options = QFileDialog.Options()
-			options |= QFileDialog.DontUseNativeDialog
-			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",os.path.expanduser("~"),"Text File (*.txt);;All Files (*)", options=options)
-			if fileName:
-				_, file_extension = os.path.splitext(fileName)
-				if file_extension=='':
-					efl = len("txt")+1
-					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
-				dump = logs.dumpLogHuman(elog,False,do_epoch)
-				code = open(fileName,mode="w",encoding="utf-8")
-				code.write(dump)
-				code.close()
-				return
-
-		if not do_json:
-			options = QFileDialog.Options()
-			options |= QFileDialog.DontUseNativeDialog
-			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",os.path.expanduser("~"),"Text File (*.txt);;All Files (*)", options=options)
-			if fileName:
-				_, file_extension = os.path.splitext(fileName)
-				if file_extension=='':
-					efl = len("txt")+1
-					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
-				dump = logs.dumpLog(elog,dlog,llog,do_epoch)
-				code = open(fileName,mode="w",encoding="utf-8")
-				code.write(dump)
-				code.close()
+		if channel[0]=='#' or channel[0]=='&' or channel[0]=='+' or channel[0]=='!':
+			def_filename = os.path.join(os.path.expanduser("~"),f"{channel[1:]}.csv")
 		else:
-			options = QFileDialog.Options()
-			options |= QFileDialog.DontUseNativeDialog
-			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",os.path.expanduser("~"),"JSON File (*.json);;All Files (*)", options=options)
-			if fileName:
-				_, file_extension = os.path.splitext(fileName)
-				if file_extension=='':
-					efl = len("json")+1
-					if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
-				dump = logs.dumpLogJson(elog,do_epoch)
-				code = open(fileName,mode="w",encoding="utf-8")
-				code.write(dump)
-				code.close()
+			def_filename = os.path.join(os.path.expanduser("~"),f"{channel}.csv")
 
-	def clickTime(self,state):
-		if state == Qt.Checked:
-			self.epoch = True
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",def_filename,"CSV File (*.csv);;All Files (*)", options=options)
+		if fileName:
+			_, file_extension = os.path.splitext(fileName)
+			if file_extension=='':
+				efl = len("csv")+1
+				if fileName[-efl:].lower()!=f".csv": fileName = fileName+f".csv"
+			dump = logs.dumpLogCSV(elog)
+			code = open(fileName,mode="w",encoding="utf-8")
+			code.write(dump)
+			code.close()
+
+	def do_export_human(self):
+
+		item = self.packlist.currentItem()
+		elog = item.file
+		channel = item.channel
+		if channel[0]=='#' or channel[0]=='&' or channel[0]=='+' or channel[0]=='!':
+			def_filename = os.path.join(os.path.expanduser("~"),f"{channel[1:]}.txt")
 		else:
-			self.epoch = False
+			def_filename = os.path.join(os.path.expanduser("~"),f"{channel}.txt")
 
-	def setLine(self):
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",def_filename,"Text File (*.txt);;All Files (*)", options=options)
+		if fileName:
+			_, file_extension = os.path.splitext(fileName)
+			if file_extension=='':
+				efl = len("txt")+1
+				if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+			dump = logs.dumpLogHuman(elog,False,False)
+			code = open(fileName,mode="w",encoding="utf-8")
+			code.write(dump)
+			code.close()
 
-		dtype = self.line.itemText(self.line.currentIndex())
-		if dtype=='Newline': self.linedelim = "\n"
-		if dtype=='CRLF': self.linedelim = "\r\n"
-		if dtype=='Tab': self.linedelim = "\t"
-		if dtype=='Comma': self.linedelim = ","
-		if dtype=='Pipe': self.linedelim = "|"
+	def do_export_json(self):
 
-	def setType(self):
+		item = self.packlist.currentItem()
+		elog = item.file
+		channel = item.channel
+		if channel[0]=='#' or channel[0]=='&' or channel[0]=='+' or channel[0]=='!':
+			def_filename = os.path.join(os.path.expanduser("~"),f"{channel[1:]}.json")
+		else:
+			def_filename = os.path.join(os.path.expanduser("~"),f"{channel}.json")
 
-		dtype = self.type.itemText(self.type.currentIndex())
-		if dtype=='Space': self.delimiter = ' '
-		if dtype=='Double Space': self.delimiter = '  '
-		if dtype=='Tab': self.delimiter = "\t"
-		if dtype=='Comma': self.delimiter = ','
-		if dtype=='Colon': self.delimiter = ':'
-		if dtype=='Double Colon': self.delimiter = '::'
-		if dtype=='Pipe': self.delimiter = '|'
-		if dtype=='Double Pipe': self.delimiter = '||'
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",def_filename,"JSON File (*.json);;All Files (*)", options=options)
+		if fileName:
+			_, file_extension = os.path.splitext(fileName)
+			if file_extension=='':
+				efl = len("json")+1
+				if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
+			dump = logs.dumpLogJson(elog,True)
+			code = open(fileName,mode="w",encoding="utf-8")
+			code.write(dump)
+			code.close()
 
 	def closeEvent(self, event):
 
@@ -155,6 +144,20 @@ class Window(QMainWindow):
 			channel_action = QAction(QIcon(CLIPBOARD_ICON),"Copy chat name to clipboard", self)
 			channel_action.triggered.connect(lambda: self.copy_channel_to_clipboard(item))
 			menu.addAction(channel_action)
+
+			expMenu = menu.addMenu(QIcon(SAVEFILE_ICON),f"Export log to...")
+
+			backup_action = QAction("Text", self)
+			backup_action.triggered.connect(self.do_export_human)
+			expMenu.addAction(backup_action)
+
+			backup_action = QAction("JSON", self)
+			backup_action.triggered.connect(self.do_export_json)
+			expMenu.addAction(backup_action)
+
+			backup_action = QAction("CSV", self)
+			backup_action.triggered.connect(self.do_export_csv)
+			expMenu.addAction(backup_action)
 
 			backup_action = QAction(QIcon(SAVEFILE_ICON),"Back up log file", self)
 			backup_action.triggered.connect(lambda: self.backup_log(item))
@@ -251,19 +254,6 @@ class Window(QMainWindow):
 			os.remove(item.file)
 
 		self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
-		self.filesize.setText(' ')
-		self.filetype.setText('<b>to export</b>')
-		self.filename.setText('<b>Select a log</b>')
-		self.packlist.clearSelection()
-		self.menubar.setEnabled(False)
-		self.format.setEnabled(False)
-		self.typeLabel.setEnabled(False)
-		self.type.setEnabled(False)
-		self.lineLabel.setEnabled(False)
-		self.line.setEnabled(False)
-		self.time.setEnabled(False)
-		self.button_export.setEnabled(False)
-		self.file_icon.setPixmap(self.blank_file)
 
 		self.dump.setText('')
 
@@ -293,20 +283,7 @@ class Window(QMainWindow):
 		self.packlist.clear()
 		self.log = []
 
-		self.status_details.setText(f"<small><b>Select a log to export</b></small>")
-		self.filesize.setText(' ')
-		self.filetype.setText('<b>to export</b>')
-		self.file_icon.setPixmap(self.blank_file)
-		self.filename.setText('<b>Select a log</b>')
-
-		self.menubar.setEnabled(False)
-		self.format.setEnabled(False)
-		self.typeLabel.setEnabled(False)
-		self.type.setEnabled(False)
-		self.lineLabel.setEnabled(False)
-		self.line.setEnabled(False)
-		self.time.setEnabled(False)
-		self.button_export.setEnabled(False)
+		self.status_details.setText(f"<small><b>Select a log</b></small>")
 
 		servers = []
 		others = []
@@ -391,11 +368,7 @@ class Window(QMainWindow):
 		self.simplified = simplified
 		self.target = target
 
-		self.do_json = True
-		self.do_human = False
-		self.epoch = False
 		self.log = []
-		self.export_format = 'json'
 
 		self.window_type = LOG_MANAGER_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
@@ -407,15 +380,6 @@ class Window(QMainWindow):
 		else:
 			self.name = "Log Manager"
 			self.setWindowTitle("Log Manager")
-
-		self.channel_file = QPixmap(CHANNEL_ICON)
-		self.private_file = QPixmap(PRIVATE_WINDOW_ICON)
-		self.blank_file = QPixmap(LOG_ICON)
-
-		icon_size = QSize(35, 35)
-		self.channel_file = self.channel_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-		self.private_file = self.private_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-		self.blank_file = self.blank_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
 
 		if self.parent.dark_mode:
 			self.style = styles.loadDarkDefault()
@@ -430,120 +394,10 @@ class Window(QMainWindow):
 
 		delimLayout = QFormLayout()
 
-		self.type = QComboBox(self)
-		self.type.activated.connect(self.setType)
-		self.type.addItem("Tab")
-		self.type.addItem("Space")
-		self.type.addItem("Double Space")
-		self.type.addItem("Comma")
-		self.type.addItem("Colon")
-		self.type.addItem("Double Colon")
-		self.type.addItem("Pipe")
-		self.type.addItem("Double Pipe")
-		f = self.type.font()
-		f.setBold(True)
-		self.type.setFont(f)
-
-		self.typeLabel = QLabel("Field Delimiter:")
-		delimLayout.addRow(self.typeLabel, self.type)
-
-		self.line = QComboBox(self)
-		self.line.activated.connect(self.setLine)
-		self.line.addItem("Newline")
-		self.line.addItem("CRLF")
-		self.line.addItem("Tab")
-		self.line.addItem("Comma")
-		self.line.addItem("Pipe")
-		f = self.line.font()
-		f.setBold(True)
-		self.line.setFont(f)
-
-		self.lineLabel = QLabel("Entry Delimiter:")
-		delimLayout.addRow(self.lineLabel, self.line)
-
-		self.button_export=QPushButton("  Save Export  ")
-		self.button_export.clicked.connect(self.do_export)
-		self.button_export.setEnabled(False)
-
-		self.time = QCheckBox("Epoch format for date/time ",self)
-		self.time.stateChanged.connect(self.clickTime)
-		self.time.toggle()
-
-		self.time.setLayoutDirection(Qt.RightToLeft)
-
-		self.menubar = QMenuBar(self)
-		BOLD_FONT = self.font()
-		BOLD_FONT.setBold(True)
-
-		fileMenu = self.menubar.addMenu ("Export log as...")
-
-		self.menuJson = QAction(QIcon(self.parent.round_checked_icon),"JSON",self)
-		self.menuJson.triggered.connect(lambda state,s="json": self.toggleSetting(s))
-		fileMenu.addAction(self.menuJson)
-
-		self.menuText = QAction(QIcon(self.parent.round_unchecked_icon),"ASCII Text",self)
-		self.menuText.triggered.connect(lambda state,s="text": self.toggleSetting(s))
-		fileMenu.addAction(self.menuText)
-
-		self.menuHuman = QAction(QIcon(self.parent.round_unchecked_icon),"Human Readable",self)
-		self.menuHuman.triggered.connect(lambda state,s="human": self.toggleSetting(s))
-		fileMenu.addAction(self.menuHuman)
-
-		self.format = QLabel("JSON file")
-		self.format.setFont(BOLD_FONT)
-
-		self.type.setEnabled(False)
-		self.typeLabel.setEnabled(False)
-		self.line.setEnabled(False)
-		self.lineLabel.setEnabled(False)
-
-		formatLayout = QHBoxLayout()
-		formatLayout.addWidget(self.menubar)
-		formatLayout.addWidget(self.format)
-
-		exportLayout = QVBoxLayout()
-		exportLayout.addLayout(formatLayout)
-		exportLayout.addLayout(delimLayout)
-		exportLayout.addWidget(self.time)
-		exportLayout.setSizeConstraint(QLayout.SetFixedSize)
-
-		self.menubar.setEnabled(False)
-		self.format.setEnabled(False)
-		self.typeLabel.setEnabled(False)
-		self.type.setEnabled(False)
-		self.lineLabel.setEnabled(False)
-		self.line.setEnabled(False)
-		self.time.setEnabled(False)
-		self.button_export.setEnabled(False)
-
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
-		self.status_details = QLabel(f"<small><b>Select a log to export</b></small>")
+		self.status_details = QLabel(f"<small><b>Select a log</b></small>")
 		self.status.addPermanentWidget(self.status_details,1)
-
-		self.filesize = QLabel(' ')
-		self.filetype = QLabel('<b>to export</b>')
-		self.filename = QLabel('<b>Select a log</b>')
-
-		self.file_icon = QLabel()
-		self.file_icon.setPixmap(self.blank_file)
-
-		buttons = QHBoxLayout()
-		buttons.addStretch()
-		buttons.addWidget(self.button_export)
-		buttons.addStretch()
-
-		sideLayout = QVBoxLayout()
-		sideLayout.addLayout(exportLayout)
-		sideLayout.addStretch()
-
-		detailsLayout = QVBoxLayout()
-		detailsLayout.addWidget(self.filename)
-		detailsLayout.addWidget(self.filetype)
-		detailsLayout.addWidget(self.filesize)
-
-		iconLayout = QVBoxLayout()
-		iconLayout.addWidget(self.file_icon)
 
 		self.dump = LogViewer()
 		self.dump.setReadOnly(True)
@@ -561,32 +415,6 @@ class Window(QMainWindow):
 		dumpLayout.setSpacing(0)
 		dumpLayout.addWidget(self.dump)
 
-		fileinfoLayout = QHBoxLayout()
-		fileinfoLayout.addLayout(iconLayout)
-		fileinfoLayout.addLayout(detailsLayout)
-		fileinfoLayout.addStretch()
-		fileinfoLayout.setSizeConstraint(QLayout.SetFixedSize)
-
-		otherLayout = QHBoxLayout()
-		otherLayout.addLayout(sideLayout)
-
-		bottomLayout2 = QVBoxLayout()
-		bottomLayout2.addLayout(fileinfoLayout)
-		bottomLayout2.addLayout(otherLayout)
-
-		file_info = QWidget()
-		file_info.setLayout(bottomLayout2)
-
-		bottomLayout3 = QVBoxLayout()
-		bottomLayout3.addStretch()
-		bottomLayout3.addWidget(file_info)
-		bottomLayout3.addStretch()
-		bottomLayout3.addLayout(buttons)
-		bottomLayout3.addStretch()
-
-		bottomLayout=QHBoxLayout()
-		bottomLayout.addLayout(bottomLayout3)
-
 		self.tabs = QTabWidget()
 		self.tabs.setStyleSheet("QTabBar::tab { font-weight: bold; }")
 
@@ -602,14 +430,12 @@ class Window(QMainWindow):
 		self.horizontalSplitter.setStretchFactor(0, 0)
 		self.horizontalSplitter.setStretchFactor(1, 1)
 
-		self.export_options = QWidget()
 		self.dump_view = QWidget()
-		log_index = self.tabs.addTab(self.dump_view, "View ")
-		self.tabs.addTab(self.export_options, "Export")
+		log_index = self.tabs.addTab(self.dump_view, "")
 		
 		self.search = QLineEdit()
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAA")
+		wwidth = fm.horizontalAdvance("A"*30)
 		self.search.setFixedWidth(wwidth)
 		self.search.returnPressed.connect(self.on_search)
 		self.search.setPlaceholderText("Search terms...")
@@ -650,7 +476,6 @@ class Window(QMainWindow):
 
 		self.tabs.tabBar().setTabButton(log_index, QTabBar.RightSide, self.swidget)
 
-		self.export_options.setLayout(bottomLayout)
 		self.dump_view.setLayout(dumpLayout)
 
 		self.buildList()
@@ -771,83 +596,6 @@ class Window(QMainWindow):
 		else:
 			self.status_details.setText(f'<small>{det} - <b>{item.file}</b> ({item.size})</small>')
 
-		self.filesize.setText(f'<small><b>{os.path.basename(item.file)}</b></i></small>')
-
-		self.menubar.setEnabled(True)
-		self.format.setEnabled(True)
-
-		if self.export_format=='json':
-			self.typeLabel.setEnabled(False)
-			self.type.setEnabled(False)
-			self.lineLabel.setEnabled(False)
-			self.line.setEnabled(False)
-			self.time.setEnabled(True)
-		elif self.export_format=='human':
-			self.typeLabel.setEnabled(False)
-			self.type.setEnabled(False)
-			self.lineLabel.setEnabled(False)
-			self.line.setEnabled(False)
-			self.time.setEnabled(True)
-		else:
-			self.typeLabel.setEnabled(True)
-			self.type.setEnabled(True)
-			self.lineLabel.setEnabled(True)
-			self.line.setEnabled(True)
-			self.time.setEnabled(True)
-
-		self.button_export.setEnabled(True)
-
-		if item.type==CHANNEL_WINDOW:
-			self.filetype.setText(f"<small><b>Channel log</b></small>")
-			self.file_icon.setPixmap(self.channel_file)
-		elif item.type==PRIVATE_WINDOW:
-			self.filetype.setText(f"<small><b>Private chat log</b></small>")
-			self.file_icon.setPixmap(self.private_file)
-
-		self.filename.setText(f"<b>{item.channel}</b>")
-
-		self.button_export.setEnabled(True)
-
 		self.dump.setText(logs.dumpLogHuman(item.file,True))
 
 		QApplication.restoreOverrideCursor()
-
-	def toggleSetting(self,setting):
-
-		self.export_format = setting
-
-		if setting=='json':
-			self.menuJson.setIcon(QIcon(self.parent.round_checked_icon))
-			self.menuText.setIcon(QIcon(self.parent.round_unchecked_icon))
-			self.menuHuman.setIcon(QIcon(self.parent.round_unchecked_icon))
-			self.do_json = True
-			self.type.setEnabled(False)
-			self.typeLabel.setEnabled(False)
-			self.line.setEnabled(False)
-			self.lineLabel.setEnabled(False)
-			self.format.setText("JSON file")
-			return
-
-		if setting=='text':
-			self.menuJson.setIcon(QIcon(self.parent.round_unchecked_icon))
-			self.menuText.setIcon(QIcon(self.parent.round_checked_icon))
-			self.menuHuman.setIcon(QIcon(self.parent.round_unchecked_icon))
-			self.do_json = False
-			self.type.setEnabled(True)
-			self.typeLabel.setEnabled(True)
-			self.line.setEnabled(True)
-			self.lineLabel.setEnabled(True)
-			self.format.setText("ASCII text file")
-			return
-
-		if setting=='human':
-			self.menuJson.setIcon(QIcon(self.parent.round_unchecked_icon))
-			self.menuText.setIcon(QIcon(self.parent.round_unchecked_icon))
-			self.menuHuman.setIcon(QIcon(self.parent.round_checked_icon))
-			self.do_json = True
-			self.type.setEnabled(False)
-			self.typeLabel.setEnabled(False)
-			self.line.setEnabled(False)
-			self.lineLabel.setEnabled(False)
-			self.format.setText("Human readable")
-			return

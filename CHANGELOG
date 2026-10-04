@@ -2,6 +2,10 @@
 |                                   0.052.350                                  |
 |------------------------------------------------------------------------------|
 
+What's new:
+
+- **Logs can now be exported to CSV**. The Log Manager has been partially re-written, and is now simpler and easier to use. Logs can be exported to human readable text, JSON, or CSV.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -21,6 +25,9 @@
 * Bugfix: the "/toggle" command would not automatically rebuild the input menus.
 * Bugfix: changing some settings in the "Settings" dialog would also not rebuild
   the input menus of subwindows.
+* Rewrote a large portion of the Log Manager. Logs can now be exported to human
+  readable text, JSON, or CSV.
+* Bugfix: CSV and JSON export did not add in nicknames in CTCP ACTION messages.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.300                                  |

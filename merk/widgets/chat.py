@@ -2513,13 +2513,13 @@ class Window(QMainWindow):
 				if item is None: return True
 
 				user = item.text()
-				self.showUserMenu(user,event.pos())
+				self.showUserlistMenu(user,event.pos())
 
 				return True
 
 		return super(Window, self).eventFilter(source, event)
 
-	def showUserMenu(self,user,position):
+	def showUserlistMenu(self,user,position):
 		user_nick = ''
 		user_hostmask = None
 		user_is_op = False
