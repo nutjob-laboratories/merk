@@ -55,7 +55,7 @@ class Dialog(QDialog):
 		self.parent = parent
 
 		self.setWindowTitle(f"Filename")
-		self.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 
 		nameLayout = QVBoxLayout()
 		self.nameLabel = QLabel("<small>Enter the filename this will be saved to the zip as.</small>")

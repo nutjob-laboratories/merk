@@ -61,7 +61,7 @@ class Window(QMainWindow):
 			if item.icon==None:
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msgBox.setText("Plugin does not have an icon. Do you want to add one?")
 				msgBox.setWindowTitle("Add icon")
 
@@ -167,7 +167,7 @@ class Window(QMainWindow):
 		if not config.OVERWRITE_PLUGINS_ON_IMPORT and overwrite==True:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText("The following files already exist. Overwrite?")
 			msgBox.setInformativeText("\n".join(ofiles))
 			msgBox.setWindowTitle("Overwrite")
@@ -219,7 +219,7 @@ class Window(QMainWindow):
 			if len(errors)>0:
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				if len(errors)>1:
 					msgBox.setText("There were errors loading plugins!")
 				else:
@@ -232,7 +232,7 @@ class Window(QMainWindow):
 		else:
 			msgBox = QMessageBox()
 			msgBox.setIcon(QMessageBox.Critical)
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(f"Import failed! The following files in \"{os.path.basename(filename)}\" will overwrite existing files:")
 			msgBox.setInformativeText("\n".join(ofiles))
 			msgBox.setWindowTitle("Plugin import error")
@@ -256,7 +256,7 @@ class Window(QMainWindow):
 
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		msgBox.setText(f"Are you sure you want to delete \"{item.basename}\"?\nThis will remove the following {pid}:")
 		if len(multiple)>0:
 			msgBox.setInformativeText("\n".join(multiple))
@@ -308,7 +308,7 @@ class Window(QMainWindow):
 				if len(errors)>0:
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					if len(errors)>1:
 						msgBox.setText("There were errors loading plugins!")
 					else:
@@ -338,7 +338,7 @@ class Window(QMainWindow):
 		if len(errors)>0:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			if len(errors)>1:
 				msgBox.setText("There were errors loading plugins!")
 			else:
@@ -501,7 +501,7 @@ class Window(QMainWindow):
 
 						msgBox = QMessageBox()
 						msgBox.setIcon(QMessageBox.Critical)
-						msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+						msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 						msgBox.setText(f"Import failed! \"{os.path.basename(fileName)}\" already exists in the plugin directory.")
 						msgBox.setWindowTitle("Plugin import error")
 						msgBox.setStandardButtons(QMessageBox.Ok)

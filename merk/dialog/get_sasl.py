@@ -65,7 +65,7 @@ class Dialog(QDialog):
 		config.load_settings(config.CONFIG_FILE)
 
 		self.setWindowTitle("SASL Login")
-		self.setWindowIcon(QIcon(CHANNEL_ICON))
+		self.setWindowIcon(QIcon(CHANNEL_MENU_ICON))
 
 		self.nameLabel = QLabel("<b>Username:</b>")
 

@@ -54,7 +54,7 @@ class Dialog(QDialog):
 		self.parent = parent
 
 		self.setWindowTitle("New connection script")
-		self.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 
 		self.nameLabel = QLabel("<b>Host:</b>")
 		self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as

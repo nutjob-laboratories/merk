@@ -419,7 +419,7 @@ class Dialog(QDialog):
 
 				msg = QMessageBox()
 				msg.setIcon(QMessageBox.Critical)
-				msg.setWindowIcon(QIcon(APPLICATION_ICON))
+				msg.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msg.setText("<big><b>Invalid file type</b></big>")
 				msg.setInformativeText(f"\"{os.path.basename(fileName)}\" is not a valid image file, and can't be used as a background image. Valid file types are {join_with_and(all_filetypes)}.")
 				msg.setWindowTitle("Error")
@@ -2182,8 +2182,8 @@ class Dialog(QDialog):
 	def do_restart(self, link):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_MENU_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		if self.parent.connected_to_something:
 			msgBox.setText(f"<b>Save settings and restart {APPLICATION_NAME} now?</b><br><br>This will disconnect {APPLICATION_NAME} from all servers.<br>")
 			reconnect = QCheckBox("Reconnect to all servers")
@@ -2264,7 +2264,7 @@ class Dialog(QDialog):
 		msg_box = QMessageBox()
 		msg_box.setIcon(QMessageBox.Critical)
 		msg_box.setWindowTitle(title)
-		msg_box.setWindowIcon(QIcon(APPLICATION_ICON))
+		msg_box.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		msg_box.setText(message)
 		msg_box.setStandardButtons(QMessageBox.Ok)
 		msg_box.exec_()
@@ -2396,7 +2396,7 @@ class Dialog(QDialog):
 
 				msg = QMessageBox()
 				msg.setIcon(QMessageBox.Critical)
-				msg.setWindowIcon(QIcon(APPLICATION_ICON))
+				msg.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msg.setText("<big><b>Invalid file type</b></big>")
 				msg.setInformativeText(f"\"{os.path.basename(fileName)}\" is not a valid image file, and can't be used as a background image. Valid file types are {join_with_and(all_filetypes)}.")
 				msg.setWindowTitle("Error")
@@ -2557,7 +2557,7 @@ class Dialog(QDialog):
 		self.changed_advanced_setting = False
 
 		self.setWindowTitle(f"Settings")
-		self.setWindowIcon(QIcon(SETTINGS_ICON))
+		self.setWindowIcon(QIcon(SETTINGS_MENU_ICON))
 
 		self.selector = QListWidget(self)
 		self.stack = QStackedWidget(self)
@@ -2607,7 +2607,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Application")
 		entry.widget = self.applicationPage
-		entry.setIcon(QIcon(APPLICATION_ICON))
+		entry.setIcon(QIcon(APPLICATION_MENU_ICON))
 		self.selector.addItem(entry)
 		self.selector.setCurrentItem(entry)
 
@@ -2782,7 +2782,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Appearance")
 		entry.widget = self.appearancePage
-		entry.setIcon(QIcon(STYLE_ICON))
+		entry.setIcon(QIcon(STYLE_MENU_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.appearancePage)
@@ -4290,7 +4290,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("User")
 		entry.widget = self.userPage
-		entry.setIcon(QIcon(PRIVATE_ICON))
+		entry.setIcon(QIcon(USER_MENU_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.userPage)
@@ -4456,7 +4456,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Channels")
 		entry.widget = self.channelInfoPage
-		entry.setIcon(QIcon(CHANNEL_ICON))
+		entry.setIcon(QIcon(CHANNEL_MENU_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.channelInfoPage)
@@ -4875,7 +4875,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Connections")
 		entry.widget = self.connectionsPage
-		entry.setIcon(QIcon(CONSOLE_ICON))
+		entry.setIcon(QIcon(CONSOLE_WINDOW_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.connectionsPage)
@@ -5718,7 +5718,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Logs")
 		entry.widget = self.logPage
-		entry.setIcon(QIcon(LOG_ICON))
+		entry.setIcon(QIcon(LOG_MENU_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.logPage)
@@ -6148,7 +6148,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Commands")
 		entry.widget = self.scriptingPage
-		entry.setIcon(QIcon(SCRIPT_ICON))
+		entry.setIcon(QIcon(SCRIPT_MENU_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.scriptingPage)
@@ -7516,7 +7516,7 @@ class Dialog(QDialog):
 
 			msg = QMessageBox()
 			msg.setIcon(QMessageBox.Critical)
-			msg.setWindowIcon(QIcon(APPLICATION_ICON))
+			msg.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msg.setText("<big><b>Bad or Missing Settings</b></big>")
 			msg.setInformativeText("Please correct these settings and try again.")
 			msg.setDetailedText(detailed)
@@ -8296,7 +8296,7 @@ class Dialog(QDialog):
 				if changed_main_codec:
 					msg = QMessageBox()
 					msg.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-					msg.setWindowIcon(QIcon(APPLICATION_ICON))
+					msg.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msg.setText("You have changed the main decoding codec, and need to disconnect from all servers.")
 					msg.setWindowTitle("Disconnect")
 					msg.setStandardButtons(QMessageBox.Ok)
@@ -8305,7 +8305,7 @@ class Dialog(QDialog):
 				else:
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText("You have changed the fallback decoding codec, and should disconnect from all servers. Disconnect from all servers?")
 					msgBox.setWindowTitle("Disconnect")
 

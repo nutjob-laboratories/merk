@@ -319,13 +319,13 @@ class Window(QMainWindow):
 		self.dosave.start(config.LOG_SAVE_INTERVAL)
 
 		if self.window_type==CHANNEL_WINDOW:
-			icon = CHANNEL_ICON
+			icon = CHANNEL_MENU_ICON
 			if not config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
 				self.setWindowTitle(' ')
 			else:
 				self.setWindowTitle(self.name)
 		elif self.window_type==SERVER_WINDOW:
-			icon = CONSOLE_ICON
+			icon = CONSOLE_WINDOW_ICON
 			self.setWindowTitle(self.name)
 		elif self.window_type==PRIVATE_WINDOW:
 			icon = PRIVATE_WINDOW_ICON
@@ -361,7 +361,7 @@ class Window(QMainWindow):
 			serverBar.addWidget(self.info_button)
 
 			self.join_button = QPushButton("")
-			self.join_button.setIcon(QIcon(CHANNEL_ICON))
+			self.join_button.setIcon(QIcon(CHANNEL_MENU_ICON))
 			self.join_button.clicked.connect(self.joinChannel)
 			self.join_button.setToolTip("Join a channel")
 			self.join_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
@@ -370,7 +370,7 @@ class Window(QMainWindow):
 			serverBar.addWidget(self.join_button)
 
 			self.nick_button = QPushButton("")
-			self.nick_button.setIcon(QIcon(PRIVATE_ICON))
+			self.nick_button.setIcon(QIcon(USER_MENU_ICON))
 			self.nick_button.clicked.connect(self.changeNick)
 			self.nick_button.setToolTip("Change your nickname")
 			self.nick_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
@@ -388,7 +388,7 @@ class Window(QMainWindow):
 			serverBar.addWidget(self.away_button)
 
 			self.script_button = QPushButton("")
-			self.script_button.setIcon(QIcon(RUN_ICON))
+			self.script_button.setIcon(QIcon(RUN_MENU_ICON))
 			self.script_button.clicked.connect(lambda state,u=True: self.loadScript(u))
 			self.script_button.setToolTip("Run a script")
 			self.script_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
@@ -1045,11 +1045,11 @@ class Window(QMainWindow):
 				opmenu.addAction(action)
 
 			if 'R' in channel_modes:
-				action = PlainIconTextAction(QIcon(PRIVATE_ICON), "Registered users only", self)
+				action = PlainIconTextAction(QIcon(USER_MENU_ICON), "Registered users only", self)
 				opmenu.addAction(action)
 
 			if 'n' in channel_modes:
-				action = PlainIconTextAction(QIcon(HIDE_ICON), "External messages are forbidden", self)
+				action = PlainIconTextAction(QIcon(HIDE_MENU_ICON), "External messages are forbidden", self)
 				opmenu.addAction(action)
 
 			if 't' in channel_modes:
@@ -1057,7 +1057,7 @@ class Window(QMainWindow):
 				opmenu.addAction(action)
 
 			if 'c' in channel_modes:
-				action = PlainIconTextAction(QIcon(HIDE_ICON), "IRC colors are forbidden", self)
+				action = PlainIconTextAction(QIcon(HIDE_MENU_ICON), "IRC colors are forbidden", self)
 				opmenu.addAction(action)
 
 			if 'S' in channel_modes:
@@ -1065,32 +1065,32 @@ class Window(QMainWindow):
 				opmenu.addAction(action)
 
 			if 'C' in channel_modes:
-				action = PlainIconTextAction(QIcon(HIDE_ICON), "CTCP is forbidden", self)
+				action = PlainIconTextAction(QIcon(HIDE_MENU_ICON), "CTCP is forbidden", self)
 				opmenu.addAction(action)
 
 			if 'KNOCK' in self.client.supports:
 				if 'K' in channel_modes:
-					action = PlainIconTextAction(QIcon(HIDE_ICON), "KNOCK is forbidden", self)
+					action = PlainIconTextAction(QIcon(HIDE_MENU_ICON), "KNOCK is forbidden", self)
 					opmenu.addAction(action)
 
 			if 'i' in channel_modes:
-				action = PlainIconTextAction(QIcon(PRIVATE_ICON), "Only invited users", self)
+				action = PlainIconTextAction(QIcon(USER_MENU_ICON), "Only invited users", self)
 				opmenu.addAction(action)
 
 			if 'p' in channel_modes:
-				action = PlainIconTextAction(QIcon(CHANNEL_ICON), "Channel is private", self)
+				action = PlainIconTextAction(QIcon(CHANNEL_MENU_ICON), "Channel is private", self)
 				opmenu.addAction(action)
 
 			if 's' in channel_modes:
-				action = PlainIconTextAction(QIcon(CHANNEL_ICON), "Channel is secret", self)
+				action = PlainIconTextAction(QIcon(CHANNEL_MENU_ICON), "Channel is secret", self)
 				opmenu.addAction(action)
 
 			if 'T' in channel_modes:
-				action = PlainIconTextAction(QIcon(HIDE_ICON), "Channel notices are forbidden", self)
+				action = PlainIconTextAction(QIcon(HIDE_MENU_ICON), "Channel notices are forbidden", self)
 				opmenu.addAction(action)
 
 			if 'V' in channel_modes:
-				action = PlainIconTextAction(QIcon(HIDE_ICON), "Channel invites are forbidden", self)
+				action = PlainIconTextAction(QIcon(HIDE_MENU_ICON), "Channel invites are forbidden", self)
 				opmenu.addAction(action)
 
 			if 'z' in channel_modes:
@@ -1104,7 +1104,7 @@ class Window(QMainWindow):
 				bl = []
 				for b in self.banlist:
 					bl.append(b[0])
-					e = PlainIconTextAction(QIcon(PRIVATE_ICON), f"{b[0]}", self)
+					e = PlainIconTextAction(QIcon(USER_MENU_ICON), f"{b[0]}", self)
 					banMenu.addAction(e)
 
 		if self.is_privileged() or self.is_operator():
@@ -1263,7 +1263,7 @@ class Window(QMainWindow):
 				bl = []
 				for b in self.banlist:
 					bl.append(b[0])
-					uMenu = banMenu.addMenu(QIcon(PRIVATE_ICON),f"{b[0]}")
+					uMenu = banMenu.addMenu(QIcon(USER_MENU_ICON),f"{b[0]}")
 					act = QAction(QIcon(CLIPBOARD_ICON),"Copy entry to clipboard", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(b[0]))
 					uMenu.addAction(act)
@@ -1301,7 +1301,7 @@ class Window(QMainWindow):
 
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(SHOW_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		msgBox.setText(f"Unban all banned users in <b>{self.name}</b>?")
 		msgBox.setWindowTitle("Unban All")
 		
@@ -1326,7 +1326,7 @@ class Window(QMainWindow):
 
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(SHOW_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		msgBox.setText(f"Unban <b>{user}</b> from <b>{self.name}</b>?")
 		msgBox.setWindowTitle("Unban User")
 		
@@ -1388,13 +1388,13 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",menu)
+				self.contextNick = QAction(QIcon(USER_MENU_ICON),"Change nickname",menu)
 				self.contextNick.triggered.connect(self.changeNick)
 				menu.addAction(self.contextNick)
 
 				if not self.client.registered: self.contextNick.setEnabled(False)
 
-				self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",menu)
+				self.contextJoin = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",menu)
 				self.contextJoin.triggered.connect(self.joinChannel)
 				menu.addAction(self.contextJoin)
 
@@ -1417,7 +1417,7 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if config.ENABLE_SCRIPTING_ENGINE:
-					entry = QAction(QIcon(RUN_ICON),"Run a script on this window",menu)
+					entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",menu)
 					entry.triggered.connect(self.scriptDialog)
 					menu.addAction(entry)
 
@@ -1426,15 +1426,15 @@ class Window(QMainWindow):
 				if config.ENABLE_SCRIPTING_ENGINE:
 					hostid = f"{self.client.server}:{self.client.port}"
 					if hostid in user.COMMANDS:
-						entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",menu)
+						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",menu)
 					else:
-						entry = QAction(QIcon(SCRIPT_ICON),"Create connection script",menu)
+						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create connection script",menu)
 					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
 					menu.addAction(entry)
 
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
+						entry = QAction(QIcon(STYLE_MENU_ICON),"Edit text style",menu)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
@@ -1461,7 +1461,7 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if self.window_type==CHANNEL_WINDOW:
-					cdMenu = menu.addMenu(QIcon(CHANNEL_ICON),"Chat display")
+					cdMenu = menu.addMenu(QIcon(CHANNEL_MENU_ICON),"Chat display")
 
 					entry = QAction(QIcon(UP_ICON),"Scroll chat to top",menu)
 					entry.triggered.connect(lambda state: self.moveChatToTop())
@@ -1485,13 +1485,13 @@ class Window(QMainWindow):
 					entry.triggered.connect(self.rerenderChatLogMenu)
 					cdMenu.addAction(entry)
 
-					entry = QAction(QIcon(LOG_ICON),"Save to logs",menu)
+					entry = QAction(QIcon(LOG_MENU_ICON),"Save to logs",menu)
 					entry.triggered.connect(self.menuSaveLogs)
 					cdMenu.addAction(entry)
 
 					copyMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 
-					act = QAction(QIcon(CHANNEL_ICON),"Channel name", self)
+					act = QAction(QIcon(CHANNEL_MENU_ICON),"Channel name", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(self.name))
 					copyMenu.addAction(act)
 					
@@ -1506,7 +1506,7 @@ class Window(QMainWindow):
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"Server information", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 					copyMenu.addAction(act)
 
@@ -1524,7 +1524,7 @@ class Window(QMainWindow):
 
 					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),f"Send CTCP request to {self.name}")
 
-					act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
+					act = QAction(QIcon(USER_MENU_ICON),"FINGER", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('FINGER', '')]))
 					ctcpMenu.addAction(act)
 
@@ -1532,7 +1532,7 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.sendCTCPPing(self.name))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_ICON),"SOURCE", self)
+					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"SOURCE", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('SOURCE', '')]))
 					ctcpMenu.addAction(act)
 
@@ -1540,11 +1540,11 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('TIME', '')]))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
+					act = QAction(QIcon(USER_MENU_ICON),"USERINFO", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('USERINFO', '')]))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_ICON),"VERSION", self)
+					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"VERSION", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('VERSION', '')]))
 					ctcpMenu.addAction(act)
 
@@ -1554,13 +1554,13 @@ class Window(QMainWindow):
 					if user_hostmask==None:
 						user_hostmask = self.parent.getHostmask(self.client,self.name)
 
-					igMenu = menu.addMenu(QIcon(HIDE_ICON),f"Ignore {self.name}")
+					igMenu = menu.addMenu(QIcon(HIDE_MENU_ICON),f"Ignore {self.name}")
 					if not self.is_ignored(self.name,user_hostmask):
-						act = QAction(QIcon(HIDE_ICON),f"Ignore by nickname", self)
+						act = QAction(QIcon(HIDE_MENU_ICON),f"Ignore by nickname", self)
 						act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
 						igMenu.addAction(act)
 
-						act = QAction(QIcon(HIDE_ICON),f"Ignore by hostmask", self)
+						act = QAction(QIcon(HIDE_MENU_ICON),f"Ignore by hostmask", self)
 						act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
 						igMenu.addAction(act)
 
@@ -1601,19 +1601,19 @@ class Window(QMainWindow):
 					entry.triggered.connect(self.rerenderChatLogMenu)
 					cdMenu.addAction(entry)
 
-					entry = QAction(QIcon(LOG_ICON),"Save to logs",menu)
+					entry = QAction(QIcon(LOG_MENU_ICON),"Save to logs",menu)
 					entry.triggered.connect(self.menuSaveLogs)
 					cdMenu.addAction(entry)
 
 					copyMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 
-					act = QAction(QIcon(PRIVATE_ICON),f"{self.name}'s nickname", self)
+					act = QAction(QIcon(USER_MENU_ICON),f"{self.name}'s nickname", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(self.name))
 					copyMenu.addAction(act)
 
 					user_hostmask = self.parent.getHostmask(self.client,self.name)
 					if user_hostmask!=None:
-						act = QAction(QIcon(PRIVATE_ICON),f"{self.name}'s hostmask", self)
+						act = QAction(QIcon(USER_MENU_ICON),f"{self.name}'s hostmask", self)
 						act.triggered.connect(lambda : self.menuPasteClipboard(f"{user_hostmask}"))
 						copyMenu.addAction(act)
 
@@ -1628,7 +1628,7 @@ class Window(QMainWindow):
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"Server information", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 					copyMenu.addAction(act)
 
@@ -1637,7 +1637,7 @@ class Window(QMainWindow):
 				if not self.areAllTypesFiltered():
 
 					if self.window_type==CHANNEL_WINDOW:
-						fMenu = menu.addMenu(QIcon(HIDE_ICON),"Hide message types")
+						fMenu = menu.addMenu(QIcon(HIDE_MENU_ICON),"Hide message types")
 						channel_name = self.encodeChannel()
 						if channel_name in config.CHANNEL_FILTERS:
 
@@ -1775,22 +1775,22 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if config.ENABLE_SCRIPTING_ENGINE:
-					entry = QAction(QIcon(RUN_ICON),"Run a script on this window",menu)
+					entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",menu)
 					entry.triggered.connect(self.scriptDialog)
 					menu.addAction(entry)
 
 				if config.EXECUTE_CHANNEL_SCRIPTS and config.ENABLE_SCRIPTING_ENGINE:
 					cscript = commands.find_script(self.encodeScriptFilename(),None)
 					if cscript!=None:
-						entry = QAction(QIcon(SCRIPT_ICON),"Edit channel script",menu)
+						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit channel script",menu)
 					else:
-						entry = QAction(QIcon(SCRIPT_ICON),"Create channel script",menu)
+						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create channel script",menu)
 					entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowSave(h))
 					menu.addAction(entry)
 
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),f"Edit {self.name}'s text style",menu)
+						entry = QAction(QIcon(STYLE_MENU_ICON),f"Edit {self.name}'s text style",menu)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
@@ -1800,7 +1800,7 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				entry = QAction(QIcon(CHANNEL_ICON),f"Leave {self.name}",menu)
+				entry = QAction(QIcon(CHANNEL_MENU_ICON),f"Leave {self.name}",menu)
 				entry.triggered.connect(self.close)
 				f = entry.font()
 				f.setBold(True)
@@ -1812,13 +1812,13 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if config.ENABLE_SCRIPTING_ENGINE:
-					entry = QAction(QIcon(RUN_ICON),f"Run a script on this window",menu)
+					entry = QAction(QIcon(RUN_MENU_ICON),f"Run a script on this window",menu)
 					entry.triggered.connect(self.scriptDialog)
 					menu.addAction(entry)
 
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),f"Edit {self.name}'s text style",menu)
+						entry = QAction(QIcon(STYLE_MENU_ICON),f"Edit {self.name}'s text style",menu)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
@@ -2055,7 +2055,7 @@ class Window(QMainWindow):
 
 			self.settingsMenu.addSeparator()
 
-			entry = QAction(QIcon(RUN_ICON),"Run a script on this window",self)
+			entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
 			entry.triggered.connect(self.loadScript)
 			self.settingsMenu.addAction(entry)
 
@@ -2650,7 +2650,7 @@ class Window(QMainWindow):
 			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_PROTECTED_USER
 			OTHER_TEXT = "Protected User"
 		else:
-			ICON = PRIVATE_MENU_ICON
+			ICON = USER_MENU_ICON
 			OTHER_TEXT = "Normal User"
 		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT!="": OTHER_TEXT = OTHER_TEXT+" (Bot)"
 		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT=="": OTHER_TEXT = "Bot"
@@ -2854,19 +2854,19 @@ class Window(QMainWindow):
 
 			ctcpMenu = self.userlist_menu.addMenu(QIcon(CONNECT_ICON),"Send CTCP request")
 
-			act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
+			act = QAction(QIcon(USER_MENU_ICON),"USERINFO", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
+			act = QAction(QIcon(USER_MENU_ICON),"FINGER", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(CONSOLE_ICON),"SOURCE", self)
+			act = QAction(QIcon(CONSOLE_WINDOW_ICON),"SOURCE", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(CONSOLE_ICON),"VERSION", self)
+			act = QAction(QIcon(CONSOLE_WINDOW_ICON),"VERSION", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
 			ctcpMenu.addAction(act)
 
@@ -2879,7 +2879,7 @@ class Window(QMainWindow):
 			ctcpMenu.addAction(act)
 
 			if config.ENABLE_IGNORE:
-				igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore user")
+				igMenu = self.userlist_menu.addMenu(QIcon(HIDE_MENU_ICON),"Ignore user")
 				if is_hidden:
 					if self.is_hidden_by_nickname(user_nick):
 						act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
@@ -2892,11 +2892,11 @@ class Window(QMainWindow):
 								act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
 								igMenu.addAction(act)
 				else:
-					act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
+					act = QAction(QIcon(HIDE_MENU_ICON),"Ignore by nickname", self)
 					act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
 					igMenu.addAction(act)
 
-					act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
+					act = QAction(QIcon(HIDE_MENU_ICON),"Ignore by hostmask", self)
 					act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
 					igMenu.addAction(act)
 
@@ -2918,22 +2918,22 @@ class Window(QMainWindow):
 						act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
 						ucMenu.addAction(act)
 
-						act = QAction(QIcon(HIDE_ICON),"Remove color", self)
+						act = QAction(QIcon(HIDE_MENU_ICON),"Remove color", self)
 						act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
 						ucMenu.addAction(act)
 
 		copyMenu = self.userlist_menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 
-		act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
+		act = QAction(QIcon(USER_MENU_ICON),"User nickname", self)
 		act.triggered.connect(lambda : self.menuPasteClipboard(user_nick))
 		copyMenu.addAction(act)
 
 		if user_hostmask!=None:
-			act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
+			act = QAction(QIcon(USER_MENU_ICON),"User hostmask", self)
 			act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
 			copyMenu.addAction(act)
 
-		act = QAction(QIcon(CHANNEL_ICON),"Channel name", self)
+		act = QAction(QIcon(CHANNEL_MENU_ICON),"Channel name", self)
 		act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.name}"))
 		copyMenu.addAction(act)
 
@@ -2948,7 +2948,7 @@ class Window(QMainWindow):
 				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 				copyMenu.addAction(act)
 
-		act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+		act = QAction(QIcon(CONSOLE_WINDOW_ICON),"Server information", self)
 		act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 		copyMenu.addAction(act)
 

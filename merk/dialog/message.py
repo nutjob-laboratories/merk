@@ -56,7 +56,7 @@ class Dialog(QDialog):
 		self.msg = msg
 
 		self.setWindowTitle(f"{APPLICATION_NAME}")
-		self.setWindowIcon(QIcon(APPLICATION_ICON))
+		self.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 
 		nameLayout = QVBoxLayout()
 		question = QLabel(self.msg)

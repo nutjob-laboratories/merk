@@ -201,7 +201,7 @@ class Window(QMainWindow):
 			msgBox.setIconPixmap(QPixmap(PRIVATE_WINDOW_ICON))
 		else:
 			msgBox.setIconPixmap(QPixmap(CHANNEL_WINDOW_ICON))
-		msgBox.setWindowIcon(QIcon(LOG_ICON))
+		msgBox.setWindowIcon(QIcon(LOG_MENU_ICON))
 		msgBox.setText("Are you sure you want to back up this log?")
 		msgBox.setWindowTitle("Back up log for "+item.channel+" ("+item.network+")")
 
@@ -236,7 +236,7 @@ class Window(QMainWindow):
 			msgBox.setIconPixmap(QPixmap(PRIVATE_WINDOW_ICON))
 		else:
 			msgBox.setIconPixmap(QPixmap(CHANNEL_WINDOW_ICON))
-		msgBox.setWindowIcon(QIcon(LOG_ICON))
+		msgBox.setWindowIcon(QIcon(LOG_MENU_ICON))
 		msgBox.setText("Are you sure you want to delete this log?")
 		msgBox.setWindowTitle("Delete log for "+item.channel+" ("+item.network+")")
 
@@ -372,7 +372,7 @@ class Window(QMainWindow):
 
 		self.window_type = LOG_MANAGER_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
-		self.setWindowIcon(QIcon(LOG_ICON))
+		self.setWindowIcon(QIcon(LOG_MENU_ICON))
 
 		if target!=None:
 			self.name = f"Log Manager ({self.target})"
@@ -512,7 +512,7 @@ class Window(QMainWindow):
 		copy_action.triggered.connect(self.copy)
 		menu.addAction(copy_action)
 
-		copy_action = QAction(QIcon(HIDE_ICON),"Copy plain text", menu)
+		copy_action = QAction(QIcon(HIDE_MENU_ICON),"Copy plain text", menu)
 		copy_action.setShortcut("Ctrl+X")
 		copy_action.setEnabled(has_selection)
 

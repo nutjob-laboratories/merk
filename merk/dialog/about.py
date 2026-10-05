@@ -53,7 +53,7 @@ class Dialog(QDialog):
 		self.parent = parent
 
 		self.setWindowTitle(APPLICATION_NAME)
-		self.setWindowIcon(QIcon(APPLICATION_ICON))
+		self.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 
 		BOLD_FONT = self.font()
 		BOLD_FONT.setBold(True)

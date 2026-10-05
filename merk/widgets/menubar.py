@@ -325,11 +325,11 @@ class wMenuButton(QPushButton):
 		
 		if self.window.window_type==SERVER_WINDOW:
 
-			self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+			self.contextNick = QAction(QIcon(USER_MENU_ICON),"Change nickname",self)
 			self.contextNick.triggered.connect(self.window.changeNick)
 			menu.addAction(self.contextNick)
 
-			self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+			self.contextJoin = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",self)
 			self.contextJoin.triggered.connect(self.window.joinChannel)
 			menu.addAction(self.contextJoin)
 
@@ -344,7 +344,7 @@ class wMenuButton(QPushButton):
 				menu.addAction(self.contextRefresh)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
-				self.contextRun = QAction(QIcon(RUN_ICON),"Run a script on this window",self)
+				self.contextRun = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
 				self.contextRun.triggered.connect(self.window.scriptDialog)
 				menu.addAction(self.contextRun)
 
@@ -352,13 +352,13 @@ class wMenuButton(QPushButton):
 
 			if config.ENABLE_STYLE_EDITOR:
 				if not config.FORCE_DEFAULT_STYLE:
-					entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+					entry = QAction(QIcon(STYLE_MENU_ICON),"Edit text style",self)
 					entry.triggered.connect(self.window.pressedStyleButton)
 					menu.addAction(entry)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
-				entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
 				menu.addAction(entry)
 
@@ -396,7 +396,7 @@ class wMenuButton(QPushButton):
 
 			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES or config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
 				if self.window.parent.has_unread_messages(self.window.client,self.window.name) or self.window.parent.has_unread_mentions(self.window.client,self.window.name):
-					entry = QAction(QIcon(HIDE_ICON),"Clear unread messages",self)
+					entry = QAction(QIcon(HIDE_MENU_ICON),"Clear unread messages",self)
 					entry.triggered.connect(lambda state,i=self.window.client,h=self.window.name: self.clear_unread(i,h))
 					menu.addAction(entry)
 
@@ -404,14 +404,14 @@ class wMenuButton(QPushButton):
 			entry.triggered.connect(self.window.clearChat)
 			menu.addAction(entry)
 
-			entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+			entry = QAction(QIcon(LOG_MENU_ICON),"Save log to file",self)
 			entry.triggered.connect(self.window.menuSaveLogs)
 			menu.addAction(entry)
 
 		if self.window.window_type==CHANNEL_WINDOW:
 
 			if config.ENABLE_SCRIPTING_ENGINE:
-				entry = QAction(QIcon(RUN_ICON),"Run a script on this window",self)
+				entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
 				entry.triggered.connect(self.window.scriptDialog)
 				menu.addAction(entry)
 
@@ -419,17 +419,17 @@ class wMenuButton(QPushButton):
 
 			if config.ENABLE_STYLE_EDITOR:
 				if not config.FORCE_DEFAULT_STYLE:
-					entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+					entry = QAction(QIcon(STYLE_MENU_ICON),"Edit text style",self)
 					entry.triggered.connect(self.window.pressedStyleButton)
 					menu.addAction(entry)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
 				cscript = commands.find_script(self.window.encodeScriptFilename(),None)
 				if cscript!=None:
-					entry = QAction(QIcon(SCRIPT_ICON),"Edit channel script",menu)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.openEditor(h))
 				else:
-					entry = QAction(QIcon(SCRIPT_ICON),"Create channel script",menu)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.newEditorWindowSave(h))
 				menu.addAction(entry)
 
@@ -444,7 +444,7 @@ class wMenuButton(QPushButton):
 
 			menu.addSeparator()
 
-			entry = QAction(QIcon(CHANNEL_ICON),f"Leave {self.window.name}",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),f"Leave {self.window.name}",self)
 			entry.triggered.connect(self.close_subwindow)
 			f = entry.font()
 			f.setBold(True)
@@ -460,7 +460,7 @@ class wMenuButton(QPushButton):
 		if self.window.window_type!=CHANNEL_WINDOW and self.window.window_type!=SERVER_WINDOW:
 
 			if config.ENABLE_SCRIPTING_ENGINE and hasattr(self.window,"scriptDialog"):
-				entry = QAction(QIcon(RUN_ICON),"Run a script on this window",self)
+				entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
 				entry.triggered.connect(self.window.scriptDialog)
 				menu.addAction(entry)
 
@@ -469,7 +469,7 @@ class wMenuButton(QPushButton):
 			if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==SERVER_WINDOW or self.window.window_type==PRIVATE_WINDOW:
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+						entry = QAction(QIcon(STYLE_MENU_ICON),"Edit text style",self)
 						entry.triggered.connect(self.window.pressedStyleButton)
 						menu.addAction(entry)
 
@@ -587,11 +587,11 @@ class wIconMenuButton(QPushButton):
 		
 		if self.window.window_type==SERVER_WINDOW:
 
-			self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+			self.contextNick = QAction(QIcon(USER_MENU_ICON),"Change nickname",self)
 			self.contextNick.triggered.connect(self.window.changeNick)
 			menu.addAction(self.contextNick)
 
-			self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+			self.contextJoin = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",self)
 			self.contextJoin.triggered.connect(self.window.joinChannel)
 			menu.addAction(self.contextJoin)
 
@@ -606,7 +606,7 @@ class wIconMenuButton(QPushButton):
 				menu.addAction(self.contextRefresh)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
-				self.contextRun = QAction(QIcon(RUN_ICON),"Run a script on server window",self)
+				self.contextRun = QAction(QIcon(RUN_MENU_ICON),"Run a script on server window",self)
 				self.contextRun.triggered.connect(lambda state: self.window.loadScript(True))
 				menu.addAction(self.contextRun)
 
@@ -614,13 +614,13 @@ class wIconMenuButton(QPushButton):
 
 			if config.ENABLE_STYLE_EDITOR:
 				if not config.FORCE_DEFAULT_STYLE:
-					entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+					entry = QAction(QIcon(STYLE_MENU_ICON),"Edit text style",self)
 					entry.triggered.connect(self.window.pressedStyleButton)
 					menu.addAction(entry)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
-				entry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
 				menu.addAction(entry)
 
@@ -658,7 +658,7 @@ class wIconMenuButton(QPushButton):
 
 			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES or config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
 				if self.window.parent.has_unread_messages(self.window.client,self.window.name) or self.window.parent.has_unread_mentions(self.window.client,self.window.name):
-					entry = QAction(QIcon(HIDE_ICON),"Clear unread messages",self)
+					entry = QAction(QIcon(HIDE_MENU_ICON),"Clear unread messages",self)
 					entry.triggered.connect(lambda state,i=self.window.client,h=self.window.name: self.clear_unread(i,h))
 					menu.addAction(entry)
 
@@ -666,7 +666,7 @@ class wIconMenuButton(QPushButton):
 			entry.triggered.connect(self.window.clearChat)
 			menu.addAction(entry)
 
-			entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+			entry = QAction(QIcon(LOG_MENU_ICON),"Save log to file",self)
 			entry.triggered.connect(self.window.menuSaveLogs)
 			menu.addAction(entry)
 
@@ -676,17 +676,17 @@ class wIconMenuButton(QPushButton):
 
 			if config.ENABLE_STYLE_EDITOR:
 				if not config.FORCE_DEFAULT_STYLE:
-					entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+					entry = QAction(QIcon(STYLE_MENU_ICON),"Edit text style",self)
 					entry.triggered.connect(self.window.pressedStyleButton)
 					menu.addAction(entry)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
 				cscript = commands.find_script(self.window.encodeScriptFilename(),None)
 				if cscript!=None:
-					entry = QAction(QIcon(SCRIPT_ICON),"Edit channel script",menu)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.openEditor(h))
 				else:
-					entry = QAction(QIcon(SCRIPT_ICON),"Create channel script",menu)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.newEditorWindowSave(h))
 				menu.addAction(entry)
 
@@ -701,7 +701,7 @@ class wIconMenuButton(QPushButton):
 
 			menu.addSeparator()
 
-			entry = QAction(QIcon(CHANNEL_ICON),f"Leave {self.window.name}",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),f"Leave {self.window.name}",self)
 			entry.triggered.connect(self.close_subwindow)
 			f = entry.font()
 			f.setBold(True)
@@ -721,7 +721,7 @@ class wIconMenuButton(QPushButton):
 			if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==SERVER_WINDOW or self.window.window_type==PRIVATE_WINDOW:
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+						entry = QAction(QIcon(STYLE_MENU_ICON),"Edit text style",self)
 						entry.triggered.connect(self.window.pressedStyleButton)
 						menu.addAction(entry)
 
@@ -1055,7 +1055,7 @@ class Windowbar(QToolBar):
 			for win in wlist:
 				c = win.widget()
 				if c.window_type==SERVER_WINDOW:
-					icon = QIcon(CONSOLE_ICON)
+					icon = QIcon(CONSOLE_WINDOW_ICON)
 				elif c.window_type==CHANNEL_WINDOW:
 					icon = QIcon(CHANNEL_WINDOW_ICON)
 				elif c.window_type==PRIVATE_WINDOW:
@@ -1119,7 +1119,7 @@ class Windowbar(QToolBar):
 		menu.addMenu(self.sortMenu)
 
 		self.appearanceMenu = QMenu("Appearance")
-		self.appearanceMenu.setIcon(QIcon(STYLE_ICON))
+		self.appearanceMenu.setIcon(QIcon(STYLE_MENU_ICON))
 
 		if config.WINDOWBAR_BOLD_ACTIVE_WINDOW:
 			entry = QAction(QIcon(self.parent.checked_icon),"Bold active subwindow", self)
@@ -1190,7 +1190,7 @@ class Windowbar(QToolBar):
 		menu.addMenu(self.appearanceMenu)
 
 		self.wbSettingsMenu = QMenu("Settings")
-		self.wbSettingsMenu.setIcon(QIcon(SETTINGS_ICON))
+		self.wbSettingsMenu.setIcon(QIcon(SETTINGS_MENU_ICON))
 
 		if config.WINDOWBAR_CAN_FLOAT:
 			entry = QAction(QIcon(self.parent.checked_icon),"Allow windowbar to move/float", self)

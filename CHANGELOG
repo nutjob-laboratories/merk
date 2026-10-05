@@ -46,6 +46,25 @@ What's new:
 * Changed the "miscellaneous" icon.
 * Removed the "about" icon from the resource file.
 * Changed the "dictionary" icon.
+* Removed the "full sized" "README" icon from the resource file.
+* Removed the "full sized" "settings" icon from the resource file.
+* Removed the "full sized" "style" icon from the resource file.
+* Removed the "full sized" "hide" icon from the resource file.
+* Removed the "full sized" "hotkey" icon from the resource file.
+* Removed the "full sized" "link" icon from the resource file.
+* Changed the name of an icon used to signify a user (it was previously named
+  "private.png", and is now named "user.png"; also, the internal constant used
+  to refer to this icon had its name changed). I also added a version of this
+  icon that looks better rendered as a custom menu entry.
+* Removed the "full sized" "PDF" icon from the resource file.
+* Removed the "full sized" "log" icon from the resource file.
+* Removed the "full sized" "run" icon from the resource file.
+* Removed the "full sized" "script" icon from the resource file.
+* Removed the "full sized" "channel" icon from the resource file.
+* Removed the "full sized" "info" icon from the resource file.
+* Removed the "full sized" "channel window" and "private chat window" icons
+  from the resource file.
+* Removed the "full sized" "application" icon from the resource file.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.300                                  |

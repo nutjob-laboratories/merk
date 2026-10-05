@@ -69,7 +69,7 @@ class Dialog(QDialog):
 		self.save_as_default = False
 
 		self.setWindowTitle("Change nickname")
-		self.setWindowIcon(QIcon(PRIVATE_ICON))
+		self.setWindowIcon(QIcon(USER_MENU_ICON))
 
 		config.load_settings(config.CONFIG_FILE)
 

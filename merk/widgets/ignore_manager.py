@@ -157,7 +157,7 @@ class Window(QMainWindow):
 		
 		self.window_type = IGNORE_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
-		self.setWindowIcon(QIcon(HIDE_ICON))
+		self.setWindowIcon(QIcon(HIDE_MENU_ICON))
 
 		self.name = f"Ignores"
 		self.setWindowTitle(f"Ignore Manager")

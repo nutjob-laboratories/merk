@@ -100,7 +100,7 @@ class Dialog(QDialog):
 
 			msg = QMessageBox()
 			msg.setIcon(QMessageBox.Critical)
-			msg.setWindowIcon(QIcon(APPLICATION_ICON))
+			msg.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			if bad_info and missing_info:
 				msg.setText("<big><b>Bad/Missing connection information</b></big>")
 				msg.setInformativeText("<b>Can't connect to server!</b><br><br>Please enter all information needed and try again.")
@@ -569,7 +569,7 @@ class Dialog(QDialog):
 
 		if self.initial:
 			self.setWindowTitle(f"{APPLICATION_NAME} IRC Client")
-			self.setWindowIcon(QIcon(APPLICATION_ICON))
+			self.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		else:
 			if self.disconnect_message=='':
 				self.setWindowTitle("Connect to server")
@@ -806,7 +806,7 @@ class Dialog(QDialog):
 
 		self.user_tab = QWidget()
 		self.user_tab.setLayout(userPageLayout)
-		self.tabs.addTab(self.user_tab, QIcon(PRIVATE_ICON), "User")
+		self.tabs.addTab(self.user_tab, QIcon(USER_MENU_ICON), "User")
 
 		self.server_tab = QWidget()
 		self.server_tab.setLayout(serverInfoLayout)
@@ -815,7 +815,7 @@ class Dialog(QDialog):
 		if config.ENABLE_SCRIPTING_ENGINE:
 			self.commands_tab = QWidget()
 			self.commands_tab.setLayout(commandsLayout)
-			self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
+			self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_MENU_ICON), "Script")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)

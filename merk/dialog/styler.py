@@ -347,7 +347,7 @@ class Dialog(QDialog):
 					name = self.wchat.name
 					self.setWindowTitle(f"Text style for {name}")
 
-		self.setWindowIcon(QIcon(STYLE_ICON))
+		self.setWindowIcon(QIcon(STYLE_MENU_ICON))
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 

@@ -63,7 +63,7 @@ class Dialog(QDialog):
 		config.load_settings(config.CONFIG_FILE)
 
 		self.setWindowTitle("Join channel")
-		self.setWindowIcon(QIcon(CHANNEL_ICON))
+		self.setWindowIcon(QIcon(CHANNEL_MENU_ICON))
 
 		self.nameLabel = QLabel("<b>Channel:</b>")
 

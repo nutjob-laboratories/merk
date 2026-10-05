@@ -688,7 +688,7 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(message)
 			msgBox.setInformativeText(f"Disconnected from {self.server}! {dialog}")
 			msgBox.setWindowTitle("Disconnected")
@@ -1928,7 +1928,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
 			msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.</b>"
 			msgBox = QMessageBox()
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(msg)
 			msgBox.setInformativeText(f"<i>{reason.getErrorMessage()}</i>")
 			msgBox.setWindowTitle("Connection lost")
@@ -1971,7 +1971,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 				msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed.</b>"
 
 				msgBox = QMessageBox()
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msgBox.setText(msg)
 				msgBox.setInformativeText(f"<i>{reason.getErrorMessage()}</i>")
 				msgBox.setWindowTitle("Connection failed")
@@ -2021,7 +2021,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 				This may be caused by your Internet connection or your settings. You may wish to check your
 				settings before attempting to reconnect."""
 				msgBox = QMessageBox()
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msgBox.setText(msg)
 				msgBox.setInformativeText(f"<i>{reason.getErrorMessage()}</i>")
 				msgBox.setWindowTitle("Connection lost")
@@ -2057,7 +2057,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		if config.ASK_BEFORE_RECONNECT:
 			msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.</b><br><br>Try to reconnect?"
 			msgBox = QMessageBox()
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(msg)
 			msgBox.setInformativeText(f"<i>{reason.getErrorMessage()}</i>")
 			msgBox.setWindowTitle("Connection lost")
@@ -2148,7 +2148,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 				if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
 					msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed.</b>"
 					msgBox = QMessageBox()
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText(msg)
 					msgBox.setInformativeText(f"<i>{reason.getErrorMessage()}</i>")
 					msgBox.setWindowTitle("Connection failed")

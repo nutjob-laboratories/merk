@@ -59,7 +59,7 @@ class Dialog(QDialog):
 			self.setWindowTitle("Edit ignore")
 		else:
 			self.setWindowTitle("Add ignore")
-		self.setWindowIcon(QIcon(HIDE_ICON))
+		self.setWindowIcon(QIcon(HIDE_MENU_ICON))
 
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")

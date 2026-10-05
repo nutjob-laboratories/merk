@@ -81,7 +81,7 @@ class Dialog(QDialog):
 		self.script_name = ''
 
 		self.setWindowTitle(f"Execute script on \"{self.parent.name}\"")
-		self.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 
 		scripts = []
 		for f in commands.list_scripts():

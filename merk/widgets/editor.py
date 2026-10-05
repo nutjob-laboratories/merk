@@ -152,7 +152,7 @@ class Window(QMainWindow):
 		menu = self.editor.createStandardContextMenu()
 		menu.aboutToShow.connect(self.on_context_menu_show)
 
-		self.comment_action = QAction(QIcon(SCRIPT_ICON),"Toggle comments on selection",self)
+		self.comment_action = QAction(QIcon(SCRIPT_MENU_ICON),"Toggle comments on selection",self)
 		if not self.python:
 			self.comment_action.triggered.connect(self.comment_selected_text)
 		else:
@@ -176,41 +176,41 @@ class Window(QMainWindow):
 		if not self.python:
 			scripts = commands.list_scripts()
 			if len(scripts)>0:
-				smenu = menu.addMenu(QIcon(SCRIPT_ICON),"Insert script call")
+				smenu = menu.addMenu(QIcon(SCRIPT_MENU_ICON),"Insert script call")
 				for s in scripts:
-					entry = QAction(QIcon(SCRIPT_ICON),s,self)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),s,self)
 					entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}script {s}": self.insertIntoEditor(u))
 					smenu.addAction(entry)
 
 			if len(scripts)>0:
-				smenu = menu.addMenu(QIcon(SCRIPT_ICON),"Insert insert call")
+				smenu = menu.addMenu(QIcon(SCRIPT_MENU_ICON),"Insert insert call")
 				for s in scripts:
-					entry = QAction(QIcon(SCRIPT_ICON),s,self)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),s,self)
 					entry.triggered.connect(lambda state,u=f"insert {s}\n": self.insertIntoEditor(u))
 					smenu.addAction(entry)
 
 		if not self.python:
 			if config.ENABLE_ALIASES:
-				aliasMenu = menu.addMenu(QIcon(SCRIPT_ICON),"Insert alias")
+				aliasMenu = menu.addMenu(QIcon(SCRIPT_MENU_ICON),"Insert alias")
 
 				self.buildAliasMenu(aliasMenu)
 
-		smenu = menu.addMenu(QIcon(PRIVATE_ICON),"Insert user info")
+		smenu = menu.addMenu(QIcon(USER_MENU_ICON),"Insert user info")
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Nickname",self)
+		entry = QAction(QIcon(USER_MENU_ICON),"Nickname",self)
 		entry.triggered.connect(lambda state,u=f"{user.NICKNAME}": self.insertIntoEditor(u))
 		smenu.addAction(entry)
 
 		if len(user.ALTERNATE)>0:
-			entry = QAction(QIcon(PRIVATE_ICON),"Alternate",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"Alternate",self)
 			entry.triggered.connect(lambda state,u=f"{user.ALTERNATE}": self.insertIntoEditor(u))
 			smenu.addAction(entry)
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Username",self)
+		entry = QAction(QIcon(USER_MENU_ICON),"Username",self)
 		entry.triggered.connect(lambda state,u=f"{user.USERNAME}": self.insertIntoEditor(u))
 		smenu.addAction(entry)
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Realname",self)
+		entry = QAction(QIcon(USER_MENU_ICON),"Realname",self)
 		entry.triggered.connect(lambda state,u=f"{user.REALNAME}": self.insertIntoEditor(u))
 		smenu.addAction(entry)
 
@@ -219,7 +219,7 @@ class Window(QMainWindow):
 			smenu = menu.addMenu(QIcon(CONNECT_ICON),"Insert server name")
 			for window in servers:
 				c = window.widget()
-				entry = QAction(QIcon(CONSOLE_ICON),c.name,self)
+				entry = QAction(QIcon(CONSOLE_WINDOW_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=f"{c.name}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
@@ -231,7 +231,7 @@ class Window(QMainWindow):
 
 		channels = self.parent.getAllChannelWindows()
 		if len(channels)>0:
-			smenu = menu.addMenu(QIcon(CHANNEL_ICON),"Insert channel name")
+			smenu = menu.addMenu(QIcon(CHANNEL_MENU_ICON),"Insert channel name")
 			clist = []
 			for window in channels:
 				c = window.widget()
@@ -239,13 +239,13 @@ class Window(QMainWindow):
 
 			clist = list(set(clist))
 			for c in clist:
-				entry = QAction(QIcon(CHANNEL_ICON),c,self)
+				entry = QAction(QIcon(CHANNEL_MENU_ICON),c,self)
 				entry.triggered.connect(lambda state,u=f"{c}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
 		privates = self.parent.getAllPrivateWindows()
 		if len(privates)>0:
-			smenu = menu.addMenu(QIcon(CHANNEL_ICON),"Insert private chat name")
+			smenu = menu.addMenu(QIcon(CHANNEL_MENU_ICON),"Insert private chat name")
 			clist = []
 			for window in privates:
 				c = window.widget()
@@ -253,7 +253,7 @@ class Window(QMainWindow):
 
 			clist = list(set(clist))
 			for c in clist:
-				entry = QAction(QIcon(PRIVATE_ICON),c,self)
+				entry = QAction(QIcon(USER_MENU_ICON),c,self)
 				entry.triggered.connect(lambda state,u=f"{c}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
@@ -264,7 +264,7 @@ class Window(QMainWindow):
 		if config.EDITOR_PROMPT_SAVE:
 			if self.changed:
 				msgBox = QMessageBox()
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msgBox.setIconPixmap(QPixmap(SAVEFILE_ICON))
 				if self.editing_user_script:
 					msgBox.setText("Do you want to save this connection script?")
@@ -463,7 +463,7 @@ class Window(QMainWindow):
 
 		self.editMenu.addSeparator()
 
-		self.comment_action2 = QAction(QIcon(SCRIPT_ICON),"Toggle comments on selection",self)
+		self.comment_action2 = QAction(QIcon(SCRIPT_MENU_ICON),"Toggle comments on selection",self)
 		if not self.python:
 			self.comment_action2.triggered.connect(self.comment_selected_text)
 		else:
@@ -644,8 +644,8 @@ class Window(QMainWindow):
 			do_overwrite = True
 			if os.path.exists(imported_file) or os.path.isfile(imported_file):
 				msgBox = QMessageBox()
-				msgBox.setIconPixmap(QPixmap(SCRIPT_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setIconPixmap(QPixmap(SCRIPT_MENU_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msgBox.setText(f"\"{base}\" already exists. Overwrite script?")
 				msgBox.setWindowTitle("Overwrite File")
 				
@@ -852,7 +852,7 @@ class Window(QMainWindow):
 		self.editor.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.editor.customContextMenuRequested.connect(self.show_context_menu)
 
-		self.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 
 		self.editor.document().contentsChanged.connect(self.docModified)
 		self.editor.redoAvailable.connect(self.hasRedo)
@@ -911,7 +911,7 @@ class Window(QMainWindow):
 				self.oscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open script")
 
 				for f in file_paths:
-					entry = QAction(QIcon(SCRIPT_ICON),os.path.basename(f),self)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),os.path.basename(f),self)
 					entry.triggered.connect(lambda state,h=f: self.readFile(h))
 					self.oscript_menu.addAction(entry)
 
@@ -919,7 +919,7 @@ class Window(QMainWindow):
 				self.cscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open connection script")
 
 				for host in user.COMMANDS:
-					entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),f"{host}",self)
 					entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
 					self.cscript_menu.addAction(entry)
 
@@ -934,7 +934,7 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doNewScript)
 			self.fileMenu.addAction(entry)
 
-			entry = QAction(QIcon(SCRIPT_ICON),"New script editor window",self)
+			entry = QAction(QIcon(SCRIPT_MENU_ICON),"New script editor window",self)
 			entry.triggered.connect(self.parent.newEditorWindow)
 			self.fileMenu.addAction(entry)
 
@@ -974,7 +974,7 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doNewPluginComments)
 			self.fileMenu.addAction(entry)
 
-			entry = QAction(QIcon(SCRIPT_ICON),"New script editor window",self)
+			entry = QAction(QIcon(SCRIPT_MENU_ICON),"New script editor window",self)
 			entry.triggered.connect(self.parent.newEditorWindow)
 			self.fileMenu.addAction(entry)
 
@@ -1074,25 +1074,25 @@ class Window(QMainWindow):
 		if self.python:
 			self.pInsertMenu = self.menubar.addMenu("Insert")
 
-			self.menv = self.pInsertMenu.addMenu(QIcon(APPLICATION_ICON),f"{APPLICATION_NAME} Events")
+			self.menv = self.pInsertMenu.addMenu(QIcon(APPLICATION_MENU_ICON),f"{APPLICATION_NAME} Events")
 
-			entry = QAction(QIcon(APPLICATION_ICON),"init",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),"init",self)
 			entry.triggered.connect(self.doInsertInitMethod)
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"uninstall",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),"uninstall",self)
 			entry.triggered.connect(self.doInsertUninstallMethod)
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"unload",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),"unload",self)
 			entry.triggered.connect(self.doInsertUnloadMethod)
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"pause",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),"pause",self)
 			entry.triggered.connect(self.doInsertPauseMethod)
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"unpause",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),"unpause",self)
 			entry.triggered.connect(self.doInsertUnPauseMethod)
 			self.menv.addAction(entry)
 			
@@ -1108,15 +1108,15 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="ctick",v=["uptime"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"line_in",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),"line_in",self)
 			entry.triggered.connect(lambda state,u="line_in",v=["client","line"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"line_out",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),"line_out",self)
 			entry.triggered.connect(lambda state,u="line_out",v=["client","line"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"me",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"me",self)
 			entry.triggered.connect(lambda state,u="me",v=["window","client","target","message"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
@@ -1132,17 +1132,17 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="uptime",v=["window","uptime"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			self.messenv = self.pInsertMenu.addMenu(QIcon(PRIVATE_ICON),f"Message Events")
+			self.messenv = self.pInsertMenu.addMenu(QIcon(USER_MENU_ICON),f"Message Events")
 
-			entry = QAction(QIcon(PRIVATE_ICON),"action",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"action",self)
 			entry.triggered.connect(lambda state,u="action",v=["window","client","channel","user","nickname","hostmask","message"]: self.doInsertEventMethod(u,v))
 			self.messenv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"message",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"message",self)
 			entry.triggered.connect(lambda state,u="message",v=["window","client","channel","user","nickname","hostmask","message"]: self.doInsertEventMethod(u,v))
 			self.messenv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"notice",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"notice",self)
 			entry.triggered.connect(lambda state,u="notice",v=["window","client","channel","user","nickname","hostmask","message"]: self.doInsertEventMethod(u,v))
 			self.messenv.addAction(entry)
 
@@ -1206,37 +1206,37 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="back",v=["client","user"]: self.doInsertEventMethod(u,v))
 			self.statenv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"ison",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"ison",self)
 			entry.triggered.connect(lambda state,u="ison",v=["client","users"]: self.doInsertEventMethod(u,v))
 			self.statenv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"mode",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"mode",self)
 			entry.triggered.connect(lambda state,u="mode",v=["client","user","target","mode","arguments"]: self.doInsertEventMethod(u,v))
 			self.statenv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"unmode",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"unmode",self)
 			entry.triggered.connect(lambda state,u="unmode",v=["client","user","target","mode","arguments"]: self.doInsertEventMethod(u,v))
 			self.statenv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"nick",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"nick",self)
 			entry.triggered.connect(lambda state,u="nick",v=["client","nickname"]: self.doInsertEventMethod(u,v))
 			self.statenv.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"rename",self)
+			entry = QAction(QIcon(USER_MENU_ICON),"rename",self)
 			entry.triggered.connect(lambda state,u="rename",v=["client","old","new"]: self.doInsertEventMethod(u,v))
 			self.statenv.addAction(entry)
 
-			self.chanenv = self.pInsertMenu.addMenu(QIcon(CHANNEL_ICON),f"Channel Events")
+			self.chanenv = self.pInsertMenu.addMenu(QIcon(CHANNEL_MENU_ICON),f"Channel Events")
 
-			entry = QAction(QIcon(CHANNEL_ICON),"invite",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),"invite",self)
 			entry.triggered.connect(lambda state,u="invite",v=["client","user","channel"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
-			entry = QAction(QIcon(CHANNEL_ICON),"join",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),"join",self)
 			entry.triggered.connect(lambda state,u="join",v=["window","channel","client","user"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
-			entry = QAction(QIcon(CHANNEL_ICON),"joined",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),"joined",self)
 			entry.triggered.connect(lambda state,u="joined",v=["window","channel","client"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
@@ -1248,15 +1248,15 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="kicked",v=["client","channel","user","message"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
-			entry = QAction(QIcon(CHANNEL_ICON),"left",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),"left",self)
 			entry.triggered.connect(lambda state,u="left",v=["client","channel"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
-			entry = QAction(QIcon(CHANNEL_ICON),"part",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),"part",self)
 			entry.triggered.connect(lambda state,u="part",v=["window","channel","client","user"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
-			entry = QAction(QIcon(CHANNEL_ICON),"topic",self)
+			entry = QAction(QIcon(CHANNEL_MENU_ICON),"topic",self)
 			entry.triggered.connect(lambda state,u="topic",v=["window","channel","client","user","topic"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
@@ -1292,7 +1292,7 @@ class Window(QMainWindow):
 
 		# User information submenu
 
-		sub = menu.addMenu(QIcon(PRIVATE_ICON),"User information")
+		sub = menu.addMenu(QIcon(USER_MENU_ICON),"User information")
 
 		entry = QAction("Nickname",self)
 		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_NICKNAME": self.insertIntoEditor(u))
@@ -1360,7 +1360,7 @@ class Window(QMainWindow):
 
 		# Current channel submenu
 
-		sub = menu.addMenu(QIcon(CHANNEL_ICON),"Current channel")
+		sub = menu.addMenu(QIcon(CHANNEL_MENU_ICON),"Current channel")
 
 		entry = QAction("User status",self)
 		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_STATUS": self.insertIntoEditor(u))
@@ -1421,7 +1421,7 @@ class Window(QMainWindow):
 
 		# Client submenu
 
-		sub = menu.addMenu(QIcon(APPLICATION_ICON),"Client")
+		sub = menu.addMenu(QIcon(APPLICATION_MENU_ICON),"Client")
 
 		entry = QAction("Name",self)
 		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_CLIENT": self.insertIntoEditor(u))
@@ -1521,7 +1521,7 @@ class Window(QMainWindow):
 				else:
 					cname = c.name
 
-				runmenuLabel = MenuLabel( menuHtml(CONNECT_DIALOG_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE) )
+				runmenuLabel = MenuLabel( menuHtml(CONSOLE_WINDOW_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE) )
 				runmenuAction = QWidgetAction(self)
 				runmenuAction.setDefaultWidget(runmenuLabel)
 				runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
@@ -1560,26 +1560,26 @@ class Window(QMainWindow):
 
 			if len(servers)>1:
 
-				entry = QAction(QIcon(RUN_ICON),"Run script on all servers",self)
+				entry = QAction(QIcon(RUN_MENU_ICON),"Run script on all servers",self)
 				entry.triggered.connect(self.executeScriptOnAll)
 				self.runMenu.addAction(entry)
 
 			if channels>1:
 
-				entry = QAction(QIcon(RUN_ICON),"Run script on all channels",self)
+				entry = QAction(QIcon(RUN_MENU_ICON),"Run script on all channels",self)
 				entry.triggered.connect(self.executeScriptOnChannels)
 				self.runMenu.addAction(entry)
 
 			if privates>1:
 
-				entry = QAction(QIcon(RUN_ICON),"Run script on all private chats",self)
+				entry = QAction(QIcon(RUN_MENU_ICON),"Run script on all private chats",self)
 				entry.triggered.connect(self.executeScriptOnPrivates)
 				self.runMenu.addAction(entry)
 
 			return
 
 		# If there's no connected servers...
-		action = PlainIconTextAction(QIcon(HIDE_ICON), "No connected servers", self)
+		action = PlainIconTextAction(QIcon(HIDE_MENU_ICON), "No connected servers", self)
 		self.runMenu.addAction(action)
 
 	def doNewPlugin(self):
@@ -1661,7 +1661,7 @@ class Window(QMainWindow):
 		msg_box = QMessageBox()
 		msg_box.setIcon(QMessageBox.Critical)
 		msg_box.setWindowTitle(title)
-		msg_box.setWindowIcon(QIcon(APPLICATION_ICON))
+		msg_box.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		msg_box.setText(message)
 		msg_box.setStandardButtons(QMessageBox.Ok)
 		msg_box.exec_()
@@ -1790,7 +1790,7 @@ class Window(QMainWindow):
 			self.cscript_menu.clear()
 
 			for host in user.COMMANDS:
-				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),f"{host}",self)
 				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
 				self.cscript_menu.addAction(entry)
 

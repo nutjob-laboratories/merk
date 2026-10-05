@@ -185,7 +185,7 @@ class Merk(QMainWindow):
 		else:
 			self.setWindowTitle(self.application_title_name)
 			
-		self.setWindowIcon(QIcon(APPLICATION_ICON))
+		self.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 
 		if config.SAVE_MAIN_WINDOW_LOCATION:
 			if config.MAIN_WINDOW_LOCATION[0]!=None and config.MAIN_WINDOW_LOCATION[1]!=None:
@@ -229,7 +229,7 @@ class Merk(QMainWindow):
 		self.notifications = False
 
 		self.tray_blank_icon = QIcon(NORMAL_USER)
-		self.tray_icon = QIcon(APPLICATION_ICON)
+		self.tray_icon = QIcon(APPLICATION_MENU_ICON)
 
 		self.tray = QSystemTrayIcon() 
 		self.tray.setIcon(self.tray_icon)
@@ -328,7 +328,7 @@ class Merk(QMainWindow):
 			if len(errors)>0:
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				if len(errors)>1:
 					msgBox.setText("There were errors loading plugins!")
 				else:
@@ -348,8 +348,8 @@ class Merk(QMainWindow):
 				errors.append(f"\"{seq}\" is already in use as a shortcut")
 		if len(errors)>0:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(HOTKEY_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setIconPixmap(QPixmap(HOTKEY_MENU_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			if len(errors)>1:
 				msgBox.setText("There were errors loading hotkeys from the configuration file!")
 			else:
@@ -704,7 +704,7 @@ class Merk(QMainWindow):
 				do_mention = False
 
 				if c.window_type==CHANNEL_WINDOW:
-					icon = CHANNEL_ICON
+					icon = CHANNEL_MENU_ICON
 					wname = c.name
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
@@ -728,7 +728,7 @@ class Merk(QMainWindow):
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
 					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==SERVER_WINDOW:
-					icon = CONSOLE_ICON
+					icon = CONSOLE_WINDOW_ICON
 					wname = c.name
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
@@ -739,7 +739,7 @@ class Merk(QMainWindow):
 						if c.client.network:
 							serv_name = f"{serv_name} ({c.client.network})"
 				elif c.window_type==EDITOR_WINDOW:
-					icon = SCRIPT_ICON
+					icon = SCRIPT_MENU_ICON
 					sname = f"{APPLICATION_NAME}"
 					if hasattr(c,"python"):
 						if c.python:
@@ -765,14 +765,14 @@ class Merk(QMainWindow):
 						wname = f"{c.client.server}:{entry.port} channel list"
 						serv_name = f"{c.client.server}:{entry.port}"
 				elif c.window_type==LOG_MANAGER_WINDOW:
-					icon = LOG_ICON
+					icon = LOG_MENU_ICON
 					serv_name = "Logs"
 					wname = "Logs"
 					if c.target!=None:
 						wname = f"Logs ({c.target})"
 						serv_name = f"Logs ({c.target})"
 				elif c.window_type==README_WINDOW:
-					icon = README_ICON
+					icon = README_MENU_ICON
 					serv_name = c.name
 					wname = c.name
 
@@ -846,7 +846,7 @@ class Merk(QMainWindow):
 				do_mention = False
 
 				if c.window_type==CHANNEL_WINDOW:
-					icon = CHANNEL_ICON
+					icon = CHANNEL_MENU_ICON
 					wname = c.name
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
@@ -871,7 +871,7 @@ class Merk(QMainWindow):
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
 					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==SERVER_WINDOW:
-					icon = CONSOLE_ICON
+					icon = CONSOLE_WINDOW_ICON
 					wname = c.name
 					if c.client.hostname:
 						serv_name = name = c.client.hostname
@@ -881,7 +881,7 @@ class Merk(QMainWindow):
 					if c.client.network:
 						serv_name = f"{serv_name} ({c.client.network})"
 				elif c.window_type==EDITOR_WINDOW:
-					icon = SCRIPT_ICON
+					icon = SCRIPT_MENU_ICON
 					sname = f"{APPLICATION_NAME}"
 					if hasattr(c,"python"):
 						if c.python:
@@ -908,14 +908,14 @@ class Merk(QMainWindow):
 					if c.client.network:
 						serv_name = f"{serv_name} ({c.client.network})"
 				elif c.window_type==LOG_MANAGER_WINDOW:
-					icon = LOG_ICON
+					icon = LOG_MENU_ICON
 					serv_name = "Logs"
 					wname = "Logs"
 					if c.target!=None:
 						wname = f"Logs ({c.target})"
 						serv_name = f"Logs ({c.target})"
 				elif c.window_type==README_WINDOW:
-					icon = README_ICON
+					icon = README_MENU_ICON
 					serv_name = c.name
 					wname = c.name
 
@@ -1187,15 +1187,15 @@ class Merk(QMainWindow):
 							if config.SHOW_LOGS_IN_SYSTRAY_MENU:
 								if len(logs.find_network_logs(f"{mynet}"))>0:
 									if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
-										entry = QAction(QIcon(LOG_ICON),f"Logs",self)
+										entry = QAction(QIcon(LOG_MENU_ICON),f"Logs",self)
 										entry.triggered.connect(self.menuExportLog)
 										sm.addAction(entry)
 									else:
-										entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
+										entry = QAction(QIcon(LOG_MENU_ICON),f"Logs for {mynet}",self)
 										entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
 										sm.addAction(entry)
 								else:
-									entry = QAction(QIcon(LOG_ICON),f"Logs",self)
+									entry = QAction(QIcon(LOG_MENU_ICON),f"Logs",self)
 									entry.triggered.connect(self.menuExportLog)
 									sm.addAction(entry)
 
@@ -1203,7 +1203,7 @@ class Merk(QMainWindow):
 
 							sm.addSeparator()
 
-							entry = QAction(QIcon(CONSOLE_ICON),name,self)
+							entry = QAction(QIcon(CONSOLE_WINDOW_ICON),name,self)
 							entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
 							sm.addAction(entry)
 
@@ -1211,7 +1211,7 @@ class Merk(QMainWindow):
 								c = w.widget()
 
 								if c.window_type==CHANNEL_WINDOW:
-									icon = CHANNEL_ICON
+									icon = CHANNEL_MENU_ICON
 								elif c.window_type==PRIVATE_WINDOW:
 									icon = PRIVATE_WINDOW_ICON
 
@@ -1222,7 +1222,7 @@ class Merk(QMainWindow):
 		self.trayMenu.addSeparator()
 
 		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU:
-			entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
+			entry = QAction(QIcon(SETTINGS_MENU_ICON),"Settings",self)
 			entry.triggered.connect(self.openSettings)
 			self.trayMenu.addAction(entry)
 
@@ -1242,24 +1242,24 @@ class Merk(QMainWindow):
 			sm = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 			if not is_running_from_pyinstaller():
-				entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+				entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
 				entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
 				sm.addAction(entry)
 			else:
-				entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+				entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
 				entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
 				sm.addAction(entry)
 
-			entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
+			entry = QAction(QIcon(SETTINGS_MENU_ICON),"Settings directory",self)
 			entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
 			sm.addAction(entry)
 
 			if config.ENABLE_STYLE_EDITOR:
-				entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+				entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
 				entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
 				sm.addAction(entry)
 
-			entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+			entry = QAction(QIcon(LOG_MENU_ICON),"Logs directory",self)
 			entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
 			sm.addAction(entry)
 
@@ -1269,36 +1269,36 @@ class Merk(QMainWindow):
 				sm.addAction(entry)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
-				entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
 				entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
 				sm.addAction(entry)
 
 		if config.SHOW_LINKS_IN_SYSTRAY_MENU:
-			self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
+			self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_MENU_ICON),"Links")
 
-			entry = QAction(QIcon(LINK_ICON),"Source code",self)
+			entry = QAction(QIcon(LINK_MENU_ICON),"Source code",self)
 			entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 			self.trayLinks.addAction(entry)
 
-			entry = QAction(QIcon(LINK_ICON),"GPL v3",self)
+			entry = QAction(QIcon(LINK_MENU_ICON),"GPL v3",self)
 			entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 			self.trayLinks.addAction(entry)
 
-			entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
+			entry = QAction(QIcon(LINK_MENU_ICON),"Emoji shortcodes",self)
 			entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 			self.trayLinks.addAction(entry)
 
-			entry = QAction(QIcon(LINK_ICON),"ASCIImoji shortcodes",self)
+			entry = QAction(QIcon(LINK_MENU_ICON),"ASCIImoji shortcodes",self)
 			entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 			self.trayLinks.addAction(entry)
 
 		self.trayMenu.addSeparator()
 
-		entry = QAction(QIcon(APPLICATION_ICON),f"About {APPLICATION_NAME}",self)
+		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME}",self)
 		entry.triggered.connect(self.showAbout)
 		self.trayMenu.addAction(entry)
 
-		entry = QAction(QIcon(INFO_ICON),f"{APPLICATION_NAME} User Guide",self)
+		entry = QAction(QIcon(INFO_MENU_ICON),f"{APPLICATION_NAME} User Guide",self)
 		entry.triggered.connect(self.openScripting)
 		self.trayMenu.addAction(entry)
 
@@ -2877,7 +2877,7 @@ class Merk(QMainWindow):
 				if self.alreadyConnected(connection.host,connection.port):
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText(f"""
 						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
 
@@ -2987,7 +2987,7 @@ class Merk(QMainWindow):
 				if self.alreadyConnected(connection.host,connection.port):
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText(f"""
 						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
 
@@ -3927,7 +3927,7 @@ class Merk(QMainWindow):
 													if len(errors)>0:
 														msgBox = QMessageBox()
 														msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-														msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+														msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 														if len(errors)>1:
 															msgBox.setText("There were errors loading plugins!")
 														else:
@@ -3999,7 +3999,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.Window(name,client,SERVER_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(CONSOLE_ICON))
+		w.setWindowIcon(QIcon(CONSOLE_WINDOW_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		w.aboutToActivate.connect(lambda: self.handle_pre_activation(w))
@@ -4051,7 +4051,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		w.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4187,7 +4187,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		w.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4209,7 +4209,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w,False,False,contents))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		w.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4231,7 +4231,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w,False,False,None,True))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		w.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4265,7 +4265,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		w.setWindowIcon(QIcon(SCRIPT_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4326,7 +4326,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.ReadMe(self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(README_ICON))
+		w.setWindowIcon(QIcon(README_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4349,7 +4349,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.LogDump(self,contents,title))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(README_ICON))
+		w.setWindowIcon(QIcon(README_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4375,7 +4375,7 @@ class Merk(QMainWindow):
 		else:
 			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,False,self.app))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(LOG_ICON))
+		w.setWindowIcon(QIcon(LOG_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4401,7 +4401,7 @@ class Merk(QMainWindow):
 		else:
 			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,False,self.app,target))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(LOG_ICON))
+		w.setWindowIcon(QIcon(LOG_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4427,7 +4427,7 @@ class Merk(QMainWindow):
 		else:
 			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,False,self.app))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(LOG_ICON))
+		w.setWindowIcon(QIcon(LOG_MENU_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -4953,8 +4953,8 @@ class Merk(QMainWindow):
 	def settingsDarkMode(self):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_MENU_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		if self.connected_to_something:
 			if config.DARK_MODE:
 				msgBox.setText(f"<b>Deactivating dark mode requires a restart!<br>This will disconnect from all servers.</b><br><br>Restart {APPLICATION_NAME} now?")
@@ -5030,7 +5030,7 @@ class Merk(QMainWindow):
 		do_reconnect = False
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(WARN_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		if self.connected_to_something:
 			msgBox.setText(f"<b>This will disconnect from all servers.</b><br><br>Restart {APPLICATION_NAME} now?<br>")
 			reconnect = QCheckBox("Reconnect to all servers")
@@ -5128,8 +5128,8 @@ class Merk(QMainWindow):
 	def menuSetWidget(self,newstyle):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_MENU_ICON))
 		msgBox.setText(f"Apply widget style \"<b>{newstyle}</b>\" now?<br>")
 		if self.connected_to_something:
 			reconnect = QCheckBox("Reconnect to all servers")
@@ -5400,7 +5400,7 @@ class Merk(QMainWindow):
 				entry.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
 			sm.addAction(entry)
 
-		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Display")
+		sm = self.settingsMenu.addMenu(QIcon(STYLE_MENU_ICON),"Display")
 
 		if config.DISPLAY_IRC_COLORS:
 			entry = QAction(QIcon(self.checked_icon),"Show IRC colors", self)
@@ -5504,7 +5504,7 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsNotifyLost)
 		sm.addAction(entry)
 
-		sm = self.settingsMenu.addMenu(QIcon(LOG_ICON),"Logs")
+		sm = self.settingsMenu.addMenu(QIcon(LOG_MENU_ICON),"Logs")
 
 		if config.SAVE_CHANNEL_LOGS:
 			entry = QAction(QIcon(self.checked_icon),"Save channel logs", self)
@@ -5609,7 +5609,7 @@ class Merk(QMainWindow):
 		if config.SHOW_RESTART_IN_SETTINGS_MENU:
 			self.settingsMenu.addSeparator()
 
-			entry = QAction(QIcon(APPLICATION_ICON),f"Restart {APPLICATION_NAME}", self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),f"Restart {APPLICATION_NAME}", self)
 			entry.triggered.connect(self.settingsRestart)
 			f = entry.font()
 			f.setBold(True)
@@ -5674,10 +5674,10 @@ class Merk(QMainWindow):
 						file_paths.append(os.path.join(root, file))
 				file_paths = list(set(file_paths))
 				if len(file_paths)>0:
-					sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Edit installed scripts")
+					sm = self.toolsMenu.addMenu(QIcon(SCRIPT_MENU_ICON),"Edit installed scripts")
 
 					for f in file_paths:
-						entry = QAction(QIcon(SCRIPT_ICON),f"{os.path.basename(f)}",self)
+						entry = QAction(QIcon(SCRIPT_MENU_ICON),f"{os.path.basename(f)}",self)
 						entry.triggered.connect(lambda state,h=f: self.openEditor(h))
 						sm.addAction(entry)
 
@@ -5685,7 +5685,7 @@ class Merk(QMainWindow):
 					sm = self.toolsMenu.addMenu(QIcon(CONNECT_ICON),"Edit connection scripts")
 
 					for f in user.COMMANDS:
-						entry = QAction(QIcon(SCRIPT_ICON),f"{f}",self)
+						entry = QAction(QIcon(SCRIPT_MENU_ICON),f"{f}",self)
 						entry.triggered.connect(lambda state,h=f: self.openEditorConnect(h))
 						sm.addAction(entry)
 
@@ -5716,24 +5716,24 @@ class Merk(QMainWindow):
 		sm = self.toolsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 		if not is_running_from_pyinstaller():
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
 			entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
 			sm.addAction(entry)
 		else:
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
 			entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
 			sm.addAction(entry)
 
-		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
+		entry = QAction(QIcon(SETTINGS_MENU_ICON),"Settings directory",self)
 		entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
 		sm.addAction(entry)
 
 		if config.ENABLE_STYLE_EDITOR:
-			entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+			entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
 			entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
 			sm.addAction(entry)
 
-		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+		entry = QAction(QIcon(LOG_MENU_ICON),"Logs directory",self)
 		entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
 		sm.addAction(entry)
 
@@ -5743,7 +5743,7 @@ class Merk(QMainWindow):
 			sm.addAction(entry)
 
 		if config.ENABLE_SCRIPTING_ENGINE:
-			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+			entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
 			entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
 			sm.addAction(entry)
 
@@ -5779,15 +5779,15 @@ class Merk(QMainWindow):
 
 		self.helpMenu.addSeparator()
 
-		entry = QAction(QIcon(LINK_ICON),f"{APPLICATION_NAME} source code repository",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),f"{APPLICATION_NAME} source code repository",self)
 		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),"GPLv3 License",self)
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		sm = self.helpMenu.addMenu(QIcon(LINK_ICON),"Technologies")
+		sm = self.helpMenu.addMenu(QIcon(LINK_MENU_ICON),"Technologies")
 
 		entry = QAction(QIcon(PYTHON_ICON),f"Python {platform.python_version().strip()}",self)
 		entry.triggered.connect(lambda state,u="https://www.python.org/": self.openLinkInBrowser(u))
@@ -5811,23 +5811,23 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://twisted.org/": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(LINK_ICON),"pyspellchecker 0.8.3",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),"pyspellchecker 0.8.3",self)
 		entry.triggered.connect(lambda state,u="https://github.com/barrust/pyspellchecker": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(LINK_ICON),"emoji 2.15.0",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),"emoji 2.15.0",self)
 		entry.triggered.connect(lambda state,u="https://github.com/carpedm20/emoji": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(LINK_ICON),"qt5reactor 0.6.3",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),"qt5reactor 0.6.3",self)
 		entry.triggered.connect(lambda state,u="https://github.com/twisted/qt5reactor": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(LINK_ICON),"pike 0.2.0",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),"pike 0.2.0",self)
 		entry.triggered.connect(lambda state,u="https://github.com/pyarmory/pike": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(LINK_ICON),"ASCIImoji",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),"ASCIImoji",self)
 		entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
@@ -5932,7 +5932,7 @@ class Merk(QMainWindow):
 				if c.window_type==SERVER_WINDOW:
 					counter = counter + 1
 					target = f"{c.name}"
-					entry = QAction(QIcon(CONSOLE_ICON),target,self)
+					entry = QAction(QIcon(CONSOLE_WINDOW_ICON),target,self)
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
 					if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Alt+{counter}"))
 					
@@ -5958,7 +5958,7 @@ class Merk(QMainWindow):
 				# Channel and private chat subwindows
 				icon = None
 				if c.window_type==CHANNEL_WINDOW:
-					icon = CHANNEL_ICON
+					icon = CHANNEL_MENU_ICON
 				elif c.window_type==PRIVATE_WINDOW:
 					icon = PRIVATE_WINDOW_ICON
 				if icon!=None:
@@ -6034,7 +6034,7 @@ class Merk(QMainWindow):
 			for win in edwins:
 				counter = counter + 1
 				c = win.widget()
-				icon = SCRIPT_ICON
+				icon = SCRIPT_MENU_ICON
 				if hasattr(c,"python"):
 					if c.python:
 						icon = PYTHON_ICON
@@ -6061,9 +6061,9 @@ class Merk(QMainWindow):
 			if self.log_manager.isVisible():
 				c = self.log_manager.widget()
 				if c.target!=None:
-					entry = QAction(QIcon(LOG_ICON),f"Logs ({c.target})",self)
+					entry = QAction(QIcon(LOG_MENU_ICON),f"Logs ({c.target})",self)
 				else:
-					entry = QAction(QIcon(LOG_ICON),"Logs",self)
+					entry = QAction(QIcon(LOG_MENU_ICON),"Logs",self)
 				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
 				if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Alt+L"))
 
@@ -6085,7 +6085,7 @@ class Merk(QMainWindow):
 		if self.readme_window!=None:
 			if self.readme_window.isVisible():
 				c = self.readme_window.widget()
-				entry = QAction(QIcon(README_ICON),c.name,self)
+				entry = QAction(QIcon(README_MENU_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=self.readme_window: self.showSubWindow(u))
 				if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Alt+R"))
 
@@ -6159,7 +6159,7 @@ class Merk(QMainWindow):
 
 								display_shown = False
 								if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-									wentry = widgets.ExtendedMenuItemNoAction(self,CONNECT_DIALOG_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
+									wentry = widgets.ExtendedMenuItemNoAction(self,CONNECT_DIALOG_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 									sm.addAction(wentry)
 									display_shown = True
 
@@ -6174,7 +6174,7 @@ class Merk(QMainWindow):
 								separator.setVisible(False)
 
 								if config.SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU:
-									wentry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+									wentry = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",self)
 									wentry.triggered.connect(c.joinChannel)
 									sm.addAction(wentry)
 
@@ -6188,7 +6188,7 @@ class Merk(QMainWindow):
 									show_sep = True
 
 								if config.SHOW_JOIN_AND_NICK_IN_WINDOWS_MENU:
-									wentry = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+									wentry = QAction(QIcon(USER_MENU_ICON),"Change nickname",self)
 									wentry.triggered.connect(c.changeNick)
 									sm.addAction(wentry)
 
@@ -6206,19 +6206,19 @@ class Merk(QMainWindow):
 
 								if config.SHOW_LOGS_IN_WINDOWS_MENU and (len(os.listdir(logs.LOG_DIRECTORY))>0):
 									if len(logs.find_network_logs(f"{mynet}"))>0:
-										wentry = QAction(QIcon(LOG_ICON),f"View logs for {mynet}",self)
+										wentry = QAction(QIcon(LOG_MENU_ICON),f"View logs for {mynet}",self)
 										wentry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
 										sm.addAction(wentry)
 
 										show_sep = True
 
 								if config.SHOW_SCRIPTING_IN_WINDOWS_MENU and config.ENABLE_SCRIPTING_ENGINE:
-									wentry = QAction(QIcon(RUN_ICON),"Run script on server window",self)
+									wentry = QAction(QIcon(RUN_MENU_ICON),"Run script on server window",self)
 									wentry.triggered.connect(c.scriptDialog)
 									sm.addAction(wentry)
 
 									hostid = f"{c.client.server}:{c.client.port}"
-									wentry = QAction(QIcon(SCRIPT_ICON),"Edit connection script",self)
+									wentry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",self)
 									wentry.triggered.connect(lambda state,h=hostid: self.openEditorConnect(h))
 									sm.addAction(wentry)
 
@@ -6226,7 +6226,7 @@ class Merk(QMainWindow):
 
 								if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU:
 									ssetting = sm.addMenu(c.server_info_menu)
-									ssetting.setIcon(QIcon(SETTINGS_ICON))
+									ssetting.setIcon(QIcon(SETTINGS_MENU_ICON))
 
 									show_sep = True
 
@@ -6528,7 +6528,7 @@ class Merk(QMainWindow):
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			if no_hostname:
 				msgBox.setText(f"""
 					Are you sure you want to disconnect from <b>{client.server}:{client.port}</b>?<br><br>
@@ -6593,7 +6593,7 @@ class Merk(QMainWindow):
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(f"""
 				Are you sure you want to disconnect from {cstr}?<br><br>
 
@@ -6768,7 +6768,7 @@ class Merk(QMainWindow):
 		if do_ask:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(QUIT_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText("Are you sure you want to exit?")
 			msgBox.setWindowTitle("Exit")
 			default_button = msgBox.addButton(f" Exit {APPLICATION_NAME} ", QMessageBox.AcceptRole)
@@ -7359,7 +7359,7 @@ class MdiArea(QMdiArea):
 				if not config.OVERWRITE_PLUGINS_ON_IMPORT and overwrite==True:
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText("The following files already exist. Overwrite?")
 					msgBox.setInformativeText("\n".join(ofiles))
 					msgBox.setWindowTitle("Overwrite")
@@ -7411,7 +7411,7 @@ class MdiArea(QMdiArea):
 					if len(errors)>0:
 						msgBox = QMessageBox()
 						msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-						msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+						msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 						if len(errors)>1:
 							msgBox.setText("There were errors loading plugins!")
 						else:
@@ -7426,7 +7426,7 @@ class MdiArea(QMdiArea):
 		if len(installed)>0:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText("The following plugin files were installed:")
 			msgBox.setInformativeText("\n".join(installed))
 			msgBox.setWindowTitle("Plugin Installation")
