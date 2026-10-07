@@ -4953,7 +4953,7 @@ class Merk(QMainWindow):
 	def settingsDarkMode(self):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(APPLICATION_MENU_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		if self.connected_to_something:
 			if config.DARK_MODE:
@@ -5129,7 +5129,7 @@ class Merk(QMainWindow):
 		do_reconnect = False
 		msgBox = QMessageBox()
 		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
-		msgBox.setIconPixmap(QPixmap(APPLICATION_MENU_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setText(f"Apply widget style \"<b>{newstyle}</b>\" now?<br>")
 		if self.connected_to_something:
 			reconnect = QCheckBox("Reconnect to all servers")

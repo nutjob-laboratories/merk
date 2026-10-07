@@ -2182,7 +2182,7 @@ class Dialog(QDialog):
 	def do_restart(self, link):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(APPLICATION_MENU_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		if self.parent.connected_to_something:
 			msgBox.setText(f"<b>Save settings and restart {APPLICATION_NAME} now?</b><br><br>This will disconnect {APPLICATION_NAME} from all servers.<br>")

@@ -2,12 +2,6 @@
 |                                   0.052.350                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **Logs can now be exported to CSV**. The Log Manager has been partially re-written, and is now simpler and easier to use. Logs can be exported to human readable text, JSON, or CSV.
-- **New icons**. Many application icons have been changed, using (primarily) the public domain [Tango](https://openhub.net/p/tango) icon set. Many icons have been removed from the application's resource file.
-- **Many bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -64,7 +58,6 @@ What's new:
 * Removed the "full sized" "info" icon from the resource file.
 * Removed the "full sized" "channel window" and "private chat window" icons
   from the resource file.
-* Removed the "full sized" "application" icon from the resource file.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.300                                  |

@@ -326,6 +326,7 @@ DOWN_ICON = ":/icon-down.png"
 UP_ICON = ":/icon-up.png"
 WARN_ICON = ":/icon-warn.png"
 NETWORK_ICON = ":/icon-connect.png"
+APPLICATION_ICON = ":/icon-app.png"
 
 # 24x24 icons
 SCRIPT_MENU_ICON = ":/icon-script_menu.png"
