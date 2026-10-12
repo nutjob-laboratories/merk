@@ -1489,24 +1489,34 @@ class Dialog(QDialog):
 			self.showSystrayMenu.setEnabled(True)
 			if self.showSystrayMenu.isChecked():
 				self.stmConnections.setEnabled(True)
-				self.stmSettings.setEnabled(True)
 				self.stmDirs.setEnabled(True)
 				self.stmLinks.setEnabled(True)
 				self.stmList.setEnabled(True)
 				self.stmLogs.setEnabled(True)
+				self.stmNick.setEnabled(True)
+				self.stmJoin.setEnabled(True)
+				self.stmAway.setEnabled(True)
 				if not self.stmConnections.isChecked():
 					self.stmList.setEnabled(False)
 					self.stmLogs.setEnabled(False)
+					self.stmNick.setEnabled(False)
+					self.stmJoin.setEnabled(False)
+					self.stmAway.setEnabled(False)
 				else:
 					self.stmList.setEnabled(True)
 					self.stmLogs.setEnabled(True)
+					self.stmNick.setEnabled(True)
+					self.stmJoin.setEnabled(True)
+					self.stmAway.setEnabled(True)
 			else:
 				self.stmConnections.setEnabled(False)
-				self.stmSettings.setEnabled(False)
 				self.stmDirs.setEnabled(False)
 				self.stmLinks.setEnabled(False)
 				self.stmList.setEnabled(False)
 				self.stmLogs.setEnabled(False)
+				self.stmNick.setEnabled(False)
+				self.stmJoin.setEnabled(False)
+				self.stmAway.setEnabled(False)
 			self.minSystray.setEnabled(True)
 			if self.minSystray.isChecked():
 				self.systrayNotify.setEnabled(True)
@@ -1558,11 +1568,13 @@ class Dialog(QDialog):
 			self.doubleclickRestore.setEnabled(False)
 			self.clickToMinimize.setEnabled(False)
 			self.stmConnections.setEnabled(False)
-			self.stmSettings.setEnabled(False)
 			self.stmDirs.setEnabled(False)
 			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
 			self.systrayChannel.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
@@ -1573,9 +1585,15 @@ class Dialog(QDialog):
 		if not self.stmConnections.isChecked():
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
 		else:
 			self.stmList.setEnabled(True)
 			self.stmLogs.setEnabled(True)
+			self.stmNick.setEnabled(True)
+			self.stmJoin.setEnabled(True)
+			self.stmAway.setEnabled(True)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -3997,10 +4015,6 @@ class Dialog(QDialog):
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
 		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
 
-		self.stmSettings = QCheckBox("Settings",self)
-		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU: self.stmSettings.setChecked(True)
-		self.stmSettings.stateChanged.connect(self.changedSetting)
-
 		self.stmDirs = QCheckBox("Directories",self)
 		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU: self.stmDirs.setChecked(True)
 		self.stmDirs.stateChanged.connect(self.changedSetting)
@@ -4017,35 +4031,59 @@ class Dialog(QDialog):
 		if config.SHOW_LOGS_IN_SYSTRAY_MENU: self.stmLogs.setChecked(True)
 		self.stmLogs.stateChanged.connect(self.changedSetting)
 
+		self.stmNick = QCheckBox("Nicks",self)
+		if config.SYSTRAY_NICK_CONTROL: self.stmNick.setChecked(True)
+		self.stmNick.stateChanged.connect(self.changedSetting)
+
+		self.stmJoin = QCheckBox("Channel join",self)
+		if config.SYSTRAY_JOIN_CHANNEL: self.stmJoin.setChecked(True)
+		self.stmJoin.stateChanged.connect(self.changedSetting)
+
+		self.stmAway = QCheckBox("Away/back",self)
+		if config.SYSTRAY_AWAY_CONTROL: self.stmAway.setChecked(True)
+		self.stmAway.stateChanged.connect(self.changedSetting)
+
 		menuRow1 = QHBoxLayout()
 		menuRow1.addStretch()
 		menuRow1.addWidget(self.stmConnections)
-		menuRow1.addWidget(self.stmSettings)
 		menuRow1.addWidget(self.stmDirs)
+		menuRow1.addWidget(self.stmLinks)
 		menuRow1.addStretch()
+
+		menuRow3 = QHBoxLayout()
+		menuRow3.addStretch()
+		menuRow3.addWidget(self.stmNick)
+		menuRow3.addWidget(self.stmJoin)
+		menuRow3.addWidget(self.stmAway)
+		menuRow3.addStretch()
 
 		menuRow2 = QHBoxLayout()
 		menuRow2.addStretch()
-		menuRow2.addWidget(self.stmLinks)
 		menuRow2.addWidget(self.stmList)
 		menuRow2.addWidget(self.stmLogs)
 		menuRow2.addStretch()
 
 		menuBox = QVBoxLayout()
 		menuBox.addLayout(menuRow1)
+		menuBox.addLayout(menuRow3)
 		menuBox.addLayout(menuRow2)
 
 		if not config.SYSTRAY_MENU:
 			self.stmConnections.setEnabled(False)
-			self.stmSettings.setEnabled(False)
 			self.stmDirs.setEnabled(False)
 			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
 
 		if not config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
 
 		stLayout = QVBoxLayout()
 		stLayout.setSpacing(0)
@@ -4131,11 +4169,13 @@ class Dialog(QDialog):
 			self.doubleclickRestore.setEnabled(False)
 			self.clickToMinimize.setEnabled(False)
 			self.stmConnections.setEnabled(False)
-			self.stmSettings.setEnabled(False)
 			self.stmDirs.setEnabled(False)
 			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
 			self.systrayChannel.setEnabled(False)
 
 		# Notifications
@@ -7762,7 +7802,6 @@ class Dialog(QDialog):
 		config.USER_DATA_FETCH_FREQUENCY = self.USER_DATA_FETCH_FREQUENCY
 		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
 		config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU = self.stmConnections.isChecked()
-		config.SHOW_SETTINGS_IN_SYSTRAY_MENU = self.stmSettings.isChecked()
 		config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU = self.stmDirs.isChecked()
 		config.SHOW_LINKS_IN_SYSTRAY_MENU = self.stmLinks.isChecked()
 		config.SHOW_LIST_IN_SYSTRAY_MENU = self.stmList.isChecked()
@@ -7926,6 +7965,9 @@ class Dialog(QDialog):
 		config.SHOW_FULL_USER_IN_CTCP_REPLY = self.showFullUser.isChecked()
 		config.APPLICATION_SHORTCUTS = self.appShortcuts.isChecked()
 		config.ASK_BEFORE_MULTIPLE_CONNECTIONS = self.connectMultiple.isChecked()
+		config.SYSTRAY_NICK_CONTROL = self.stmNick.isChecked()
+		config.SYSTRAY_JOIN_CHANNEL = self.stmJoin.isChecked()
+		config.SYSTRAY_AWAY_CONTROL = self.stmAway.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

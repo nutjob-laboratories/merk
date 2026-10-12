@@ -2,6 +2,13 @@
 |                                    0.500.000                                 |
 |------------------------------------------------------------------------------|
 
+What's new:
+
+- **Major version number bump**. As MERK is nearing a "good enough for 1.0" state, we bumped up the version number to match it's new status.
+- **The resource file has been cleaned up**. `optipng` has been used to shrink the file size of many of the icons in the applications resource file, and many icons have been removed or revamped. The resource file is now about 60% of it's former size, with no loss in image quality.
+- **The system tray right click menu is now more useful**. It's also been cleaned up.
+- **Many, many bugfixes**.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -16,6 +23,23 @@
 * Added an option to "execute script on all windows" to the editor.
 * Removed the "ignore" options from the private chat display right click menu.
 * Cleaned up the resource file. Icons have been consolidated and shrunk.
+* Bugfix: channel list searches now work as intended. Setting the search to use
+  "all search terms" now actually looks for ALL terms, individually, in both
+  channel names and topics.
+* IRC network links have now been added to the systray menu.
+* Added more connection controls to the systray icon menu.
+* Removed the option to open the "Settings" dialog from the system tray menu.
+* Bugfix: multiple separators could be shown in series in the system tray menu,
+  if many of the possible items in the menu were disabled.
+* The subwindow icons have been changed to appear more consistant, and match
+  graphics (and icons) that are seen in other menus. Subwindow icons now appear
+  as a "button-style" graphic; channels feature a "pound" symbol, private chats
+  feature a couple of avatars, and server windows now feature the "connect"
+  icon shown in the main menu.
+* Added toggles for some of the new systray menu features to the configuration
+  file and "Settings" dialog.
+* The "run a script" button on server window toolbars now brings up the "run a
+  script" dialog, rather than running the script directly.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.350                                  |

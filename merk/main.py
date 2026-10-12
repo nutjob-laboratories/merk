@@ -1169,7 +1169,7 @@ class Merk(QMainWindow):
 
 					if len(total)>0:
 						if hasattr(sw,"widget"):
-							sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
+							sm = self.trayMenu.addMenu(QIcon(CONNECT_MENU_ICON),name)
 
 							c = sw.widget()
 							if hasattr(c.client,"network"):
@@ -1177,9 +1177,42 @@ class Merk(QMainWindow):
 							else:
 								mynet = config.UNKNOWN_NETWORK_NAME
 
+							if config.SHOW_LINKS_TO_NETWORK_WEBPAGES and config.SHOW_LINKS_IN_SYSTRAY_MENU:
+								if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
+									netlink = get_network_link(mynet)
+									if netlink!=None:
+										entry = QAction(QIcon(LINK_MENU_ICON),f"{mynet}",self)
+										entry.triggered.connect(lambda state,u=netlink: self.openLinkInBrowser(u))
+										sm.addAction(entry)
+										sm.addSeparator()
+
 							if config.SHOW_LIST_IN_SYSTRAY_MENU:
-								entry = QAction(QIcon(LIST_ICON),"Channel list",self)
+								entry = QAction(QIcon(LIST_ICON),"Search channel list",self)
 								entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
+								sm.addAction(entry)
+
+								if not c.client.registered: entry.setEnabled(False)
+
+							if config.SYSTRAY_JOIN_CHANNEL:
+								entry = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",self)
+								entry.triggered.connect(c.joinChannel)
+								sm.addAction(entry)
+
+								if not c.client.registered: entry.setEnabled(False)
+
+							if config.SYSTRAY_NICK_CONTROL:
+								entry = QAction(QIcon(USER_MENU_ICON),"Change nickname",self)
+								entry.triggered.connect(c.changeNick)
+								sm.addAction(entry)
+
+								if not c.client.registered: entry.setEnabled(False)
+
+							if config.SYSTRAY_AWAY_CONTROL:
+								if c.client.is_away:
+									entry = QAction(QIcon(GO_BACK_ICON),"Set status to \"back\"",self)
+								else:
+									entry = QAction(QIcon(GO_AWAY_ICON),"Set status to \"away\"",self)
+								entry.triggered.connect(c.changeAway)
 								sm.addAction(entry)
 
 								if not c.client.registered: entry.setEnabled(False)
@@ -1187,17 +1220,19 @@ class Merk(QMainWindow):
 							if config.SHOW_LOGS_IN_SYSTRAY_MENU:
 								if len(logs.find_network_logs(f"{mynet}"))>0:
 									if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
-										entry = QAction(QIcon(LOG_MENU_ICON),f"Logs",self)
+										entry = QAction(QIcon(LOG_MENU_ICON),f"View logs",self)
 										entry.triggered.connect(self.menuExportLog)
 										sm.addAction(entry)
 									else:
-										entry = QAction(QIcon(LOG_MENU_ICON),f"Logs for {mynet}",self)
+										entry = QAction(QIcon(LOG_MENU_ICON),f"View logs for {mynet}",self)
 										entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
 										sm.addAction(entry)
+									if not c.client.registered: entry.setEnabled(False)
 								else:
-									entry = QAction(QIcon(LOG_MENU_ICON),f"Logs",self)
+									entry = QAction(QIcon(LOG_MENU_ICON),f"View logs",self)
 									entry.triggered.connect(self.menuExportLog)
 									sm.addAction(entry)
+									if not c.client.registered: entry.setEnabled(False)
 
 								if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
 
@@ -1221,11 +1256,6 @@ class Merk(QMainWindow):
 
 		self.trayMenu.addSeparator()
 
-		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU:
-			entry = QAction(QIcon(SETTINGS_MENU_ICON),"Settings",self)
-			entry.triggered.connect(self.openSettings)
-			self.trayMenu.addAction(entry)
-
 		if config.MINIMIZE_TO_SYSTRAY:
 			if self.is_hidden:
 				entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
@@ -1234,12 +1264,16 @@ class Merk(QMainWindow):
 			entry.triggered.connect(self.toggleHide)
 			self.trayMenu.addAction(entry)
 
-		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU or config.MINIMIZE_TO_SYSTRAY:
+		if config.MINIMIZE_TO_SYSTRAY:
 			self.trayMenu.addSeparator()
+
+		show_sep = False
 
 		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU:
 
 			sm = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
+
+			show_sep = True
 
 			if not is_running_from_pyinstaller():
 				entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
@@ -1276,6 +1310,8 @@ class Merk(QMainWindow):
 		if config.SHOW_LINKS_IN_SYSTRAY_MENU:
 			self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_MENU_ICON),"Links")
 
+			show_sep = True
+
 			entry = QAction(QIcon(LINK_MENU_ICON),"Source code",self)
 			entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 			self.trayLinks.addAction(entry)
@@ -1292,7 +1328,8 @@ class Merk(QMainWindow):
 			entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 			self.trayLinks.addAction(entry)
 
-		self.trayMenu.addSeparator()
+		if show_sep:
+			self.trayMenu.addSeparator()
 
 		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME}",self)
 		entry.triggered.connect(self.showAbout)

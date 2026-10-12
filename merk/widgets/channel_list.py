@@ -261,7 +261,7 @@ class Window(QMainWindow):
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
 			target = f"*{'*'.join(self.search_terms.text().split())}*"
 		else:
-			target = self.search_terms.text()
+			target = f"*{self.search_terms.text()}*"
 
 		results = []
 		for entry in self.client.server_channel_list:
@@ -269,12 +269,27 @@ class Window(QMainWindow):
 			channel_count = entry[1]
 			channel_topic = entry[2]
 
+			# Handle searches for ALL  terms in channel name
+			if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
+				for t in self.search_terms.text().split():
+					if fnmatch.fnmatch(channel_name,f"*{t}*"):
+						results.append(entry)
+
+			# Handle searches for the terms in the channel name
 			if fnmatch.fnmatch(channel_name,f"{target}"):
 				results.append(entry)
-			if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH:
-				if fnmatch.fnmatch(channel_topic,f"{target}"):
-					results.append(entry)
 
+			# Handle searches for the terms in channel topics
+			if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH:
+				if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
+					for t in self.search_terms.text().split():
+						if fnmatch.fnmatch(channel_topic,f"*{t}*"):
+							results.append(entry)
+				else:
+					if fnmatch.fnmatch(channel_topic,f"{target}"):
+						results.append(entry)
+
+		# Remove duplicates from the result list
 		results = remove_duplicate_sublists(results)
 
 		data_count = 0

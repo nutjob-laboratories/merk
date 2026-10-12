@@ -295,7 +295,6 @@ USERLIST_CONTEXT_MENU = True
 USER_DATA_FETCH_FREQUENCY = 5
 DO_NOT_SHOW_SERVER_IN_TITLE = False
 SHOW_CONNECTIONS_IN_SYSTRAY_MENU = True
-SHOW_SETTINGS_IN_SYSTRAY_MENU = True
 SHOW_DIRECTORIES_IN_SYSTRAY_MENU = True
 SHOW_LINKS_IN_SYSTRAY_MENU = True
 SHOW_LIST_IN_SYSTRAY_MENU = True
@@ -494,8 +493,15 @@ SHOW_FULL_USER_IN_CTCP_REPLY = False
 APPLICATION_SHORTCUTS = True
 ASK_BEFORE_MULTIPLE_CONNECTIONS = True
 
+SYSTRAY_NICK_CONTROL = True
+SYSTRAY_JOIN_CHANNEL = True
+SYSTRAY_AWAY_CONTROL = True
+
 def build_settings():
 	settings = {
+		"show_nick_in_systray_menu": SYSTRAY_NICK_CONTROL,
+		"show_channel_join_in_systray_menu": SYSTRAY_JOIN_CHANNEL,
+		"show_away_in_systray_menu": SYSTRAY_AWAY_CONTROL,
 		"ask_before_connecting_to_server_more_than_once": ASK_BEFORE_MULTIPLE_CONNECTIONS,
 		"application_shortcuts": APPLICATION_SHORTCUTS,
 		"show_full_user_data_in_ctcp_reply": SHOW_FULL_USER_IN_CTCP_REPLY,
@@ -691,7 +697,6 @@ def build_settings():
 		"show_channel_list_in_systray_menu": SHOW_LIST_IN_SYSTRAY_MENU,
 		"show_network_logs_in_systray_menu": SHOW_LOGS_IN_SYSTRAY_MENU,
 		"show_connections_in_systray_menu": SHOW_CONNECTIONS_IN_SYSTRAY_MENU,
-		"show_settings_in_systray_menu": SHOW_SETTINGS_IN_SYSTRAY_MENU,
 		"show_directories_in_systray_menu": SHOW_DIRECTORIES_IN_SYSTRAY_MENU,
 		"show_links_in_systray_menu": SHOW_LINKS_IN_SYSTRAY_MENU,
 		"do_not_show_server_name_in_application_title": DO_NOT_SHOW_SERVER_IN_TITLE,
@@ -948,6 +953,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_nick_in_systray_menu" in settings:
+		settings["show_nick_in_systray_menu"] = SYSTRAY_NICK_CONTROL
+	if not "show_channel_join_in_systray_menu" in settings:
+		settings["show_channel_join_in_systray_menu"] = SYSTRAY_JOIN_CHANNEL
+	if not "show_away_in_systray_menu" in settings:
+		settings["show_away_in_systray_menu"] = SYSTRAY_AWAY_CONTROL
 	if not "ask_before_connecting_to_server_more_than_once" in settings:
 		settings["ask_before_connecting_to_server_more_than_once"] = ASK_BEFORE_MULTIPLE_CONNECTIONS
 	if not "application_shortcuts" in settings:
@@ -1338,8 +1349,6 @@ def patch_settings(settings):
 		settings["show_network_logs_in_systray_menu"] = SHOW_LOGS_IN_SYSTRAY_MENU
 	if not "show_connections_in_systray_menu" in settings:
 		settings["show_connections_in_systray_menu"] = SHOW_CONNECTIONS_IN_SYSTRAY_MENU
-	if not "show_settings_in_systray_menu" in settings:
-		settings["show_settings_in_systray_menu"] = SHOW_SETTINGS_IN_SYSTRAY_MENU
 	if not "show_directories_in_systray_menu" in settings:
 		settings["show_directories_in_systray_menu"] = SHOW_DIRECTORIES_IN_SYSTRAY_MENU
 	if not "show_links_in_systray_menu" in settings:
@@ -2096,7 +2105,6 @@ def load_settings(filename):
 	global USER_DATA_FETCH_FREQUENCY
 	global DO_NOT_SHOW_SERVER_IN_TITLE
 	global SHOW_CONNECTIONS_IN_SYSTRAY_MENU
-	global SHOW_SETTINGS_IN_SYSTRAY_MENU
 	global SHOW_DIRECTORIES_IN_SYSTRAY_MENU
 	global SHOW_LINKS_IN_SYSTRAY_MENU
 	global SHOW_LIST_IN_SYSTRAY_MENU
@@ -2293,6 +2301,9 @@ def load_settings(filename):
 	global SHOW_FULL_USER_IN_CTCP_REPLY
 	global APPLICATION_SHORTCUTS
 	global ASK_BEFORE_MULTIPLE_CONNECTIONS
+	global SYSTRAY_NICK_CONTROL
+	global SYSTRAY_JOIN_CHANNEL
+	global SYSTRAY_AWAY_CONTROL
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2302,6 +2313,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SYSTRAY_NICK_CONTROL = settings["show_nick_in_systray_menu"]
+		SYSTRAY_JOIN_CHANNEL = settings["show_channel_join_in_systray_menu"]
+		SYSTRAY_AWAY_CONTROL = settings["show_away_in_systray_menu"]
 		ASK_BEFORE_MULTIPLE_CONNECTIONS = settings["ask_before_connecting_to_server_more_than_once"]
 		APPLICATION_SHORTCUTS = settings["application_shortcuts"]
 		SHOW_FULL_USER_IN_CTCP_REPLY = settings["show_full_user_data_in_ctcp_reply"]
@@ -2497,7 +2511,6 @@ def load_settings(filename):
 		SHOW_LIST_IN_SYSTRAY_MENU = settings["show_channel_list_in_systray_menu"]
 		SHOW_LOGS_IN_SYSTRAY_MENU = settings["show_network_logs_in_systray_menu"]
 		SHOW_CONNECTIONS_IN_SYSTRAY_MENU = settings["show_connections_in_systray_menu"]
-		SHOW_SETTINGS_IN_SYSTRAY_MENU = settings["show_settings_in_systray_menu"]
 		SHOW_DIRECTORIES_IN_SYSTRAY_MENU = settings["show_directories_in_systray_menu"]
 		SHOW_LINKS_IN_SYSTRAY_MENU = settings["show_links_in_systray_menu"]
 		DO_NOT_SHOW_SERVER_IN_TITLE = settings["do_not_show_server_name_in_application_title"]

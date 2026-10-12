@@ -383,7 +383,7 @@ class Window(QMainWindow):
 
 			self.script_button = QPushButton("")
 			self.script_button.setIcon(QIcon(SCRIPT_MENU_ICON))
-			self.script_button.clicked.connect(lambda state,u=True: self.loadScript(u))
+			self.script_button.clicked.connect(self.scriptDialog)
 			self.script_button.setToolTip("Run a script")
 			self.script_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 			self.script_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
