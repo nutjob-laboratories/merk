@@ -161,7 +161,7 @@ class Window(QMainWindow):
 
 		menu.addSeparator()
 
-		mefind = QAction(QIcon(WHOIS_ICON),"Find",self)
+		mefind = QAction(QIcon(SEARCH_ICON),"Find",self)
 		mefind.triggered.connect(self.doFind)
 		mefind.setShortcut("Ctrl+F")
 		menu.addAction(mefind)
@@ -219,11 +219,11 @@ class Window(QMainWindow):
 			smenu = menu.addMenu(QIcon(CONNECT_ICON),"Insert server name")
 			for window in servers:
 				c = window.widget()
-				entry = QAction(QIcon(CONSOLE_WINDOW_ICON),c.name,self)
+				entry = QAction(QIcon(CONNECT_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=f"{c.name}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
-				entry = QAction(QIcon(CONNECT_ICON),f"{c.client.server}:{c.client.port}",self)
+				entry = QAction(QIcon(CONSOLE_WINDOW_ICON),f"{c.client.server}:{c.client.port}",self)
 				entry.triggered.connect(lambda state,u=f"{c.client.server}:{c.client.port}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
@@ -399,7 +399,7 @@ class Window(QMainWindow):
 
 		self.editMenu.clear()
 
-		mefind = QAction(QIcon(WHOIS_ICON),"Find",self)
+		mefind = QAction(QIcon(SEARCH_ICON),"Find",self)
 		mefind.triggered.connect(self.doFind)
 		mefind.setShortcut("Ctrl+F")
 		self.editMenu.addAction(mefind)
@@ -911,7 +911,7 @@ class Window(QMainWindow):
 				self.oscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open script")
 
 				for f in file_paths:
-					entry = QAction(QIcon(SCRIPT_MENU_ICON),os.path.basename(f),self)
+					entry = QAction(os.path.basename(f),self)
 					entry.triggered.connect(lambda state,h=f: self.readFile(h))
 					self.oscript_menu.addAction(entry)
 
@@ -919,7 +919,7 @@ class Window(QMainWindow):
 				self.cscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open connection script")
 
 				for host in user.COMMANDS:
-					entry = QAction(QIcon(SCRIPT_MENU_ICON),f"{host}",self)
+					entry = QAction(f"{host}",self)
 					entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
 					self.cscript_menu.addAction(entry)
 
@@ -954,7 +954,7 @@ class Window(QMainWindow):
 
 			self.fileMenu.addSeparator()
 
-			entry = QAction(QIcon(FOLDER_ICON),"Scripts directory",self)
+			entry = QAction(QIcon(FOLDER_ICON),"Open scripts directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 			self.fileMenu.addAction(entry)
 		else:
@@ -984,7 +984,7 @@ class Window(QMainWindow):
 
 			self.fileMenu.addSeparator()
 
-			entry = QAction(QIcon(FOLDER_ICON),"Plugins directory",self)
+			entry = QAction(QIcon(FOLDER_ICON),"Open plugins directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
 			self.fileMenu.addAction(entry)
 
@@ -1308,7 +1308,7 @@ class Window(QMainWindow):
 
 		# Current server submenu
 
-		sub = menu.addMenu(QIcon(CONNECT_ICON),"Current server")
+		sub = menu.addMenu(QIcon(CONSOLE_WINDOW_ICON),"Current server")
 
 		entry = QAction("Host",self)
 		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_HOST": self.insertIntoEditor(u))
@@ -1467,14 +1467,22 @@ class Window(QMainWindow):
 
 	def executeScript(self,window):
 		script = self.editor.toPlainText()
-		if self.filename==None:
-			window.executeScript(script,None)
-		else:
-			window.executeScript(script,self.filename)
+		if len(script.strip())>0:
+			if self.filename==None:
+				window.executeScript(script,None)
+			else:
+				window.executeScript(script,self.filename)
 		self.runMenu.close()
 
 	def executeScriptOnAll(self):
 		servers = self.parent.getAllServerWindows()
+		if len(servers)>0:
+			for window in servers:
+				c = window.widget()
+				self.executeScript(c)
+
+	def executeScriptOnAllWin(self):
+		servers = self.parent.getAllServerWindows() + self.parent.getAllChannelWindows() + self.parent.getAllPrivateWindows()
 		if len(servers)>0:
 			for window in servers:
 				c = window.widget()
@@ -1558,21 +1566,25 @@ class Window(QMainWindow):
 			if len(servers)>1 or channels>1 or privates>1:
 				self.runMenu.addSeparator()
 
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run script on all windows",self)
+				entry.triggered.connect(self.executeScriptOnAllWin)
+				self.runMenu.addAction(entry)
+
 			if len(servers)>1:
 
-				entry = QAction(QIcon(RUN_MENU_ICON),"Run script on all servers",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run script on all servers",self)
 				entry.triggered.connect(self.executeScriptOnAll)
 				self.runMenu.addAction(entry)
 
 			if channels>1:
 
-				entry = QAction(QIcon(RUN_MENU_ICON),"Run script on all channels",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run script on all channels",self)
 				entry.triggered.connect(self.executeScriptOnChannels)
 				self.runMenu.addAction(entry)
 
 			if privates>1:
 
-				entry = QAction(QIcon(RUN_MENU_ICON),"Run script on all private chats",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run script on all private chats",self)
 				entry.triggered.connect(self.executeScriptOnPrivates)
 				self.runMenu.addAction(entry)
 

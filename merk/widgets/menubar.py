@@ -344,7 +344,7 @@ class wMenuButton(QPushButton):
 				menu.addAction(self.contextRefresh)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
-				self.contextRun = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
+				self.contextRun = QAction(QIcon(SCRIPT_MENU_ICON),"Run a script on this window",self)
 				self.contextRun.triggered.connect(self.window.scriptDialog)
 				menu.addAction(self.contextRun)
 
@@ -358,7 +358,7 @@ class wMenuButton(QPushButton):
 
 			if config.ENABLE_SCRIPTING_ENGINE:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
-				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",self)
+				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
 				menu.addAction(entry)
 
@@ -411,7 +411,7 @@ class wMenuButton(QPushButton):
 		if self.window.window_type==CHANNEL_WINDOW:
 
 			if config.ENABLE_SCRIPTING_ENGINE:
-				entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run a script on this window",self)
 				entry.triggered.connect(self.window.scriptDialog)
 				menu.addAction(entry)
 
@@ -426,10 +426,10 @@ class wMenuButton(QPushButton):
 			if config.ENABLE_SCRIPTING_ENGINE:
 				cscript = commands.find_script(self.window.encodeScriptFilename(),None)
 				if cscript!=None:
-					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit channel script",menu)
+					entry = QAction(QIcon(EDIT_ICON),"Edit channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.openEditor(h))
 				else:
-					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create channel script",menu)
+					entry = QAction(QIcon(EDIT_ICON),"Create channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.newEditorWindowSave(h))
 				menu.addAction(entry)
 
@@ -460,7 +460,7 @@ class wMenuButton(QPushButton):
 		if self.window.window_type!=CHANNEL_WINDOW and self.window.window_type!=SERVER_WINDOW:
 
 			if config.ENABLE_SCRIPTING_ENGINE and hasattr(self.window,"scriptDialog"):
-				entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
+				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run a script on this window",self)
 				entry.triggered.connect(self.window.scriptDialog)
 				menu.addAction(entry)
 
@@ -606,7 +606,7 @@ class wIconMenuButton(QPushButton):
 				menu.addAction(self.contextRefresh)
 
 			if config.ENABLE_SCRIPTING_ENGINE:
-				self.contextRun = QAction(QIcon(RUN_MENU_ICON),"Run a script on server window",self)
+				self.contextRun = QAction(QIcon(SCRIPT_MENU_ICON),"Run a script on server window",self)
 				self.contextRun.triggered.connect(lambda state: self.window.loadScript(True))
 				menu.addAction(self.contextRun)
 
@@ -620,7 +620,7 @@ class wIconMenuButton(QPushButton):
 
 			if config.ENABLE_SCRIPTING_ENGINE:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
-				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",self)
+				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
 				menu.addAction(entry)
 
@@ -683,10 +683,10 @@ class wIconMenuButton(QPushButton):
 			if config.ENABLE_SCRIPTING_ENGINE:
 				cscript = commands.find_script(self.window.encodeScriptFilename(),None)
 				if cscript!=None:
-					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit channel script",menu)
+					entry = QAction(QIcon(EDIT_ICON),"Edit channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.openEditor(h))
 				else:
-					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create channel script",menu)
+					entry = QAction(QIcon(EDIT_ICON),"Create channel script",menu)
 					entry.triggered.connect(lambda state,h=self.window.encodeScriptFilename(): self.window.parent.newEditorWindowSave(h))
 				menu.addAction(entry)
 

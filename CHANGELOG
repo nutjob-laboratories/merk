@@ -1,4 +1,23 @@
 |------------------------------------------------------------------------------|
+|                                    0.500.000                                 |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Major version bump. The application is nearing being "finished" enough for a
+  1.0 version, so the current application version should reflect that.
+* Changed the console, channel, and private chat window icons.
+* Removed the "run script" icon from the resource file. The application now
+  uses the "script" icon used elsewhere in the app.
+* Bugfix: executing a script from the script editor could crash the client, if
+  the script was blank or contained only whitespace.
+* Added an option to "execute script on all windows" to the editor.
+* Removed the "ignore" options from the private chat display right click menu.
+* Cleaned up the resource file. Icons have been consolidated and shrunk.
+
+|------------------------------------------------------------------------------|
 |                                   0.052.350                                  |
 |------------------------------------------------------------------------------|
 

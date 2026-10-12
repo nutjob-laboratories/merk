@@ -319,18 +319,12 @@ class Window(QMainWindow):
 		self.dosave.start(config.LOG_SAVE_INTERVAL)
 
 		if self.window_type==CHANNEL_WINDOW:
-			icon = CHANNEL_MENU_ICON
 			if not config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
 				self.setWindowTitle(' ')
 			else:
 				self.setWindowTitle(self.name)
-		elif self.window_type==SERVER_WINDOW:
-			icon = CONSOLE_WINDOW_ICON
+		else:
 			self.setWindowTitle(self.name)
-		elif self.window_type==PRIVATE_WINDOW:
-			icon = PRIVATE_WINDOW_ICON
-			self.setWindowTitle(self.name)
-		self.setWindowIcon(QIcon(icon))
 
 		f = self.parent.app.font()
 		self.setFont(f)
@@ -388,7 +382,7 @@ class Window(QMainWindow):
 			serverBar.addWidget(self.away_button)
 
 			self.script_button = QPushButton("")
-			self.script_button.setIcon(QIcon(RUN_MENU_ICON))
+			self.script_button.setIcon(QIcon(SCRIPT_MENU_ICON))
 			self.script_button.clicked.connect(lambda state,u=True: self.loadScript(u))
 			self.script_button.setToolTip("Run a script")
 			self.script_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
@@ -1417,7 +1411,7 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if config.ENABLE_SCRIPTING_ENGINE:
-					entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",menu)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run a script on this window",menu)
 					entry.triggered.connect(self.scriptDialog)
 					menu.addAction(entry)
 
@@ -1426,9 +1420,9 @@ class Window(QMainWindow):
 				if config.ENABLE_SCRIPTING_ENGINE:
 					hostid = f"{self.client.server}:{self.client.port}"
 					if hostid in user.COMMANDS:
-						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",menu)
+						entry = QAction(QIcon(EDIT_ICON),"Edit connection script",menu)
 					else:
-						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create connection script",menu)
+						entry = QAction(QIcon(EDIT_ICON),"Create connection script",menu)
 					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
 					menu.addAction(entry)
 
@@ -1506,7 +1500,7 @@ class Window(QMainWindow):
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"Server information", self)
+					act = QAction(QIcon(CONNECT_ICON),"Server information", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 					copyMenu.addAction(act)
 
@@ -1518,7 +1512,7 @@ class Window(QMainWindow):
 
 				if self.window_type==PRIVATE_WINDOW:
 
-					act = QAction(QIcon(WHOIS_ICON),f"Request WHOIS on {self.name}", self)
+					act = QAction(QIcon(USER_MENU_ICON),f"Request WHOIS on {self.name}", self)
 					act.triggered.connect(lambda : self.client.sendLine(f"WHOIS {self.name}"))
 					menu.addAction(act)
 
@@ -1532,7 +1526,7 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.sendCTCPPing(self.name))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"SOURCE", self)
+					act = QAction(QIcon(CONNECT_ICON),"SOURCE", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('SOURCE', '')]))
 					ctcpMenu.addAction(act)
 
@@ -1544,38 +1538,9 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('USERINFO', '')]))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"VERSION", self)
+					act = QAction(QIcon(CONNECT_ICON),"VERSION", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('VERSION', '')]))
 					ctcpMenu.addAction(act)
-
-					user_hostmask = None
-					if self.name in self.hostmasks:
-						user_hostmask = self.hostmasks[self.name]
-					if user_hostmask==None:
-						user_hostmask = self.parent.getHostmask(self.client,self.name)
-
-					igMenu = menu.addMenu(QIcon(HIDE_MENU_ICON),f"Ignore {self.name}")
-					if not self.is_ignored(self.name,user_hostmask):
-						act = QAction(QIcon(HIDE_MENU_ICON),f"Ignore by nickname", self)
-						act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
-						igMenu.addAction(act)
-
-						act = QAction(QIcon(HIDE_MENU_ICON),f"Ignore by hostmask", self)
-						act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-						igMenu.addAction(act)
-
-						if user_hostmask==None: act.setEnabled(False)
-					else:
-						if self.is_hidden_by_nickname(self.name):
-							act = QAction(QIcon(SHOW_ICON),f"Unignore {self.name}'s nickname", self)
-							act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
-							igMenu.addAction(act)
-						else:
-							if user_hostmask!=None:
-								if self.is_hidden_by_hostmask(self.parent.getHostmask(self.client,self.name)):
-									act = QAction(QIcon(SHOW_ICON),f"Unignore {self.name}'s hostmask", self)
-									act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-									igMenu.addAction(act)
 
 					cdMenu = menu.addMenu(QIcon(PRIVATE_WINDOW_ICON),"Chat display")
 
@@ -1628,7 +1593,7 @@ class Window(QMainWindow):
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
-					act = QAction(QIcon(CONSOLE_WINDOW_ICON),"Server information", self)
+					act = QAction(QIcon(CONNECT_ICON),"Server information", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 					copyMenu.addAction(act)
 
@@ -1775,16 +1740,16 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if config.ENABLE_SCRIPTING_ENGINE:
-					entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",menu)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run a script on this window",menu)
 					entry.triggered.connect(self.scriptDialog)
 					menu.addAction(entry)
 
 				if config.EXECUTE_CHANNEL_SCRIPTS and config.ENABLE_SCRIPTING_ENGINE:
 					cscript = commands.find_script(self.encodeScriptFilename(),None)
 					if cscript!=None:
-						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit channel script",menu)
+						entry = QAction(QIcon(EDIT_ICON),"Edit channel script",menu)
 					else:
-						entry = QAction(QIcon(SCRIPT_MENU_ICON),"Create channel script",menu)
+						entry = QAction(QIcon(EDIT_ICON),"Create channel script",menu)
 					entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowSave(h))
 					menu.addAction(entry)
 
@@ -1812,7 +1777,7 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if config.ENABLE_SCRIPTING_ENGINE:
-					entry = QAction(QIcon(RUN_MENU_ICON),f"Run a script on this window",menu)
+					entry = QAction(QIcon(SCRIPT_MENU_ICON),f"Run a script on this window",menu)
 					entry.triggered.connect(self.scriptDialog)
 					menu.addAction(entry)
 
@@ -2055,7 +2020,7 @@ class Window(QMainWindow):
 
 			self.settingsMenu.addSeparator()
 
-			entry = QAction(QIcon(RUN_MENU_ICON),"Run a script on this window",self)
+			entry = QAction(QIcon(SCRIPT_MENU_ICON),"Run a script on this window",self)
 			entry.triggered.connect(self.loadScript)
 			self.settingsMenu.addAction(entry)
 
@@ -2842,7 +2807,7 @@ class Window(QMainWindow):
 
 		if user_nick!=self.client.nickname:
 
-			act = QAction(QIcon(WHOIS_ICON),"Request WHOIS", self)
+			act = QAction(QIcon(USER_MENU_ICON),"Request WHOIS", self)
 			act.triggered.connect(lambda : self.client.sendLine(f"WHOIS {user_nick}"))
 			self.userlist_menu.addAction(act)
 
@@ -2862,11 +2827,11 @@ class Window(QMainWindow):
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(CONSOLE_WINDOW_ICON),"SOURCE", self)
+			act = QAction(QIcon(CONNECT_ICON),"SOURCE", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(CONSOLE_WINDOW_ICON),"VERSION", self)
+			act = QAction(QIcon(CONNECT_ICON),"VERSION", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
 			ctcpMenu.addAction(act)
 
@@ -2948,7 +2913,7 @@ class Window(QMainWindow):
 				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 				copyMenu.addAction(act)
 
-		act = QAction(QIcon(CONSOLE_WINDOW_ICON),"Server information", self)
+		act = QAction(QIcon(CONNECT_ICON),"Server information", self)
 		act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 		copyMenu.addAction(act)
 

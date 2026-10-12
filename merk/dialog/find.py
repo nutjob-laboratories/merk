@@ -169,7 +169,7 @@ class Dialog(QMainWindow):
 			self.setWindowIcon(QIcon(EDIT_ICON))
 		else:
 			self.setWindowTitle("Find")
-			self.setWindowIcon(QIcon(WHOIS_ICON))
+			self.setWindowIcon(QIcon(SEARCH_ICON))
 
 		self.subWindow = None
 

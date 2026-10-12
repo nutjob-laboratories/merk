@@ -5029,7 +5029,7 @@ class Merk(QMainWindow):
 	def settingsRestart(self):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(WARN_ICON))
+		msgBox.setIconPixmap(QPixmap(ADVANCED_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		if self.connected_to_something:
 			msgBox.setText(f"<b>This will disconnect from all servers.</b><br><br>Restart {APPLICATION_NAME} now?<br>")
@@ -5677,7 +5677,7 @@ class Merk(QMainWindow):
 					sm = self.toolsMenu.addMenu(QIcon(SCRIPT_MENU_ICON),"Edit installed scripts")
 
 					for f in file_paths:
-						entry = QAction(QIcon(SCRIPT_MENU_ICON),f"{os.path.basename(f)}",self)
+						entry = QAction(f"{os.path.basename(f)}",self)
 						entry.triggered.connect(lambda state,h=f: self.openEditor(h))
 						sm.addAction(entry)
 
@@ -5685,7 +5685,7 @@ class Merk(QMainWindow):
 					sm = self.toolsMenu.addMenu(QIcon(CONNECT_ICON),"Edit connection scripts")
 
 					for f in user.COMMANDS:
-						entry = QAction(QIcon(SCRIPT_MENU_ICON),f"{f}",self)
+						entry = QAction(f"{f}",self)
 						entry.triggered.connect(lambda state,h=f: self.openEditorConnect(h))
 						sm.addAction(entry)
 
@@ -6146,7 +6146,7 @@ class Merk(QMainWindow):
 								else:
 									mynet = config.UNKNOWN_NETWORK_NAME
 
-								sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
+								sm = self.windowsMenu.addMenu(QIcon(CONNECT_MENU_ICON),name)
 
 								if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 									netlink = get_network_link(mynet)
@@ -6213,12 +6213,12 @@ class Merk(QMainWindow):
 										show_sep = True
 
 								if config.SHOW_SCRIPTING_IN_WINDOWS_MENU and config.ENABLE_SCRIPTING_ENGINE:
-									wentry = QAction(QIcon(RUN_MENU_ICON),"Run script on server window",self)
+									wentry = QAction(QIcon(SCRIPT_MENU_ICON),"Run script on server window",self)
 									wentry.triggered.connect(c.scriptDialog)
 									sm.addAction(wentry)
 
 									hostid = f"{c.client.server}:{c.client.port}"
-									wentry = QAction(QIcon(SCRIPT_MENU_ICON),"Edit connection script",self)
+									wentry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
 									wentry.triggered.connect(lambda state,h=hostid: self.openEditorConnect(h))
 									sm.addAction(wentry)
 
