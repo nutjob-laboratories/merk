@@ -334,7 +334,7 @@ class wMenuButton(QPushButton):
 			menu.addAction(self.contextJoin)
 
 			if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
-				self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",self)
+				self.contextList = QAction(QIcon(SEARCH_ICON),"Server channel list",self)
 				self.contextList.triggered.connect(self.window.showChannelList)
 				menu.addAction(self.contextList)
 
@@ -596,7 +596,7 @@ class wIconMenuButton(QPushButton):
 			menu.addAction(self.contextJoin)
 
 			if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
-				self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",self)
+				self.contextList = QAction(QIcon(SEARCH_ICON),"Server channel list",self)
 				self.contextList.triggered.connect(self.window.showChannelList)
 				menu.addAction(self.contextList)
 

@@ -4032,15 +4032,15 @@ class Dialog(QDialog):
 		self.stmLogs.stateChanged.connect(self.changedSetting)
 
 		self.stmNick = QCheckBox("Nicks",self)
-		if config.SYSTRAY_NICK_CONTROL: self.stmNick.setChecked(True)
+		if config.SHOW_NICK_IN_SYSTRAY_MENU: self.stmNick.setChecked(True)
 		self.stmNick.stateChanged.connect(self.changedSetting)
 
 		self.stmJoin = QCheckBox("Channel join",self)
-		if config.SYSTRAY_JOIN_CHANNEL: self.stmJoin.setChecked(True)
+		if config.SHOW_JOIN_IN_SYSTRAY_MENU: self.stmJoin.setChecked(True)
 		self.stmJoin.stateChanged.connect(self.changedSetting)
 
 		self.stmAway = QCheckBox("Away/back",self)
-		if config.SYSTRAY_AWAY_CONTROL: self.stmAway.setChecked(True)
+		if config.SHOW_AWAY_IN_SYSTRAY_MENU: self.stmAway.setChecked(True)
 		self.stmAway.stateChanged.connect(self.changedSetting)
 
 		menuRow1 = QHBoxLayout()
@@ -7965,9 +7965,9 @@ class Dialog(QDialog):
 		config.SHOW_FULL_USER_IN_CTCP_REPLY = self.showFullUser.isChecked()
 		config.APPLICATION_SHORTCUTS = self.appShortcuts.isChecked()
 		config.ASK_BEFORE_MULTIPLE_CONNECTIONS = self.connectMultiple.isChecked()
-		config.SYSTRAY_NICK_CONTROL = self.stmNick.isChecked()
-		config.SYSTRAY_JOIN_CHANNEL = self.stmJoin.isChecked()
-		config.SYSTRAY_AWAY_CONTROL = self.stmAway.isChecked()
+		config.SHOW_NICK_IN_SYSTRAY_MENU = self.stmNick.isChecked()
+		config.SHOW_JOIN_IN_SYSTRAY_MENU = self.stmJoin.isChecked()
+		config.SHOW_AWAY_IN_SYSTRAY_MENU = self.stmAway.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

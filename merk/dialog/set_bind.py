@@ -207,7 +207,7 @@ class Dialog(QDialog):
 		self.default_text_color = palette.color(QPalette.WindowText)
 
 		self.setWindowTitle("Bind Hotkey")
-		self.setWindowIcon(QIcon(INPUT_ICON))
+		self.setWindowIcon(QIcon(HOTKEY_MENU_ICON))
 
 		nameLayout = QHBoxLayout()
 		self.keyLabel = QLabel("<b>Key Sequence:&nbsp;</b>")

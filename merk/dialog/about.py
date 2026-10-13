@@ -151,7 +151,7 @@ class Dialog(QDialog):
 			pi_credit.setAlignment(Qt.AlignCenter)
 			pi_credit.setOpenExternalLinks(True)
 
-		platform_credit = QLabel(f"<small><b>Running on "+ platform.system().strip() + " " + platform.release().strip() +"</b></small>")
+		platform_credit = QLabel(f"<small><b>Running on {platform.system().strip()} {platform.release().strip()}</b></small>")
 		platform_credit.setAlignment(Qt.AlignCenter)
 
 		# QT_VERSION_STR
@@ -166,7 +166,7 @@ class Dialog(QDialog):
 
 		pyCred = QVBoxLayout()
 		pyCred.addWidget(python_logo)
-		pyCred.addWidget(QLabel("<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>"))
+		pyCred.addWidget(QLabel(f"<small><b><a href=\"https://python.org\">Python</a> {platform.python_version().strip()}</b></small>"))
 
 		twCred = QVBoxLayout()
 		twCred.addWidget(twisted_logo)
@@ -174,8 +174,8 @@ class Dialog(QDialog):
 
 		qtCred = QVBoxLayout()
 		qtCred.addWidget(qt_logo)
-		qtCred.addWidget(QLabel("<center><small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small></center>"))
-		qtCred.addWidget(QLabel("<center><small><b><a href=\"https://www.riverbankcomputing.com/software/pyqt/\">PyQt</a> " + str(PYQT_VERSION_STR) +"</b></small></center>"))
+		qtCred.addWidget(QLabel(f"<center><small><b><a href=\"https://www.qt.io/\">Qt</a> {QT_VERSION_STR}</b></small></center>"))
+		qtCred.addWidget(QLabel(f"<center><small><b><a href=\"https://www.riverbankcomputing.com/software/pyqt/\">PyQt</a> {PYQT_VERSION_STR}</b></small></center>"))
 
 		logoBar = QHBoxLayout()
 		logoBar.addStretch()
@@ -208,16 +208,11 @@ class Dialog(QDialog):
 
 		app_description = QLabel("<big><b>Free and Open Source IRC Client</b></big>")
 		app_description.setAlignment(Qt.AlignCenter)
-		app_version = QLabel("<big><b>Version "+APPLICATION_VERSION+"</b></big>")
+		app_version = QLabel(f"<big><b>Version {APPLICATION_VERSION}</b></big>")
 		app_version.setAlignment(Qt.AlignCenter)
 		app_repository = QLabel(f"<big><b><a href=\"https://merk.chat\">https://merk.chat</a></b></big>")
 		app_repository.setAlignment(Qt.AlignCenter)
 		app_repository.setOpenExternalLinks(True)
-
-		app_donations = QLabel(f"<big><b><a href=\"https://buymeacoffee.com/danhetrick\">Donate To {APPLICATION_NAME}</a></b></big>")
-		app_donations.setAlignment(Qt.AlignCenter)
-		app_donations.setOpenExternalLinks(True)
-
 		pyinstaller_no_version = QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>")
 		pyinstaller_no_version.setOpenExternalLinks(True)
 
@@ -227,13 +222,12 @@ class Dialog(QDialog):
 		aboutLayout.addWidget(app_version)
 		aboutLayout.addWidget(app_description)
 		aboutLayout.addWidget(app_repository)
-		aboutLayout.addWidget(app_donations)
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addWidget(platform_credit)
 		if is_running_from_pyinstaller():
 			version = get_pyinstaller_version()
 			if version != None:
-				pyinstaller_w_version = QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>")
+				pyinstaller_w_version = QLabel(f"<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a> {version}</b></small></center>")
 				pyinstaller_w_version.setOpenExternalLinks(True)
 				aboutLayout.addWidget(pyinstaller_w_version)
 			else:
@@ -292,10 +286,9 @@ class Dialog(QDialog):
 		other_credit = QLabel(f"""<b><big><br>
 			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br><br>
 			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a><br><br>
-			<a href=\"https://github.com/GlobeDotters\">Ivan \"Avatar\" Todorov</a><br>
-			<small><a href=\"https://inthemansion.com/\">MansionNET</a></small><br><br>
-			<a href=\"https://vulpinelinux.org\">Vulpine Linux</a><br>
-			<small><a href=\"https://forge.dnsrail.org/vulpinelinux/vpm\">Vulpine Package Manager</a></small>
+			<a href=\"https://github.com/GlobeDotters\">Ivan \"Avatar\" Todorov</a><br><br>
+			<a href=\"https://inthemansion.com/\">MansionNET IRC Network</a><br><br>
+			<a href=\"https://vulpinelinux.org\">Vulpine Linux</a><br><br>
 			</big></b>""")
 		other_credit.setAlignment(Qt.AlignCenter)
 		other_credit.setOpenExternalLinks(True)

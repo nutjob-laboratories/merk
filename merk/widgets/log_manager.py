@@ -441,7 +441,7 @@ class Window(QMainWindow):
 		self.search.setPlaceholderText("Search terms...")
 
 		search_icon = QLabel()
-		pixmap = QPixmap(LIST_ICON)
+		pixmap = QPixmap(SEARCH_ICON)
 		pixmap = pixmap.scaled(config.INTERFACE_BUTTON_SIZE, config.INTERFACE_BUTTON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		search_icon.setPixmap(pixmap)
 		search_icon.setAlignment(Qt.AlignCenter)

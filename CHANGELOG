@@ -40,6 +40,11 @@ What's new:
   file and "Settings" dialog.
 * The "run a script" button on server window toolbars now brings up the "run a
   script" dialog, rather than running the script directly.
+* Cleaned up the "about" dialog.
+* Removed the "list" icon from the resource file; now, we're using the "search"
+  icon in its place.
+* Removed the "input" icon from the resource file, as it was no longer used.
+* Removed one of the "Twisted" icons from the resource file.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.350                                  |

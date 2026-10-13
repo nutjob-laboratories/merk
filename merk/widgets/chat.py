@@ -406,9 +406,9 @@ class Window(QMainWindow):
 				self.refresh_button.hide()
 
 			self.list_button = QPushButton("")
-			self.list_button.setIcon(QIcon(LIST_ICON))
+			self.list_button.setIcon(QIcon(SEARCH_ICON))
 			self.list_button.clicked.connect(self.showChannelList)
-			self.list_button.setToolTip("Server channel list")
+			self.list_button.setToolTip("Search server channel list")
 			self.list_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 			self.list_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.list_button.setFlat(True)
@@ -1395,7 +1395,7 @@ class Window(QMainWindow):
 				if not self.client.registered: self.contextJoin.setEnabled(False)
 
 				if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
-					self.contextList = QAction(QIcon(LIST_ICON),"Show channel list",menu)
+					self.contextList = QAction(QIcon(SEARCH_ICON),"Search channel list",menu)
 					self.contextList.triggered.connect(self.showChannelList)
 					menu.addAction(self.contextList)
 
@@ -1512,11 +1512,11 @@ class Window(QMainWindow):
 
 				if self.window_type==PRIVATE_WINDOW:
 
-					act = QAction(QIcon(USER_MENU_ICON),f"Request WHOIS on {self.name}", self)
+					act = QAction(QIcon(USER_MENU_ICON),f"Request WHOIS on \"{self.name}\"", self)
 					act.triggered.connect(lambda : self.client.sendLine(f"WHOIS {self.name}"))
 					menu.addAction(act)
 
-					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),f"Send CTCP request to {self.name}")
+					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),f"Send CTCP request to \"{self.name}\"")
 
 					act = QAction(QIcon(USER_MENU_ICON),"FINGER", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('FINGER', '')]))
@@ -2370,7 +2370,7 @@ class Window(QMainWindow):
 			banmask = f"{nick}"
 		self.client.mode(self.name,True,"b",None,None,banmask)
 
-	def menuKickBackUser(self,nick,hostmask):
+	def menuKickBanUser(self,nick,hostmask):
 		if hostmask!=None:
 			h = hostmask.split('@')[1]
 			banmask = f"*@{h}"
@@ -2970,7 +2970,7 @@ class Window(QMainWindow):
 			opMenu.addAction(act)
 
 			act = QAction(QIcon(CLOSE_ICON),f"Kick && Ban \"{user_nick}\"", self)
-			act.triggered.connect(lambda : self.menuKickBackUser(user_nick,user_hostmask))
+			act.triggered.connect(lambda : self.menuKickBanUser(user_nick,user_hostmask))
 			opMenu.addAction(act)
 
 		self.userlist_menu.exec_(self.userlist.mapToGlobal(position))

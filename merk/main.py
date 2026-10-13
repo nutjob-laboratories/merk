@@ -756,7 +756,7 @@ class Merk(QMainWindow):
 							wname = os.path.basename(c.filename)
 							serv_name = c.filename
 				elif c.window_type==LIST_WINDOW:
-					icon = LIST_ICON
+					icon = SEARCH_ICON
 					serv_name = "Channel list"
 					if c.client.hostname:
 						wname = f"{c.client.hostname} channel list"
@@ -898,7 +898,7 @@ class Merk(QMainWindow):
 							wname = os.path.basename(c.filename)
 							serv_name = c.filename
 				elif c.window_type==LIST_WINDOW:
-					icon = LIST_ICON
+					icon = SEARCH_ICON
 					serv_name = "Channel list"
 					if c.client.hostname:
 						wname = name = f"{c.client.hostname} channel list"
@@ -1187,27 +1187,27 @@ class Merk(QMainWindow):
 										sm.addSeparator()
 
 							if config.SHOW_LIST_IN_SYSTRAY_MENU:
-								entry = QAction(QIcon(LIST_ICON),"Search channel list",self)
+								entry = QAction(QIcon(SEARCH_ICON),"Search channel list",self)
 								entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
 								sm.addAction(entry)
 
 								if not c.client.registered: entry.setEnabled(False)
 
-							if config.SYSTRAY_JOIN_CHANNEL:
+							if config.SHOW_JOIN_IN_SYSTRAY_MENU:
 								entry = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",self)
 								entry.triggered.connect(c.joinChannel)
 								sm.addAction(entry)
 
 								if not c.client.registered: entry.setEnabled(False)
 
-							if config.SYSTRAY_NICK_CONTROL:
+							if config.SHOW_NICK_IN_SYSTRAY_MENU:
 								entry = QAction(QIcon(USER_MENU_ICON),"Change nickname",self)
 								entry.triggered.connect(c.changeNick)
 								sm.addAction(entry)
 
 								if not c.client.registered: entry.setEnabled(False)
 
-							if config.SYSTRAY_AWAY_CONTROL:
+							if config.SHOW_AWAY_IN_SYSTRAY_MENU:
 								if c.client.is_away:
 									entry = QAction(QIcon(GO_BACK_ICON),"Set status to \"back\"",self)
 								else:
@@ -4340,7 +4340,7 @@ class Merk(QMainWindow):
 		w = MerkSubwindow(self)
 		w.setWidget(widgets.ChannelList(client,client.server_channel_list,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(LIST_ICON))
+		w.setWindowIcon(QIcon(SEARCH_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
@@ -5844,7 +5844,7 @@ class Merk(QMainWindow):
 		tv = tv.strip()
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
-		entry = QAction(QIcon(TWISTED_ICON),f"Twisted {tv}",self)
+		entry = QAction(QIcon(TWISTED_BUTTON_ICON),f"Twisted {tv}",self)
 		entry.triggered.connect(lambda state,u="https://twisted.org/": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
@@ -6045,7 +6045,7 @@ class Merk(QMainWindow):
 					else:
 						target = c.client.network
 					title = f"Channel list for {target}"
-					entry = QAction(QIcon(LIST_ICON),title,self)
+					entry = QAction(QIcon(SEARCH_ICON),title,self)
 					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
 					if config.WINDOWS_MENU_WINDOW_SHORTCUTS: entry.setShortcut(QKeySequence(f"Ctrl+Alt+{counter}"))
 					
@@ -6218,7 +6218,7 @@ class Merk(QMainWindow):
 									show_sep = True
 
 								if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
-									wentry = QAction(QIcon(LIST_ICON),"Search channel list",self)
+									wentry = QAction(QIcon(SEARCH_ICON),"Search channel list",self)
 									wentry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
 									sm.addAction(wentry)
 

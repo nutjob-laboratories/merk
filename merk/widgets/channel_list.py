@@ -84,7 +84,7 @@ class Window(QMainWindow):
 		self.search_terms.setPlaceholderText("Enter search terms here")
 
 		self.search_button = QPushButton('')
-		self.search_button.setIcon(QIcon(LIST_ICON))
+		self.search_button.setIcon(QIcon(SEARCH_ICON))
 		self.search_button.setToolTip("Search channel list")
 		self.search_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.search_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
