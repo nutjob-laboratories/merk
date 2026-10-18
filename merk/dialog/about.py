@@ -80,6 +80,7 @@ class Dialog(QDialog):
 
 		logo = QLabel()
 		pixmap = QPixmap(SPLASH_LOGO)
+		pixmap = pixmap.scaled(225, 58, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
@@ -271,9 +272,7 @@ class Dialog(QDialog):
 		coffeeLayout.addStretch()
 
 		patronLayout = QVBoxLayout()
-		patronLayout.addWidget(QLabel(' '))
 		patronLayout.addLayout(coffeeLayout)
-		patronLayout.addWidget(QLabel(' '))
 		patronLayout.addLayout(patListLayout)
 		patronLayout.addStretch()
 
@@ -283,11 +282,11 @@ class Dialog(QDialog):
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
 
-		other_credit = QLabel(f"""<b><big><br>
-			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br><br>
-			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a><br><br>
+		other_credit = QLabel(f"""<b><big>
+			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br>
+			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a><br>
 			<a href=\"https://github.com/GlobeDotters\">Ivan \"Avatar\" Todorov</a><br><br>
-			<a href=\"https://inthemansion.com/\">MansionNET IRC Network</a><br><br>
+			<a href=\"https://inthemansion.com/\">MansionNET IRC Network</a><br>
 			<a href=\"https://vulpinelinux.org\">Vulpine Linux</a><br><br>
 			</big></b>""")
 		other_credit.setAlignment(Qt.AlignCenter)

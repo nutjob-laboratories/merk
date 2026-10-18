@@ -687,7 +687,7 @@ class IRC_Connection(irc.IRCClient):
 			self.gui.connectToIrcFail(message,message)
 		else:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(message)
 			msgBox.setInformativeText(f"Disconnected from {self.server}! {dialog}")
@@ -925,11 +925,8 @@ class IRC_Connection(irc.IRCClient):
 							w.writeText(t)
 					super().notice(user, chunk, length)
 
-	def leave(self,channel,reason=None):
-		
-		super().leave(channel,reason)
-
 	def noticed(self, user, channel, msg):
+
 		tok = user.split('!')
 		if len(tok) >= 2:
 			pnick = tok[0]
@@ -1662,6 +1659,9 @@ class IRC_Connection(irc.IRCClient):
 					self.gui.receivedError(self,command,f"{error_msg}")
 
 		return irc.IRCClient.lineReceived(self, line)
+
+	def created(self,when):
+		self.gui.serverMessage(self,when)
 
 	def isupport(self,options):
 		self.options = options

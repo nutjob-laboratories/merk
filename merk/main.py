@@ -348,7 +348,7 @@ class Merk(QMainWindow):
 				errors.append(f"\"{seq}\" is already in use as a shortcut")
 		if len(errors)>0:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(HOTKEY_MENU_ICON))
+			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			if len(errors)>1:
 				msgBox.setText("There were errors loading hotkeys from the configuration file!")
@@ -2012,13 +2012,32 @@ class Merk(QMainWindow):
 		else:
 			ignored = self.is_ignored(nickname,None)
 
-		# Server notices get written to the server window only
+		# Pre-registration notices also get written to the
+		# server window only; they also don't trigger the
+		# plugin "notice" event. They *do* trigger the
+		# server message event, however
+		if client.registered==False:
+			self.serverMessage(client,msg)
+			return
+
+		# Server notices get written to the ALL connected
+		# subwindows; the plugin "notice" event will be
+		# triggered. Notifications will be triggered
 		if target=='*':
-			w = self.getServerWindow(client)
-			if w:
-				t = Message(NOTICE_MESSAGE,'',msg)
+			wins = self.getAllConnectedChatWindows(client)
+			t = Message(NOTICE_MESSAGE,user,msg)
+			for w in wins:
+				c = w.widget()
 				w.writeText(t)
-				plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+
+			if config.FLASH_SYSTRAY_NOTICE: self.show_notifications(f"Received a notice from {user}")
+
+			if config.SOUND_NOTIFICATIONS:
+				if not ignored:
+					if config.SOUND_NOTIFICATION_NOTICE:
+						QSound.play(config.SOUND_NOTIFICATION_FILE)
+
+			plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 			return
 
 		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications(f"Received a notice from {nickname}")
@@ -6183,7 +6202,7 @@ class Merk(QMainWindow):
 								else:
 									mynet = config.UNKNOWN_NETWORK_NAME
 
-								sm = self.windowsMenu.addMenu(QIcon(CONNECT_MENU_ICON),name)
+								sm = self.windowsMenu.addMenu(QIcon(CONNECT_DIALOG_MENU_ICON),name)
 
 								if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 									netlink = get_network_link(mynet)
@@ -6194,11 +6213,13 @@ class Merk(QMainWindow):
 								else:
 									desc = "<b>IRC Network</b>"
 
-								display_shown = False
-								if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-									wentry = widgets.ExtendedMenuItemNoAction(self,CONNECT_DIALOG_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
-									sm.addAction(wentry)
-									display_shown = True
+								if c.client.kwargs["ssl"]:
+									icon = VISITED_SECURE_ICON
+								else:
+									icon = VISITED_BOOKMARK_ICON
+
+								wentry = widgets.ExtendedMenuItemNoAction(self,icon,mynet,desc,32)
+								sm.addAction(wentry)
 
 								disconnect_entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),"Disconnect from server",self)
 								disconnect_entry.triggered.connect(c.disconnect)
@@ -6278,7 +6299,7 @@ class Merk(QMainWindow):
 									if c.widget().window_type==LIST_WINDOW and c.widget().client==sw.widget().client:
 										win_total = win_total + 1
 
-								if not display_shown and not show_sep:
+								if not show_sep:
 									separator.setVisible(True)
 								else:
 									if registered_connections>1:
@@ -6564,7 +6585,7 @@ class Merk(QMainWindow):
 
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			if no_hostname:
 				msgBox.setText(f"""
@@ -6629,7 +6650,7 @@ class Merk(QMainWindow):
 
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(f"""
 				Are you sure you want to disconnect from {cstr}?<br><br>
@@ -6804,7 +6825,7 @@ class Merk(QMainWindow):
 
 		if do_ask:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(QUIT_ICON))
+			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText("Are you sure you want to exit?")
 			msgBox.setWindowTitle("Exit")

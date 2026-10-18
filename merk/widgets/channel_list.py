@@ -62,21 +62,21 @@ class Window(QMainWindow):
 		self.name = self.server_name + " channels"
 
 		if hasattr(self.client,"network"):
-			self.network = self.client.network
+			self.network = self.client.network+" network"
+			if self.client.network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+				self.setWindowTitle(f"Channels on {self.server_name}")
+			else:
+				self.setWindowTitle(f"Channels on {self.server_name} ({self.client.network})")
 		else:
 			self.network = config.UNKNOWN_NETWORK_NAME.capitalize()+" network"
-
-		self.window_title = f"Channels on {self.server_name} ({self.network})"
-
-		self.setWindowTitle(self.window_title)
+			self.setWindowTitle(f"Channels on {self.server_name}")
 
 		self.window_type = LIST_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
 
 		self.table_widget = QListWidget()
-
 		self.table_widget.setAlternatingRowColors(True)
-		self.table_widget.setTextElideMode(Qt.ElideRight)
+		self.table_widget.setWordWrap(False)
 		self.table_widget.itemDoubleClicked.connect(self.on_double_click)
 
 		self.search_terms = QLineEdit('')
@@ -90,6 +90,7 @@ class Window(QMainWindow):
 		self.search_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.search_button.clicked.connect(self.doSearch)
 		self.search_button.setFlat(True)
+		self.search_button.setFocusPolicy(Qt.NoFocus)
 
 		self.refresh_button = QPushButton('')
 		self.refresh_button.setIcon(QIcon(REFRESH_ICON))
@@ -98,28 +99,29 @@ class Window(QMainWindow):
 		self.refresh_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.refresh_button.clicked.connect(lambda state: self.client.sendLine('LIST'))
 		self.refresh_button.setFlat(True)
+		self.refresh_button.setFocusPolicy(Qt.NoFocus)
 
-		self.moreFive	= QRadioButton("5+",self)
-		self.moreTen	= QRadioButton("10+",self)
-		self.moreTwenty = QRadioButton("20+",self)
-		self.moreFifty	= QRadioButton("50+",self)
-		self.moreAny	= QRadioButton("1+",self)
+		self.moreTen		= QRadioButton("10+",self)
+		self.moreTwenty		= QRadioButton("20+",self)
+		self.moreFifty		= QRadioButton("50+",self)
+		self.moreHundred	= QRadioButton("100+",self)
+		self.moreAny		= QRadioButton("1+",self)
 		self.moreAny.setChecked(True)
-		self.moreFive.toggled.connect(self.doReset)
 		self.moreTen.toggled.connect(self.doReset)
 		self.moreTwenty.toggled.connect(self.doReset)
 		self.moreAny.toggled.connect(self.doReset)
 		self.moreFifty.toggled.connect(self.doReset)
+		self.moreHundred.toggled.connect(self.doReset)
 
 		smaller_size = self.parent.app.font().pointSize() - 2
 		if smaller_size<config.MINIMUM_FONT_SIZE: smaller_size = config.MINIMUM_FONT_SIZE
 		f = self.font()
 		f.setPointSize(smaller_size)
-		self.moreFive.setFont(f)
 		self.moreTen.setFont(f)
 		self.moreTwenty.setFont(f)
 		self.moreAny.setFont(f)
 		self.moreFifty.setFont(f)
+		self.moreHundred.setFont(f)
 
 		self.reset_button = QPushButton("Reset")
 		self.reset_button.clicked.connect(self.doResetButton)
@@ -152,7 +154,6 @@ class Window(QMainWindow):
 		self.sLayout = QHBoxLayout()
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
-		self.sLayout.addWidget(QLabel(' '))
 		self.sLayout.addWidget(self.refresh_button)
 		self.sLayout.addWidget(QLabel(' '))
 		self.sLayout.addWidget(self.reset_button)
@@ -167,10 +168,10 @@ class Window(QMainWindow):
 		self.oLayout = QHBoxLayout()
 		self.oLayout.addWidget(ulabel)
 		self.oLayout.addWidget(self.moreAny)
-		self.oLayout.addWidget(self.moreFive)
 		self.oLayout.addWidget(self.moreTen)
 		self.oLayout.addWidget(self.moreTwenty)
 		self.oLayout.addWidget(self.moreFifty)
+		self.oLayout.addWidget(self.moreHundred)
 		self.oLayout.addStretch()
 		self.oLayout.addWidget(self.allTerms)
 		self.oLayout.addWidget(spacer)
@@ -256,8 +257,6 @@ class Window(QMainWindow):
 
 		self.table_widget.clear()
 
-		self.setWindowTitle(self.window_title)
-
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
 			target = f"*{'*'.join(self.search_terms.text().split())}*"
 		else:
@@ -306,9 +305,6 @@ class Window(QMainWindow):
 				icount = 0
 
 			add_entry = True
-			if self.moreFive.isChecked():
-				if icount<5:
-					add_entry = False
 			if self.moreTen.isChecked():
 				if icount<10:
 					add_entry = False
@@ -317,6 +313,9 @@ class Window(QMainWindow):
 					add_entry = False
 			if self.moreFifty.isChecked():
 				if icount<50:
+					add_entry = False
+			if self.moreHundred.isChecked():
+				if icount<100:
 					add_entry = False
 
 			if icount==0: add_entry = False
@@ -362,7 +361,6 @@ class Window(QMainWindow):
 	def doResetButton(self):
 		self.search_terms.setText('')
 		self.moreAny.setChecked(True)
-		self.setWindowTitle(self.window_title)
 		self.refresh_list()
 
 	def refresh_list(self):
@@ -376,7 +374,7 @@ class Window(QMainWindow):
 		if self.client.last_list_fetch=='':
 			self.lastFetch.setText("<small>List received at an unknown time</small>")
 		else:
-			self.lastFetch.setText("<small>List received at "+self.client.last_list_fetch+"</small>")
+			self.lastFetch.setText(f"<small>List received at {self.client.last_list_fetch}</small>")
 
 	def on_double_click(self,item):
 		self.client.join(item.channel)
@@ -399,9 +397,6 @@ class Window(QMainWindow):
 				icount = 0
 
 			add_entry = True
-			if self.moreFive.isChecked():
-				if icount<5:
-					add_entry = False
 			if self.moreTen.isChecked():
 				if icount<10:
 					add_entry = False
@@ -410,6 +405,9 @@ class Window(QMainWindow):
 					add_entry = False
 			if self.moreFifty.isChecked():
 				if icount<50:
+					add_entry = False
+			if self.moreHundred.isChecked():
+				if icount<100:
 					add_entry = False
 
 			if icount==0: add_entry = False

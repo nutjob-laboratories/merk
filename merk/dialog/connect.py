@@ -810,7 +810,7 @@ class Dialog(QDialog):
 
 		self.server_tab = QWidget()
 		self.server_tab.setLayout(serverInfoLayout)
-		self.tabs.addTab(self.server_tab, QIcon(NETWORK_ICON), "Server")
+		self.tabs.addTab(self.server_tab, QIcon(CONNECT_ICON), "Server")
 
 		if config.ENABLE_SCRIPTING_ENGINE:
 			self.commands_tab = QWidget()

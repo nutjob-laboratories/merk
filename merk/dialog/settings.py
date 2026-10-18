@@ -1693,8 +1693,6 @@ class Dialog(QDialog):
 			self.fallbackTypeLabel.setEnabled(True)
 			self.fallType.setEnabled(True)
 			self.codecDescription.setEnabled(True)
-			self.decodeSection.setEnabled(True)
-			self.advanceSection.setEnabled(True)
 			self.scanLogs.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
@@ -1718,8 +1716,6 @@ class Dialog(QDialog):
 			self.fallbackTypeLabel.setEnabled(False)
 			self.fallType.setEnabled(False)
 			self.codecDescription.setEnabled(False)
-			self.decodeSection.setEnabled(False)
-			self.advanceSection.setEnabled(False)
 			self.scanLogs.setEnabled(False)
 
 			if config.SCAN_FOR_LARGE_LOGS:
@@ -1915,6 +1911,7 @@ class Dialog(QDialog):
 			self.styleSelf.setEnabled(True)
 			self.saveWidth.setEnabled(True)
 			self.statusMenus.setEnabled(True)
+			self.showAwayUserlistTooltip.setEnabled(True)
 
 			if self.ulistContext.isChecked():
 				self.elideAway.setEnabled(True)
@@ -1950,6 +1947,7 @@ class Dialog(QDialog):
 			self.saveWidth.setEnabled(False)
 			self.styleBots.setEnabled(False)
 			self.statusMenus.setEnabled(False)
+			self.showAwayUserlistTooltip.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2646,11 +2644,14 @@ class Dialog(QDialog):
 
 		fontDefault = QPushButton("Reset to default")
 		fontDefault.clicked.connect(self.setFontDefault)
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		fontDefault.setFixedHeight(fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		fontDefault.setAutoDefault(False)
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		fontButton.setFixedSize(fheight +10,fheight + 10)
+		fontButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		fontButton.setIcon(QIcon(FONT_ICON))
 		fontButton.setToolTip("Change font")
 
@@ -2976,11 +2977,14 @@ class Dialog(QDialog):
 
 		backgroundDefault = QPushButton("Reset to default")
 		backgroundDefault.clicked.connect(self.backgroundDefault)
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		backgroundDefault.setFixedHeight(fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		backgroundDefault.setAutoDefault(False)
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		backgroundButton.setFixedSize(fheight +10,fheight + 10)
+		backgroundButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		backgroundButton.setIcon(QIcon(IMAGE_ICON))
 		backgroundButton.setToolTip("Change background")
 
@@ -3014,7 +3018,6 @@ class Dialog(QDialog):
 		mdiOpts.addWidget(self.centerMDI)
 		mdiOpts.addWidget(self.tileMDI)
 		mdiOpts.addStretch()
-
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.setSpacing(0)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
@@ -3025,7 +3028,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
 		appearanceLayout.addWidget(QLabel(' '))
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>background image</b>"))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>workspace background image</b>"))
 		appearanceLayout.addLayout(backgroundLayout)
 		appearanceLayout.addLayout(mdiOpts)
 		appearanceLayout.addWidget(QLabel(' '))
@@ -3108,7 +3111,7 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		self.setMainName.setFixedSize(fheight +10,fheight + 10)
+		self.setMainName.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		self.setMainName.setIcon(QIcon(EDIT_ICON))
 		self.setMainName.setToolTip("Set main menu name")
 
@@ -3126,7 +3129,7 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		self.setToolsName.setFixedSize(fheight +10,fheight + 10)
+		self.setToolsName.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		self.setToolsName.setIcon(QIcon(EDIT_ICON))
 		self.setToolsName.setToolTip("Set tools menu name")
 
@@ -3144,7 +3147,7 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		self.setWindowsName.setFixedSize(fheight +10,fheight + 10)
+		self.setWindowsName.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		self.setWindowsName.setIcon(QIcon(EDIT_ICON))
 		self.setWindowsName.setToolTip("Set windows menu name")
 
@@ -3162,7 +3165,7 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		self.setHelpName.setFixedSize(fheight +10,fheight + 10)
+		self.setHelpName.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		self.setHelpName.setIcon(QIcon(EDIT_ICON))
 		self.setHelpName.setToolTip("Set help menu name")
 
@@ -3196,7 +3199,7 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		self.setSettingsName.setFixedSize(fheight +10,fheight + 10)
+		self.setSettingsName.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		self.setSettingsName.setIcon(QIcon(EDIT_ICON))
 		self.setSettingsName.setToolTip("Set settings menu name")
 
@@ -3801,7 +3804,7 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		sizeButton.setFixedSize(fheight +10,fheight + 10)
+		sizeButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		sizeButton.setIcon(QIcon(EDIT_ICON))
 		sizeButton.setToolTip("Change default subwindow size")
 
@@ -3848,11 +3851,14 @@ class Dialog(QDialog):
 
 		swbackgroundDefault = QPushButton("Reset to default")
 		swbackgroundDefault.clicked.connect(self.subwbackgroundDefault)
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		swbackgroundDefault.setFixedHeight(fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		swbackgroundDefault.setAutoDefault(False)
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		subwbackgroundButton.setFixedSize(fheight +10,fheight + 10)
+		subwbackgroundButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		subwbackgroundButton.setIcon(QIcon(IMAGE_ICON))
 		subwbackgroundButton.setToolTip("Change background")
 
@@ -4262,7 +4268,7 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		self.soundButton.setFixedSize(fheight +10,fheight + 10)
+		self.soundButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
 		self.soundButton.setIcon(QIcon(EDIT_ICON))
 		self.soundButton.setToolTip("Set notification sound file")
 
@@ -4636,6 +4642,10 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_IN_USERLIST_MENU: self.statusMenus.setChecked(True)
 		self.statusMenus.stateChanged.connect(self.changedSetting)
 
+		self.showAwayUserlistTooltip = QCheckBox("Show away message in user tooltips",self)
+		if config.SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP: self.showAwayUserlistTooltip.setChecked(True)
+		self.showAwayUserlistTooltip.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
 			self.ulistWidthLabel.setEnabled(False)
 			self.ulistWidthBox.setEnabled(False)
@@ -4656,6 +4666,7 @@ class Dialog(QDialog):
 			self.saveWidth.setEnabled(False)
 			self.styleBots.setEnabled(False)
 			self.statusMenus.setEnabled(False)
+			self.showAwayUserlistTooltip.setEnabled(False)
 
 		if not config.USERLIST_CONTEXT_MENU:
 			if config.SHOW_USERLIST:
@@ -4700,6 +4711,7 @@ class Dialog(QDialog):
 		ulistDisplay.addLayout(ulistDisplay1)
 		ulistDisplay.addLayout(ulistWidthLayout)
 		ulistDisplay.addWidget(self.saveWidth)
+		ulistDisplay.addWidget(self.showAwayUserlistTooltip)
 
 		infoExist = QHBoxLayout()
 		infoExist.addStretch()
@@ -7228,7 +7240,7 @@ class Dialog(QDialog):
 
 		self.advancedDescription = QLabel(f"""
 			<b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
-			prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br>
+			prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br><br>
 			<small>If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag, which will reset all
 			settings to the default. For more information,
@@ -7394,12 +7406,6 @@ class Dialog(QDialog):
 		asetLayout.addRow(self.errorConsole)
 		asetLayout.addRow(self.writeFile)
 
-		self.decodeSection = widgets.textSeparatorLabel(self,"<b>string decoding codecs</b>")
-		self.decodeSection.setEnabled(False)
-
-		self.advanceSection = widgets.textSeparatorLabel(self,"<b>advanced settings</b>")
-		self.advanceSection.setEnabled(False)
-
 		decFinal = QVBoxLayout()
 		decFinal.setSpacing(0)
 		decFinal.addLayout(decLayout)
@@ -7410,11 +7416,10 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
 		advancedLayout.addWidget(QLabel(' '))
-		advancedLayout.addWidget(self.advanceSection)
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
 		advancedLayout.addLayout(asetLayout)
-		advancedLayout.addWidget(self.decodeSection)
+		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(self.codecDescription)
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addLayout(decFinal)
@@ -7968,6 +7973,7 @@ class Dialog(QDialog):
 		config.SHOW_NICK_IN_SYSTRAY_MENU = self.stmNick.isChecked()
 		config.SHOW_JOIN_IN_SYSTRAY_MENU = self.stmJoin.isChecked()
 		config.SHOW_AWAY_IN_SYSTRAY_MENU = self.stmAway.isChecked()
+		config.SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = self.showAwayUserlistTooltip.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True
@@ -8337,7 +8343,7 @@ class Dialog(QDialog):
 			if disconnect_all_servers and len(self.parent.getAllServerWindows())>0:
 				if changed_main_codec:
 					msg = QMessageBox()
-					msg.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+					msg.setIconPixmap(QPixmap(CONNECT_ICON))
 					msg.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msg.setText("You have changed the main decoding codec, and need to disconnect from all servers.")
 					msg.setWindowTitle("Disconnect")
@@ -8346,7 +8352,7 @@ class Dialog(QDialog):
 					self.parent.disconnectAll()
 				else:
 					msgBox = QMessageBox()
-					msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
 					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText("You have changed the fallback decoding codec, and should disconnect from all servers. Disconnect from all servers?")
 					msgBox.setWindowTitle("Disconnect")

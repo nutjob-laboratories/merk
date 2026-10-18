@@ -1294,7 +1294,7 @@ class Window(QMainWindow):
 		do_unban = True
 
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(SHOW_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		msgBox.setText(f"Unban all banned users in <b>{self.name}</b>?")
 		msgBox.setWindowTitle("Unban All")
@@ -1319,7 +1319,7 @@ class Window(QMainWindow):
 		do_unban = True
 
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(SHOW_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		msgBox.setText(f"Unban <b>{user}</b> from <b>{self.name}</b>?")
 		msgBox.setWindowTitle("Unban User")
@@ -1490,13 +1490,13 @@ class Window(QMainWindow):
 					copyMenu.addAction(act)
 					
 					if self.client.hostname:
-						act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+						act = QAction(QIcon(CONNECT_ICON),"Server hostname", self)
 						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
 						copyMenu.addAction(act)
 
 					if self.client.network:
 						if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-							act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+							act = QAction(QIcon(CONNECT_ICON),"Server network", self)
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
@@ -1512,17 +1512,17 @@ class Window(QMainWindow):
 
 				if self.window_type==PRIVATE_WINDOW:
 
-					act = QAction(QIcon(USER_MENU_ICON),f"Request WHOIS on \"{self.name}\"", self)
+					act = QAction(QIcon(USER_MENU_ICON),f"Request WHOIS", self)
 					act.triggered.connect(lambda : self.client.sendLine(f"WHOIS {self.name}"))
 					menu.addAction(act)
 
-					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),f"Send CTCP request to \"{self.name}\"")
+					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),f"Send CTCP request")
 
 					act = QAction(QIcon(USER_MENU_ICON),"FINGER", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('FINGER', '')]))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(NETWORK_ICON),"PING", self)
+					act = QAction(QIcon(CONNECT_ICON),"PING", self)
 					act.triggered.connect(lambda : self.sendCTCPPing(self.name))
 					ctcpMenu.addAction(act)
 
@@ -1583,13 +1583,13 @@ class Window(QMainWindow):
 						copyMenu.addAction(act)
 
 					if self.client.hostname:
-						act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+						act = QAction(QIcon(CONNECT_ICON),"Server hostname", self)
 						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
 						copyMenu.addAction(act)
 
 					if self.client.network:
 						if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-							act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+							act = QAction(QIcon(CONNECT_ICON),"Server network", self)
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
@@ -2688,13 +2688,15 @@ class Window(QMainWindow):
 							shown_box = True
 
 					if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
-						ea = elide_text(self.client.away_msg,USER_MENU_AWAY_ELIDE)
+						away_msg = strip_color(self.client.away_msg)
+						ea = elide_text(away_msg,USER_MENU_AWAY_ELIDE)
 						e = BoxPlainTextAction(self,"Away",f"<small><center>{ea}</center></small>")
 						if len(ea)!=len(self.client.away_msg):
 							self.userlist_menu.setToolTipsVisible(True)
 							e.setToolTip(self.client.away_msg)
 					else:
-						e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
+						away_msg = strip_color(self.client.away_msg)
+						e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
 					self.userlist_menu.addAction(e)
 					shown_box = True
 				else:
@@ -2791,6 +2793,7 @@ class Window(QMainWindow):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
 			if user_nick in self.away:
 				away_msg = self.away[user_nick]
+				away_msg = strip_color(away_msg)
 
 				if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
 					ea = elide_text(away_msg,USER_MENU_AWAY_ELIDE)
@@ -2903,13 +2906,13 @@ class Window(QMainWindow):
 		copyMenu.addAction(act)
 
 		if self.client.hostname:
-			act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+			act = QAction(QIcon(CONNECT_ICON),"Server hostname", self)
 			act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
 			copyMenu.addAction(act)
 
 		if self.client.network:
 			if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-				act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+				act = QAction(QIcon(CONNECT_ICON),"Server network", self)
 				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 				copyMenu.addAction(act)
 
@@ -3079,7 +3082,7 @@ class Window(QMainWindow):
 
 	def change_to_away_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
-			font = QFont()
+			font = self.userlist.font()
 			font.setBold(False)
 			font.setItalic(True)
 
@@ -3093,8 +3096,18 @@ class Window(QMainWindow):
 
 			w.setFont(font)
 
+		if config.SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP:
+			if w.text()==self.client.nickname:
+				if self.client.is_away:
+					w.setToolTip(strip_color(self.client.away_msg))
+			else:
+				if w.text() in self.away:
+					w.setToolTip(strip_color(self.away[w.text()]))
+		else:
+			w.setToolTip('')
+
 	def change_to_back_display(self,w):
-		font = QFont()
+		font = self.userlist.font()
 		font.setBold(True)
 		font.setItalic(False)
 
@@ -3107,6 +3120,8 @@ class Window(QMainWindow):
 				w.setForeground(QBrush(QColor(c)))
 
 		w.setFont(font)
+
+		w.setToolTip('')
 
 	def got_away(self,username,message):
 
@@ -3667,7 +3682,7 @@ class Window(QMainWindow):
 				else:
 					self.nick_display.setText(self.client.nickname+" ")
 				if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP:
-					self.nick_display.setToolTip(f"{self.client.away_msg}")
+					self.nick_display.setToolTip(f"{strip_color(self.client.away_msg)}")
 				else:
 					self.nick_display.setToolTip("")
 			else:

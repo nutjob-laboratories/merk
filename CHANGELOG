@@ -7,6 +7,7 @@ What's new:
 - **Major version number bump**. As MERK is nearing a "good enough for 1.0" state, we bumped up the version number to match it's new status.
 - **The resource file has been cleaned up**. `optipng` has been used to shrink the file size of many of the icons in the applications resource file, and many icons have been removed or revamped. The resource file is now about 60% of it's former size, with no loss in image quality.
 - **The system tray right click menu is now more useful**. It's also been cleaned up.
+- **Away messages are now displayed in nickname tooltips in userlists**. This option, which is enabled by default, can be turned off in the "Settings" dialog or with the `/config` command.
 - **Many, many bugfixes**.
 
 |==============================================================================|
@@ -45,6 +46,31 @@ What's new:
   icon in its place.
 * Removed the "input" icon from the resource file, as it was no longer used.
 * Removed one of the "Twisted" icons from the resource file.
+* Removed the option to show only channels with 5 or more users, and added an
+  option to show only channels with 100 or more users, to the channel list
+  dialog.
+* Changed the "Twisted" icon in the resource file.
+* Cleaned up some sections of the "Settings" dialog.
+* Bugfix: aliases were not always interpolated into away messages, if that
+  option was turned on.
+* Added the display of a server's "created" message.
+* Bugfix: server notices are now displayed as "server messages", rather than as
+  notices, with the appropriate text style.
+* Server notices are now written to ALL connected subwindows.
+* Bugfix: server notices did not trigger audio or systray notifications.
+* Changed the "plus" and "minus" icons.
+* Added an option to display a user's away message in their userlist tooltip.
+  This option is enabled by default, but can be disabled with the "Settings"
+  dialog or the "/config" command.
+* Bugfix: IRC color and formatting codes are now stripped from the "away"
+  message display in the userlist right click menu, as well as from various
+  tooltips.
+* Changed the server display in the windows menu; now, the icon shown for a
+  given connection/network is a "lock" for SSL/TLS connections, and a "star" for
+  TCP/IP connections, just like in the connect dialog.
+* Connections with an "unknown" or not set IRC network still have their network
+  displayed in the "Windows" menu.
+* Changed the "sort" icon in the resource file.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.350                                  |

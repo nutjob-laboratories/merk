@@ -492,13 +492,14 @@ SHOW_AWAY_IN_WINDOWS_MENU = True
 SHOW_FULL_USER_IN_CTCP_REPLY = False
 APPLICATION_SHORTCUTS = True
 ASK_BEFORE_MULTIPLE_CONNECTIONS = True
-
 SHOW_NICK_IN_SYSTRAY_MENU = True
 SHOW_JOIN_IN_SYSTRAY_MENU = True
 SHOW_AWAY_IN_SYSTRAY_MENU = True
+SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = True
 
 def build_settings():
 	settings = {
+		"show_away_message_in_userlist_tooltip": SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP,
 		"show_nick_in_systray_menu": SHOW_NICK_IN_SYSTRAY_MENU,
 		"show_channel_join_in_systray_menu": SHOW_JOIN_IN_SYSTRAY_MENU,
 		"show_away_in_systray_menu": SHOW_AWAY_IN_SYSTRAY_MENU,
@@ -953,6 +954,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_away_message_in_userlist_tooltip" in settings:
+		settings["show_away_message_in_userlist_tooltip"] = SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP
 	if not "show_nick_in_systray_menu" in settings:
 		settings["show_nick_in_systray_menu"] = SHOW_NICK_IN_SYSTRAY_MENU
 	if not "show_channel_join_in_systray_menu" in settings:
@@ -2304,6 +2307,7 @@ def load_settings(filename):
 	global SHOW_NICK_IN_SYSTRAY_MENU
 	global SHOW_JOIN_IN_SYSTRAY_MENU
 	global SHOW_AWAY_IN_SYSTRAY_MENU
+	global SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2313,6 +2317,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = settings["show_away_message_in_userlist_tooltip"]
 		SHOW_NICK_IN_SYSTRAY_MENU = settings["show_nick_in_systray_menu"]
 		SHOW_JOIN_IN_SYSTRAY_MENU = settings["show_channel_join_in_systray_menu"]
 		SHOW_AWAY_IN_SYSTRAY_MENU = settings["show_away_in_systray_menu"]

@@ -197,10 +197,7 @@ class Window(QMainWindow):
 
 	def backup_log(self,item):
 		msgBox = QMessageBox()
-		if item.channel[:1]!='#' and item.channel[:1]!='&' and item.channel[:1]!='!' and item.channel[:1]!='+':
-			msgBox.setIconPixmap(QPixmap(PRIVATE_WINDOW_ICON))
-		else:
-			msgBox.setIconPixmap(QPixmap(CHANNEL_WINDOW_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(LOG_MENU_ICON))
 		msgBox.setText("Are you sure you want to back up this log?")
 		msgBox.setWindowTitle("Back up log for "+item.channel+" ("+item.network+")")
@@ -232,10 +229,7 @@ class Window(QMainWindow):
 
 	def delete_log(self, item):
 		msgBox = QMessageBox()
-		if item.channel[:1]!='#' and item.channel[:1]!='&' and item.channel[:1]!='!' and item.channel[:1]!='+':
-			msgBox.setIconPixmap(QPixmap(PRIVATE_WINDOW_ICON))
-		else:
-			msgBox.setIconPixmap(QPixmap(CHANNEL_WINDOW_ICON))
+		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(LOG_MENU_ICON))
 		msgBox.setText("Are you sure you want to delete this log?")
 		msgBox.setWindowTitle("Delete log for "+item.channel+" ("+item.network+")")

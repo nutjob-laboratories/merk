@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="./graphics/banner_large.png"><br>
+  <img src="./graphics/banner_with_message.png"><br>
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
-  <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
+  <i>A <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a> <a href="https://en.wikipedia.org/wiki/IRC">IRC</a> client for Windows, Linux, and macOS</i><br><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
   <b><big>Current development build: <a href="https://latest.merk.chat">MERK !_FULL_VERSION_!</a></b></big><br><br>
 </p>

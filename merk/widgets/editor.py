@@ -264,7 +264,7 @@ class Window(QMainWindow):
 		if config.EDITOR_PROMPT_SAVE:
 			if self.changed:
 				msgBox = QMessageBox()
-				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 				msgBox.setIconPixmap(QPixmap(SAVEFILE_ICON))
 				if self.editing_user_script:
 					msgBox.setText("Do you want to save this connection script?")
@@ -644,7 +644,7 @@ class Window(QMainWindow):
 			do_overwrite = True
 			if os.path.exists(imported_file) or os.path.isfile(imported_file):
 				msgBox = QMessageBox()
-				msgBox.setIconPixmap(QPixmap(SCRIPT_MENU_ICON))
+				msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 				msgBox.setText(f"\"{base}\" already exists. Overwrite script?")
 				msgBox.setWindowTitle("Overwrite File")
