@@ -6,8 +6,9 @@ What's new:
 
 - **Major version number bump**. As MERK is nearing a "good enough for 1.0" state, we bumped up the version number to match it's new status.
 - **The resource file has been cleaned up**. `optipng` has been used to shrink the file size of many of the icons in the applications resource file, and many icons have been removed or revamped. The resource file is now about 60% of it's former size, with no loss in image quality.
-- **The system tray right click menu is now more useful**. It's also been cleaned up.
+- **The system tray right click menu is now more useful**. It's also been cleaned up, with some bugs on Linux fixed.
 - **Away messages are now displayed in nickname tooltips in userlists**. This option, which is enabled by default, can be turned off in the "Settings" dialog or with the `/config` command.
+- **The "Windows" menu has been cleaned up**. More specifically, active connections in the "Windows" menu has been made clearer about what each entry does.
 - **Many, many bugfixes**.
 
 |==============================================================================|
@@ -71,6 +72,16 @@ What's new:
 * Connections with an "unknown" or not set IRC network still have their network
   displayed in the "Windows" menu.
 * Changed the "sort" icon in the resource file.
+* Tweaked the network link in connection entries in the "Windows" menu.
+* Tweaked the system tray right click menu.
+* Bugfix: some entries in the system tray right click menu did not work
+  properly.
+* Bugfix: the "click systray icon to hide/restore window" option now works
+  properly.
+* Removed the setting to control whether links and directories are shown in the
+  systray right click menu; now, they are ALWAYS shown.
+* Tweaked connection entries in the "Windows" menu, and made some things a bit
+  clearer.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.350                                  |

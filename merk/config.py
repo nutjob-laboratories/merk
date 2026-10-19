@@ -205,8 +205,7 @@ TYPING_INPUT_CANCELS_AUTOAWAY = True
 WINDOW_INTERACTION_CANCELS_AUTOAWAY = False
 APP_INTERACTION_CANCELS_AUTOAWAY = False
 AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET = True
-DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = True
-CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = True
+CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY = True
 LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = False
 LOG_CHANNEL_TOPICS = True
 LOG_CHANNEL_JOIN = True
@@ -295,8 +294,6 @@ USERLIST_CONTEXT_MENU = True
 USER_DATA_FETCH_FREQUENCY = 5
 DO_NOT_SHOW_SERVER_IN_TITLE = False
 SHOW_CONNECTIONS_IN_SYSTRAY_MENU = True
-SHOW_DIRECTORIES_IN_SYSTRAY_MENU = True
-SHOW_LINKS_IN_SYSTRAY_MENU = True
 SHOW_LIST_IN_SYSTRAY_MENU = True
 SHOW_LOGS_IN_SYSTRAY_MENU = True
 SHOW_LOGS_IN_WINDOWS_MENU = True
@@ -698,8 +695,6 @@ def build_settings():
 		"show_channel_list_in_systray_menu": SHOW_LIST_IN_SYSTRAY_MENU,
 		"show_network_logs_in_systray_menu": SHOW_LOGS_IN_SYSTRAY_MENU,
 		"show_connections_in_systray_menu": SHOW_CONNECTIONS_IN_SYSTRAY_MENU,
-		"show_directories_in_systray_menu": SHOW_DIRECTORIES_IN_SYSTRAY_MENU,
-		"show_links_in_systray_menu": SHOW_LINKS_IN_SYSTRAY_MENU,
 		"do_not_show_server_name_in_application_title": DO_NOT_SHOW_SERVER_IN_TITLE,
 		"fetch_user_data_frequency": USER_DATA_FETCH_FREQUENCY,
 		"enable_userlist_context_menu": USERLIST_CONTEXT_MENU,
@@ -787,8 +782,7 @@ def build_settings():
 		"log_channel_parts": LOG_CHANNEL_PART,
 		"log_channel_topics": LOG_CHANNEL_TOPICS,
 		"log_absolutely_all_messages_of_any_type": LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE,
-		"click_systray_icon_to_minimize_to_tray": CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY,
-		"doubleclick_to_restore_from_systray": DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY,
+		"click_systray_icon_to_toggle_window_visibility": CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY,
 		"autocomplete_shortcodes_in_away_message_widget": AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET,
 		"app_interaction_cancels_autoaway": APP_INTERACTION_CANCELS_AUTOAWAY,
 		"window_interaction_cancels_autoaway": WINDOW_INTERACTION_CANCELS_AUTOAWAY,
@@ -1352,10 +1346,6 @@ def patch_settings(settings):
 		settings["show_network_logs_in_systray_menu"] = SHOW_LOGS_IN_SYSTRAY_MENU
 	if not "show_connections_in_systray_menu" in settings:
 		settings["show_connections_in_systray_menu"] = SHOW_CONNECTIONS_IN_SYSTRAY_MENU
-	if not "show_directories_in_systray_menu" in settings:
-		settings["show_directories_in_systray_menu"] = SHOW_DIRECTORIES_IN_SYSTRAY_MENU
-	if not "show_links_in_systray_menu" in settings:
-		settings["show_links_in_systray_menu"] = SHOW_LINKS_IN_SYSTRAY_MENU
 	if not "do_not_show_server_name_in_application_title" in settings:
 		settings["do_not_show_server_name_in_application_title"] = DO_NOT_SHOW_SERVER_IN_TITLE
 	if not "fetch_user_data_frequency" in settings:
@@ -1530,10 +1520,8 @@ def patch_settings(settings):
 		settings["log_channel_topics"] = LOG_CHANNEL_TOPICS
 	if not "log_absolutely_all_messages_of_any_type" in settings:
 		settings["log_absolutely_all_messages_of_any_type"] = LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
-	if not "click_systray_icon_to_minimize_to_tray" in settings:
-		settings["click_systray_icon_to_minimize_to_tray"] = CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
-	if not "doubleclick_to_restore_from_systray" in settings:
-		settings["doubleclick_to_restore_from_systray"] = DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
+	if not "click_systray_icon_to_toggle_window_visibility" in settings:
+		settings["click_systray_icon_to_toggle_window_visibility"] = CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY
 	if not "autocomplete_shortcodes_in_away_message_widget" in settings:
 		settings["autocomplete_shortcodes_in_away_message_widget"] = AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET
 	if not "app_interaction_cancels_autoaway" in settings:
@@ -2018,8 +2006,7 @@ def load_settings(filename):
 	global WINDOW_INTERACTION_CANCELS_AUTOAWAY
 	global APP_INTERACTION_CANCELS_AUTOAWAY
 	global AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET
-	global DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
-	global CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
+	global CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY
 	global LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
 	global LOG_CHANNEL_TOPICS
 	global LOG_CHANNEL_JOIN
@@ -2108,8 +2095,6 @@ def load_settings(filename):
 	global USER_DATA_FETCH_FREQUENCY
 	global DO_NOT_SHOW_SERVER_IN_TITLE
 	global SHOW_CONNECTIONS_IN_SYSTRAY_MENU
-	global SHOW_DIRECTORIES_IN_SYSTRAY_MENU
-	global SHOW_LINKS_IN_SYSTRAY_MENU
 	global SHOW_LIST_IN_SYSTRAY_MENU
 	global SHOW_LOGS_IN_SYSTRAY_MENU
 	global SHOW_LOGS_IN_WINDOWS_MENU
@@ -2516,8 +2501,6 @@ def load_settings(filename):
 		SHOW_LIST_IN_SYSTRAY_MENU = settings["show_channel_list_in_systray_menu"]
 		SHOW_LOGS_IN_SYSTRAY_MENU = settings["show_network_logs_in_systray_menu"]
 		SHOW_CONNECTIONS_IN_SYSTRAY_MENU = settings["show_connections_in_systray_menu"]
-		SHOW_DIRECTORIES_IN_SYSTRAY_MENU = settings["show_directories_in_systray_menu"]
-		SHOW_LINKS_IN_SYSTRAY_MENU = settings["show_links_in_systray_menu"]
 		DO_NOT_SHOW_SERVER_IN_TITLE = settings["do_not_show_server_name_in_application_title"]
 		USER_DATA_FETCH_FREQUENCY = settings["fetch_user_data_frequency"]
 		USERLIST_CONTEXT_MENU = settings["enable_userlist_context_menu"]
@@ -2605,8 +2588,7 @@ def load_settings(filename):
 		LOG_CHANNEL_PART = settings["log_channel_parts"]
 		LOG_CHANNEL_TOPICS = settings["log_channel_topics"]
 		LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = settings["log_absolutely_all_messages_of_any_type"]
-		CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = settings["click_systray_icon_to_minimize_to_tray"]
-		DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = settings["doubleclick_to_restore_from_systray"]
+		CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY = settings["click_systray_icon_to_toggle_window_visibility"]
 		AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET = settings["autocomplete_shortcodes_in_away_message_widget"]
 		APP_INTERACTION_CANCELS_AUTOAWAY = settings["app_interaction_cancels_autoaway"]
 		WINDOW_INTERACTION_CANCELS_AUTOAWAY = settings["window_interaction_cancels_autoaway"]

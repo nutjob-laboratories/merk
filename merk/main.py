@@ -1046,8 +1046,8 @@ class Merk(QMainWindow):
 			self.alternate = True
 
 	def systray_clicked(self,reason):
-		if reason == QSystemTrayIcon.ActivationReason.Trigger:
-			if not config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY:
+		if reason == QSystemTrayIcon.Trigger:
+			if config.CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY:
 				if self.is_hidden:
 					self.toggleHide()
 					if self.was_maximized:
@@ -1055,19 +1055,7 @@ class Merk(QMainWindow):
 					else:
 						self.showNormal()
 				else:
-					if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY:
-						self.toggleHide()
-		elif reason == QSystemTrayIcon.ActivationReason.DoubleClick:
-			if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY:
-				if self.is_hidden:
 					self.toggleHide()
-					if self.was_maximized:
-						self.showMaximized()
-					else:
-						self.showNormal()
-				else:
-					if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY:
-						self.toggleHide()
 
 	def changeEvent(self, event):
 		if event.type() == QEvent.WindowStateChange:
@@ -1078,7 +1066,7 @@ class Merk(QMainWindow):
 		super().changeEvent(event)
 
 	def toggleHide(self):
-		if not config.MINIMIZE_TO_SYSTRAY and not self.is_hidden: return
+		if not config.MINIMIZE_TO_SYSTRAY: return
 		if self.is_hidden:
 			self.show()
 			self.resize(self.tray_width,self.tray_height)
@@ -1135,6 +1123,86 @@ class Merk(QMainWindow):
 
 		self.trayMenu.clear()
 
+		am = self.trayMenu.addMenu(QIcon(APPLICATION_MENU_ICON),f"{APPLICATION_NAME} {APPLICATION_VERSION}")
+
+		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME}",self)
+		entry.triggered.connect(self.showAbout)
+		am.addAction(entry)
+
+		entry = QAction(QIcon(INFO_MENU_ICON),f"{APPLICATION_NAME} User Guide",self)
+		entry.triggered.connect(self.openScripting)
+		am.addAction(entry)
+
+		entry = QAction(QIcon(SETTINGS_MENU_ICON),f"Settings",self)
+		entry.triggered.connect(self.openSettings)
+		am.addAction(entry)
+
+		if config.MINIMIZE_TO_SYSTRAY:
+			if self.is_hidden:
+				entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
+			else:
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",self)
+			entry.triggered.connect(self.toggleHide)
+			am.addAction(entry)
+
+		sm = am.addMenu(QIcon(FOLDER_ICON),"Directories")
+
+		if not is_running_from_pyinstaller():
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
+			sm.addAction(entry)
+		else:
+			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
+			sm.addAction(entry)
+
+		entry = QAction(QIcon(SETTINGS_MENU_ICON),"Settings directory",self)
+		entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
+		sm.addAction(entry)
+
+		if config.ENABLE_STYLE_EDITOR:
+			entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
+			entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
+			sm.addAction(entry)
+
+		entry = QAction(QIcon(LOG_MENU_ICON),"Logs directory",self)
+		entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
+		sm.addAction(entry)
+
+		if config.ENABLE_PLUGINS:
+			entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
+			entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
+			sm.addAction(entry)
+
+		if config.ENABLE_SCRIPTING_ENGINE:
+			entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
+			entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
+			sm.addAction(entry)
+
+		self.trayLinks = am.addMenu(QIcon(LINK_MENU_ICON),"Links")
+
+		entry = QAction(QIcon(LINK_MENU_ICON),"Source code",self)
+		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(LINK_MENU_ICON),"GPL v3",self)
+		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(LINK_MENU_ICON),"Emoji shortcodes",self)
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(LINK_MENU_ICON),"ASCIImoji shortcodes",self)
+		entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+		
+		am.addSeparator()
+
+		entry = QAction(QIcon(QUIT_ICON),f"Quit {APPLICATION_NAME}",self)
+		entry.triggered.connect(self.close)
+		am.addAction(entry)
+
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
 
 			windows = self.getAllServerWindows()
@@ -1156,6 +1224,8 @@ class Merk(QMainWindow):
 
 			if len(listOfConnections)>0:
 
+				self.trayMenu.addSeparator()
+
 				for i in listOfConnections:
 					entry = listOfConnections[i]
 					if entry.hostname:
@@ -1169,19 +1239,24 @@ class Merk(QMainWindow):
 
 					if len(total)>0:
 						if hasattr(sw,"widget"):
+
 							sm = self.trayMenu.addMenu(QIcon(CONNECT_MENU_ICON),name)
 
 							c = sw.widget()
+
+							disconnect_entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),f"Disconnect from {name}",self)
+							disconnect_entry.triggered.connect(c.disconnect)
+
 							if hasattr(c.client,"network"):
 								mynet = c.client.network
 							else:
 								mynet = config.UNKNOWN_NETWORK_NAME
 
-							if config.SHOW_LINKS_TO_NETWORK_WEBPAGES and config.SHOW_LINKS_IN_SYSTRAY_MENU:
+							if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 								if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 									netlink = get_network_link(mynet)
 									if netlink!=None:
-										entry = QAction(QIcon(LINK_MENU_ICON),f"{mynet}",self)
+										entry = QAction(QIcon(LINK_MENU_ICON),f"{mynet} website",self)
 										entry.triggered.connect(lambda state,u=netlink: self.openLinkInBrowser(u))
 										sm.addAction(entry)
 										sm.addSeparator()
@@ -1236,6 +1311,8 @@ class Merk(QMainWindow):
 
 								if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
 
+							sm.addAction(disconnect_entry)
+
 							sm.addSeparator()
 
 							entry = QAction(QIcon(CONSOLE_WINDOW_ICON),name,self)
@@ -1254,99 +1331,8 @@ class Merk(QMainWindow):
 								entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
 								sm.addAction(entry)
 
-		self.trayMenu.addSeparator()
-
-		if config.MINIMIZE_TO_SYSTRAY:
-			if self.is_hidden:
-				entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
-			else:
-				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",self)
-			entry.triggered.connect(self.toggleHide)
-			self.trayMenu.addAction(entry)
-
-		if config.MINIMIZE_TO_SYSTRAY:
-			self.trayMenu.addSeparator()
-
-		show_sep = False
-
-		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU:
-
-			sm = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
-
-			show_sep = True
-
-			if not is_running_from_pyinstaller():
-				entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
-				entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
-				sm.addAction(entry)
-			else:
-				entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
-				entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
-				sm.addAction(entry)
-
-			entry = QAction(QIcon(SETTINGS_MENU_ICON),"Settings directory",self)
-			entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
-			sm.addAction(entry)
-
-			if config.ENABLE_STYLE_EDITOR:
-				entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
-				entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
-				sm.addAction(entry)
-
-			entry = QAction(QIcon(LOG_MENU_ICON),"Logs directory",self)
-			entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
-			sm.addAction(entry)
-
-			if config.ENABLE_PLUGINS:
-				entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
-				entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
-				sm.addAction(entry)
-
-			if config.ENABLE_SCRIPTING_ENGINE:
-				entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
-				entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
-				sm.addAction(entry)
-
-		if config.SHOW_LINKS_IN_SYSTRAY_MENU:
-			self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_MENU_ICON),"Links")
-
-			show_sep = True
-
-			entry = QAction(QIcon(LINK_MENU_ICON),"Source code",self)
-			entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
-			self.trayLinks.addAction(entry)
-
-			entry = QAction(QIcon(LINK_MENU_ICON),"GPL v3",self)
-			entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
-			self.trayLinks.addAction(entry)
-
-			entry = QAction(QIcon(LINK_MENU_ICON),"Emoji shortcodes",self)
-			entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
-			self.trayLinks.addAction(entry)
-
-			entry = QAction(QIcon(LINK_MENU_ICON),"ASCIImoji shortcodes",self)
-			entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
-			self.trayLinks.addAction(entry)
-
-		if show_sep:
-			self.trayMenu.addSeparator()
-
-		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME}",self)
-		entry.triggered.connect(self.showAbout)
-		self.trayMenu.addAction(entry)
-
-		entry = QAction(QIcon(INFO_MENU_ICON),f"{APPLICATION_NAME} User Guide",self)
-		entry.triggered.connect(self.openScripting)
-		self.trayMenu.addAction(entry)
-
-		self.trayMenu.addSeparator()
-
-		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
-		entry.triggered.connect(self.close)
-		self.trayMenu.addAction(entry)
-
 	def systrayShowWindow(self,window):
-		self.toggleHide()
+		if self.is_hidden: self.toggleHide()
 		if self.isMaximized():
 			self.showMaximized()
 		else:
@@ -1355,7 +1341,7 @@ class Merk(QMainWindow):
 		window.showMaximized()
 
 	def systrayShowList(self,window):
-		self.toggleHide()
+		if self.is_hidden: self.toggleHide()
 		if self.isMaximized():
 			self.showMaximized()
 		else:
@@ -1364,20 +1350,6 @@ class Merk(QMainWindow):
 		c = window.widget()
 		w = self.getServerWindow(c.client)
 		w.showChannelList()
-
-	def menuMax(self):
-
-		if self.windowState() == Qt.WindowMaximized:
-			self.setWindowState(Qt.WindowNoState)
-		else:
-			self.setWindowState(Qt.WindowMaximized)
-
-	def menuMin(self):
-
-		if self.windowState() == Qt.WindowMinimized:
-			self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
-		else:
-			self.setWindowState(Qt.WindowMinimized)
 
 	# |==================|
 	# | BEGIN IRC EVENTS |
@@ -4559,6 +4531,15 @@ class Merk(QMainWindow):
 		u.setUrl(url)
 		QDesktopServices.openUrl(u)
 
+		self.helpMenu.close()
+
+	def openNetworkInBrowser(self,url):
+		u = QUrl()
+		u.setUrl(url)
+		QDesktopServices.openUrl(u)
+
+		self.windowsMenu.close()
+
 	def toggleBackground(self):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
@@ -5803,9 +5784,6 @@ class Merk(QMainWindow):
 			entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
 			sm.addAction(entry)
 
-	def openASCIImoji(self):
-		self.openLinkInBrowser("https://asciimoji.com/")
-
 	def buildHelpMenu(self):
 
 		self.helpMenu.clear()
@@ -5822,7 +5800,7 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,LINK_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,LINK_MENU_ICON,"ASCIImoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openASCIImoji)
+		entry = widgets.ExtendedMenuItem(self,LINK_MENU_ICON,"ASCIImoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 		self.helpMenu.addSeparator()
@@ -6202,23 +6180,27 @@ class Merk(QMainWindow):
 								else:
 									mynet = config.UNKNOWN_NETWORK_NAME
 
+								if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+									dmynet = f"{name}&nbsp;&nbsp;"
+								else:
+									dmynet = f"{mynet} network&nbsp;&nbsp;"
+
 								sm = self.windowsMenu.addMenu(QIcon(CONNECT_DIALOG_MENU_ICON),name)
 
+								if c.client.kwargs["ssl"]:
+									cdesc = "<small><b>Connected via SSL/TLS&nbsp;&nbsp;</b></small>"
+									icon = CONNECT_DIALOG_MENU_ICON
+								else:
+									cdesc = "<small><b>Connected via TCP/IP&nbsp;&nbsp;</b></small>"
+									icon = CONNECT_DIALOG_MENU_ICON
 								if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 									netlink = get_network_link(mynet)
 									if netlink!=None:
-										desc = f"<b><a href=\"{netlink}\">Visit network website</a></b>"
+										wentry = widgets.ExtendedMenuItemShortcut(self,icon,dmynet,cdesc,'Click to visit network website&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,lambda x=netlink: self.openNetworkInBrowser(x))
 									else:
-										desc = "<b>IRC Network</b>"
+										wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
 								else:
-									desc = "<b>IRC Network</b>"
-
-								if c.client.kwargs["ssl"]:
-									icon = VISITED_SECURE_ICON
-								else:
-									icon = VISITED_BOOKMARK_ICON
-
-								wentry = widgets.ExtendedMenuItemNoAction(self,icon,mynet,desc,32)
+									wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
 								sm.addAction(wentry)
 
 								disconnect_entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),"Disconnect from server",self)
@@ -6419,7 +6401,6 @@ class Merk(QMainWindow):
 		f = entry.font()
 		f.setBold(True)
 		entry.setFont(f)
-		# if config.APPLICATION_SHORTCUTS: entry.setShortcut("Ctrl+Shift+Q")
 		self.mainMenu.addAction(entry)
 
 	def menuDocked(self,is_floating):

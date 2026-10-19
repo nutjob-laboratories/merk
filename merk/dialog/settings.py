@@ -1489,8 +1489,6 @@ class Dialog(QDialog):
 			self.showSystrayMenu.setEnabled(True)
 			if self.showSystrayMenu.isChecked():
 				self.stmConnections.setEnabled(True)
-				self.stmDirs.setEnabled(True)
-				self.stmLinks.setEnabled(True)
 				self.stmList.setEnabled(True)
 				self.stmLogs.setEnabled(True)
 				self.stmNick.setEnabled(True)
@@ -1510,8 +1508,6 @@ class Dialog(QDialog):
 					self.stmAway.setEnabled(True)
 			else:
 				self.stmConnections.setEnabled(False)
-				self.stmDirs.setEnabled(False)
-				self.stmLinks.setEnabled(False)
 				self.stmList.setEnabled(False)
 				self.stmLogs.setEnabled(False)
 				self.stmNick.setEnabled(False)
@@ -1532,7 +1528,6 @@ class Dialog(QDialog):
 				self.setFlashInterval.setEnabled(True)
 				self.flashInterval.setEnabled(True)
 				self.doubleclickRestore.setEnabled(True)
-				self.clickToMinimize.setEnabled(True)
 				self.systrayChannel.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
@@ -1548,7 +1543,6 @@ class Dialog(QDialog):
 				self.setFlashInterval.setEnabled(False)
 				self.flashInterval.setEnabled(False)
 				self.doubleclickRestore.setEnabled(False)
-				self.clickToMinimize.setEnabled(False)
 				self.systrayChannel.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
@@ -1566,10 +1560,7 @@ class Dialog(QDialog):
 			self.setFlashInterval.setEnabled(False)
 			self.flashInterval.setEnabled(False)
 			self.doubleclickRestore.setEnabled(False)
-			self.clickToMinimize.setEnabled(False)
 			self.stmConnections.setEnabled(False)
-			self.stmDirs.setEnabled(False)
-			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
@@ -4009,25 +4000,13 @@ class Dialog(QDialog):
 		flashBox.addWidget(self.flashInterval)
 		flashBox.addStretch()
 
-		self.doubleclickRestore = QCheckBox("Double click to restore window from system tray",self)
-		if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY: self.doubleclickRestore.setChecked(True)
+		self.doubleclickRestore = QCheckBox("Click systray icon to toggle window visibility",self)
+		if config.CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY: self.doubleclickRestore.setChecked(True)
 		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
-		
-		self.clickToMinimize = QCheckBox("Click systray icon to minimize to system tray",self)
-		if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY: self.clickToMinimize.setChecked(True)
-		self.clickToMinimize.stateChanged.connect(self.changedSetting)
 		
 		self.stmConnections = QCheckBox("Connections",self)
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
 		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
-
-		self.stmDirs = QCheckBox("Directories",self)
-		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU: self.stmDirs.setChecked(True)
-		self.stmDirs.stateChanged.connect(self.changedSetting)
-
-		self.stmLinks = QCheckBox("Links ",self)
-		if config.SHOW_LINKS_IN_SYSTRAY_MENU: self.stmLinks.setChecked(True)
-		self.stmLinks.stateChanged.connect(self.changedSetting)
 
 		self.stmList = QCheckBox("Channel list",self)
 		if config.SHOW_LIST_IN_SYSTRAY_MENU: self.stmList.setChecked(True)
@@ -4052,8 +4031,6 @@ class Dialog(QDialog):
 		menuRow1 = QHBoxLayout()
 		menuRow1.addStretch()
 		menuRow1.addWidget(self.stmConnections)
-		menuRow1.addWidget(self.stmDirs)
-		menuRow1.addWidget(self.stmLinks)
 		menuRow1.addStretch()
 
 		menuRow3 = QHBoxLayout()
@@ -4076,8 +4053,6 @@ class Dialog(QDialog):
 
 		if not config.SYSTRAY_MENU:
 			self.stmConnections.setEnabled(False)
-			self.stmDirs.setEnabled(False)
-			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
@@ -4098,7 +4073,6 @@ class Dialog(QDialog):
 		stLayout.addWidget(self.minSystray)
 		stLayout.addWidget(self.systrayMinOnClose)
 		stLayout.addWidget(self.doubleclickRestore)
-		stLayout.addWidget(self.clickToMinimize)
 
 		nsLayout = QVBoxLayout()
 		nsLayout.setSpacing(0)
@@ -4139,7 +4113,6 @@ class Dialog(QDialog):
 				self.setFlashInterval.setEnabled(True)
 				self.flashInterval.setEnabled(True)
 				self.doubleclickRestore.setEnabled(True)
-				self.clickToMinimize.setEnabled(True)
 				self.systrayChannel.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
@@ -4155,7 +4128,6 @@ class Dialog(QDialog):
 				self.setFlashInterval.setEnabled(False)
 				self.flashInterval.setEnabled(False)
 				self.doubleclickRestore.setEnabled(False)
-				self.clickToMinimize.setEnabled(False)
 				self.systrayChannel.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
@@ -4173,10 +4145,7 @@ class Dialog(QDialog):
 			self.setFlashInterval.setEnabled(False)
 			self.flashInterval.setEnabled(False)
 			self.doubleclickRestore.setEnabled(False)
-			self.clickToMinimize.setEnabled(False)
 			self.stmConnections.setEnabled(False)
-			self.stmDirs.setEnabled(False)
-			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
@@ -7726,7 +7695,7 @@ class Dialog(QDialog):
 		config.APP_INTERACTION_CANCELS_AUTOAWAY = self.appCancelAway.isChecked()
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
 		config.AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
-		config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = self.doubleclickRestore.isChecked()
+		config.CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY = self.doubleclickRestore.isChecked()
 		config.LOG_CHANNEL_TOPICS = self.topicLog.isChecked()
 		config.LOG_CHANNEL_JOIN = self.joinLog.isChecked()
 		config.LOG_CHANNEL_PART = self.partLog.isChecked()
@@ -7807,8 +7776,6 @@ class Dialog(QDialog):
 		config.USER_DATA_FETCH_FREQUENCY = self.USER_DATA_FETCH_FREQUENCY
 		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
 		config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU = self.stmConnections.isChecked()
-		config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU = self.stmDirs.isChecked()
-		config.SHOW_LINKS_IN_SYSTRAY_MENU = self.stmLinks.isChecked()
 		config.SHOW_LIST_IN_SYSTRAY_MENU = self.stmList.isChecked()
 		config.SHOW_LOGS_IN_SYSTRAY_MENU = self.stmLogs.isChecked()
 		config.SHOW_LOGS_IN_WINDOWS_MENU = self.showLogsInWindows.isChecked()
