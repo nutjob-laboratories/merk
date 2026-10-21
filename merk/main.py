@@ -1123,9 +1123,9 @@ class Merk(QMainWindow):
 
 		self.trayMenu.clear()
 
-		am = self.trayMenu.addMenu(QIcon(APPLICATION_MENU_ICON),f"{APPLICATION_NAME} {APPLICATION_VERSION}")
+		am = self.trayMenu.addMenu(QIcon(APPLICATION_MENU_ICON),f"{APPLICATION_NAME} IRC Client")
 
-		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME}",self)
+		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME} {APPLICATION_VERSION}",self)
 		entry.triggered.connect(self.showAbout)
 		am.addAction(entry)
 
@@ -1240,7 +1240,7 @@ class Merk(QMainWindow):
 					if len(total)>0:
 						if hasattr(sw,"widget"):
 
-							sm = self.trayMenu.addMenu(QIcon(CONNECT_MENU_ICON),name)
+							sm = self.trayMenu.addMenu(QIcon(SERVER_ICON),name)
 
 							c = sw.widget()
 
@@ -1256,7 +1256,7 @@ class Merk(QMainWindow):
 								if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 									netlink = get_network_link(mynet)
 									if netlink!=None:
-										entry = QAction(QIcon(LINK_MENU_ICON),f"{mynet} website",self)
+										entry = QAction(QIcon(NETWORK_MENU_ICON),f"{mynet} network",self)
 										entry.triggered.connect(lambda state,u=netlink: self.openLinkInBrowser(u))
 										sm.addAction(entry)
 										sm.addSeparator()
@@ -2904,7 +2904,7 @@ class Merk(QMainWindow):
 			if config.ASK_BEFORE_MULTIPLE_CONNECTIONS:
 				if self.alreadyConnected(connection.host,connection.port):
 					msgBox = QMessageBox()
-					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+					msgBox.setIconPixmap(QPixmap(SERVER_ICON))
 					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText(f"""
 						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
@@ -3014,7 +3014,7 @@ class Merk(QMainWindow):
 			if config.ASK_BEFORE_MULTIPLE_CONNECTIONS:
 				if self.alreadyConnected(connection.host,connection.port):
 					msgBox = QMessageBox()
-					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+					msgBox.setIconPixmap(QPixmap(SERVER_ICON))
 					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText(f"""
 						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
@@ -5518,7 +5518,7 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsPlugins)
 		sm.addAction(entry)
 
-		sm = self.settingsMenu.addMenu(QIcon(CONNECT_ICON),"Connections")
+		sm = self.settingsMenu.addMenu(QIcon(SERVER_ICON),"Connections")
 
 		if config.ASK_BEFORE_DISCONNECT:
 			entry = QAction(QIcon(self.checked_icon),"Ask before disconnecting", self)
@@ -5719,7 +5719,7 @@ class Merk(QMainWindow):
 						sm.addAction(entry)
 
 				if len(user.COMMANDS)>0:
-					sm = self.toolsMenu.addMenu(QIcon(CONNECT_ICON),"Edit connection scripts")
+					sm = self.toolsMenu.addMenu(QIcon(SERVER_ICON),"Edit connection scripts")
 
 					for f in user.COMMANDS:
 						entry = QAction(f"{f}",self)
@@ -6180,27 +6180,35 @@ class Merk(QMainWindow):
 								else:
 									mynet = config.UNKNOWN_NETWORK_NAME
 
-								if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
-									dmynet = f"{name}&nbsp;&nbsp;"
-								else:
-									dmynet = f"{mynet} network&nbsp;&nbsp;"
+								dmynet = f"{sentry.server}:{sentry.port}&nbsp;&nbsp;"
 
-								sm = self.windowsMenu.addMenu(QIcon(CONNECT_DIALOG_MENU_ICON),name)
+								no_network = False
+								if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+									icon = CONNECT_MENU_ICON
+									no_network = True
+								else:
+									icon = NETWORK_MENU_ICON
+
+								sm = self.windowsMenu.addMenu(QIcon(SERVER_ICON),name)
 
 								if c.client.kwargs["ssl"]:
-									cdesc = "<small><b>Connected via SSL/TLS&nbsp;&nbsp;</b></small>"
-									icon = CONNECT_DIALOG_MENU_ICON
+									cdesc = "<small>Connected via SSL/TLS&nbsp;&nbsp;</small>"
 								else:
-									cdesc = "<small><b>Connected via TCP/IP&nbsp;&nbsp;</b></small>"
-									icon = CONNECT_DIALOG_MENU_ICON
+									cdesc = "<small>Connected via TCP/IP&nbsp;&nbsp;</small>"
 								if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 									netlink = get_network_link(mynet)
 									if netlink!=None:
-										wentry = widgets.ExtendedMenuItemShortcut(self,icon,dmynet,cdesc,'Click to visit network website&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,lambda x=netlink: self.openNetworkInBrowser(x))
+										wentry = widgets.ExtendedMenuItemShortcut(self,icon,dmynet,f"<b>{mynet} network&nbsp;&nbsp;</b>",f"</i>{cdesc}<i>",CUSTOM_MENU_ICON_SIZE,lambda x=netlink: self.openNetworkInBrowser(x))
 									else:
-										wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
+										if no_network:
+											wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
+										else:
+											wentry = widgets.ExtendedMenuItemShortcutNoAction(self,icon,dmynet,f"<b>{mynet} network&nbsp;&nbsp;</b>",f"</i>{cdesc}<i>",CUSTOM_MENU_ICON_SIZE)
 								else:
-									wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
+									if no_network:
+										wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
+									else:
+										wentry = widgets.ExtendedMenuItemShortcutNoAction(self,icon,dmynet,f"<b>{mynet} network&nbsp;&nbsp;</b>",f"</i>{cdesc}<i>",CUSTOM_MENU_ICON_SIZE)
 								sm.addAction(wentry)
 
 								disconnect_entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),"Disconnect from server",self)

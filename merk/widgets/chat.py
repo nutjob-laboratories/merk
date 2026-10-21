@@ -1490,17 +1490,17 @@ class Window(QMainWindow):
 					copyMenu.addAction(act)
 					
 					if self.client.hostname:
-						act = QAction(QIcon(CONNECT_ICON),"Server hostname", self)
+						act = QAction(QIcon(SERVER_ICON),"Server hostname", self)
 						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
 						copyMenu.addAction(act)
 
 					if self.client.network:
 						if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-							act = QAction(QIcon(CONNECT_ICON),"Server network", self)
+							act = QAction(QIcon(NETWORK_MENU_ICON),"Server network", self)
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
-					act = QAction(QIcon(CONNECT_ICON),"Server information", self)
+					act = QAction(QIcon(SERVER_ICON),"Server information", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 					copyMenu.addAction(act)
 
@@ -1516,17 +1516,17 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.client.sendLine(f"WHOIS {self.name}"))
 					menu.addAction(act)
 
-					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),f"Send CTCP request")
+					ctcpMenu = menu.addMenu(QIcon(SERVER_ICON),f"Send CTCP request")
 
 					act = QAction(QIcon(USER_MENU_ICON),"FINGER", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('FINGER', '')]))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(CONNECT_ICON),"PING", self)
+					act = QAction(QIcon(SERVER_ICON),"PING", self)
 					act.triggered.connect(lambda : self.sendCTCPPing(self.name))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(CONNECT_ICON),"SOURCE", self)
+					act = QAction(QIcon(SERVER_ICON),"SOURCE", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('SOURCE', '')]))
 					ctcpMenu.addAction(act)
 
@@ -1538,7 +1538,7 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('USERINFO', '')]))
 					ctcpMenu.addAction(act)
 
-					act = QAction(QIcon(CONNECT_ICON),"VERSION", self)
+					act = QAction(QIcon(SERVER_ICON),"VERSION", self)
 					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('VERSION', '')]))
 					ctcpMenu.addAction(act)
 
@@ -1583,17 +1583,17 @@ class Window(QMainWindow):
 						copyMenu.addAction(act)
 
 					if self.client.hostname:
-						act = QAction(QIcon(CONNECT_ICON),"Server hostname", self)
+						act = QAction(QIcon(SERVER_ICON),"Server hostname", self)
 						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
 						copyMenu.addAction(act)
 
 					if self.client.network:
 						if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-							act = QAction(QIcon(CONNECT_ICON),"Server network", self)
+							act = QAction(QIcon(NETWORK_MENU_ICON),"Server network", self)
 							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 							copyMenu.addAction(act)
 
-					act = QAction(QIcon(CONNECT_ICON),"Server information", self)
+					act = QAction(QIcon(SERVER_ICON),"Server information", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 					copyMenu.addAction(act)
 
@@ -2820,30 +2820,30 @@ class Window(QMainWindow):
 
 		if user_nick!=self.client.nickname:
 
-			ctcpMenu = self.userlist_menu.addMenu(QIcon(CONNECT_ICON),"Send CTCP request")
-
-			act = QAction(QIcon(USER_MENU_ICON),"USERINFO", self)
-			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
-			ctcpMenu.addAction(act)
+			ctcpMenu = self.userlist_menu.addMenu(QIcon(SERVER_ICON),"Send CTCP request")
 
 			act = QAction(QIcon(USER_MENU_ICON),"FINGER", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(CONNECT_ICON),"SOURCE", self)
-			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
+			act = QAction(QIcon(SERVER_ICON),"PING", self)
+			act.triggered.connect(lambda : self.sendCTCPPing(user_nick))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(CONNECT_ICON),"VERSION", self)
-			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
+			act = QAction(QIcon(SERVER_ICON),"SOURCE", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
 			ctcpMenu.addAction(act)
 
 			act = QAction(QIcon(TIMESTAMP_ICON),"TIME", self)
 			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('TIME', '')]))
 			ctcpMenu.addAction(act)
 
-			act = QAction(QIcon(CONNECT_ICON),"PING", self)
-			act.triggered.connect(lambda : self.sendCTCPPing(user_nick))
+			act = QAction(QIcon(USER_MENU_ICON),"USERINFO", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
+			ctcpMenu.addAction(act)
+
+			act = QAction(QIcon(SERVER_ICON),"VERSION", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
 			ctcpMenu.addAction(act)
 
 			if config.ENABLE_IGNORE:
@@ -2906,17 +2906,17 @@ class Window(QMainWindow):
 		copyMenu.addAction(act)
 
 		if self.client.hostname:
-			act = QAction(QIcon(CONNECT_ICON),"Server hostname", self)
+			act = QAction(QIcon(SERVER_ICON),"Server hostname", self)
 			act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
 			copyMenu.addAction(act)
 
 		if self.client.network:
 			if self.client.network.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
-				act = QAction(QIcon(CONNECT_ICON),"Server network", self)
+				act = QAction(QIcon(NETWORK_MENU_ICON),"Server network", self)
 				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
 				copyMenu.addAction(act)
 
-		act = QAction(QIcon(CONNECT_ICON),"Server information", self)
+		act = QAction(QIcon(SERVER_ICON),"Server information", self)
 		act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 		copyMenu.addAction(act)
 

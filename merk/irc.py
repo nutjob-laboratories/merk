@@ -687,7 +687,7 @@ class IRC_Connection(irc.IRCClient):
 			self.gui.connectToIrcFail(message,message)
 		else:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+			msgBox.setIconPixmap(QPixmap(SERVER_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(message)
 			msgBox.setInformativeText(f"Disconnected from {self.server}! {dialog}")

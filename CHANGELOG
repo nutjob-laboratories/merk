@@ -2,15 +2,6 @@
 |                                    0.500.000                                 |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **Major version number bump**. As MERK is nearing a "good enough for 1.0" state, we bumped up the version number to match it's new status.
-- **The resource file has been cleaned up**. `optipng` has been used to shrink the file size of many of the icons in the applications resource file, and many icons have been removed or revamped. The resource file is now about 60% of it's former size, with no loss in image quality.
-- **The system tray right click menu is now more useful**. It's also been cleaned up, with some bugs on Linux fixed.
-- **Away messages are now displayed in nickname tooltips in userlists**. This option, which is enabled by default, can be turned off in the "Settings" dialog or with the `/config` command.
-- **The "Windows" menu has been cleaned up**. More specifically, active connections in the "Windows" menu has been made clearer about what each entry does.
-- **Many, many bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -82,6 +73,11 @@ What's new:
   systray right click menu; now, they are ALWAYS shown.
 * Tweaked connection entries in the "Windows" menu, and made some things a bit
   clearer.
+* Changed the "network" icon.
+* Changed the "connect" icon back to the original "network" icon.
+* Bugfix: the CTCP request menu in the userlist right click menu is now
+  alphabetized, the same as how it appears in the private chat window context
+  menu.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.350                                  |

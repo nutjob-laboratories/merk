@@ -39,6 +39,14 @@ def ExtendedMenuItemShortcut(self,icon,title,description,shortcut,icon_size,func
 
 	return erkmenuAction
 
+def ExtendedMenuItemShortcutNoAction(self,icon,title,description,shortcut,icon_size):
+
+	erkmenuLabel = QLabel( menuHtmlShortcut(icon,title,description,shortcut,icon_size) )
+	erkmenuAction = QWidgetAction(self)
+	erkmenuAction.setDefaultWidget(erkmenuLabel)
+
+	return erkmenuAction
+
 def menuHtml2(icon,text,description,icon_size):
 	return f'''
 <table style="width: 100%" border="0" cellspacing="2" cellpadding="0">

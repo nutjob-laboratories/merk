@@ -216,10 +216,10 @@ class Window(QMainWindow):
 
 		servers = self.parent.getAllServerWindows()
 		if len(servers)>0:
-			smenu = menu.addMenu(QIcon(CONNECT_ICON),"Insert server name")
+			smenu = menu.addMenu(QIcon(CONNECT_MENU_ICON),"Insert server name")
 			for window in servers:
 				c = window.widget()
-				entry = QAction(QIcon(CONNECT_ICON),c.name,self)
+				entry = QAction(QIcon(CONNECT_MENU_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=f"{c.name}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
@@ -1146,53 +1146,53 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="notice",v=["window","client","channel","user","nickname","hostmask","message"]: self.doInsertEventMethod(u,v))
 			self.messenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"server",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"server",self)
 			entry.triggered.connect(lambda state,u="server",v=["client","message"]: self.doInsertEventMethod(u,v))
 			self.messenv.addAction(entry)
 
-			self.conenv = self.pInsertMenu.addMenu(QIcon(CONNECT_ICON),f"Connection Events")
+			self.conenv = self.pInsertMenu.addMenu(QIcon(CONNECT_MENU_ICON),f"Connection Events")
 
-			entry = QAction(QIcon(CONNECT_ICON),"ack",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"ack",self)
 			entry.triggered.connect(lambda state,u="ack",v=["client","extension"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"connected",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"connected",self)
 			entry.triggered.connect(lambda state,u="connected",v=["window","client"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"connecting",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"connecting",self)
 			entry.triggered.connect(lambda state,u="connecting",v=["client"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"disconnect",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"disconnect",self)
 			entry.triggered.connect(lambda state,u="disconnect",v=["client","message"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"error",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"error",self)
 			entry.triggered.connect(lambda state,u="error",v=["client","message"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"isupport",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"isupport",self)
 			entry.triggered.connect(lambda state,u="isupport",v=["client","options"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"lost",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"lost",self)
 			entry.triggered.connect(lambda state,u="lost",v=["client"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"motd",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"motd",self)
 			entry.triggered.connect(lambda state,u="motd",v=["client","text"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"nak",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"nak",self)
 			entry.triggered.connect(lambda state,u="nak",v=["client","extension"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"ping",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"ping",self)
 			entry.triggered.connect(lambda state,u="ping",v=["client"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"quit",self)
+			entry = QAction(QIcon(CONNECT_MENU_ICON),"quit",self)
 			entry.triggered.connect(lambda state,u="quit",v=["client","user","message"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 

@@ -4896,7 +4896,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Connections")
 		entry.widget = self.connectionsPage
-		entry.setIcon(QIcon(CONNECT_ICON))
+		entry.setIcon(QIcon(SERVER_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.connectionsPage)
@@ -8310,7 +8310,7 @@ class Dialog(QDialog):
 			if disconnect_all_servers and len(self.parent.getAllServerWindows())>0:
 				if changed_main_codec:
 					msg = QMessageBox()
-					msg.setIconPixmap(QPixmap(CONNECT_ICON))
+					msg.setIconPixmap(QPixmap(SERVER_ICON))
 					msg.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msg.setText("You have changed the main decoding codec, and need to disconnect from all servers.")
 					msg.setWindowTitle("Disconnect")
@@ -8319,7 +8319,7 @@ class Dialog(QDialog):
 					self.parent.disconnectAll()
 				else:
 					msgBox = QMessageBox()
-					msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+					msgBox.setIconPixmap(QPixmap(SERVER_ICON))
 					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText("You have changed the fallback decoding codec, and should disconnect from all servers. Disconnect from all servers?")
 					msgBox.setWindowTitle("Disconnect")

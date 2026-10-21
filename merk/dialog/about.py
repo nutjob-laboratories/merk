@@ -272,7 +272,9 @@ class Dialog(QDialog):
 		coffeeLayout.addStretch()
 
 		patronLayout = QVBoxLayout()
+		patronLayout.addWidget(QLabel(' '))
 		patronLayout.addLayout(coffeeLayout)
+		patronLayout.addWidget(QLabel(' '))
 		patronLayout.addLayout(patListLayout)
 		patronLayout.addStretch()
 
