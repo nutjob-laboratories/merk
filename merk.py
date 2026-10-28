@@ -166,6 +166,19 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
 
+	def display(message):
+		try:
+			print(message)
+		except:
+			sys.stdout.write(f"{message}\n")
+
+	def display_messagebox(title,message):
+		msgBox = QMessageBox()
+		msgBox.setText(message)
+		msgBox.setWindowTitle(title)
+		msgBox.setStandardButtons(QMessageBox.Ok)
+		msgBox.exec()
+
 	def find_file(file):
 		if os.path.exists(file) and os.access(file, os.R_OK): return file
 		if args.scriptdir!=None:
@@ -192,9 +205,9 @@ if __name__ == '__main__':
 					n = ""
 				if len(n.strip())==0:
 					if not is_running_from_pyinstaller():
-						sys.stdout.write("No nickname set!\n")
+						display("No nickname set!")
 					else:
-						show_message("Error",f"No nickname set!")
+						display_messagebox("Error",f"No nickname set!")
 					sys.exit(1)
 			args.nickname = user.NICKNAME
 			if not args.noprofile:
@@ -253,9 +266,9 @@ if __name__ == '__main__':
 				else:
 					# throw error
 					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable\n")
+						display(f"File \"{args.script}\" does not exist or is not readable")
 					else:
-						show_message("Error",f"File \"{args.script}\" does not exist or is not readable")
+						display_messagebox("Error",f"File \"{args.script}\" does not exist or is not readable")
 					sys.exit(1)
 
 		if hostid in user.SASL and config.ALWAYS_USE_SASL_LOGINS:
@@ -306,15 +319,15 @@ if __name__ == '__main__':
 			shutil.copy(filename, imported_file)
 		except FileNotFoundError:
 			if not is_running_from_pyinstaller():
-				sys.stdout.write(f"Source file \"{filename}\" not found\n")
+				display(f"Source file \"{filename}\" not found")
 			else:
-				show_message("Error",f"Source file \"{filename}\" not found")
+				display_messagebox("Error",f"Source file \"{filename}\" not found")
 			sys.exit(1)
 		except Exception as e:
 			if not is_running_from_pyinstaller():
-				sys.stdout.write(f'Error importing file: {e}\n')
+				display(f'Error importing file: {e}')
 			else:
-				show_message(f'Error importing file: {e}')
+				display_messagebox(f'Error importing file: {e}')
 			sys.exit(1)
 
 		name_without_extension, extension = os.path.splitext(filename)
@@ -326,15 +339,15 @@ if __name__ == '__main__':
 				shutil.copy(plugin_icon, imported_file)
 			except FileNotFoundError:
 				if not is_running_from_pyinstaller():
-					sys.stdout.write(f"Source file \"{plugin_icon}\" not found\n")
+					display(f"Source file \"{plugin_icon}\" not found")
 				else:
-					show_message("Error",f"Source file \"{plugin_icon}\" not found")
+					display_messagebox("Error",f"Source file \"{plugin_icon}\" not found")
 				sys.exit(1)
 			except Exception as e:
 				if not is_running_from_pyinstaller():
-					sys.stdout.write(f'Error importing file: {e}\n')
+					display(f'Error importing file: {e}')
 				else:
-					show_message(f'Error importing file: {e}')
+					display_messagebox(f'Error importing file: {e}')
 				sys.exit(1)
 
 	def install_zip_plugin(filename):
@@ -356,29 +369,22 @@ if __name__ == '__main__':
 
 		except zipfile.BadZipFile:
 			if not is_running_from_pyinstaller():
-				sys.stdout.write(f"\"{filename}\" is not a valid zip file\n")
+				display(f"\"{filename}\" is not a valid zip file")
 			else:
-				show_message("Error",f"\"{filename}\" is not a valid zip file")
+				display_messagebox("Error",f"\"{filename}\" is not a valid zip file")
 			sys.exit(1)
 		except FileNotFoundError:
 			if not is_running_from_pyinstaller():
-				sys.stdout.write(f"Plugin archive \"{filename}\" not found\n")
+				display(f"Plugin archive \"{filename}\" not found")
 			else:
-				show_message("Error",f"Plugin archive \"{filename}\" not found.")
+				display_messagebox("Error",f"Plugin archive \"{filename}\" not found.")
 			sys.exit(1)
 		except Exception as e:
 			if not is_running_from_pyinstaller():
-				sys.stdout.write(f'Error importing file: {e}\n')
+				display(f'Error importing file: {e}')
 			else:
-				show_message("Error",f'Error importing file: {e}')
+				display_messagebox("Error",f'Error importing file: {e}')
 			sys.exit(1)
-
-	def show_message(title,message):
-		msgBox = QMessageBox()
-		msgBox.setText(message)
-		msgBox.setWindowTitle(title)
-		msgBox.setStandardButtons(QMessageBox.Ok)
-		msgBox.exec()
 
 	def check_for_number(val):
 		n = ["0","1","2","3","4","5","6","7","8","9","0"]
@@ -434,7 +440,7 @@ if __name__ == '__main__':
 	if args.help:
 		if is_running_from_pyinstaller():
 			help_text = parser.format_help()
-			show_message("Help",f"Please see the {APPLICATION_NAME} User Guide for command-line options.")
+			display_messagebox("Help",f"Please see the {APPLICATION_NAME} User Guide for command-line options.")
 		else:
 			parser.print_help()
 		sys.exit(0)
@@ -448,10 +454,10 @@ if __name__ == '__main__':
 		else:
 			# Tell user the style is invalid and exit
 			if not is_running_from_pyinstaller():
-				sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
-				sys.stdout.write(f"Valid available styles: {', '.join(QT_STYLES)}\n")
+				display(f"Invalid Qt window style: {args.qtstyle}")
+				display(f"Valid available styles: {', '.join(QT_STYLES)}")
 			else:
-				show_message("Invalid Qt window style",f"Valid available styles: {', '.join(QT_STYLES)}")
+				display_messagebox("Invalid Qt window style",f"Valid available styles: {', '.join(QT_STYLES)}")
 			sys.exit(1)
 
 	# If user wants to store config data in the install
@@ -479,10 +485,10 @@ if __name__ == '__main__':
 	# Reset the config files to the default values
 	if args.configdefault:
 		if not is_running_from_pyinstaller():
-			sys.stdout.write("Resetting configuration file to defaults\n")
+			display("Resetting configuration file to defaults")
 		else:
 			if not args.alldefault:
-				show_message("Reset","Configuration file set to defaults")
+				display_messagebox("Reset","Configuration file set to defaults")
 				sys.exit(0)
 		config.save_settings(config.CONFIG_FILE)
 
@@ -494,10 +500,10 @@ if __name__ == '__main__':
 
 	if args.userdefault:
 		if not is_running_from_pyinstaller():
-			sys.stdout.write("Resetting user file to defaults\n")
+			display("Resetting user file to defaults")
 		else:
 			if not args.alldefault:
-				show_message("Reset","User file set to defaults")
+				display_messagebox("Reset","User file set to defaults")
 				sys.exit(0)
 		user.save_user(user.USER_FILE)
 
@@ -509,7 +515,7 @@ if __name__ == '__main__':
 
 	if args.alldefault:
 		if is_running_from_pyinstaller():
-			show_message("Reset","Configuration and user files set to defaults")
+			display_messagebox("Reset","Configuration and user files set to defaults")
 			sys.exit(0)
 
 	# Initialize the logs system
@@ -529,11 +535,11 @@ if __name__ == '__main__':
 		if args.uninstall=='':
 			p = plugins.list_plugins()
 			if is_running_from_pyinstaller():
-				show_message("Installed Plugins",f"{'\n'.join(p)}")
+				display_messagebox("Installed Plugins",f"{'\n'.join(p)}")
 			else:
-				sys.stdout.write(f"Installed plugins:\n")
+				display(f"Installed plugins:")
 				for e in p:
-					sys.stdout.write(f"{e}\n")
+					display(f"{e}")
 			sys.exit(0)
 		if args.uninstall=='all':
 			for root, _, files in os.walk(plugins.PLUGIN_DIRECTORY):
@@ -543,17 +549,17 @@ if __name__ == '__main__':
 						try:
 							os.remove(file_path)
 							if not is_running_from_pyinstaller():
-								sys.stdout.write(f"Deleted {file_path}\n")
+								display(f"Deleted {file_path}")
 						except OSError as e:
 							if not is_running_from_pyinstaller():
-								sys.stdout.write(f"Error deleting file: {e}\n")
+								display(f"Error deleting file: {e}")
 							else:
-								show_message("Error",f"Error deleting file: {e}")
+								display_messagebox("Error",f"Error deleting file: {e}")
 							sys.exit(1)
 			if is_running_from_pyinstaller():
-				show_message("Uninstall",f"All plugins uninstalled")
+				display_messagebox("Uninstall",f"All plugins uninstalled")
 			else:
-				sys.stdout.write(f"All plugins uninstalled\n")
+				display(f"All plugins uninstalled")
 			sys.exit(0)
 		if args.uninstall!='':
 			file_path = os.path.join(plugins.PLUGIN_DIRECTORY, args.uninstall)
@@ -565,36 +571,36 @@ if __name__ == '__main__':
 				try:
 					os.remove(file_path)
 					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"Deleted {file_path}\n")
+						display(f"Deleted {file_path}")
 					uninstalled = True
 				except OSError as e:
 					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"Error deleting file: {e}\n")
+						display(f"Error deleting file: {e}")
 					else:
-						show_message("Error",f"Error deleting file: {e}")
+						display_messagebox("Error",f"Error deleting file: {e}")
 					sys.exit(1)
 
 			if os.path.exists(icon_path) and icon_path.endswith(".png"):
 				try:
 					os.remove(icon_path)
 					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"Deleted {icon_path}\n")
+						display(f"Deleted {icon_path}")
 				except OSError as e:
 					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"Error deleting file: {e}\n")
+						display(f"Error deleting file: {e}")
 					else:
-						show_message("Error",f"Error deleting file: {e}")
+						display_messagebox("Error",f"Error deleting file: {e}")
 					sys.exit(1)
 			if uninstalled:
 				if is_running_from_pyinstaller():
-					show_message("Uninstall",f"Plugin uninstalled")
+					display_messagebox("Uninstall",f"Plugin uninstalled")
 				else:
-					sys.stdout.write(f"Plugin uninstalled\n")
+					display(f"Plugin uninstalled")
 			else:
 				if is_running_from_pyinstaller():
-					show_message("Uninstall",f"Plugin \"{args.uninstall}\" not uninstalled")
+					display_messagebox("Uninstall",f"Plugin \"{args.uninstall}\" not uninstalled")
 				else:
-					sys.stdout.write(f"Plugin \"{args.uninstall}\" not uninstalled\n")
+					display(f"Plugin \"{args.uninstall}\" not uninstalled")
 			sys.exit(0)
 
 	if args.install:
@@ -606,21 +612,21 @@ if __name__ == '__main__':
 			install_python_plugin(args.install)
 		else:
 			if not is_running_from_pyinstaller():
-				sys.stdout.write(f"\"{args.install}\" is not a ZIP or a Python module\n")
+				display(f"\"{args.install}\" is not a ZIP or a Python module")
 			else:
-				show_message("Error",f"\"{args.install}\" is not a ZIP or a Python module")
+				display_messagebox("Error",f"\"{args.install}\" is not a ZIP or a Python module")
 			sys.exit(1)
 		if not is_running_from_pyinstaller():
-			sys.stdout.write(f"\"{args.install}\" installed\n")
+			display(f"\"{args.install}\" installed")
 		else:
-			show_message("Success",f"\"{args.install}\" installed")
+			display_messagebox("Success",f"\"{args.install}\" installed")
 		sys.exit(0)
 
 	if args.disable and args.enable:
 		if not is_running_from_pyinstaller():
-			sys.stdout.write(f"Plugins cannot be both enabled and disabled\n")
+			display(f"Plugins cannot be both enabled and disabled")
 		else:
-			show_message("Error",f"Plugins cannot be both enabled and disabled")
+			display_messagebox("Error",f"Plugins cannot be both enabled and disabled")
 		sys.exit(1)
 
 	# Disabled plugins
@@ -742,20 +748,26 @@ if __name__ == '__main__':
 					for f in large_logs:
 						logs.backup_log(f,directory)
 
+	# If there have been channels passed via
+	# the command-line, make sure that they 
+	# are passed to the main client so that
+	# ALL the connecting clients can join them
+	channel_arguments_to_join = []
+	if args.channel:
+		for c in args.channel:
+			# Strip all whitespace from argument
+			c = "".join(c.split())
+			# Split argument, to handle channel keys
+			p = c.split(':',1)
+			if len(p)==2:
+				# Channel key has been provided, so add it to the entry
+				channel_arguments_to_join.append(p)
+			else:
+				# Channel key has NOT been provided, so just add the entry
+				channel_arguments_to_join.append( [c,''] )
+
 	# Handle connecting to a server if one has been provided
 	if args.server:
-
-		chans = []
-		if args.channel:
-			for c in args.channel:
-				if type(c)==list:
-					chans.append(c)
-				else:
-					p = c.split(':')
-					if len(p)==2:
-						chans.append(p)
-					else:
-						chans.append( [c,''] )
 
 		i = create_connection(args.server,args.port,args.password,args.ssl)
 
@@ -765,7 +777,7 @@ if __name__ == '__main__':
 				args.configname,				# Config directory name, default ".merk"
 				i,								# Connection info
 				font,							# Application font
-				chans,							# Channels
+				channel_arguments_to_join,		# Channels
 				args.donotexecute,				# Do not execute script default
 				args.donotsave,					# Do not save default
 				args.ontop,						# Always on top
@@ -837,13 +849,13 @@ if __name__ == '__main__':
 
 					if is_running_from_pyinstaller():
 						if not check_for_number(port):
-							show_message("Error",f"\"{port}\" is not a valid port number")
+							display_messagebox("Error",f"\"{port}\" is not a valid port number")
 							sys.exit(1)
 					else:
 						try:
 							int(port)
 						except:
-							sys.stdout.write(f"\"{port}\" is not a valid port number\n")
+							display(f"\"{port}\" is not a valid port number")
 							sys.exit(1)
 
 					port = int(port)
@@ -869,13 +881,13 @@ if __name__ == '__main__':
 
 					if is_running_from_pyinstaller():
 						if not check_for_number(port):
-							show_message("Error",f"\"{port}\" is not a valid port number")
+							display_messagebox("Error",f"\"{port}\" is not a valid port number")
 							sys.exit(1)
 					else:
 						try:
 							int(port)
 						except:
-							sys.stdout.write(f"\"{port}\" is not a valid port number\n")
+							display(f"\"{port}\" is not a valid port number")
 							sys.exit(1)
 
 					port = int(port)
@@ -902,7 +914,7 @@ if __name__ == '__main__':
 								args.configname,				# Config directory name, default ".merk"
 								connection_info,				# Connection info
 								font,							# Application font
-								[],								# Channels
+								channel_arguments_to_join,		# Channels
 								args.donotexecute,				# Do not execute script default
 								args.donotsave,					# Do not save default
 								args.ontop,						# Always on top
@@ -915,22 +927,6 @@ if __name__ == '__main__':
 					app.quit()
 			else:
 
-				# If the --channel argument is used,
-				# make sure the channels are passed
-				# I'm not sure why someone would do this,
-				# but who am I to judge?
-				chans = []
-				if args.channel:
-					for c in args.channel:
-						if type(c)==list:
-							chans.append(c)
-						else:
-							p = c.split(':')
-							if len(p)==2:
-								chans.append(p)
-							else:
-								chans.append( [c,''] )
-
 				# Create the main GUI and show it
 				GUI = Merk(
 						app,							# Application
@@ -938,7 +934,7 @@ if __name__ == '__main__':
 						args.configname,				# Config directory name, default ".merk"
 						connections,					# Connection info
 						font,							# Application font
-						chans,							# Channels
+						channel_arguments_to_join,		# Channels
 						args.donotexecute,				# Do not execute script default
 						args.donotsave,					# Do not save default
 						args.ontop,						# Always on top

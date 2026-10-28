@@ -1,4 +1,28 @@
 |------------------------------------------------------------------------------|
+|                                    0.500.050                                 |
+|------------------------------------------------------------------------------|
+
+What's new:
+
+- **New application icon**. The new icon matches the official logo.
+- **Many, many bugfixes**.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Tweaked the "Windows" menu connection list to give the user more information
+  about each connection; the network icon size has been increased to 32px from
+  24px.
+* Bugfix: channels set to join at the command-line will join ALL channels for
+  ALL servers set to connect via the command-line.
+* Changed the server configuration display to make a bit more sense.
+* Bugfix: the -c/--channel command-line argument now handles arguments with
+  whitespace in them more accurately.
+* Brand new application icon. The new icon reflects the official logo, and
+  matches better.
+
+|------------------------------------------------------------------------------|
 |                                    0.500.000                                 |
 |------------------------------------------------------------------------------|
 

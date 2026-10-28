@@ -12,7 +12,7 @@
 | :----:    | :----:    | :----:    |
 <a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
 
-**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the latest development build at [https://latest.merk.chat](https://latest.merk.chat). New builds are done almost every day, with bugfixes and tweaks.
+**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the latest development build at [https://latest.merk.chat](https://latest.merk.chat). New builds are uploaded frequently, with bugfixes and tweaks.
 
 <p align="center">
   <b><a href="https://buymeacoffee.com/danhetrick"><img src="./graphics/coffee.png" alt="Help fund MERK!"></a></b>

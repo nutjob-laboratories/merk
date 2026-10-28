@@ -162,6 +162,7 @@ SHORTCUT_IN_USE = 2
 UNKNOWN_NETWORK = "UNKNOWN"
 
 CUSTOM_MENU_ICON_SIZE = 24
+NETWORK_MENU_ICON_SIZE = 32
 
 MAX_ERR_NICK_SIZE = 9
 
@@ -345,6 +346,7 @@ QUIT_ICON = ":/icon-quit.png"
 EDIT_ICON = ":/icon-edit.png"
 NEXT_ICON = ":/icon-next.png"
 TIMESTAMP_ICON = ":/icon-timestamp.png"
+NETWORK_MENU_ICON = ":/icon-network_menu.png"
 
 # 24x24 icons
 SCRIPT_MENU_ICON = ":/icon-script_menu.png"
@@ -363,7 +365,6 @@ HIDE_MENU_ICON = ":/icon-hide_menu.png"
 PLUGIN_MENU_ICON = ":/icon-plugin_menu.png"
 LINK_MENU_ICON = ":/icon-link_menu.png"
 PDF_MENU_ICON = ":/icon-pdf_menu.png"
-NETWORK_MENU_ICON = ":/icon-network_menu.png"
 USER_MENU_ICON = ":/icon-user_menu.png"
 CONSOLE_WINDOW_ICON = ":/icon-console_menu.png"
 PRIVATE_WINDOW_ICON = ":/icon-private_menu.png"

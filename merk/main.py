@@ -156,6 +156,7 @@ class Merk(QMainWindow):
 		self.log_dump_window = None
 		self.multiple_servers = False
 		self.recently_kicked = []
+		self.initial_connections = 0
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -300,13 +301,13 @@ class Merk(QMainWindow):
 			else:
 				self.ignore_shortcut.setEnabled(False)
 
-		# self.new_connection_shortcut.setEnabled(False)
-
 		# Tips 'n Tricks
 		if config.SHOW_TIPS_AT_START: self.openTips()
 
 		if connection_info:
 			if isinstance(connection_info, list):
+				if len(self.join_channels)>0:
+					self.initial_connections = len(connection_info)
 				for c in connection_info:
 					self.connectToIrc(c)
 			else:
@@ -315,6 +316,7 @@ class Merk(QMainWindow):
 				if connection_info.nickname==CONNECTION_DIALOG_CANCELED: do_not_connect = True
 				if not do_not_connect:
 					if connection_info.nickname!=None:
+						if len(self.join_channels)>0: self.initial_connections = 1
 						self.connectToIrc(connection_info)
 
 		self.client_uptime = 0
@@ -1465,10 +1467,13 @@ class Merk(QMainWindow):
 						if hostid in user.COMMANDS:
 							commands.executeScript(self,w,user.COMMANDS[hostid],f"{hostid}")
 
+		if self.initial_connections>0:
+			self.initial_connections = self.initial_connections - 1
+
 		if len(self.join_channels)>0:
 			for e in self.join_channels:
 				client.join(e[0],e[1])
-			self.join_channels = []
+			if self.initial_connections==0: self.join_channels = []
 
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			client.sendLine(f"LIST")
@@ -6176,39 +6181,44 @@ class Merk(QMainWindow):
 							if c.client.registered:
 
 								if hasattr(c.client,"network"):
-									mynet = c.client.network
+									connection_network = c.client.network
 								else:
-									mynet = config.UNKNOWN_NETWORK_NAME
+									connection_network = config.UNKNOWN_NETWORK_NAME
 
-								dmynet = f"{sentry.server}:{sentry.port}&nbsp;&nbsp;"
+								connection_name = f"{sentry.server}:{sentry.port}&nbsp;&nbsp;"
 
 								no_network = False
-								if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
+								if connection_network.lower()==config.UNKNOWN_NETWORK_NAME.lower():
 									icon = CONNECT_MENU_ICON
 									no_network = True
+									icon_size = CUSTOM_MENU_ICON_SIZE
 								else:
 									icon = NETWORK_MENU_ICON
+									icon_size = NETWORK_MENU_ICON_SIZE
 
-								sm = self.windowsMenu.addMenu(QIcon(SERVER_ICON),name)
+								sm = self.windowsMenu.addMenu(QIcon(SERVER_ICON),f"{name}")
 
 								if c.client.kwargs["ssl"]:
-									cdesc = "<small>Connected via SSL/TLS&nbsp;&nbsp;</small>"
+									connection_type = f"<small>Connected via SSL/TLS on port {sentry.port}&nbsp;&nbsp;</small>"
 								else:
-									cdesc = "<small>Connected via TCP/IP&nbsp;&nbsp;</small>"
+									connection_type = f"<small>Connected via TCP/IP on port {sentry.port}&nbsp;&nbsp;</small>"
+
+								network_display = f"</i></small><b>{connection_network} IRC network&nbsp;&nbsp;</b><i><small>"
+
 								if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
-									netlink = get_network_link(mynet)
+									netlink = get_network_link(connection_network)
 									if netlink!=None:
-										wentry = widgets.ExtendedMenuItemShortcut(self,icon,dmynet,f"<b>{mynet} network&nbsp;&nbsp;</b>",f"</i>{cdesc}<i>",CUSTOM_MENU_ICON_SIZE,lambda x=netlink: self.openNetworkInBrowser(x))
+										wentry = widgets.ExtendedMenuItemShortcut(self,icon,f"{sentry.server}&nbsp;&nbsp;",connection_type,network_display,icon_size,lambda x=netlink: self.openNetworkInBrowser(x))
 									else:
 										if no_network:
-											wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
+											wentry = widgets.ExtendedMenuItemNoAction(self,icon,f"{sentry.server}&nbsp;&nbsp;",connection_type,icon_size)
 										else:
-											wentry = widgets.ExtendedMenuItemShortcutNoAction(self,icon,dmynet,f"<b>{mynet} network&nbsp;&nbsp;</b>",f"</i>{cdesc}<i>",CUSTOM_MENU_ICON_SIZE)
+											wentry = widgets.ExtendedMenuItemShortcutNoAction(self,icon,f"{sentry.server}&nbsp;&nbsp;",connection_type,network_display,icon_size)
 								else:
 									if no_network:
-										wentry = widgets.ExtendedMenuItemNoAction(self,icon,dmynet,cdesc,CUSTOM_MENU_ICON_SIZE)
+										wentry = widgets.ExtendedMenuItemNoAction(self,icon,f"{sentry.server}&nbsp;&nbsp;",connection_type,icon_size)
 									else:
-										wentry = widgets.ExtendedMenuItemShortcutNoAction(self,icon,dmynet,f"<b>{mynet} network&nbsp;&nbsp;</b>",f"</i>{cdesc}<i>",CUSTOM_MENU_ICON_SIZE)
+										wentry = widgets.ExtendedMenuItemShortcutNoAction(self,icon,f"{sentry.server}&nbsp;&nbsp;",connection_type,network_display,icon_size)
 								sm.addAction(wentry)
 
 								disconnect_entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),"Disconnect from server",self)
@@ -6253,9 +6263,9 @@ class Merk(QMainWindow):
 									show_sep = True
 
 								if config.SHOW_LOGS_IN_WINDOWS_MENU and (len(os.listdir(logs.LOG_DIRECTORY))>0):
-									if len(logs.find_network_logs(f"{mynet}"))>0:
-										wentry = QAction(QIcon(LOG_MENU_ICON),f"View logs for {mynet}",self)
-										wentry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+									if len(logs.find_network_logs(f"{connection_network}"))>0:
+										wentry = QAction(QIcon(LOG_MENU_ICON),f"View logs for {connection_network}",self)
+										wentry.triggered.connect(lambda state,u=connection_network: self.menuExportLogTarget(u))
 										sm.addAction(wentry)
 
 										show_sep = True

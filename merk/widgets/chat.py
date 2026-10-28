@@ -4370,11 +4370,6 @@ def buildServerSettingsMenu(self,client):
 			pretty_timestamp = datetime.fromtimestamp(self.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+'%p UTC %m/%d/%Y')
 		else:
 			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+'%p %m/%d/%Y')
-	e = plainTextAction(self,f"<b>Connected</b>: {pretty_timestamp}")
-	optionsMenu.addAction(e)
-
-	e = plainTextAction(self,f"<b>Hostname</b>: {name}")
-	optionsMenu.addAction(e)
 
 	e = plainTextAction(self,f"<b>Server</b>: {client.server}")
 	optionsMenu.addAction(e)
@@ -4383,9 +4378,15 @@ def buildServerSettingsMenu(self,client):
 	optionsMenu.addAction(e)
 
 	if client.kwargs["ssl"]:
-		e = plainTextAction(self,"<b>Connection</b>: SSL/TLS")
+		e = plainTextAction(self,"<b>Connection type</b>: SSL/TLS")
 	else:
-		e = plainTextAction(self,"<b>Connection</b>: TCP/IP")
+		e = plainTextAction(self,"<b>Connection type</b>: TCP/IP")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,f"<b>Connection time</b>: {pretty_timestamp}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,f"<b>Hostname</b>: {name}")
 	optionsMenu.addAction(e)
 
 	if mynet.lower()!= config.UNKNOWN_NETWORK_NAME.lower():
@@ -4396,6 +4397,9 @@ def buildServerSettingsMenu(self,client):
 		if netlink!=None:
 			e = plainTextAction(self,f"<b>Website</b>: <a href=\"{netlink}\">{netlink}</a>")
 			optionsMenu.addAction(e)
+	else:
+		e = plainTextAction(self,f"<b>Network</b>: None")
+		optionsMenu.addAction(e)
 
 	if client.server_software:
 		e = plainTextAction(self,f"<b>Software</b>: {client.server_software}")
