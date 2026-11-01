@@ -2751,17 +2751,19 @@ class Dialog(QDialog):
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
-		mLink = QLabel(f"&nbsp;<small><b><a href={APPLICATION_WEB}>{APPLICATION_WEB}</a></b></small>")
+		mLink = QLabel(f"<center><b><a href={APPLICATION_WEB}>{APPLICATION_WEB}</a></b></center>")
 		mLink.setOpenExternalLinks(True)
 
 		verLayout = QVBoxLayout()
-		verLayout.addWidget(QLabel("&nbsp;<small><b>Internet Relay Chat</b></small>"))
-		verLayout.addWidget(QLabel(f"&nbsp;<small><b>Version {APPLICATION_VERSION}</b></small>"))
+		verLayout.addStretch()
+		verLayout.addWidget(QLabel(f"<center><b><big>Version {APPLICATION_VERSION}</big></b></center>"))
 		verLayout.addWidget(mLink)
+		verLayout.addStretch()
 
 		logLayout = QHBoxLayout()
 		logLayout.addStretch()
 		logLayout.addWidget(logo)
+		logLayout.addStretch()
 		logLayout.addLayout(verLayout)
 		logLayout.addStretch()
 

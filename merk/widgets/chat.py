@@ -4367,9 +4367,9 @@ def buildServerSettingsMenu(self,client):
 			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+' %m/%d/%Y')
 	else:
 		if config.SHOW_TIMESTAMPS_IN_UTC:
-			pretty_timestamp = datetime.fromtimestamp(self.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+'%p UTC %m/%d/%Y')
+			pretty_timestamp = datetime.fromtimestamp(self.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' %p UTC %m/%d/%Y')
 		else:
-			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+'%p %m/%d/%Y')
+			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
 
 	e = plainTextAction(self,f"<b>Server</b>: {client.server}")
 	optionsMenu.addAction(e)
@@ -4381,9 +4381,6 @@ def buildServerSettingsMenu(self,client):
 		e = plainTextAction(self,"<b>Connection type</b>: SSL/TLS")
 	else:
 		e = plainTextAction(self,"<b>Connection type</b>: TCP/IP")
-	optionsMenu.addAction(e)
-
-	e = plainTextAction(self,f"<b>Connection time</b>: {pretty_timestamp}")
 	optionsMenu.addAction(e)
 
 	e = plainTextAction(self,f"<b>Hostname</b>: {name}")
@@ -4433,6 +4430,9 @@ def buildServerSettingsMenu(self,client):
 			e = plainTextAction(self,f"<b>Channels</b>: {client.server_channel_count:,} ({diff:,} hidden)")
 		optionsMenu.addAction(e)
 
+	e = plainTextAction(self,f"<i>Connected at {pretty_timestamp}</i>")
+	optionsMenu.addAction(e)
+
 	e = textSeparator(self,"settings")
 	optionsMenu.addAction(e)
 
@@ -4460,6 +4460,20 @@ def buildServerSettingsMenu(self,client):
 	e = plainTextAction(self,f"Maximum modes per user: <b>{modes}</b>")
 	optionsMenu.addAction(e)
 
+	if len(prefix)>0:
+		prefixmenu = QMenu("Channel status prefixes",self)
+		for c in prefix:
+			m = c[0]
+			s = c[1]
+			if m=="a": e = PlainIconTextAction(QIcon(ADMIN_USER), f"<b>{s}</b> (Administrator)", self)
+			if m=="q": e = PlainIconTextAction(QIcon(OWNER_USER), f"<b>{s}</b> (Owner)", self)
+			if m=="o": e = PlainIconTextAction(QIcon(OP_USER), f"<b>{s}</b> (Operator)", self)
+			if m=="h": e = PlainIconTextAction(QIcon(HALFOP_USER), f"<b>{s}</b> (Half-Operator)", self)
+			if m=="Y": e = PlainIconTextAction(QIcon(PROTECTED_USER), f"<b>{s}</b> (Protected)", self)
+			if m=="v": e = PlainIconTextAction(QIcon(VOICE_USER), f"<b>{s}</b> (Voiced)", self)
+			prefixmenu.addAction(e)
+		optionsMenu.addMenu(prefixmenu)
+
 	if len(maxmodes)>0:
 		maxmodesmenu = QMenu("Maximum modes",self)
 		for c in maxmodes:
@@ -4474,14 +4488,6 @@ def buildServerSettingsMenu(self,client):
 			cmdmenu.addAction(e)
 		cmdmenu.setStyle(ScrollableMenuStyle())
 		optionsMenu.addMenu(cmdmenu)
-
-	if len(supports)>0:
-		supportsmenu = QMenu("Supports",self)
-		for c in supports:
-			e = plainTextAction(self,f"{c}")
-			supportsmenu.addAction(e)
-		supportsmenu.setStyle(ScrollableMenuStyle())
-		optionsMenu.addMenu(supportsmenu)
 
 	if len(chanmodes)>0:
 		chanmodemenu = QMenu("Channel modes",self)
@@ -4500,19 +4506,13 @@ def buildServerSettingsMenu(self,client):
 			ct = ct + 1
 		optionsMenu.addMenu(chanmodemenu)
 
-	if len(prefix)>0:
-		prefixmenu = QMenu("Channel status prefixes",self)
-		for c in prefix:
-			m = c[0]
-			s = c[1]
-			if m=="a": e = PlainIconTextAction(QIcon(ADMIN_USER), f"<b>{s}</b> (Administrator)", self)
-			if m=="q": e = PlainIconTextAction(QIcon(OWNER_USER), f"<b>{s}</b> (Owner)", self)
-			if m=="o": e = PlainIconTextAction(QIcon(OP_USER), f"<b>{s}</b> (Operator)", self)
-			if m=="h": e = PlainIconTextAction(QIcon(HALFOP_USER), f"<b>{s}</b> (Half-Operator)", self)
-			if m=="Y": e = PlainIconTextAction(QIcon(PROTECTED_USER), f"<b>{s}</b> (Protected)", self)
-			if m=="v": e = PlainIconTextAction(QIcon(VOICE_USER), f"<b>{s}</b> (Voiced)", self)
-			prefixmenu.addAction(e)
-		optionsMenu.addMenu(prefixmenu)
+	if len(supports)>0:
+		supportsmenu = QMenu("Supports",self)
+		for c in supports:
+			e = plainTextAction(self,f"{c}")
+			supportsmenu.addAction(e)
+		supportsmenu.setStyle(ScrollableMenuStyle())
+		optionsMenu.addMenu(supportsmenu)
 
 	if len(ircv3)>0:
 		ircv3menu = QMenu("IRCv3 extensions",self)

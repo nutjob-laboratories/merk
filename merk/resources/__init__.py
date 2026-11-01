@@ -98,8 +98,13 @@ APPLICATION_DEVELOPMENT = "https://latest.merk.chat"
 SCRIPT_FILE_EXTENSION = "merk"
 STYLE_FILE_EXTENSION = "style"
 APPLICATION_SOURCE = "https://github.com/nutjob-laboratories/merk"
+CODEBERG_SOURCE = "https://codeberg.org/wraithnix/merk"
+MANSION_SOURCE = "https://git.inthemansion.com/wraithnix/merk"
 DEFAULT_CONFIGURATION_DIRECTORY = ".merk"
 DONATION_LINK = "https://buymeacoffee.com/danhetrick"
+GPL_LINK = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+NUTJOB_LINK = "https://github.com/nutjob-laboratories"
+FOUNDER_LINK = "https://github.com/danhetrick"
 
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")

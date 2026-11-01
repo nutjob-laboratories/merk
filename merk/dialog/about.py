@@ -33,6 +33,7 @@ import twisted
 
 from ..resources import *
 from .. import widgets
+from .. import config
 
 class Dialog(QDialog):
 
@@ -43,7 +44,19 @@ class Dialog(QDialog):
 
 	def doCoffee(self,event):
 		try:
-			QDesktopServices.openUrl(QUrl("https://buymeacoffee.com/danhetrick"))
+			QDesktopServices.openUrl(QUrl(f"{DONATION_LINK}"))
+		except:
+			pass
+
+	def doGPL(self,event):
+		try:
+			QDesktopServices.openUrl(QUrl(f"{GPL_LINK}"))
+		except:
+			pass
+
+	def doHomepage(self,event):
+		try:
+			QDesktopServices.openUrl(QUrl(f"{APPLICATION_WEB}"))
 		except:
 			pass
 
@@ -62,8 +75,28 @@ class Dialog(QDialog):
 
 		self.tabs.setFont(BOLD_FONT)
 
-		self.tabs.setStyleSheet("""
-			QTabWidget::tab-bar { alignment: center; font: bold; }
+		# Set the point size of the tab fonts to
+		# be slightly smaller than normal
+		smaller_font = self.font()
+		smaller_point_size = smaller_font.pointSize() - 2
+		if smaller_point_size<config.MINIMUM_FONT_SIZE:
+			smaller_point_size = config.MINIMUM_FONT_SIZE
+		smaller_font.setPointSize(smaller_point_size)
+		metrics = QFontMetrics(smaller_font)
+		tab_height = metrics.height() + 4
+
+		# Set the tab bar's style sheet to set the
+		# smaller font size and center the tabs
+		self.tabs.setStyleSheet(f"""
+			QTabWidget::tab-bar {{
+				alignment: center;
+			}}
+
+			QTabBar::tab {{
+				font-size: {smaller_font.pointSize()}pt;
+				padding: 0.2em 0.5em;
+				min-height: {tab_height}px;
+			}}
 			""")
 
 		self.about_tab = QWidget()
@@ -80,9 +113,15 @@ class Dialog(QDialog):
 
 		logo = QLabel()
 		pixmap = QPixmap(SPLASH_LOGO)
-		pixmap = pixmap.scaled(225, 58, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		logo.setPixmap(pixmap)
-		logo.setAlignment(Qt.AlignCenter)
+		logo.mousePressEvent = lambda event: self.doHomepage(event)
+		logo.setMouseTracking(True)
+		logo.setCursor(Qt.PointingHandCursor)
+
+		logo_layout = QHBoxLayout()
+		logo_layout.addStretch()
+		logo_layout.addWidget(logo)
+		logo_layout.addStretch()
 
 		qt_logo = QLabel()
 		pixmap = QPixmap(QT_ICON)
@@ -133,13 +172,13 @@ class Dialog(QDialog):
 		pike_credit.setAlignment(Qt.AlignCenter)
 		pike_credit.setOpenExternalLinks(True)
 
-		gnu_credit = QLabel(f"<big><b><a href=\"https://www.gnu.org/licenses/gpl-3.0.en.html\">Gnu General Public License 3.0</a></b></big>")
-		gnu_credit.setAlignment(Qt.AlignCenter)
-		gnu_credit.setOpenExternalLinks(True)
-
-		qr_credit = QLabel(f"<b><small><a href=\"https://github.com/twisted/qt5reactor\">qt5reactor</a> by Twisted Matrix Labs</small></b>")
+		qr_credit = QLabel(f"<b><small><a href=\"https://github.com/twisted/qt5reactor\">qt5reactor</a> by <a href=\"https://labs.twistedmatrix.com/\">Twisted Matrix Labs</a></small></b>")
 		qr_credit.setAlignment(Qt.AlignCenter)
 		qr_credit.setOpenExternalLinks(True)
+
+		irc_credit = QLabel(f"<b><small>IRC was created by <a href=\"http://www.kumpu.org/\">Jarkko Oikarinen</a></small></b>")
+		irc_credit.setAlignment(Qt.AlignCenter)
+		irc_credit.setOpenExternalLinks(True)
 
 		if is_running_from_pyinstaller():
 
@@ -154,6 +193,7 @@ class Dialog(QDialog):
 
 		platform_credit = QLabel(f"<small><b>Running on {platform.system().strip()} {platform.release().strip()}</b></small>")
 		platform_credit.setAlignment(Qt.AlignCenter)
+		platform_credit.setOpenExternalLinks(True)
 
 		# QT_VERSION_STR
 
@@ -167,16 +207,24 @@ class Dialog(QDialog):
 
 		pyCred = QVBoxLayout()
 		pyCred.addWidget(python_logo)
-		pyCred.addWidget(QLabel(f"<small><b><a href=\"https://python.org\">Python</a> {platform.python_version().strip()}</b></small>"))
+		link = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> {platform.python_version().strip()}</b></small>")
+		link.setOpenExternalLinks(True)
+		pyCred.addWidget(link)
 
 		twCred = QVBoxLayout()
 		twCred.addWidget(twisted_logo)
-		twCred.addWidget(QLabel("<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>"))
+		link = QLabel("<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>")
+		link.setOpenExternalLinks(True)
+		twCred.addWidget(link)
 
 		qtCred = QVBoxLayout()
 		qtCred.addWidget(qt_logo)
-		qtCred.addWidget(QLabel(f"<center><small><b><a href=\"https://www.qt.io/\">Qt</a> {QT_VERSION_STR}</b></small></center>"))
-		qtCred.addWidget(QLabel(f"<center><small><b><a href=\"https://www.riverbankcomputing.com/software/pyqt/\">PyQt</a> {PYQT_VERSION_STR}</b></small></center>"))
+		link = QLabel(f"<center><small><b><a href=\"https://www.qt.io/\">Qt</a> {QT_VERSION_STR}</b></small></center>")
+		link.setOpenExternalLinks(True)
+		qtCred.addWidget(link)
+		link = QLabel(f"<center><small><b><a href=\"https://www.riverbankcomputing.com/software/pyqt/\">PyQt</a> {PYQT_VERSION_STR}</b></small></center>")
+		link.setOpenExternalLinks(True)
+		qtCred.addWidget(link)
 
 		logoBar = QHBoxLayout()
 		logoBar.addStretch()
@@ -191,6 +239,7 @@ class Dialog(QDialog):
 		creditsBox.setAlignment(Qt.AlignHCenter)
 
 		creditsLayout = QVBoxLayout()
+		creditsLayout.addWidget(irc_credit)
 		creditsLayout.addWidget(icons_credit)
 		creditsLayout.addWidget(font_credit)
 		creditsLayout.addWidget(spellcheck_credit)
@@ -211,19 +260,22 @@ class Dialog(QDialog):
 		app_description.setAlignment(Qt.AlignCenter)
 		app_version = QLabel(f"<big><b>Version {APPLICATION_VERSION}</b></big>")
 		app_version.setAlignment(Qt.AlignCenter)
-		app_repository = QLabel(f"<big><b><a href=\"https://merk.chat\">https://merk.chat</a></b></big>")
+		app_repository = QLabel(f"<big><b><a href=\"{APPLICATION_SOURCE}\">GitHub</a> <a href=\"{CODEBERG_SOURCE}\">Codeberg</a> <a href=\"{MANSION_SOURCE}\">MansionNET</a></b></big>")
 		app_repository.setAlignment(Qt.AlignCenter)
 		app_repository.setOpenExternalLinks(True)
-		pyinstaller_no_version = QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>")
-		pyinstaller_no_version.setOpenExternalLinks(True)
+		app_repository.setToolTip("Source code repositories")
+		app_latest = QLabel(f"<small><b><a href=\"{APPLICATION_DEVELOPMENT}\">Latest development builds</a></b></small>")
+		app_latest.setAlignment(Qt.AlignCenter)
+		app_latest.setOpenExternalLinks(True)
 
 		aboutLayout = QVBoxLayout()
 		aboutLayout.addStretch()
-		aboutLayout.addWidget(logo)
-		aboutLayout.addWidget(app_version)
+		aboutLayout.addLayout(logo_layout)
 		aboutLayout.addWidget(app_description)
+		aboutLayout.addWidget(app_version)
 		aboutLayout.addWidget(app_repository)
-		aboutLayout.addWidget(gnu_credit)
+		aboutLayout.addWidget(app_latest)
+		aboutLayout.addWidget(QLabel(" "))
 		aboutLayout.addWidget(platform_credit)
 		if is_running_from_pyinstaller():
 			version = get_pyinstaller_version()
@@ -232,6 +284,8 @@ class Dialog(QDialog):
 				pyinstaller_w_version.setOpenExternalLinks(True)
 				aboutLayout.addWidget(pyinstaller_w_version)
 			else:
+				pyinstaller_no_version = QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>")
+				pyinstaller_no_version.setOpenExternalLinks(True)
 				aboutLayout.addWidget(pyinstaller_no_version)
 		aboutLayout.addStretch()
 
@@ -249,13 +303,13 @@ class Dialog(QDialog):
 		patron_list = QLabel(f"""
 			<small><center>
 				   Ilmari Lauhakangas, Boris, Michael, Jim Kost,<br>
-			       Brian, Harry Oxnard, Vincent, Wayne Windsor,<br>
-			       Brian, Nancy Hetrick, Nancy Golumbia, Toni<br>
-			       Dewees, Drew Diller, Allison L Perrine, Dust<br>
-			       Machine, Ray Hatfield, Nick Peters, Michael<br>
-			       Clemens, Tommy Olsen, Necrosand, Harry Oxnard,<br>
-			       dustmachine, photoplasia, robotmachine,<br>
-			       Terrence de Kat (raphidae@EFnet), cipher
+				   Brian, Harry Oxnard, Vincent, Wayne Windsor,<br>
+				   Brian, Nancy Hetrick, Nancy Golumbia, Toni<br>
+				   Dewees, Drew Diller, Allison L Perrine, Dust<br>
+				   Machine, Ray Hatfield, Nick Peters, Michael<br>
+				   Clemens, Tommy Olsen, Necrosand, Harry Oxnard,<br>
+				   dustmachine, photoplasia, robotmachine,<br>
+				   Terrence de Kat (raphidae@EFnet), cipher
 			</small></center>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)
@@ -280,23 +334,26 @@ class Dialog(QDialog):
 
 		self.patrons_tab.setLayout(patronLayout)
 
-		me_credit = QLabel(f"<br><b>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></b>")
-		me_credit.setAlignment(Qt.AlignCenter)
-		me_credit.setOpenExternalLinks(True)
+		contributors = QLabel(f"""
+			<b>Created and written by<br>
+			<big><a href=\"{FOUNDER_LINK}\">Dan Hetrick</a><br>
+			<a href=\"{NUTJOB_LINK}\">Nutjob Laboratories</a><br><br>
 
-		other_credit = QLabel(f"""<b><big>
+			</big>Other contributions by<br><big>
 			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br>
 			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a><br>
 			<a href=\"https://github.com/GlobeDotters\">Ivan \"Avatar\" Todorov</a><br><br>
+
+			</big>Other support from<big><br>
 			<a href=\"https://inthemansion.com/\">MansionNET IRC Network</a><br>
 			<a href=\"https://vulpinelinux.org\">Vulpine Linux</a><br><br>
 			</big></b>""")
-		other_credit.setAlignment(Qt.AlignCenter)
-		other_credit.setOpenExternalLinks(True)
+		contributors.setAlignment(Qt.AlignCenter)
+		contributors.setOpenExternalLinks(True)
 
 		conLayout = QVBoxLayout()
-		conLayout.addWidget(me_credit)
-		conLayout.addWidget(other_credit)
+		conLayout.addStretch()
+		conLayout.addWidget(contributors)
 		conLayout.addStretch()
 		self.contributors_tab.setLayout(conLayout)
 
@@ -305,7 +362,7 @@ class Dialog(QDialog):
 		finalLayout.addWidget(okButton)
 
 		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
 

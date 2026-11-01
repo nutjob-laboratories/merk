@@ -21,6 +21,20 @@ What's new:
   whitespace in them more accurately.
 * Brand new application icon. The new icon reflects the official logo, and
   matches better.
+* Re-arranged the connection information menu to make a little more sense.
+* Added a credit to Jarkko Oikarinen in the "about" dialog.
+* Bugfix: some links in the "about" dialog weren't working properly, and would
+  no work when clicked.
+* Added links to the Codeberg and MansionNET mirror repos to the "about" dialog.
+* Reworked the "about" dialog's layout.
+* Shrinked the tab size in the "about" dialog.
+* Added a link to Nutjob Labs to the "about" dialog.
+* Moved all application URLs to constants, to make updating the application
+  later a bit easier.
+* Added links to the latest development builds to the "about" dialog.
+* Changed the logo banner on the initial connection dialog. The link to the
+  app's homepage was removed, and "Free and Open Source" was added.
+* Changed the logo banner on the "settings" dialog.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.000                                 |

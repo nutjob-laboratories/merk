@@ -894,19 +894,19 @@ class Dialog(QDialog):
 				self.pixmap = QPixmap(SPLASH_LOGO)
 				splash.setPixmap(self.pixmap)
 
-				mlink = QLabel(f"<small><b>&nbsp;&nbsp;<a href=\"{APPLICATION_SOURCE}\">https://merk.chat</a></b></small>")
-				mlink.setOpenExternalLinks(True)
-
 				self.tlayout = QVBoxLayout()
 				self.tlayout.setSpacing(0)
-				self.tlayout.addWidget(QLabel("<small><b>&nbsp;&nbsp;Internet Relay Chat</b></small>"))
-				self.tlayout.addWidget(QLabel(f"<small><b>&nbsp;&nbsp;Version {APPLICATION_VERSION}</b></small>"))
-				self.tlayout.addWidget(mlink)
+				self.tlayout.addStretch()
+				self.tlayout.addWidget(QLabel("<center><small><b>&nbsp;Free And Open Source</b></small></center>"))
+				self.tlayout.addWidget(QLabel("<center><small><b>&nbsp;Internet Relay Chat</b></small></center>"))
+				self.tlayout.addWidget(QLabel(f"<center><small><b>&nbsp;Version {APPLICATION_VERSION}</b></small></center>"))
+				self.tlayout.addStretch()
 
 				spLayout = QHBoxLayout()
 				spLayout.setSpacing(0)
 				spLayout.addStretch()
 				spLayout.addWidget(splash)
+				spLayout.addStretch()
 				spLayout.addLayout(self.tlayout)
 				spLayout.addStretch()
 
