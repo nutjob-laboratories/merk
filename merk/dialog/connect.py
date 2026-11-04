@@ -897,9 +897,9 @@ class Dialog(QDialog):
 				self.tlayout = QVBoxLayout()
 				self.tlayout.setSpacing(0)
 				self.tlayout.addStretch()
-				self.tlayout.addWidget(QLabel("<center><small><b>&nbsp;Free And Open Source</b></small></center>"))
-				self.tlayout.addWidget(QLabel("<center><small><b>&nbsp;Internet Relay Chat</b></small></center>"))
-				self.tlayout.addWidget(QLabel(f"<center><small><b>&nbsp;Version {APPLICATION_VERSION}</b></small></center>"))
+				self.tlayout.addWidget(QLabel("<small><b>&nbsp;Free And Open Source</b></small>"))
+				self.tlayout.addWidget(QLabel("<small><b>&nbsp;Internet Relay Chat</b></small>"))
+				self.tlayout.addWidget(QLabel(f"<small><b>&nbsp;Version {APPLICATION_VERSION}</b></small>"))
 				self.tlayout.addStretch()
 
 				spLayout = QHBoxLayout()

@@ -213,6 +213,7 @@ class IRC_Connection(irc.IRCClient):
 		self.need_to_get_list = False
 		self.list_search_terms = None
 		self.server_user_count = 0
+		self.max_user_count = 0
 		self.server_channel_count = 0
 		self.last_list_fetch = ''
 		self.last_list_timestamp = 0
@@ -231,6 +232,7 @@ class IRC_Connection(irc.IRCClient):
 		self.batch = []
 		self.logged_in_via_sasl = False
 		self.pings = {}
+		self.sent_end = False
 
 		if user.USERINFO=='':
 			self.userinfo = None
@@ -415,10 +417,7 @@ class IRC_Connection(irc.IRCClient):
 			message_type = 'UNKNOWN'
 
 		if config.NOTIFY_ON_CTCP_REQUESTS:
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(SYSTEM_MESSAGE,'',f"Received CTCP {message_type} from {user}")
-				w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			self.gui.systemMessage(self,f"Received CTCP {message_type} from {user}")
 
 			if self.gui.current_window!=None:
 				if hasattr(self.gui.current_window,"client"):
@@ -428,20 +427,6 @@ class IRC_Connection(irc.IRCClient):
 							self.gui.current_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		return irc.IRCClient.ctcpQuery(self, user, channel, messages)
-
-	def luserChannels(self,channels):
-		try:
-			ccount = int(channels)
-			self.actual_server_channel_count = ccount
-		except:
-			pass
-
-	def luserOp(self,ops):
-		try:
-			opcount = int(ops)
-			self.server_op_count = opcount
-		except:
-			pass
 
 	def server_has_channel(self,channel):
 		if len(self.server_channel_list)>0:
@@ -458,25 +443,25 @@ class IRC_Connection(irc.IRCClient):
 		channel_name = params[1]
 		channel_count = params[2]
 		channel_topic = params[3].strip()
-		try:
-			uc = int(channel_count)
-			self.server_user_count = self.server_user_count + uc
-		except:
-			pass
 		self.server_channel_count = self.server_channel_count + 1
 		self.server_channel_list.append( [channel_name,channel_count,channel_topic] )
 
 	def irc_RPL_LISTEND(self,prefix,params):
 		self.is_listing_channels = False
-		if config.SHOW_TIMESTAMPS_IN_UTC:
-			self.last_list_fetch = datetime.utcnow().strftime("%Y-%m-%d " + config.TIMESTAMP_FORMAT + " UTC")
-		else:
-			self.last_list_fetch = datetime.now().strftime("%Y-%m-%d "+config.TIMESTAMP_FORMAT)
 		self.last_list_timestamp = datetime.utcnow().timestamp()
+		if config.TIMESTAMP_24_HOUR:
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				self.last_list_fetch = datetime.fromtimestamp(self.last_list_timestamp,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' UTC %m/%d/%Y')
+			else:
+				self.last_list_fetch = datetime.fromtimestamp(self.last_list_timestamp).strftime(config.TIMESTAMP_FORMAT+' %m/%d/%Y')
+		else:
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				self.last_list_fetch = datetime.fromtimestamp(self.last_list_timestamp,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' %p UTC %m/%d/%Y')
+			else:
+				self.last_list_fetch = datetime.fromtimestamp(self.last_list_timestamp).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
 		self.gui.gotRefreshEnd(self)
 
 	def irc_RPL_LISTSTART(self,prefix,params):
-		self.server_user_count = 0
 		self.server_channel_count = 0
 		self.server_channel_list = []
 		self.last_list_fetch = ''
@@ -537,8 +522,12 @@ class IRC_Connection(irc.IRCClient):
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
 			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs['server']}-{self.kwargs['port']}.txt")
 			self.dump_file = open(dump_filename,"a")
+			try:
+				self.dump_file.write(f"{int(time.time())}\t+\tConnected to {self.kwargs['server']}:{self.kwargs['port']}\n")
+			except:
+				pass
 
-		# Ask the server if they support IRCv3, and what they support.
+		# Negotiate IRCv3 capabilities
 		self.sendLine("CAP LS")
 
 		irc.IRCClient.connectionMade(self)
@@ -571,70 +560,109 @@ class IRC_Connection(irc.IRCClient):
 		# Display any upcoming timeout disconnection
 		ct = config.CONNECTION_TIMEOUT - self.connection_timer
 		if ct<=5 and self.connection_timer!=config.CONNECTION_TIMEOUT and ct!=0:
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(SYSTEM_MESSAGE,'',f'Disconnection timeout in {ct} seconds...')
-				w.writeText(t)
+			self.gui.systemMessage(self,f'Disconnection timeout in {ct} seconds...')
 		elif ct==0:
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(SYSTEM_MESSAGE,'',f'Disconnecting...')
-				w.writeText(t)
+			self.gui.systemMessage(self,f'Disconnecting...')
 
 		# If we're past the connection timeout limit,
 		# then disconnect and show the connection dialog
 		if self.connection_timer>config.CONNECTION_TIMEOUT:
 			self.lose_connection("Connection timed out!","Connection timed out!")
 
+	def irc_329(self, prefix, params):
+		channel = params[1]
+		try:
+			timestamp = int(params[2])
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				pretty_timestamp = datetime.fromtimestamp(timestamp,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' %p UTC %m/%d/%Y')
+			else:
+				pretty_timestamp = datetime.fromtimestamp(timestamp).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
+
+			self.gui.systemMessage(self,f"Channel {channel} was created at {pretty_timestamp}")
+		except:
+			pass
+
+	def irc_266(self, prefix, params):
+		numbers = []
+		if isinstance(params, (list, tuple)):
+			for item in params:
+				found = re.findall(r'\d+', str(item))
+				numbers.extend(found)
+		else:
+			numbers = re.findall(r'\d+', str(params))
+		numbers = [int(n) for n in numbers]
+		if len(numbers) >= 2:
+			users = numbers[0]
+			max_users = numbers[1]
+			try:
+				self.server_user_count = int(users)
+				self.max_user_count = int(max_users)
+			except:
+				pass
+		else:
+			self.server_user_count = 0
+			self.max_user_count = 0
+
 	def irc_CAP(self, prefix, params):
 		subcommand = params[1]
 		capabilities = params[2] if len(params) > 2 else ""
-		w = self.gui.getServerWindow(self)
 
+		# Send the server our extension requests
 		if subcommand == "LS":
 			self.ircv3 = list(params[2].split())
 
-			# Request various IRCv3 extensions
-			if w:
-				t = Message(SYSTEM_MESSAGE,'',"Requesting IRCv3 capabilities...")
-				w.writeText(t)
+			# If we have an SASL username and password, request SASL login from the server
+			if self.sasl_username!=None and self.sasl_password!=None: self.sendLine("CAP REQ :sasl")
+
+			# Notify the client if new extensions become available
 			self.sendLine("CAP REQ :cap-notify")
+
+			# Send hostmasks in NAMES replies
 			self.sendLine("CAP REQ :userhost-in-names")
+
+			# Send all channel status prefixes in NAMES replies
 			self.sendLine("CAP REQ :multi-prefix")
+
+			# Notify the client when users go away/back
 			self.sendLine("CAP REQ :away-notify")
 
-			# Now, load in extensions requested from plugins
+			# Request extensions that plugins desire
 			if len(plugins.CAPABILITIES)>0:
-				if w:
-					t = Message(SYSTEM_MESSAGE,'',"Requesting IRCv3 capabilities for plugins...")
-					w.writeText(t)
 				for c in plugins.CAPABILITIES:
 					self.sendLine(f"CAP REQ :{c}")
 
-			# If the server support SASL and we have SASL
-			# login information, request authentication
-			if self.sasl_username!=None and self.sasl_password!=None:
-				self.sendLine("CAP REQ :sasl")
-			else:
-				self.sendLine("CAP END")
+		# If the server supports SASL, and we have an
+		# SASL username and password, start SASL login process
+		if subcommand == "ACK" and "sasl" in capabilities:
+			if self.sasl_username!=None and self.sasl_password!=None: self.sendLine("AUTHENTICATE PLAIN")
 
-		elif subcommand == "ACK" and "sasl" in capabilities:
-			# Start SASL login process
-			self.sendLine("AUTHENTICATE PLAIN")
-
-		elif subcommand == "ACK" and "userhost-in-names" in capabilities:
-			# If hostmasks are sent with names, then we
-			# don't need to whois everyone, if that
-			# option is turned on
+		# If hostmasks are sent with names, then we
+		# don't need to whois everyone, if that
+		# option is turned on
+		if subcommand == "ACK" and "userhost-in-names" in capabilities:
 			self.support_hostmasks_in_names = True
 
-		elif subcommand == "ACK":
+		# Server has a capability we're looking for
+		if subcommand == "ACK":
+			# Notify plugins if there's an extension that
+			# plugins are requesting
 			if len(plugins.CAPABILITIES)>0:
 				for c in plugins.CAPABILITIES:
 					if c in capabilities:
 						plugins.call(self.gui,"ack",client=self,extension=f"{c}")
 
-		elif subcommand == "NAK":
+			# Server supports something we are looking for,
+			# so tell the server we're done with negotiation
+			# if we're not logging in via SASL
+			if not self.sent_end:
+				if self.sasl_username==None and self.sasl_password==None:
+					self.sendLine("CAP END")
+					self.sent_end = True
+
+		# Server doesn't have a capability we're looking for
+		if subcommand == "NAK":
+			# Notify plugins if the server doesn't have an
+			# extension that plugins are requesting
 			if len(plugins.CAPABILITIES)>0:
 				for c in plugins.CAPABILITIES:
 					if c in capabilities:
@@ -642,11 +670,22 @@ class IRC_Connection(irc.IRCClient):
 
 			# Server doesn't support things that we are looking
 			# for, so tell the server we're done with negotiation
-			self.sendLine("CAP END")
+			# if we're not logging in via SASL
+			if not self.sent_end:
+				if self.sasl_username==None and self.sasl_password==None:
+					self.sendLine("CAP END")
+					self.sent_end = True
+
+		# If the server doesn't support SASL, end negotiation
+		# immediately, as we don't need to continue any further
+		if subcommand == "NAK" and "sasl" in capabilities:
+			if not self.sent_end:
+				self.sendLine("CAP END")
+				self.sent_end = True
 
 	def irc_AUTHENTICATE(self, prefix, params):
 		# Send the SASL username and password to the server
-		if params[0] == "+":
+		if params[0] == "+" and (self.sasl_username!=None and self.sasl_password!=None):
 			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
 			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
 			self.sendLine(f"AUTHENTICATE {encoded}")
@@ -654,13 +693,9 @@ class IRC_Connection(irc.IRCClient):
 	def irc_903(self, prefix, params):
 		# SASL authentication was successful!
 		self.sendLine("CAP END")
-
+		self.sent_end = True
 		self.logged_in_via_sasl = True
-
-		w = self.gui.getServerWindow(self)
-		if w:
-			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful!')
-			w.writeText(t)
+		self.gui.systemMessage(self,'SASL login successful!')
 
 	def lose_connection(self,message,dialog=''):
 		w = self.gui.getServerWindow(self)
@@ -702,41 +737,50 @@ class IRC_Connection(irc.IRCClient):
 		# SASL authentication failed, due to a "bad"
 		# username and/or password
 		self.sendLine("CAP END")
+		self.sent_end = True
 
 		self.logged_in_via_sasl = False
 
 		server = f"{self.server}:{self.port}"
 
-		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed")
+		plugins.call(self.gui,"error",client=self,message=f"SASL login failed")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			self.lose_connection("SASL authentication failed<br>Check your username and password.","Check your username and password, and try to reconnect again.")
+			self.lose_connection("SASL login failed<br>Check your username and password.","Check your username and password, and try to reconnect again.")
 		else:
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(ERROR_MESSAGE,'','SASL authentication failed! Check your username and password.')
-				w.writeText(t)
+			self.gui.systemMessage(self,'SASL login failed! Check your username and password')
+
+		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+			try:
+				self.dump_file.write(f"{int(time.time())}\t-\tSASL login failed, check your username and password\n")
+			except:
+				pass
 
 	def irc_905(self, prefix, params):
 		# SASL authentication failed because the SASL authentication
 		# method was "too long"
 		self.sendLine("CAP END")
+		self.sent_end = True
 
 		self.logged_in_via_sasl = False
 
-		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed (message too long)")
+		plugins.call(self.gui,"error",client=self,message=f"SASL login failed (message too long)")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			self.lose_connection("SASL authentication failed<br>SASL message was too long.","SASL message was too long. Check your username and password, and try to reconnect again.")
+			self.lose_connection("SASL login failed<br>SASL message was too long.","SASL message was too long. Check your username and password, and try to reconnect again.")
 		else:
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(ERROR_MESSAGE,'','SASL authentication failed! SASL message was too long')
-				w.writeText(t)
+			self.gui.systemMessage(self,'SASL login failed! SASL message was too long')
+
+		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+			try:
+				self.dump_file.write(f"{int(time.time())}\t-\tSASL login failed, message was too long\n")
+			except:
+				pass
 
 	def connectionLost(self, reason):
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
 			try:
+				self.dump_file.write(f"{int(time.time())}\t-\tDisconnected from {self.kwargs['server']}:{self.kwargs['port']}\n")
 				self.dump_file.close()
 			except:
 				pass
@@ -771,17 +815,14 @@ class IRC_Connection(irc.IRCClient):
 
 		self.gui.signedOn(self)
 
-		w = self.gui.getServerWindow(self)
-		if w:
-			if self.hostname:
-				if self.hostname.lower()!=f"{self.server}".lower():
-					sid = f"Connected to {self.hostname} ({self.server}:{self.port})!"
-				else:
-					sid = f"Connected to {self.hostname}!"
+		if self.hostname:
+			if self.hostname.lower()!=f"{self.server}".lower():
+				sid = f"Connected to {self.hostname} ({self.server}:{self.port})!"
 			else:
-				sid = f"Connected to {self.server}:{self.port}!"
-			t = Message(SYSTEM_MESSAGE,'',f'{sid}')
-			w.writeText(t)
+				sid = f"Connected to {self.hostname}!"
+		else:
+			sid = f"Connected to {self.server}:{self.port}!"
+		self.gui.systemMessage(self,f'{sid}')
 
 	def joined(self, channel):
 		self.batch.append(f"MODE {channel}")
@@ -1550,11 +1591,11 @@ class IRC_Connection(irc.IRCClient):
 		plugins.call(self.gui,"line_out",client=self,line=str(line))
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
-			sys.stdout.write(f"{line}\n")
+			sys.stdout.write(f">{self.kwargs['server']}:{self.kwargs['port']} {line}\n")
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
 			try:
-				self.dump_file.write(f"{int(time.time())}\t{line}\n")
+				self.dump_file.write(f"{int(time.time())}\t>\t{line}\n")
 			except:
 				pass
 
@@ -1617,11 +1658,11 @@ class IRC_Connection(irc.IRCClient):
 		plugins.call(self.gui,"line_in",client=self,line=line)
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
-			sys.stdout.write(f"{self.kwargs['server']}:{self.kwargs['port']} {line}\n")
+			sys.stdout.write(f"<{self.kwargs['server']}:{self.kwargs['port']} {line}\n")
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
 			try:
-				self.dump_file.write(f"{int(time.time())}\t{self.kwargs['server']}:{self.kwargs['port']} {line}\n")
+				self.dump_file.write(f"{int(time.time())}\t<\t{line}\n")
 			except:
 				pass
 

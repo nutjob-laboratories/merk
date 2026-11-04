@@ -383,6 +383,7 @@ HORIZONTAL_RULE_BACKGROUND = ":/gui-horizontal_rule.png"
 LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
 LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
 COFFEE_LOGO = ":/gui-coffee.png"
+SPLASH_FULL_LOGO = ":/gui-splash_full.png"
 
 # Default notification sound
 BELL_NOTIFICATION = ":/sound-notification.wav"

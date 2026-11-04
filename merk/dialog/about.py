@@ -112,7 +112,7 @@ class Dialog(QDialog):
 		self.tabs.addTab(self.contributors_tab, "Contributors")
 
 		logo = QLabel()
-		pixmap = QPixmap(SPLASH_LOGO)
+		pixmap = QPixmap(SPLASH_FULL_LOGO)
 		logo.setPixmap(pixmap)
 		logo.mousePressEvent = lambda event: self.doHomepage(event)
 		logo.setMouseTracking(True)
@@ -256,8 +256,6 @@ class Dialog(QDialog):
 		okButton = QPushButton("Ok")
 		okButton.clicked.connect(self.close)
 
-		app_description = QLabel("<big><b>Free and Open Source IRC Client</b></big>")
-		app_description.setAlignment(Qt.AlignCenter)
 		app_version = QLabel(f"<big><b>Version {APPLICATION_VERSION}</b></big>")
 		app_version.setAlignment(Qt.AlignCenter)
 		app_repository = QLabel(f"<big><b><a href=\"{APPLICATION_SOURCE}\">GitHub</a> <a href=\"{CODEBERG_SOURCE}\">Codeberg</a> <a href=\"{MANSION_SOURCE}\">MansionNET</a></b></big>")
@@ -271,7 +269,6 @@ class Dialog(QDialog):
 		aboutLayout = QVBoxLayout()
 		aboutLayout.addStretch()
 		aboutLayout.addLayout(logo_layout)
-		aboutLayout.addWidget(app_description)
 		aboutLayout.addWidget(app_version)
 		aboutLayout.addWidget(app_repository)
 		aboutLayout.addWidget(app_latest)
@@ -346,7 +343,7 @@ class Dialog(QDialog):
 
 			</big>Other support from<big><br>
 			<a href=\"https://inthemansion.com/\">MansionNET IRC Network</a><br>
-			<a href=\"https://vulpinelinux.org\">Vulpine Linux</a><br><br>
+			<a href=\"https://vulpinelinux.org\">Vulpine Linux</a>
 			</big></b>""")
 		contributors.setAlignment(Qt.AlignCenter)
 		contributors.setOpenExternalLinks(True)

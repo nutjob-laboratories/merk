@@ -1127,11 +1127,11 @@ class Merk(QMainWindow):
 
 		am = self.trayMenu.addMenu(QIcon(APPLICATION_MENU_ICON),f"{APPLICATION_NAME} IRC Client")
 
-		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME} {APPLICATION_VERSION}",self)
-		entry.triggered.connect(self.showAbout)
+		entry = QAction(QIcon(CONNECT_MENU_ICON),f"Connect to an IRC server",self)
+		entry.triggered.connect(self.connectMainMenu)
 		am.addAction(entry)
 
-		entry = QAction(QIcon(INFO_MENU_ICON),f"{APPLICATION_NAME} User Guide",self)
+		entry = QAction(QIcon(PDF_MENU_ICON),f"{APPLICATION_NAME} User Guide",self)
 		entry.triggered.connect(self.openScripting)
 		am.addAction(entry)
 
@@ -1198,8 +1198,20 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(LINK_MENU_ICON),"ASCIImoji shortcodes",self)
 		entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME} {APPLICATION_VERSION}",self)
+		entry.triggered.connect(self.showAbout)
+		am.addAction(entry)
 		
 		am.addSeparator()
+
+		if self.connected_to_something:
+			if self.multiple_servers:
+				entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),f"Disconnect from all servers",self)
+			else:
+				entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),f"Disconnect from server",self)
+			entry.triggered.connect(self.disconnectAllMainMenu)
+			am.addAction(entry)
 
 		entry = QAction(QIcon(QUIT_ICON),f"Quit {APPLICATION_NAME}",self)
 		entry.triggered.connect(self.close)
@@ -1245,9 +1257,6 @@ class Merk(QMainWindow):
 							sm = self.trayMenu.addMenu(QIcon(SERVER_ICON),name)
 
 							c = sw.widget()
-
-							disconnect_entry = QAction(QIcon(DISCONNECT_WINDOW_ICON),f"Disconnect from {name}",self)
-							disconnect_entry.triggered.connect(c.disconnect)
 
 							if hasattr(c.client,"network"):
 								mynet = c.client.network
@@ -1312,8 +1321,6 @@ class Merk(QMainWindow):
 									if not c.client.registered: entry.setEnabled(False)
 
 								if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
-
-							sm.addAction(disconnect_entry)
 
 							sm.addSeparator()
 
@@ -1657,6 +1664,12 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w:
 			t = Message(SERVER_MESSAGE,'',msg)
+			w.writeText(t)
+
+	def systemMessage(self,client,msg):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',msg)
 			w.writeText(t)
 
 	def joined(self,client,channel):
@@ -5796,7 +5809,7 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,f'About {APPLICATION_NAME}',f"Version {APPLICATION_VERSION}",CUSTOM_MENU_ICON_SIZE,self.showAbout)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,INFO_MENU_ICON,f"{APPLICATION_NAME} User Guide",f"A manual for using {APPLICATION_NAME}",CUSTOM_MENU_ICON_SIZE,self.openScripting)
+		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,f"{APPLICATION_NAME} User Guide",f"A manual for using {APPLICATION_NAME}",CUSTOM_MENU_ICON_SIZE,self.openScripting)
 		self.helpMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,"README",f"Information about {APPLICATION_NAME}",CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
@@ -5807,8 +5820,6 @@ class Merk(QMainWindow):
 
 		entry = widgets.ExtendedMenuItem(self,LINK_MENU_ICON,"ASCIImoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
-
-		self.helpMenu.addSeparator()
 		
 		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 1459","IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open1459)
 		self.helpMenu.addAction(entry)
@@ -6276,7 +6287,11 @@ class Merk(QMainWindow):
 									sm.addAction(wentry)
 
 									hostid = f"{c.client.server}:{c.client.port}"
-									wentry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+									if hostid in user.COMMANDS:
+										ms = "Edit connection script"
+									else:
+										ms = "Create connection script"
+									wentry = QAction(QIcon(EDIT_ICON),ms,self)
 									wentry.triggered.connect(lambda state,h=hostid: self.openEditorConnect(h))
 									sm.addAction(wentry)
 
@@ -6284,7 +6299,7 @@ class Merk(QMainWindow):
 
 								if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU:
 									ssetting = sm.addMenu(c.server_info_menu)
-									ssetting.setIcon(QIcon(SETTINGS_MENU_ICON))
+									ssetting.setIcon(QIcon(INFO_MENU_ICON))
 
 									show_sep = True
 

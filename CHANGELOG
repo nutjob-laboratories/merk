@@ -35,6 +35,27 @@ What's new:
 * Changed the logo banner on the initial connection dialog. The link to the
   app's homepage was removed, and "Free and Open Source" was added.
 * Changed the logo banner on the "settings" dialog.
+* Bugfix: the "write all network I/O to STDOUT" option did not make it clear
+  what data was being sent to what server.
+* Re-wrote how the client negotiates IRCv3 capabilities with the server. Now,
+  the process is streamlined and a bit cleaner.
+* The data displayed in the server window text display is now a little less
+  verbose during the connection process.
+* Channel creation time is now displayed in the server window on join.
+* Bugfix: a server's user count display is now far more accurate.
+* The server information menu now displays the server's maximum user count.
+* Removed the operator count from the server information display.
+* Re-arranged the server information display.
+* The "MERK User Guide" now uses the PDF icon in the "Tools" and system tray
+  menu.
+* The channel list fetch time is now displayed in the same format as the 
+  connection time, and other date/time displays.
+* Added a new splash image to the resource file; this features the "MERK" text
+  logo, with the added text "IRC CLIENT".
+* Removed the option to disconnect from a specific server from the system tray
+  right click menu.
+* Added options to connect to a server, and disconnect from all servers to the
+  system tray menu.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.000                                 |

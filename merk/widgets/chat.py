@@ -4348,12 +4348,7 @@ def buildServerSettingsMenu(self,client):
 	maxmodes = client.maxmodes
 	ircv3 = client.ircv3
 
-	optionsMenu = QMenu("Server configuration")
-
-	if client.hostname:
-		name = client.hostname
-	else:
-		name = f"{client.server}:{client.port}"
+	optionsMenu = QMenu("Server information")
 
 	if hasattr(client,"network"):
 		mynet = client.network
@@ -4371,6 +4366,9 @@ def buildServerSettingsMenu(self,client):
 		else:
 			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
 
+	e = textSeparator(self,f"{pretty_timestamp}")
+	optionsMenu.addAction(e)
+
 	e = plainTextAction(self,f"<b>Server</b>: {client.server}")
 	optionsMenu.addAction(e)
 
@@ -4383,8 +4381,9 @@ def buildServerSettingsMenu(self,client):
 		e = plainTextAction(self,"<b>Connection type</b>: TCP/IP")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,f"<b>Hostname</b>: {name}")
-	optionsMenu.addAction(e)
+	if client.hostname:
+		e = plainTextAction(self,f"<b>Hostname</b>: {client.hostname}")
+		optionsMenu.addAction(e)
 
 	if mynet.lower()!= config.UNKNOWN_NETWORK_NAME.lower():
 		e = plainTextAction(self,f"<b>Network</b>: {mynet}")
@@ -4399,22 +4398,8 @@ def buildServerSettingsMenu(self,client):
 		optionsMenu.addAction(e)
 
 	if client.server_software:
-		e = plainTextAction(self,f"<b>Software</b>: {client.server_software}")
-	else:
-		e = plainTextAction(self,"<b>Software</b>: Unknown")
-	optionsMenu.addAction(e)
-
-	if client.server_user_count==0:
-		e = plainTextAction(self,"<b>Users</b>: Unknown")
-	else:
-		e = plainTextAction(self,f"<b>Users</b>: {client.server_user_count:,}")
-	optionsMenu.addAction(e)
-
-	if client.server_op_count==0:
-		e = plainTextAction(self,"<b>Operators</b>: Unknown")
-	else:
-		e = plainTextAction(self,f"<b>Operators</b>: {client.server_op_count:,}")
-	optionsMenu.addAction(e)
+		e = plainTextAction(self,f"<b>Daemon</b>: {client.server_software}")
+		optionsMenu.addAction(e)
 
 	if client.actual_server_channel_count==0:
 		if client.server_channel_count==0:
@@ -4430,7 +4415,16 @@ def buildServerSettingsMenu(self,client):
 			e = plainTextAction(self,f"<b>Channels</b>: {client.server_channel_count:,} ({diff:,} hidden)")
 		optionsMenu.addAction(e)
 
-	e = plainTextAction(self,f"<i>Connected at {pretty_timestamp}</i>")
+	if client.server_user_count==0:
+		e = plainTextAction(self,"<b>Users</b>: Unknown")
+	else:
+		e = plainTextAction(self,f"<b>Users</b>: {client.server_user_count:,}")
+	optionsMenu.addAction(e)
+
+	if client.max_user_count==0:
+		e = plainTextAction(self,"<b>Maximum users</b>: Unknown")
+	else:
+		e = plainTextAction(self,f"<b>Maximum users</b>: {client.max_user_count:,}")
 	optionsMenu.addAction(e)
 
 	e = textSeparator(self,"settings")
