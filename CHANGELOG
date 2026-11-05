@@ -5,6 +5,7 @@
 What's new:
 
 - **New application icon**. The new icon matches the official logo.
+- **Tweaks to the system tray menu**. New options have been added, and the menu overall has been cleaned up. Some options have been removed, but many bugs have been fixed.
 - **Many, many bugfixes**.
 
 |==============================================================================|
@@ -56,6 +57,15 @@ What's new:
   right click menu.
 * Added options to connect to a server, and disconnect from all servers to the
   system tray menu.
+* Removed the option to open the log viewer from the system tray menu.
+* Removed the option to open the server channel list from the system tray menu.
+* Bugfix: multiple menu separators could be shown in a row in the system tray
+  menu.
+* Tweaked the layout of the server window.
+* Bugfix: the wrong application icon was being used for the system tray and
+  for the main window's icon.
+* Tweaked the icon graphics. The PNG file used as the application's icon is now
+  at 128x128px, rather than 96x96px.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.000                                 |

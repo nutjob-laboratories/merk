@@ -186,7 +186,7 @@ class Merk(QMainWindow):
 		else:
 			self.setWindowTitle(self.application_title_name)
 			
-		self.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
 		if config.SAVE_MAIN_WINDOW_LOCATION:
 			if config.MAIN_WINDOW_LOCATION[0]!=None and config.MAIN_WINDOW_LOCATION[1]!=None:
@@ -230,7 +230,7 @@ class Merk(QMainWindow):
 		self.notifications = False
 
 		self.tray_blank_icon = QIcon(NORMAL_USER)
-		self.tray_icon = QIcon(APPLICATION_MENU_ICON)
+		self.tray_icon = QIcon(APPLICATION_ICON)
 
 		self.tray = QSystemTrayIcon() 
 		self.tray.setIcon(self.tray_icon)
@@ -330,7 +330,7 @@ class Merk(QMainWindow):
 			if len(errors)>0:
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 				if len(errors)>1:
 					msgBox.setText("There were errors loading plugins!")
 				else:
@@ -351,7 +351,7 @@ class Merk(QMainWindow):
 		if len(errors)>0:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			if len(errors)>1:
 				msgBox.setText("There were errors loading hotkeys from the configuration file!")
 			else:
@@ -1125,18 +1125,10 @@ class Merk(QMainWindow):
 
 		self.trayMenu.clear()
 
-		am = self.trayMenu.addMenu(QIcon(APPLICATION_MENU_ICON),f"{APPLICATION_NAME} IRC Client")
+		am = self.trayMenu.addMenu(QIcon(APPLICATION_ICON),f"{APPLICATION_NAME} IRC Client")
 
 		entry = QAction(QIcon(CONNECT_MENU_ICON),f"Connect to an IRC server",self)
 		entry.triggered.connect(self.connectMainMenu)
-		am.addAction(entry)
-
-		entry = QAction(QIcon(PDF_MENU_ICON),f"{APPLICATION_NAME} User Guide",self)
-		entry.triggered.connect(self.openScripting)
-		am.addAction(entry)
-
-		entry = QAction(QIcon(SETTINGS_MENU_ICON),f"Settings",self)
-		entry.triggered.connect(self.openSettings)
 		am.addAction(entry)
 
 		if config.MINIMIZE_TO_SYSTRAY:
@@ -1147,14 +1139,32 @@ class Merk(QMainWindow):
 			entry.triggered.connect(self.toggleHide)
 			am.addAction(entry)
 
+		entry = QAction(QIcon(SETTINGS_MENU_ICON),f"Settings",self)
+		entry.triggered.connect(self.openSettings)
+		am.addAction(entry)
+
+		sm = am.addMenu(QIcon(PDF_MENU_ICON),"Documentation")
+
+		entry = QAction(QIcon(PDF_MENU_ICON),f"{APPLICATION_NAME} User Guide",self)
+		entry.triggered.connect(self.openScripting)
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(PDF_MENU_ICON),f"RFC 1459",self)
+		entry.triggered.connect(self.open1459)
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(PDF_MENU_ICON),f"RFC 2812",self)
+		entry.triggered.connect(self.open2812)
+		sm.addAction(entry)
+
 		sm = am.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 		if not is_running_from_pyinstaller():
-			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
 			entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
 			sm.addAction(entry)
 		else:
-			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
 			entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
 			sm.addAction(entry)
 
@@ -1183,7 +1193,7 @@ class Merk(QMainWindow):
 
 		self.trayLinks = am.addMenu(QIcon(LINK_MENU_ICON),"Links")
 
-		entry = QAction(QIcon(LINK_MENU_ICON),"Source code",self)
+		entry = QAction(QIcon(LINK_MENU_ICON),f"{APPLICATION_NAME} source code",self)
 		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 		self.trayLinks.addAction(entry)
 
@@ -1199,11 +1209,11 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 		self.trayLinks.addAction(entry)
 
-		entry = QAction(QIcon(APPLICATION_MENU_ICON),f"About {APPLICATION_NAME} {APPLICATION_VERSION}",self)
+		am.addSeparator()
+
+		entry = QAction(QIcon(APPLICATION_ICON),f"About {APPLICATION_NAME} {APPLICATION_VERSION}",self)
 		entry.triggered.connect(self.showAbout)
 		am.addAction(entry)
-		
-		am.addSeparator()
 
 		if self.connected_to_something:
 			if self.multiple_servers:
@@ -1263,21 +1273,19 @@ class Merk(QMainWindow):
 							else:
 								mynet = config.UNKNOWN_NETWORK_NAME
 
+							disco = QAction(QIcon(DISCONNECT_WINDOW_ICON),f"Disconnect from {name}",self)
+							disco.triggered.connect(c.disconnect)
+
 							if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 								if mynet.lower()!=config.UNKNOWN_NETWORK_NAME.lower():
 									netlink = get_network_link(mynet)
 									if netlink!=None:
-										entry = QAction(QIcon(NETWORK_MENU_ICON),f"{mynet} network",self)
+										entry = QAction(QIcon(NETWORK_MENU_ICON),f"{mynet} network website",self)
 										entry.triggered.connect(lambda state,u=netlink: self.openLinkInBrowser(u))
 										sm.addAction(entry)
 										sm.addSeparator()
 
-							if config.SHOW_LIST_IN_SYSTRAY_MENU:
-								entry = QAction(QIcon(SEARCH_ICON),"Search channel list",self)
-								entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
-								sm.addAction(entry)
-
-								if not c.client.registered: entry.setEnabled(False)
+							show_sep = False
 
 							if config.SHOW_JOIN_IN_SYSTRAY_MENU:
 								entry = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",self)
@@ -1286,12 +1294,16 @@ class Merk(QMainWindow):
 
 								if not c.client.registered: entry.setEnabled(False)
 
+								show_sep = True
+
 							if config.SHOW_NICK_IN_SYSTRAY_MENU:
 								entry = QAction(QIcon(USER_MENU_ICON),"Change nickname",self)
 								entry.triggered.connect(c.changeNick)
 								sm.addAction(entry)
 
 								if not c.client.registered: entry.setEnabled(False)
+
+								show_sep = True
 
 							if config.SHOW_AWAY_IN_SYSTRAY_MENU:
 								if c.client.is_away:
@@ -1303,26 +1315,9 @@ class Merk(QMainWindow):
 
 								if not c.client.registered: entry.setEnabled(False)
 
-							if config.SHOW_LOGS_IN_SYSTRAY_MENU:
-								if len(logs.find_network_logs(f"{mynet}"))>0:
-									if mynet.lower()==config.UNKNOWN_NETWORK_NAME.lower():
-										entry = QAction(QIcon(LOG_MENU_ICON),f"View logs",self)
-										entry.triggered.connect(self.menuExportLog)
-										sm.addAction(entry)
-									else:
-										entry = QAction(QIcon(LOG_MENU_ICON),f"View logs for {mynet}",self)
-										entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
-										sm.addAction(entry)
-									if not c.client.registered: entry.setEnabled(False)
-								else:
-									entry = QAction(QIcon(LOG_MENU_ICON),f"View logs",self)
-									entry.triggered.connect(self.menuExportLog)
-									sm.addAction(entry)
-									if not c.client.registered: entry.setEnabled(False)
+								show_sep = True
 
-								if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
-
-							sm.addSeparator()
+							if show_sep: sm.addSeparator()
 
 							entry = QAction(QIcon(CONSOLE_WINDOW_ICON),name,self)
 							entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
@@ -1340,6 +1335,10 @@ class Merk(QMainWindow):
 								entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
 								sm.addAction(entry)
 
+							sm.addSeparator()
+
+							sm.addAction(disco)
+
 	def systrayShowWindow(self,window):
 		if self.is_hidden: self.toggleHide()
 		if self.isMaximized():
@@ -1348,17 +1347,6 @@ class Merk(QMainWindow):
 			self.showNormal()
 		self.showSubWindow(window)
 		window.showMaximized()
-
-	def systrayShowList(self,window):
-		if self.is_hidden: self.toggleHide()
-		if self.isMaximized():
-			self.showMaximized()
-		else:
-			self.showNormal()
-
-		c = window.widget()
-		w = self.getServerWindow(c.client)
-		w.showChannelList()
 
 	# |==================|
 	# | BEGIN IRC EVENTS |
@@ -2923,7 +2911,7 @@ class Merk(QMainWindow):
 				if self.alreadyConnected(connection.host,connection.port):
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(SERVER_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 					msgBox.setText(f"""
 						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
 
@@ -3033,7 +3021,7 @@ class Merk(QMainWindow):
 				if self.alreadyConnected(connection.host,connection.port):
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(SERVER_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 					msgBox.setText(f"""
 						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
 
@@ -3973,7 +3961,7 @@ class Merk(QMainWindow):
 													if len(errors)>0:
 														msgBox = QMessageBox()
 														msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-														msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+														msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 														if len(errors)>1:
 															msgBox.setText("There were errors loading plugins!")
 														else:
@@ -5009,7 +4997,7 @@ class Merk(QMainWindow):
 		do_reconnect = False
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 		if self.connected_to_something:
 			if config.DARK_MODE:
 				msgBox.setText(f"<b>Deactivating dark mode requires a restart!<br>This will disconnect from all servers.</b><br><br>Restart {APPLICATION_NAME} now?")
@@ -5085,7 +5073,7 @@ class Merk(QMainWindow):
 		do_reconnect = False
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(ADVANCED_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 		if self.connected_to_something:
 			msgBox.setText(f"<b>This will disconnect from all servers.</b><br><br>Restart {APPLICATION_NAME} now?<br>")
 			reconnect = QCheckBox("Reconnect to all servers")
@@ -5183,7 +5171,7 @@ class Merk(QMainWindow):
 	def menuSetWidget(self,newstyle):
 		do_reconnect = False
 		msgBox = QMessageBox()
-		msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setText(f"Apply widget style \"<b>{newstyle}</b>\" now?<br>")
 		if self.connected_to_something:
@@ -5664,7 +5652,7 @@ class Merk(QMainWindow):
 		if config.SHOW_RESTART_IN_SETTINGS_MENU:
 			self.settingsMenu.addSeparator()
 
-			entry = QAction(QIcon(APPLICATION_MENU_ICON),f"Restart {APPLICATION_NAME}", self)
+			entry = QAction(QIcon(APPLICATION_ICON),f"Restart {APPLICATION_NAME}", self)
 			entry.triggered.connect(self.settingsRestart)
 			f = entry.font()
 			f.setBold(True)
@@ -5771,11 +5759,11 @@ class Merk(QMainWindow):
 		sm = self.toolsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 		if not is_running_from_pyinstaller():
-			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
 			entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
 			sm.addAction(entry)
 		else:
-			entry = QAction(QIcon(APPLICATION_MENU_ICON),APPLICATION_NAME+" installation",self)
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
 			entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
 			sm.addAction(entry)
 
@@ -6600,7 +6588,7 @@ class Merk(QMainWindow):
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			if no_hostname:
 				msgBox.setText(f"""
 					Are you sure you want to disconnect from <b>{client.server}:{client.port}</b>?<br><br>
@@ -6665,7 +6653,7 @@ class Merk(QMainWindow):
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(f"""
 				Are you sure you want to disconnect from {cstr}?<br><br>
 
@@ -6840,7 +6828,7 @@ class Merk(QMainWindow):
 		if do_ask:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText("Are you sure you want to exit?")
 			msgBox.setWindowTitle("Exit")
 			default_button = msgBox.addButton(f" Exit {APPLICATION_NAME} ", QMessageBox.AcceptRole)
@@ -7431,7 +7419,7 @@ class MdiArea(QMdiArea):
 				if not config.OVERWRITE_PLUGINS_ON_IMPORT and overwrite==True:
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 					msgBox.setText("The following files already exist. Overwrite?")
 					msgBox.setInformativeText("\n".join(ofiles))
 					msgBox.setWindowTitle("Overwrite")
@@ -7483,7 +7471,7 @@ class MdiArea(QMdiArea):
 					if len(errors)>0:
 						msgBox = QMessageBox()
 						msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-						msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+						msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 						if len(errors)>1:
 							msgBox.setText("There were errors loading plugins!")
 						else:
@@ -7498,7 +7486,7 @@ class MdiArea(QMdiArea):
 		if len(installed)>0:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText("The following plugin files were installed:")
 			msgBox.setInformativeText("\n".join(installed))
 			msgBox.setWindowTitle("Plugin Installation")

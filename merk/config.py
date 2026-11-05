@@ -294,8 +294,6 @@ USERLIST_CONTEXT_MENU = True
 USER_DATA_FETCH_FREQUENCY = 5
 DO_NOT_SHOW_SERVER_IN_TITLE = False
 SHOW_CONNECTIONS_IN_SYSTRAY_MENU = True
-SHOW_LIST_IN_SYSTRAY_MENU = True
-SHOW_LOGS_IN_SYSTRAY_MENU = True
 SHOW_LOGS_IN_WINDOWS_MENU = True
 DELAY_AUTO_RECONNECTION = False
 RECONNECTION_DELAY = 30
@@ -692,8 +690,6 @@ def build_settings():
 		"delay_automatic_reconnection": DELAY_AUTO_RECONNECTION,
 		"automatic_reconnection_timer": RECONNECTION_DELAY,
 		"show_network_logs_in_windows_menu": SHOW_LOGS_IN_WINDOWS_MENU,
-		"show_channel_list_in_systray_menu": SHOW_LIST_IN_SYSTRAY_MENU,
-		"show_network_logs_in_systray_menu": SHOW_LOGS_IN_SYSTRAY_MENU,
 		"show_connections_in_systray_menu": SHOW_CONNECTIONS_IN_SYSTRAY_MENU,
 		"do_not_show_server_name_in_application_title": DO_NOT_SHOW_SERVER_IN_TITLE,
 		"fetch_user_data_frequency": USER_DATA_FETCH_FREQUENCY,
@@ -1340,10 +1336,6 @@ def patch_settings(settings):
 		settings["automatic_reconnection_timer"] = RECONNECTION_DELAY
 	if not "show_network_logs_in_windows_menu" in settings:
 		settings["show_network_logs_in_windows_menu"] = SHOW_LOGS_IN_WINDOWS_MENU
-	if not "show_channel_list_in_systray_menu" in settings:
-		settings["show_channel_list_in_systray_menu"] = SHOW_LIST_IN_SYSTRAY_MENU
-	if not "show_network_logs_in_systray_menu" in settings:
-		settings["show_network_logs_in_systray_menu"] = SHOW_LOGS_IN_SYSTRAY_MENU
 	if not "show_connections_in_systray_menu" in settings:
 		settings["show_connections_in_systray_menu"] = SHOW_CONNECTIONS_IN_SYSTRAY_MENU
 	if not "do_not_show_server_name_in_application_title" in settings:
@@ -2095,8 +2087,6 @@ def load_settings(filename):
 	global USER_DATA_FETCH_FREQUENCY
 	global DO_NOT_SHOW_SERVER_IN_TITLE
 	global SHOW_CONNECTIONS_IN_SYSTRAY_MENU
-	global SHOW_LIST_IN_SYSTRAY_MENU
-	global SHOW_LOGS_IN_SYSTRAY_MENU
 	global SHOW_LOGS_IN_WINDOWS_MENU
 	global DELAY_AUTO_RECONNECTION
 	global RECONNECTION_DELAY
@@ -2498,8 +2488,6 @@ def load_settings(filename):
 		DELAY_AUTO_RECONNECTION = settings["delay_automatic_reconnection"]
 		RECONNECTION_DELAY = settings["automatic_reconnection_timer"]
 		SHOW_LOGS_IN_WINDOWS_MENU = settings["show_network_logs_in_windows_menu"]
-		SHOW_LIST_IN_SYSTRAY_MENU = settings["show_channel_list_in_systray_menu"]
-		SHOW_LOGS_IN_SYSTRAY_MENU = settings["show_network_logs_in_systray_menu"]
 		SHOW_CONNECTIONS_IN_SYSTRAY_MENU = settings["show_connections_in_systray_menu"]
 		DO_NOT_SHOW_SERVER_IN_TITLE = settings["do_not_show_server_name_in_application_title"]
 		USER_DATA_FETCH_FREQUENCY = settings["fetch_user_data_frequency"]

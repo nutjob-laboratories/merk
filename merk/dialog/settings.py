@@ -1489,27 +1489,19 @@ class Dialog(QDialog):
 			self.showSystrayMenu.setEnabled(True)
 			if self.showSystrayMenu.isChecked():
 				self.stmConnections.setEnabled(True)
-				self.stmList.setEnabled(True)
-				self.stmLogs.setEnabled(True)
 				self.stmNick.setEnabled(True)
 				self.stmJoin.setEnabled(True)
 				self.stmAway.setEnabled(True)
 				if not self.stmConnections.isChecked():
-					self.stmList.setEnabled(False)
-					self.stmLogs.setEnabled(False)
 					self.stmNick.setEnabled(False)
 					self.stmJoin.setEnabled(False)
 					self.stmAway.setEnabled(False)
 				else:
-					self.stmList.setEnabled(True)
-					self.stmLogs.setEnabled(True)
 					self.stmNick.setEnabled(True)
 					self.stmJoin.setEnabled(True)
 					self.stmAway.setEnabled(True)
 			else:
 				self.stmConnections.setEnabled(False)
-				self.stmList.setEnabled(False)
-				self.stmLogs.setEnabled(False)
 				self.stmNick.setEnabled(False)
 				self.stmJoin.setEnabled(False)
 				self.stmAway.setEnabled(False)
@@ -1561,8 +1553,6 @@ class Dialog(QDialog):
 			self.flashInterval.setEnabled(False)
 			self.doubleclickRestore.setEnabled(False)
 			self.stmConnections.setEnabled(False)
-			self.stmList.setEnabled(False)
-			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
 			self.stmJoin.setEnabled(False)
 			self.stmAway.setEnabled(False)
@@ -1574,14 +1564,10 @@ class Dialog(QDialog):
 
 	def changedSettingConnections(self,state):
 		if not self.stmConnections.isChecked():
-			self.stmList.setEnabled(False)
-			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
 			self.stmJoin.setEnabled(False)
 			self.stmAway.setEnabled(False)
 		else:
-			self.stmList.setEnabled(True)
-			self.stmLogs.setEnabled(True)
 			self.stmNick.setEnabled(True)
 			self.stmJoin.setEnabled(True)
 			self.stmAway.setEnabled(True)
@@ -4010,14 +3996,6 @@ class Dialog(QDialog):
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
 		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
 
-		self.stmList = QCheckBox("Channel list",self)
-		if config.SHOW_LIST_IN_SYSTRAY_MENU: self.stmList.setChecked(True)
-		self.stmList.stateChanged.connect(self.changedSetting)
-
-		self.stmLogs = QCheckBox("Network logs",self)
-		if config.SHOW_LOGS_IN_SYSTRAY_MENU: self.stmLogs.setChecked(True)
-		self.stmLogs.stateChanged.connect(self.changedSetting)
-
 		self.stmNick = QCheckBox("Nicks",self)
 		if config.SHOW_NICK_IN_SYSTRAY_MENU: self.stmNick.setChecked(True)
 		self.stmNick.stateChanged.connect(self.changedSetting)
@@ -4042,28 +4020,17 @@ class Dialog(QDialog):
 		menuRow3.addWidget(self.stmAway)
 		menuRow3.addStretch()
 
-		menuRow2 = QHBoxLayout()
-		menuRow2.addStretch()
-		menuRow2.addWidget(self.stmList)
-		menuRow2.addWidget(self.stmLogs)
-		menuRow2.addStretch()
-
 		menuBox = QVBoxLayout()
 		menuBox.addLayout(menuRow1)
 		menuBox.addLayout(menuRow3)
-		menuBox.addLayout(menuRow2)
 
 		if not config.SYSTRAY_MENU:
 			self.stmConnections.setEnabled(False)
-			self.stmList.setEnabled(False)
-			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
 			self.stmJoin.setEnabled(False)
 			self.stmAway.setEnabled(False)
 
 		if not config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
-			self.stmList.setEnabled(False)
-			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
 			self.stmJoin.setEnabled(False)
 			self.stmAway.setEnabled(False)
@@ -4148,8 +4115,6 @@ class Dialog(QDialog):
 			self.flashInterval.setEnabled(False)
 			self.doubleclickRestore.setEnabled(False)
 			self.stmConnections.setEnabled(False)
-			self.stmList.setEnabled(False)
-			self.stmLogs.setEnabled(False)
 			self.stmNick.setEnabled(False)
 			self.stmJoin.setEnabled(False)
 			self.stmAway.setEnabled(False)
@@ -7778,8 +7743,6 @@ class Dialog(QDialog):
 		config.USER_DATA_FETCH_FREQUENCY = self.USER_DATA_FETCH_FREQUENCY
 		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
 		config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU = self.stmConnections.isChecked()
-		config.SHOW_LIST_IN_SYSTRAY_MENU = self.stmList.isChecked()
-		config.SHOW_LOGS_IN_SYSTRAY_MENU = self.stmLogs.isChecked()
 		config.SHOW_LOGS_IN_WINDOWS_MENU = self.showLogsInWindows.isChecked()
 		config.DELAY_AUTO_RECONNECTION = self.delayReconnect.isChecked()
 		config.RECONNECTION_DELAY = self.RECONNECTION_DELAY

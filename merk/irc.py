@@ -609,6 +609,8 @@ class IRC_Connection(irc.IRCClient):
 
 		# Send the server our extension requests
 		if subcommand == "LS":
+
+			# Store the list of supported extensions
 			self.ircv3 = list(params[2].split())
 
 			# If we have an SASL username and password, request SASL login from the server
@@ -688,6 +690,7 @@ class IRC_Connection(irc.IRCClient):
 		if params[0] == "+" and (self.sasl_username!=None and self.sasl_password!=None):
 			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
 			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
+			self.gui.systemMessage(self,f'Requesting SASL authentication...')
 			self.sendLine(f"AUTHENTICATE {encoded}")
 			
 	def irc_903(self, prefix, params):
@@ -695,7 +698,7 @@ class IRC_Connection(irc.IRCClient):
 		self.sendLine("CAP END")
 		self.sent_end = True
 		self.logged_in_via_sasl = True
-		self.gui.systemMessage(self,'SASL login successful!')
+		self.gui.systemMessage(self,'SASL authentication successful!')
 
 	def lose_connection(self,message,dialog=''):
 		w = self.gui.getServerWindow(self)

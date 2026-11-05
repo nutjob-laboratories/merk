@@ -44,7 +44,7 @@ class PlainIconTextAction(QWidgetAction):
 		layout.addWidget(icon_label)
 		
 		data_label = QLabel()
-		data_label.setText("<small>&nbsp;</small>"+text+"&nbsp;")
+		data_label.setText("<small>&nbsp;</small>"+text+"&nbsp;&nbsp;")
 		layout.addWidget(data_label)
 
 		layout.addStretch()

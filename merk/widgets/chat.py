@@ -334,26 +334,23 @@ class Window(QMainWindow):
 
 		if self.window_type==SERVER_WINDOW:
 
-			if self.client.kwargs["ssl"]:
-				name = "SSL/TLS"
-			else:
-				name = "TCP/IP "
+			# The server window toolbar
+			serverBar = QHBoxLayout()
 
+			# Server information button
 			self.server_info_menu = buildServerSettingsMenu(self,self.client)
-
-			self.info_button = QPushButton(name)
+			self.info_button = QPushButton("")
+			self.info_button.setIcon(QIcon(INFO_MENU_ICON))
 			self.info_button.setMenu(self.server_info_menu)
-			self.info_button.setToolTip("IRC server information")
+			self.info_button.setToolTip("Server information")
+			self.info_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 			self.info_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.info_button.setFlat(True)
-			f = self.info_button.font()
-			f.setBold(True)
-			self.info_button.setFont(f)
 			self.info_button.setFocusPolicy(Qt.NoFocus)
-
-			serverBar = QHBoxLayout()
+			self.info_button.setStyleSheet("QPushButton::menu-indicator { image: none; width: 0px; }")
 			serverBar.addWidget(self.info_button)
 
+			# Join channel button
 			self.join_button = QPushButton("")
 			self.join_button.setIcon(QIcon(CHANNEL_MENU_ICON))
 			self.join_button.clicked.connect(self.joinChannel)
@@ -363,6 +360,7 @@ class Window(QMainWindow):
 			self.join_button.setFlat(True)
 			serverBar.addWidget(self.join_button)
 
+			# Change nickname button
 			self.nick_button = QPushButton("")
 			self.nick_button.setIcon(QIcon(USER_MENU_ICON))
 			self.nick_button.clicked.connect(self.changeNick)
@@ -372,6 +370,7 @@ class Window(QMainWindow):
 			self.nick_button.setFlat(True)
 			serverBar.addWidget(self.nick_button)
 
+			# Go away/back button
 			self.away_button = QPushButton("")
 			self.away_button.setIcon(QIcon(GO_AWAY_ICON))
 			self.away_button.clicked.connect(self.changeAway)
@@ -381,6 +380,7 @@ class Window(QMainWindow):
 			self.away_button.setFlat(True)
 			serverBar.addWidget(self.away_button)
 
+			# Run script button
 			self.script_button = QPushButton("")
 			self.script_button.setIcon(QIcon(SCRIPT_MENU_ICON))
 			self.script_button.clicked.connect(self.scriptDialog)
@@ -393,6 +393,7 @@ class Window(QMainWindow):
 			if not config.ENABLE_SCRIPTING_ENGINE:
 				self.script_button.hide()
 
+			# Refresh channel list button
 			self.refresh_button = QPushButton("")
 			self.refresh_button.setIcon(QIcon(REFRESH_ICON))
 			self.refresh_button.clicked.connect(self.refreshChannelList)
@@ -405,6 +406,7 @@ class Window(QMainWindow):
 			if not config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
 				self.refresh_button.hide()
 
+			# Show channel list button
 			self.list_button = QPushButton("")
 			self.list_button.setIcon(QIcon(SEARCH_ICON))
 			self.list_button.clicked.connect(self.showChannelList)
@@ -4366,7 +4368,7 @@ def buildServerSettingsMenu(self,client):
 		else:
 			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
 
-	e = textSeparator(self,f"{pretty_timestamp}")
+	e = plainTextAction(self,f"<b>Connected at</b>: {pretty_timestamp}")
 	optionsMenu.addAction(e)
 
 	e = plainTextAction(self,f"<b>Server</b>: {client.server}")
