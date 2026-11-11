@@ -2,12 +2,6 @@
 |                                    0.500.050                                 |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **New application icon**. The new icon matches the official logo.
-- **Tweaks to the system tray menu**. New options have been added, and the menu overall has been cleaned up. Some options have been removed, but many bugs have been fixed.
-- **Many, many bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -66,6 +60,17 @@ What's new:
   for the main window's icon.
 * Tweaked the icon graphics. The PNG file used as the application's icon is now
   at 128x128px, rather than 96x96px.
+* Attempts to grab the server channel list are now handled a bit better.
+* Updated the version of Twisted, pyInstaller, pyOpenSSL,and service_identity
+  for binaries (on Linux).
+* Bugfix: Allowing/forbidding KNOCK was mentioned twice in the right click
+  channel mode menu.
+* Added a toggle to the channel mode menu; the editing of channel modes can
+  now be disabled, leaving only the known mode display. This setting has been
+  added to the config file and the "settings" dialog.
+* Widgets in channel windows that depend on text size to set their dimensions
+  now are updated when the font size changes.
+* Reworked the layout of the "about" dialog to make a bit more sense.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.000                                 |

@@ -818,12 +818,12 @@ def buildTemporaryAliases(gui,window):
 			addTemporaryAlias('_COUNT',f"0")
 		else:
 			addTemporaryAlias('_COUNT',f"2")
-	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
-	addTemporaryAlias('_HOSTID',window.client.server+":"+str(window.client.port))
+	addTemporaryAlias('_CUPTIME',f"{gui.client_uptime}")
+	addTemporaryAlias('_HOSTID',f"{window.client.server}:{window.client.port}")
 	if hasattr(window.client,"hostname"):
 		addTemporaryAlias('_HOSTNAME',window.client.hostname)
 	else:
-		addTemporaryAlias('_HOSTNAME',window.client.server+":"+str(window.client.port))
+		addTemporaryAlias('_HOSTNAME',f"{window.client.server}:{window.client.port}")
 	addTemporaryAlias('_DATE',mydate)
 	addTemporaryAlias('_DAY',day)
 	addTemporaryAlias('_DLOGS',logs.LOG_DIRECTORY)
@@ -853,7 +853,7 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_NETWORK',"unknown")
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
 	addTemporaryAlias('_ORDINAL',ordinal)
-	addTemporaryAlias('_PORT',str(window.client.port))
+	addTemporaryAlias('_PORT',f"{window.client.port}")
 	if window.window_type==CHANNEL_WINDOW:
 		addTemporaryAlias('_PRESENT'," ".join(window.nicks))
 	else:
@@ -908,7 +908,7 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_STATUS',"normal")
 	addTemporaryAlias('_STAMP',timestamp)
-	addTemporaryAlias('_SUPTIME',str(window.client.uptime))
+	addTemporaryAlias('_SUPTIME',f"{window.client.uptime}")
 	addTemporaryAlias('_TIME',mytime)
 	if window.window_type==CHANNEL_WINDOW:
 		if window.channel_topic!='':
@@ -918,7 +918,7 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_TOPIC','&')
 	if hasattr(window,"uptime"):
-		addTemporaryAlias('_UPTIME',str(window.uptime))
+		addTemporaryAlias('_UPTIME',f"{window.uptime}")
 	else:
 		addTemporaryAlias('_UPTIME',"0")
 	addTemporaryAlias('_UTC',utc_time)

@@ -523,11 +523,11 @@ class wMenuButton(QPushButton):
 
 		self.animation = QPropertyAnimation(self.effect, b"opacity")
 		self.animation.setDuration(config.WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH)
-		self.animation.setStartValue(1.0) # Fully visible
-		self.animation.setEndValue(0.2)   # Nearly transparent
-		self.animation.setEasingCurve(QEasingCurve.InOutQuad) # Smooth in/out transition
-		self.animation.setDirection(QAbstractAnimation.Forward) # Start with fade out
-		self.animation.setLoopCount(-1) # Loop indefinitely
+		self.animation.setStartValue(1.0)						# Fully visible
+		self.animation.setEndValue(0.1)							# Nearly transparent
+		self.animation.setEasingCurve(QEasingCurve.InOutQuad)	# Smooth in/out transition
+		self.animation.setDirection(QAbstractAnimation.Forward)	# Start with fade out
+		self.animation.setLoopCount(-1)							# Loop indefinitely
 
 		# Start the animation
 		self.animation.start()

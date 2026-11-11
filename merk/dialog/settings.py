@@ -549,7 +549,7 @@ class Dialog(QDialog):
 		if x:
 			self.subWidth = x[0]
 			self.subHeight = x[1]
-			self.sizeLabel.setText(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>")
+			self.sizeLabel.setText(f"&nbsp;Initial subwindow size: <b>{self.subWidth}x{self.subHeight}</b>")
 			self.changed.show()
 			self.boldApply()
 		self.selector.setFocus()
@@ -1833,11 +1833,22 @@ class Dialog(QDialog):
 		if self.channelName.isChecked():
 			self.chanMode.setEnabled(True)
 			self.channelModes.setEnabled(True)
+			self.changeChanMode.setEnabled(True)
 		else:
 			self.chanMode.setEnabled(False)
 			self.channelModes.setEnabled(False)
+			self.changeChanMode.setEnabled(False)
 		self.do_topic = True
 
+	def changeChannelModeMenu(self,i):
+		if self.chanMode.isChecked():
+			self.changeChanMode.setEnabled(True)
+		else:
+			self.changeChanMode.setEnabled(False)
+		self.do_topic = True
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
 
 	def mainTopicChange(self, i):
 		if self.topicDisplay.isChecked():
@@ -1850,9 +1861,11 @@ class Dialog(QDialog):
 			if self.channelName.isChecked():
 				self.chanMode.setEnabled(True)
 				self.channelModes.setEnabled(True)
+				self.changeChanMode.setEnabled(True)
 			else:
 				self.chanMode.setEnabled(False)
 				self.channelModes.setEnabled(False)
+				self.changeChanMode.setEnabled(False)
 		else:
 			self.refreshTopics = False
 			self.channelName.setEnabled(False)
@@ -1861,7 +1874,11 @@ class Dialog(QDialog):
 			self.channelColors.setEnabled(False)
 			self.topicEditor.setEnabled(False)
 			self.chanMode.setEnabled(False)
+			self.changeChanMode.setEnabled(False)
 			self.channelModes.setEnabled(False)
+
+		if not self.chanMode.isChecked():
+			self.changeChanMode.setEnabled(False)
 
 		self.do_topic = True
 		self.selector.setFocus()
@@ -2094,7 +2111,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_main_menu = info
-		self.mainName.setText("&nbsp;<b>"+str(info)+"</b>")
+		self.mainName.setText(f"&nbsp;<b>{info}</b>")
 
 		self.windowbar_change = True
 
@@ -2108,7 +2125,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_settings_menu = info
-		self.settingsName.setText("&nbsp;<b>"+str(info)+"</b>")
+		self.settingsName.setText(f"&nbsp;<b>{info}</b>")
 
 		self.windowbar_change = True
 
@@ -2122,7 +2139,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_tools_menu = info
-		self.toolsName.setText("&nbsp;<b>"+str(info)+"</b>")
+		self.toolsName.setText(f"&nbsp;<b>{info}</b>")
 
 		self.windowbar_change = True
 
@@ -2136,7 +2153,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_windows_menu = info
-		self.windowsName.setText("&nbsp;<b>"+str(info)+"</b>")
+		self.windowsName.setText(f"&nbsp;<b>{info}</b>")
 
 		self.windowbar_change = True
 
@@ -2164,7 +2181,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_help_menu = info
-		self.helpName.setText("&nbsp;<b>"+str(info)+"</b>")
+		self.helpName.setText(f"&nbsp;<b>{info}</b>")
 
 		self.windowbar_change = True
 
@@ -3775,7 +3792,7 @@ class Dialog(QDialog):
 		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS and not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
 			self.enableNickClick.setEnabled(False)
 
-		self.sizeLabel = QLabel(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
+		self.sizeLabel = QLabel(f"&nbsp;Initial subwindow size: <b>{self.subWidth}x{self.subHeight}</b>",self)
 
 		sizeButton = QPushButton("")
 		sizeButton.clicked.connect(self.setWinsize)
@@ -4448,7 +4465,7 @@ class Dialog(QDialog):
 		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
 
 		self.channelName = QCheckBox("Channel name",self)
-		if config.SHOW_CHANEL_NAME: self.channelName.setChecked(True)
+		if config.SHOW_CHANNEL_NAME: self.channelName.setChecked(True)
 		self.channelName.stateChanged.connect(self.topicChangeNameModes)
 
 		self.channelModes = QCheckBox("Channel modes",self)
@@ -4471,9 +4488,15 @@ class Dialog(QDialog):
 		if config.ALLOW_TOPIC_EDIT: self.topicEditor.setChecked(True)
 		self.topicEditor.stateChanged.connect(self.changedSetting)
 
-		self.chanMode = QCheckBox("Channel mode right click menu",self)
+		self.chanMode = QCheckBox("Channel mode menu",self)
 		if config.CHANNEL_MODE_CONTEXT_MENU: self.chanMode.setChecked(True)
-		self.chanMode.stateChanged.connect(self.changedSetting)
+		self.chanMode.stateChanged.connect(self.changeChannelModeMenu)
+
+		self.changeChanMode = QCheckBox("Change modes in menu",self)
+		if config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU: self.changeChanMode.setChecked(True)
+		self.changeChanMode.stateChanged.connect(self.changedSetting)
+
+		if not config.CHANNEL_MODE_CONTEXT_MENU: self.changeChanMode.setEnabled(False)
 
 		if not config.SHOW_CHANNEL_TOPIC:
 			self.channelName.setEnabled(False)
@@ -4482,10 +4505,12 @@ class Dialog(QDialog):
 			self.channelColors.setEnabled(False)
 			self.topicEditor.setEnabled(False)
 			self.chanMode.setEnabled(False)
+			self.changeChanMode.setEnabled(False)
 
-		if not config.SHOW_CHANEL_NAME:
+		if not config.SHOW_CHANNEL_NAME:
 			self.chanMode.setEnabled(False)
 			self.channelModes.setEnabled(False)
+			self.changeChanMode.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -4625,12 +4650,16 @@ class Dialog(QDialog):
 		cbL3.addWidget(self.channelTooltip)
 		cbL3.addWidget(self.topicEditor)
 
+		cbL4 = QHBoxLayout()
+		cbL4.addWidget(self.chanMode)
+		cbL4.addWidget(self.changeChanMode)
+
 		chanButtonLayout = QVBoxLayout()
 		chanButtonLayout.setSpacing(0)
 		chanButtonLayout.addLayout(cbL1)
 		chanButtonLayout.addLayout(cbL2)
 		chanButtonLayout.addLayout(cbL3)
-		chanButtonLayout.addWidget(self.chanMode)
+		chanButtonLayout.addLayout(cbL4)
 
 		ulistDisplay1 = QFormLayout()
 		ulistDisplay1.setSpacing(0)
@@ -5540,7 +5569,7 @@ class Dialog(QDialog):
 		self.allowSpellcheck.stateChanged.connect(self.changedSpellcheck)
 
 		self.spellcheckDistance = QComboBox(self)
-		self.spellcheckDistance.addItem(str(config.SPELLCHECKER_DISTANCE))
+		self.spellcheckDistance.addItem(f"{config.SPELLCHECKER_DISTANCE}")
 		if config.SPELLCHECKER_DISTANCE!=1: self.spellcheckDistance.addItem('1')
 		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('2')
 		if config.SPELLCHECKER_DISTANCE!=3: self.spellcheckDistance.addItem('3')
@@ -5604,6 +5633,7 @@ class Dialog(QDialog):
 			self.spellcheckMissColor.setEnabled(False)
 
 		langLayout = QFormLayout()
+		langLayout.setSpacing(0)
 		langLayout.addRow(self.englishSC, self.frenchSC)
 		langLayout.addRow(self.spanishSC, self.germanSC)
 		langLayout.addRow(self.portugueseSC, self.italianSC)
@@ -5730,8 +5760,6 @@ class Dialog(QDialog):
 		self.markLog = QCheckBox("Mark end of loaded log",self)
 		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
 		self.markLog.stateChanged.connect(self.changedSetting)
-		
-		# self.logLabel = QLabel(f"<b>{str(self.logsize)} lines</b>",self)
 
 		self.intermittentLog = QCheckBox("Save logs every",self)
 		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
@@ -7581,7 +7609,7 @@ class Dialog(QDialog):
 		config.QT_WINDOW_STYLE = self.qt_style
 		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
-		config.SHOW_CHANEL_NAME = self.channelName.isChecked()
+		config.SHOW_CHANNEL_NAME = self.channelName.isChecked()
 		config.SHOW_USERLIST = self.showUserlists.isChecked()
 		config.SHOW_INPUT_MENU = self.showInputMenu.isChecked()
 		config.SHOW_WINDOWBAR = self.windowBar.isChecked()
@@ -7906,6 +7934,7 @@ class Dialog(QDialog):
 		config.SHOW_JOIN_IN_SYSTRAY_MENU = self.stmJoin.isChecked()
 		config.SHOW_AWAY_IN_SYSTRAY_MENU = self.stmAway.isChecked()
 		config.SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = self.showAwayUserlistTooltip.isChecked()
+		config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU = self.changeChanMode.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

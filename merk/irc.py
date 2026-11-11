@@ -209,7 +209,8 @@ class IRC_Connection(irc.IRCClient):
 		self.connection_timer = 0
 		self.server_channel_list = []
 		self.channel_list_window = None
-		self.did_delayed_channel_list = False
+		self.did_first_delayed_channel_list_retrieval = False
+		self.did_second_delayed_channel_list_retrieval = False
 		self.need_to_get_list = False
 		self.list_search_terms = None
 		self.server_user_count = 0
@@ -497,8 +498,14 @@ class IRC_Connection(irc.IRCClient):
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			if self.uptime>=PAUSE_FOR_DELAYED_CHANNEL_LIST:
 				if len(self.server_channel_list)==0:
-					if not self.did_delayed_channel_list:
-						self.did_delayed_channel_list = True
+					if not self.did_first_delayed_channel_list_retrieval:
+						self.did_first_delayed_channel_list_retrieval = True
+						self.sendLine(f"LIST")
+
+			if self.uptime>=SECOND_PAUSE_FOR_DELAYED_CHANNEL_LIST:
+				if len(self.server_channel_list)==0:
+					if not self.did_second_delayed_channel_list_retrieval:
+						self.did_second_delayed_channel_list_retrieval = True
 						self.sendLine(f"LIST")
 
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN or config.GET_BOTS_ON_CHANNEL_JOIN:

@@ -343,8 +343,8 @@ class Window(QMainWindow):
 			self.info_button.setIcon(QIcon(INFO_MENU_ICON))
 			self.info_button.setMenu(self.server_info_menu)
 			self.info_button.setToolTip("Server information")
-			self.info_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.info_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.info_button.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			self.info_button.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			self.info_button.setFlat(True)
 			self.info_button.setFocusPolicy(Qt.NoFocus)
 			self.info_button.setStyleSheet("QPushButton::menu-indicator { image: none; width: 0px; }")
@@ -355,8 +355,8 @@ class Window(QMainWindow):
 			self.join_button.setIcon(QIcon(CHANNEL_MENU_ICON))
 			self.join_button.clicked.connect(self.joinChannel)
 			self.join_button.setToolTip("Join a channel")
-			self.join_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.join_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.join_button.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			self.join_button.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			self.join_button.setFlat(True)
 			serverBar.addWidget(self.join_button)
 
@@ -365,8 +365,8 @@ class Window(QMainWindow):
 			self.nick_button.setIcon(QIcon(USER_MENU_ICON))
 			self.nick_button.clicked.connect(self.changeNick)
 			self.nick_button.setToolTip("Change your nickname")
-			self.nick_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.nick_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.nick_button.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			self.nick_button.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			self.nick_button.setFlat(True)
 			serverBar.addWidget(self.nick_button)
 
@@ -375,8 +375,8 @@ class Window(QMainWindow):
 			self.away_button.setIcon(QIcon(GO_AWAY_ICON))
 			self.away_button.clicked.connect(self.changeAway)
 			self.away_button.setToolTip("Set status to \"away\"")
-			self.away_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.away_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.away_button.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			self.away_button.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			self.away_button.setFlat(True)
 			serverBar.addWidget(self.away_button)
 
@@ -385,8 +385,8 @@ class Window(QMainWindow):
 			self.script_button.setIcon(QIcon(SCRIPT_MENU_ICON))
 			self.script_button.clicked.connect(self.scriptDialog)
 			self.script_button.setToolTip("Run a script")
-			self.script_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.script_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.script_button.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			self.script_button.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			self.script_button.setFlat(True)
 			serverBar.addWidget(self.script_button)
 
@@ -398,8 +398,8 @@ class Window(QMainWindow):
 			self.refresh_button.setIcon(QIcon(REFRESH_ICON))
 			self.refresh_button.clicked.connect(self.refreshChannelList)
 			self.refresh_button.setToolTip("Refresh channel list")
-			self.refresh_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.refresh_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.refresh_button.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			self.refresh_button.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			self.refresh_button.setFlat(True)
 			serverBar.addWidget(self.refresh_button)
 
@@ -411,8 +411,8 @@ class Window(QMainWindow):
 			self.list_button.setIcon(QIcon(SEARCH_ICON))
 			self.list_button.clicked.connect(self.showChannelList)
 			self.list_button.setToolTip("Search server channel list")
-			self.list_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.list_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.list_button.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			self.list_button.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			self.list_button.setFlat(True)
 			serverBar.addWidget(self.list_button)
 
@@ -438,16 +438,16 @@ class Window(QMainWindow):
 			entry.setIcon(QIcon(DISCONNECT_WINDOW_ICON))
 			entry.clicked.connect(self.disconnect)
 			entry.setToolTip("Disconnect from server")
-			entry.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			entry.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			entry.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+			entry.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 			entry.setFlat(True)
 			serverBar.addWidget(entry)
 
 			serverBar.setContentsMargins(1,1,1,1)
 			self.server_window_toolbar = QWidget()
 			self.server_window_toolbar.setLayout(serverBar)
-			self.server_window_toolbar.setMinimumHeight(config.INTERFACE_BUTTON_SIZE+1)
-			self.server_window_toolbar.setMaximumHeight(config.INTERFACE_BUTTON_SIZE+1)
+			self.server_window_toolbar.setMinimumHeight(INTERFACE_BUTTON_SIZE+1)
+			self.server_window_toolbar.setMaximumHeight(INTERFACE_BUTTON_SIZE+1)
 
 			if not config.SHOW_SERVER_WINDOW_TOOLBAR: self.server_window_toolbar.hide()
 
@@ -466,17 +466,20 @@ class Window(QMainWindow):
 			else:
 				border_color = "lightGray"
 
+			fm = self.fontMetrics()
+
 			# Channel name display
 			self.channel_mode_display = QLabel(f"<small><b>{self.name}</b></small>")
-			self.channel_mode_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
-
+			self.channel_mode_display.setStyleSheet(f"border: {MODE_AND_USER_DISPLAY_BORDER} {border_color}; padding: {MODE_AND_USER_DISPLAY_PADDING};")
 			self.channel_mode_display.setContextMenuPolicy(Qt.CustomContextMenu)
 			self.channel_mode_display.customContextMenuRequested.connect(self.buildOperatorMenu)
+			self.channel_mode_display.setFixedHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
 
-			# Channel name display
+			# Channel users display
 			self.channel_users_display = QLabel("<b><small>1</small></b>")
-			self.channel_users_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
+			self.channel_users_display.setStyleSheet(f"border: {MODE_AND_USER_DISPLAY_BORDER} {border_color}; padding: {MODE_AND_USER_DISPLAY_PADDING};")
 			self.channel_users_display.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
+			self.channel_users_display.setFixedHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
 			
 			# Create topic editor
 			self.topic = TopicEdit(self)
@@ -561,9 +564,9 @@ class Window(QMainWindow):
 
 		self.settingsButton = QPushButton(QIcon(self.parent.options_icon),"")
 		self.settingsButton.setFocusPolicy(Qt.NoFocus)
-		self.settingsButton.setIconSize(QSize(self.input.height()-10,self.input.height()))
-		self.settingsButton.setFixedSize(self.input.height()-15,self.input.height())
-		self.settingsButton.setToolTip("Options")
+		self.settingsButton.setIconSize(QSize(self.input.height()-OPTION_BUTTON_ICON_SIZE,self.input.height()))
+		self.settingsButton.setFixedSize(self.input.height()-OPTION_BUTTON_BUTTON_SIZE,self.input.height())
+		self.settingsButton.setToolTip("Input options")
 		self.settingsButton.setMenu(self.settingsMenu)
 		self.settingsButton.setFlat(True)
 		self.settingsButton.setStyleSheet("""
@@ -579,7 +582,7 @@ class Window(QMainWindow):
 
 			fm = QFontMetrics(self.app.font())
 
-			icon_dimensions = int(fm.height()*0.75)
+			icon_dimensions = int(fm.height()*CHANNEL_STATUS_ICON_SIZE_PERCENT)
 
 			self.op_icon = QLabel(self)
 			pixmap = QPixmap(OP_USER)
@@ -708,7 +711,7 @@ class Window(QMainWindow):
 			if not config.SHOW_CHANNEL_TOPIC:
 				self.hideTopic()
 
-			if not config.SHOW_CHANEL_NAME:
+			if not config.SHOW_CHANNEL_NAME:
 				self.channel_mode_display.hide()
 
 			finalLayout = QVBoxLayout()
@@ -1030,7 +1033,7 @@ class Window(QMainWindow):
 			channel_modes = ''
 			if not self.is_privileged() and not self.is_operator() and len(self.banlist)==0: return
 
-		if not self.is_privileged() and not self.is_operator():
+		if (not self.is_privileged() and not self.is_operator()) or config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU==False:
 
 			if self.name in self.client.channelkeys:
 				action = PlainIconTextAction(QIcon(VISITED_SECURE_ICON), "Channel is locked", self)
@@ -1103,7 +1106,7 @@ class Window(QMainWindow):
 					e = PlainIconTextAction(QIcon(USER_MENU_ICON), f"{b[0]}", self)
 					banMenu.addAction(e)
 
-		if self.is_privileged() or self.is_operator():
+		if (self.is_privileged() or self.is_operator()) and config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU==True:
 
 			if 'm' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Unmoderate channel",self)
@@ -1186,16 +1189,6 @@ class Window(QMainWindow):
 				entry.triggered.connect(lambda state,h='C': self.set_mode(h))
 				opmenu.addAction(entry)
 
-			if 'KNOCK' in self.client.supports:
-				if 'K' in channel_modes:
-					entry = QAction(QIcon(MINUS_ICON),"Allow knocks",self)
-					entry.triggered.connect(lambda state,h='K': self.unset_mode(h))
-					opmenu.addAction(entry)
-				else:
-					entry = QAction(QIcon(PLUS_ICON),"Forbid knocks",self)
-					entry.triggered.connect(lambda state,h='K': self.set_mode(h))
-					opmenu.addAction(entry)
-
 			if 'i' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Allow uninvited users",self)
 				entry.triggered.connect(lambda state,h='i': self.unset_mode(h))
@@ -1243,11 +1236,11 @@ class Window(QMainWindow):
 
 			if 'KNOCK' in self.client.supports:
 				if 'K' in channel_modes:
-					entry = QAction(QIcon(MINUS_ICON),"Allow KNOCK",self)
+					entry = QAction(QIcon(MINUS_ICON),"Allow knocks",self)
 					entry.triggered.connect(lambda state,h='K': self.unset_mode(h))
 					opmenu.addAction(entry)
 				else:
-					entry = QAction(QIcon(PLUS_ICON),"Forbid KNOCK",self)
+					entry = QAction(QIcon(PLUS_ICON),"Forbid knocks",self)
 					entry.triggered.connect(lambda state,h='K': self.set_mode(h))
 					opmenu.addAction(entry)
 
@@ -2053,9 +2046,79 @@ class Window(QMainWindow):
 		self.channel_users_display.hide()
 		self.topic_spacer.hide()
 
+	def doFontUpdate(self):
+
+		fm = self.fontMetrics()
+
+		if hasattr(self,"channel_mode_display"):
+			self.channel_mode_display.setMinimumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_mode_display.setMaximumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_mode_display.updateGeometry()
+
+		if hasattr(self,"channel_users_display"):
+			self.channel_users_display.setMinimumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_users_display.setMaximumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_users_display.updateGeometry()
+
+		if hasattr(self,"topic"):
+			self.topic.setMinimumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.topic.setMaximumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.topic.updateGeometry()
+
+		if hasattr(self,"input"):
+			self.input.setMinimumHeight(fm.height()+10)
+			self.input.setMaximumHeight(fm.height()+10)
+			self.input.updateGeometry()
+
+		if hasattr(self,"input"):
+			self.settingsButton.setMinimumHeight(self.input.height()-OPTION_BUTTON_BUTTON_SIZE)
+			self.settingsButton.setMaximumHeight(self.input.height()-OPTION_BUTTON_BUTTON_SIZE)
+			self.settingsButton.updateGeometry()
+
+		icon_dimensions = int(fm.height()*CHANNEL_STATUS_ICON_SIZE_PERCENT)
+
+		if hasattr(self,"op_icon"):
+			pixmap = QPixmap(OP_USER)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.op_icon.setPixmap(pixmap)
+
+		if hasattr(self,"voice_icon"):
+			pixmap = QPixmap(VOICE_USER)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.voice_icon.setPixmap(pixmap)
+
+		if hasattr(self,"owner_icon"):
+			pixmap = QPixmap(OWNER_USER)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.owner_icon.setPixmap(pixmap)
+
+		if hasattr(self,"admin_icon"):
+			pixmap = QPixmap(ADMIN_USER)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.admin_icon.setPixmap(pixmap)
+
+		if hasattr(self,"halfop_icon"):
+			pixmap = QPixmap(HALFOP_USER)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.halfop_icon.setPixmap(pixmap)
+
+		if hasattr(self,"key_icon"):
+			pixmap = QPixmap(VISITED_SECURE_ICON)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.key_icon.setPixmap(pixmap)
+
+		if hasattr(self,"protected_icon"):
+			pixmap = QPixmap(PROTECTED_USER)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.protected_icon.setPixmap(pixmap)
+
+		self.repaint()
+
+
 	def showTopic(self):
+
 		self.channel_mode_display.show()
-		if config.SHOW_CHANEL_NAME:
+		if config.SHOW_CHANNEL_NAME:
 			self.channel_mode_display.show()
 		else:
 			self.channel_mode_display.hide()
@@ -3812,7 +3875,6 @@ class Window(QMainWindow):
 			if save_logs:
 				if len(self.new_log)>0 and self.doing_automated_save==False:
 					logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
-				self.parent.buildToolsMenu()
 
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
@@ -3910,7 +3972,6 @@ class Window(QMainWindow):
 						logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 						self.new_log = []
 					self.doing_automated_save = False
-					self.parent.buildToolsMenu()
 					
 		if hasattr(self,"dosave"):
 			self.dosave.stop()
@@ -3921,7 +3982,6 @@ class Window(QMainWindow):
 			if len(self.new_log)>0:
 				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 				self.new_log = []
-			self.parent.buildToolsMenu()
 			self.input.setFocus()
 
 	def menuSetLanguage(self,language):
@@ -4539,7 +4599,7 @@ class TopicEdit(QPlainTextEdit):
 		self.is_enabled = True
 
 		fm = self.fontMetrics()
-		self.setFixedHeight(fm.height()+4)
+		self.setFixedHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
 		self.setWordWrapMode(QTextOption.NoWrap)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

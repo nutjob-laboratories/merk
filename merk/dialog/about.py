@@ -253,7 +253,7 @@ class Dialog(QDialog):
 			creditsLayout.addWidget(pi_credit)
 		creditsBox.setLayout(creditsLayout)
 
-		okButton = QPushButton("Ok")
+		okButton = QPushButton("Close")
 		okButton.clicked.connect(self.close)
 
 		app_version = QLabel(f"<big><b>Version {APPLICATION_VERSION}</b></big>")
@@ -265,14 +265,19 @@ class Dialog(QDialog):
 		app_latest = QLabel(f"<small><b><a href=\"{APPLICATION_DEVELOPMENT}\">Latest development builds</a></b></small>")
 		app_latest.setAlignment(Qt.AlignCenter)
 		app_latest.setOpenExternalLinks(True)
+		app_license = QLabel(f"<b><a href=\"{GPL_LINK}\">GNU General Public License 3.0</a></b>")
+		app_license.setAlignment(Qt.AlignCenter)
+		app_license.setOpenExternalLinks(True)
 
 		aboutLayout = QVBoxLayout()
 		aboutLayout.addStretch()
 		aboutLayout.addLayout(logo_layout)
 		aboutLayout.addWidget(app_version)
+		aboutLayout.addWidget(app_license)
+		aboutLayout.addStretch()
 		aboutLayout.addWidget(app_repository)
 		aboutLayout.addWidget(app_latest)
-		aboutLayout.addWidget(QLabel(" "))
+		aboutLayout.addStretch()
 		aboutLayout.addWidget(platform_credit)
 		if is_running_from_pyinstaller():
 			version = get_pyinstaller_version()
@@ -323,9 +328,9 @@ class Dialog(QDialog):
 		coffeeLayout.addStretch()
 
 		patronLayout = QVBoxLayout()
-		patronLayout.addWidget(QLabel(' '))
+		patronLayout.addStretch()
 		patronLayout.addLayout(coffeeLayout)
-		patronLayout.addWidget(QLabel(' '))
+		patronLayout.addStretch()
 		patronLayout.addLayout(patListLayout)
 		patronLayout.addStretch()
 

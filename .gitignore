@@ -7,3 +7,4 @@ merk_setup.iss
 downloads/*
 myenv/*
 venv/*
+venv*/*

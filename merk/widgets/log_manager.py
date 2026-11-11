@@ -436,7 +436,7 @@ class Window(QMainWindow):
 
 		search_icon = QLabel()
 		pixmap = QPixmap(SEARCH_ICON)
-		pixmap = pixmap.scaled(config.INTERFACE_BUTTON_SIZE, config.INTERFACE_BUTTON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+		pixmap = pixmap.scaled(INTERFACE_BUTTON_SIZE, INTERFACE_BUTTON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		search_icon.setPixmap(pixmap)
 		search_icon.setAlignment(Qt.AlignCenter)
 
@@ -444,8 +444,8 @@ class Window(QMainWindow):
 		self.forward.setIcon(QIcon(NEXT_ICON))
 		self.forward.setToolTip("Next result")
 		self.forward.clicked.connect(self.on_search)
-		self.forward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.forward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.forward.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+		self.forward.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 		self.forward.setFlat(True)
 		self.forward.setStyleSheet("QPushButton:focus { border: none; outline: none; }")
 
@@ -453,8 +453,8 @@ class Window(QMainWindow):
 		self.backward.setIcon(QIcon(PREVIOUS_ICON))
 		self.backward.setToolTip("Previous result")
 		self.backward.clicked.connect(self.on_back)
-		self.backward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.backward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.backward.setFixedSize(QSize(INTERFACE_BUTTON_SIZE,INTERFACE_BUTTON_SIZE))
+		self.backward.setIconSize(QSize(INTERFACE_BUTTON_ICON_SIZE,INTERFACE_BUTTON_ICON_SIZE))
 		self.backward.setFlat(True)
 		self.backward.setStyleSheet("QPushButton:focus { border: none; outline: none; }")
 

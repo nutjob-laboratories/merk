@@ -1283,9 +1283,6 @@ class Merk(QMainWindow):
 										entry = QAction(QIcon(NETWORK_MENU_ICON),f"{mynet} network website",self)
 										entry.triggered.connect(lambda state,u=netlink: self.openLinkInBrowser(u))
 										sm.addAction(entry)
-										sm.addSeparator()
-
-							show_sep = False
 
 							if config.SHOW_JOIN_IN_SYSTRAY_MENU:
 								entry = QAction(QIcon(CHANNEL_MENU_ICON),"Join channel",self)
@@ -1294,16 +1291,12 @@ class Merk(QMainWindow):
 
 								if not c.client.registered: entry.setEnabled(False)
 
-								show_sep = True
-
 							if config.SHOW_NICK_IN_SYSTRAY_MENU:
 								entry = QAction(QIcon(USER_MENU_ICON),"Change nickname",self)
 								entry.triggered.connect(c.changeNick)
 								sm.addAction(entry)
 
 								if not c.client.registered: entry.setEnabled(False)
-
-								show_sep = True
 
 							if config.SHOW_AWAY_IN_SYSTRAY_MENU:
 								if c.client.is_away:
@@ -1315,9 +1308,9 @@ class Merk(QMainWindow):
 
 								if not c.client.registered: entry.setEnabled(False)
 
-								show_sep = True
+							sm.addAction(disco)
 
-							if show_sep: sm.addSeparator()
+							sm.addSeparator()
 
 							entry = QAction(QIcon(CONSOLE_WINDOW_ICON),name,self)
 							entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
@@ -1335,9 +1328,6 @@ class Merk(QMainWindow):
 								entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
 								sm.addAction(entry)
 
-							sm.addSeparator()
-
-							sm.addAction(disco)
 
 	def systrayShowWindow(self,window):
 		if self.is_hidden: self.toggleHide()
@@ -3145,6 +3135,7 @@ class Merk(QMainWindow):
 				widget.setFont(newfont)
 
 			if hasattr(c,"moveChatToBottom"): c.moveChatToBottom(True)
+			if hasattr(c,"doFontUpdate"): c.doFontUpdate()
 
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
@@ -5579,7 +5570,7 @@ class Merk(QMainWindow):
 
 		sm.addSeparator()
 
-		interval = str(config.LOG_SAVE_INTERVAL)+" ms"
+		interval = f"{config.LOG_SAVE_INTERVAL} ms"
 		if config.DO_INTERMITTENT_LOG_SAVES:
 			if config.LOG_SAVE_INTERVAL==900000: interval = "15 minutes"
 			if config.LOG_SAVE_INTERVAL==1800000: interval = "30 minutes"
@@ -5839,7 +5830,7 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://www.riverbankcomputing.com/software/pyqt/": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
-		tv = str(twisted.version)
+		tv = f"{twisted.version}"
 		tv = tv.replace('[','',1)
 		tv = tv.replace(']','',1)
 		tv = tv.strip()
@@ -6491,9 +6482,7 @@ class Merk(QMainWindow):
 			if config.MENUBAR_JUSTIFY.lower()=='center':
 				menubar.add_toolbar_stretch(self.menuTool)
 
-		self.buildMainMenu()
 		self.buildSettingsMenu()
-		self.buildToolsMenu()
 		self.buildWindowsMenu()
 		self.buildHelpMenu()
 

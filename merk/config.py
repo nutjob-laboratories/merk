@@ -69,8 +69,6 @@ LOAD_CHANNEL_LOGS = True
 SAVE_PRIVATE_LOGS = True
 LOAD_PRIVATE_LOGS = True
 ASK_BEFORE_DISCONNECT = True
-INTERFACE_BUTTON_SIZE = 18
-INTERFACE_BUTTON_ICON_SIZE = 18
 SHOW_CONNECTION_UPTIME = True
 SHOW_CHANNEL_UPTIME = True
 SCROLL_CHAT_TO_BOTTOM_ON_RESIZE = True
@@ -118,7 +116,7 @@ USE_MENUBAR = True
 QT_WINDOW_STYLE = 'Windows'
 SHOW_CHANNEL_TOPIC = True
 SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = False
-SHOW_CHANEL_NAME = True
+SHOW_CHANNEL_NAME = True
 SHOW_USERLIST = True
 SHOW_INPUT_MENU = True
 SHOW_WINDOWBAR = True
@@ -491,9 +489,11 @@ SHOW_NICK_IN_SYSTRAY_MENU = True
 SHOW_JOIN_IN_SYSTRAY_MENU = True
 SHOW_AWAY_IN_SYSTRAY_MENU = True
 SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = True
+CHANGE_CHANNEL_MODE_FROM_MODE_MENU = True
 
 def build_settings():
 	settings = {
+		"change_channel_mode_from_mode_menu": CHANGE_CHANNEL_MODE_FROM_MODE_MENU,
 		"show_away_message_in_userlist_tooltip": SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP,
 		"show_nick_in_systray_menu": SHOW_NICK_IN_SYSTRAY_MENU,
 		"show_channel_join_in_systray_menu": SHOW_JOIN_IN_SYSTRAY_MENU,
@@ -859,8 +859,6 @@ def build_settings():
 		"save_private_logs": SAVE_PRIVATE_LOGS,
 		"load_private_logs": LOAD_PRIVATE_LOGS,
 		"ask_before_disconnect": ASK_BEFORE_DISCONNECT,
-		"interface_button_size": INTERFACE_BUTTON_SIZE,
-		"interface_button_icon_size": INTERFACE_BUTTON_ICON_SIZE,
 		"show_connection_uptime": SHOW_CONNECTION_UPTIME,
 		"show_channel_uptime": SHOW_CHANNEL_UPTIME,
 		"scroll_chat_to_bottom_on_resize": SCROLL_CHAT_TO_BOTTOM_ON_RESIZE,
@@ -907,7 +905,7 @@ def build_settings():
 		"qt_window_style": QT_WINDOW_STYLE,
 		"show_channel_topic_bar": SHOW_CHANNEL_TOPIC,
 		"show_channel_topic_in_window_title": SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE,
-		"show_channel_name": SHOW_CHANEL_NAME,
+		"show_channel_name": SHOW_CHANNEL_NAME,
 		"show_userlists": SHOW_USERLIST,
 		"show_input_menu": SHOW_INPUT_MENU,
 		"show_windowbar": SHOW_WINDOWBAR,
@@ -944,6 +942,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "change_channel_mode_from_mode_menu" in settings:
+		settings["change_channel_mode_from_mode_menu"] = CHANGE_CHANNEL_MODE_FROM_MODE_MENU
 	if not "show_away_message_in_userlist_tooltip" in settings:
 		settings["show_away_message_in_userlist_tooltip"] = SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP
 	if not "show_nick_in_systray_menu" in settings:
@@ -1681,7 +1681,7 @@ def patch_settings(settings):
 	if not "show_userlists" in settings:
 		settings["show_userlists"] = SHOW_USERLIST
 	if not "show_channel_name" in settings:
-		settings["show_channel_name"] = SHOW_CHANEL_NAME
+		settings["show_channel_name"] = SHOW_CHANNEL_NAME
 	if not "show_channel_topic_in_window_title" in settings:
 		settings["show_channel_topic_in_window_title"] = SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 	if not "show_channel_topic_bar" in settings:
@@ -1758,10 +1758,6 @@ def patch_settings(settings):
 		settings["show_channel_uptime"] = SHOW_CHANNEL_UPTIME
 	if not "show_connection_uptime" in settings:
 		settings["show_connection_uptime"] = SHOW_CONNECTION_UPTIME
-	if not "interface_button_size" in settings:
-		settings["interface_button_size"] = INTERFACE_BUTTON_SIZE
-	if not "interface_button_icon_size" in settings:
-		settings["interface_button_icon_size"] = INTERFACE_BUTTON_ICON_SIZE
 	if not "ask_before_disconnect" in settings:
 		settings["ask_before_disconnect"] = ASK_BEFORE_DISCONNECT
 	if not "save_private_logs" in settings:
@@ -1864,8 +1860,6 @@ def load_settings(filename):
 	global SAVE_PRIVATE_LOGS
 	global LOAD_PRIVATE_LOGS
 	global ASK_BEFORE_DISCONNECT
-	global INTERFACE_BUTTON_SIZE
-	global INTERFACE_BUTTON_ICON_SIZE
 	global SHOW_CONNECTION_UPTIME
 	global SHOW_CHANNEL_UPTIME
 	global SCROLL_CHAT_TO_BOTTOM_ON_RESIZE
@@ -1912,7 +1906,7 @@ def load_settings(filename):
 	global QT_WINDOW_STYLE
 	global SHOW_CHANNEL_TOPIC
 	global SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
-	global SHOW_CHANEL_NAME
+	global SHOW_CHANNEL_NAME
 	global SHOW_USERLIST
 	global SHOW_INPUT_MENU
 	global SHOW_WINDOWBAR
@@ -2283,6 +2277,7 @@ def load_settings(filename):
 	global SHOW_JOIN_IN_SYSTRAY_MENU
 	global SHOW_AWAY_IN_SYSTRAY_MENU
 	global SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP
+	global CHANGE_CHANNEL_MODE_FROM_MODE_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2292,6 +2287,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		CHANGE_CHANNEL_MODE_FROM_MODE_MENU = settings["change_channel_mode_from_mode_menu"]
 		SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = settings["show_away_message_in_userlist_tooltip"]
 		SHOW_NICK_IN_SYSTRAY_MENU = settings["show_nick_in_systray_menu"]
 		SHOW_JOIN_IN_SYSTRAY_MENU = settings["show_channel_join_in_systray_menu"]
@@ -2662,7 +2658,7 @@ def load_settings(filename):
 		WINDOWBAR_CAN_FLOAT = settings["windowbar_can_float"]
 		SHOW_INPUT_MENU = settings["show_input_menu"]
 		SHOW_USERLIST = settings["show_userlists"]
-		SHOW_CHANEL_NAME = settings["show_channel_name"]
+		SHOW_CHANNEL_NAME = settings["show_channel_name"]
 		SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = settings["show_channel_topic_in_window_title"]
 		SHOW_CHANNEL_TOPIC = settings["show_channel_topic_bar"]
 		USE_MENUBAR = settings["use_menubar"]
@@ -2689,8 +2685,6 @@ def load_settings(filename):
 		SCROLL_CHAT_TO_BOTTOM_ON_RESIZE = settings["scroll_chat_to_bottom_on_resize"]
 		SHOW_CHANNEL_UPTIME = settings["show_channel_uptime"]
 		SHOW_CONNECTION_UPTIME = settings["show_connection_uptime"]
-		INTERFACE_BUTTON_SIZE = settings["interface_button_size"]
-		INTERFACE_BUTTON_ICON_SIZE = settings["interface_button_icon_size"]
 		ASK_BEFORE_DISCONNECT = settings["ask_before_disconnect"]
 		SAVE_PRIVATE_LOGS = settings["save_private_logs"]
 		LOAD_PRIVATE_LOGS = settings["load_private_logs"]
