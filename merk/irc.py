@@ -1827,10 +1827,13 @@ class IRC_Connection(irc.IRCClient):
 						user_history = list(user.HISTORY)
 
 						already_in_history = False
+						update_network = False
 						for s in user_history:
 							if s[0]==self.server:
 								if s[1]==str(self.port):
 									already_in_history = True
+								if s[2]!=self.network:
+									update_network = True
 
 						if not already_in_history:
 							if self.usessl:
@@ -1845,6 +1848,18 @@ class IRC_Connection(irc.IRCClient):
 							user_history.append(entry)
 							user.HISTORY = list(user_history)
 							user.save_user(user.USER_FILE)
+
+						if update_network:
+							user.HISTORY = list(user_history)
+							uh = []
+							for s in user_history:
+								if s[0]==self.server:
+									if s[1]==str(self.port):
+										s[2] = self.network
+								uh.append(s)
+							user.HISTORY = list(uh)
+							user.save_user(user.USER_FILE)
+
 			else:
 				if not DO_NOT_SAVE:
 					user_history = list(user.HISTORY)

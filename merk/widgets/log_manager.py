@@ -200,8 +200,10 @@ class Window(QMainWindow):
 		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(LOG_MENU_ICON))
 		msgBox.setText("Are you sure you want to back up this log?")
-		msgBox.setWindowTitle("Back up log for "+item.channel+" ("+item.network+")")
-
+		if item.network!=config.UNKNOWN_NETWORK_NAME:
+			msgBox.setWindowTitle("Back up log for "+item.channel+" ("+item.network+")")
+		else:
+			msgBox.setWindowTitle("Back up log for "+item.channel)
 		default_button = msgBox.addButton(" Back up log ", QMessageBox.AcceptRole)
 		msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
 		msgBox.setDefaultButton(default_button)
@@ -232,7 +234,10 @@ class Window(QMainWindow):
 		msgBox.setIconPixmap(QPixmap(APPLICATION_ICON))
 		msgBox.setWindowIcon(QIcon(LOG_MENU_ICON))
 		msgBox.setText("Are you sure you want to delete this log?")
-		msgBox.setWindowTitle("Delete log for "+item.channel+" ("+item.network+")")
+		if item.network!=config.UNKNOWN_NETWORK_NAME:
+			msgBox.setWindowTitle("Delete log for "+item.channel+" ("+item.network+")")
+		else:
+			msgBox.setWindowTitle("Delete log for "+item.channel)
 
 		default_button = msgBox.addButton(" Delete log ", QMessageBox.AcceptRole)
 		cancel_button = msgBox.addButton(" Cancel ", QMessageBox.RejectRole)
@@ -580,13 +585,24 @@ class Window(QMainWindow):
 		self.status_details.setText(f'<small><b>Loading log for viewing...</b></small>')
 		self.repaint()
 
-		if item.type==PRIVATE_WINDOW:
-			det = f"Private chat with <b>{item.channel}</b> on <b>{item.network}</b>"
+		if item.network!=config.UNKNOWN_NETWORK_NAME:
+			if item.type==PRIVATE_WINDOW:
+				det = f"Private chat with <b>{item.channel}</b> on <b>{item.network}</b>"
+			else:
+				det = f"Channel chat in <b>{item.channel}</b> on <b>{item.network}</b>"
 		else:
-			det = f"Channel chat in <b>{item.channel}</b> on <b>{item.network}</b>"
+			if item.type==PRIVATE_WINDOW:
+				det = f"Private chat with <b>{item.channel}</b></b>"
+			else:
+				det = f"Channel chat in <b>{item.channel}</b></b>"
+
+		if self.parent.dark_mode:
+			tcolor = HTML_RED_COLOR_DARK_MODE
+		else:
+			tcolor = HTML_RED_COLOR
 
 		if item.large_log:
-			self.status_details.setText(f'<small>{det} - <b>{item.file}</b> (<span style="color: red;">{item.size}</span>)</small>')
+			self.status_details.setText(f'<small>{det} - <b>{item.file}</b> (<span style="color: {tcolor};">{item.size}</span>)</small>')
 		else:
 			self.status_details.setText(f'<small>{det} - <b>{item.file}</b> ({item.size})</small>')
 

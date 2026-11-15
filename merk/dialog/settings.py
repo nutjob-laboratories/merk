@@ -7202,8 +7202,13 @@ class Dialog(QDialog):
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
+		if config.DARK_MODE:
+			tcolor = HTML_RED_COLOR_DARK_MODE
+		else:
+			tcolor = HTML_RED_COLOR
+
 		self.advancedDescription = QLabel(f"""
-			<b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
+			<b><span style='color: {tcolor};'>WARNING!</b></span> <b>Changing these settings may break your installation,
 			prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br><br>
 			<small>If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag, which will reset all

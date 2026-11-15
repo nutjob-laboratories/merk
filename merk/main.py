@@ -2902,8 +2902,14 @@ class Merk(QMainWindow):
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(SERVER_ICON))
 					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+
+					if self.dark_mode:
+						tcolor = HTML_RED_COLOR_DARK_MODE
+					else:
+						tcolor = HTML_RED_COLOR
+
 					msgBox.setText(f"""
-						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
+						<span style="color: {tcolor};"><b>You are already connected to <u>{connection.host}:{connection.port}</u></b>!</span><br><br>
 
 						Are you sure you want to connect to this server again?
 						""")
@@ -3012,8 +3018,14 @@ class Merk(QMainWindow):
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(SERVER_ICON))
 					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+
+					if self.dark_mode:
+						tcolor = HTML_RED_COLOR_DARK_MODE
+					else:
+						tcolor = HTML_RED_COLOR
+
 					msgBox.setText(f"""
-						You are already connected to <b>{connection.host}:{connection.port}</b>!<br><br>
+						<span style="color: {tcolor};"><b>You are already connected to <u>{connection.host}:{connection.port}</u></b>!</span><br><br>
 
 						Are you sure you want to connect to this server again?
 						""")

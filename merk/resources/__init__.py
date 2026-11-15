@@ -49,8 +49,188 @@ from .release import *
 from .example_plugin import *
 from .asciimoji import *
 
-# Load in resource file
+# |====================|
+# | RESOURCE FILE DATA |
+# |====================|
+
+# |-----------------------|
+# | Load in resource file |
+# |-----------------------|
+
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
+
+# |------------------------|
+# | Light mode 96x96 icons |
+# |------------------------|
+
+ROUND_UNCHECKED_ICON				= ":/icon-runchecked.png"
+ROUND_CHECKED_ICON					= ":/icon-rchecked.png"
+CHECKED_ICON						= ":/icon-checked.png"
+UNCHECKED_ICON						= ":/icon-unchecked.png"
+OPTIONS_ICON						= ":/icon-options.png"
+MDI_BACKGROUND						= ":/gui-background.png"
+
+# |-----------------------|
+# | Dark mode 96x96 icons |
+# |-----------------------|
+
+DARK_ROUND_UNCHECKED_ICON			= ":/icon-dark_runchecked.png"
+DARK_ROUND_CHECKED_ICON				= ":/icon-dark_rchecked.png"
+DARK_CHECKED_ICON					= ":/icon-dark_checked.png"
+DARK_UNCHECKED_ICON					= ":/icon-dark_unchecked.png"
+DARK_OPTIONS_ICON					= ":/icon-dark_options.png"
+DARK_MDI_BACKGROUND					= ":/gui-dark_background.png"
+
+# |-------------|
+# | 48x48 icons |
+# |-------------|
+
+BOLD_ICON							= ":/icon-bold.png"
+ITALIC_ICON							= ":/icon-italic.png"
+LENGTH_ICON							= ":/icon-length.png"
+KICK_ICON							= ":/icon-kick.png"
+BAN_ICON							= ":/icon-ban.png"
+CLIPBOARD_ICON						= ":/icon-clipboard.png"
+FONT_ICON							= ":/icon-font.png"
+MESSAGE_ICON						= ":/icon-message.png"
+FOLDER_ICON							= ":/icon-folder.png"
+DICTIONARY_ICON						= ":/icon-dictionary.png"
+NEWFILE_ICON						= ":/icon-new_file.png"
+OPENFILE_ICON						= ":/icon-file_open.png"
+SAVEFILE_ICON						= ":/icon-save_file.png"
+SAVEASFILE_ICON						= ":/icon-save_as.png"
+UNDO_ICON							= ":/icon-undo.png"
+REDO_ICON							= ":/icon-redo.png"
+CUT_ICON							= ":/icon-cut.png"
+COPY_ICON							= ":/icon-copy.png"
+SELECTALL_ICON						= ":/icon-select_all.png"
+CLEAR_ICON							= ":/icon-clear.png"
+NOTIFICATION_ICON					= ":/icon-notifications.png"
+DISCONNECT_WINDOW_ICON				= ":/icon-disconnect_window.png"
+SUBWINDOW_ICON						= ":/icon-subwindow.png"
+REFRESH_ICON						= ":/icon-refresh.png"
+TILE_ICON							= ":/icon-tile.png"
+CASCADE_ICON						= ":/icon-cascade.png"
+GO_AWAY_ICON						= ":/icon-go_away.png"
+GO_BACK_ICON						= ":/icon-go_back.png"
+SHOW_ICON							= ":/icon-show.png"
+EXE_ICON							= ":/icon-exe.png"
+SPELLCHECK_ICON						= ":/icon-spellcheck.png"
+MENU_ICON							= ":/icon-menu.png"
+WINDOW_ICON							= ":/icon-window.png"
+SYSTRAY_ICON						= ":/icon-tray.png"
+MISC_ICON							= ":/icon-misc.png"
+HIDE_WINDOW_ICON					= ":/icon-hide_window.png"
+TOOLS_ICON							= ":/icon-tools.png"
+IMPORT_ICON							= ":/icon-import.png"
+EXPORT_ICON							= ":/icon-export.png"
+PLAY_ICON							= ":/icon-play.png"
+PAUSE_ICON							= ":/icon-pause.png"
+CURSOR_ICON							= ":/icon-cursor.png"
+IMAGE_ICON							= ":/icon-image.png"
+RELOAD_ICON							= ":/icon-reload.png"
+COLOR_ICON							= ":/icon-color.png"
+LIGHTBULB_ICON						= ":/icon-lightbulb.png"
+DOWN_ICON							= ":/icon-down.png"
+UP_ICON								= ":/icon-up.png"
+APPLICATION_ICON					= ":/icon-app.png"
+ADVANCED_ICON						= ":/icon-warn.png"
+PLUGIN_ICON							= ":/icon-plugin.png"
+SERVER_ICON							= ":/icon-server.png"
+QT_ICON								= ":/icon-qt.png"
+PYTHON_ICON							= ":/icon-python.png"
+TWISTED_BUTTON_ICON					= ":/icon-twisted_button.png"
+PYINSTALLER_ICON					= ":/icon-pyinstaller.png"
+PYQT_ICON							= ":/icon-pyqt.png"
+PLUS_ICON							= ":/icon-plus.png"
+MINUS_ICON							= ":/icon-minus.png"
+SORT_ICON							= ":/icon-sort.png"
+
+# |------------------------------|
+# | User list status 48x48 icons |
+# |------------------------------|
+
+ADMIN_USER							= ":/gui-admin.png"
+HALFOP_USER							= ":/gui-halfop.png"
+OP_USER								= ":/gui-op.png"
+OWNER_USER							= ":/gui-owner.png"
+VOICE_USER							= ":/gui-voice.png"
+NORMAL_USER							= ":/gui-normal.png"
+PROTECTED_USER						= ":/gui-protected.png"
+
+# |---------------------------------------|
+# | User list status 48x48 icons for bots |
+# |---------------------------------------|
+
+BOT_ADMIN_USER						= ":/gui-b_admin.png"
+BOT_HALFOP_USER						= ":/gui-b_halfop.png"
+BOT_OP_USER							= ":/gui-b_op.png"
+BOT_OWNER_USER						= ":/gui-b_owner.png"
+BOT_VOICE_USER						= ":/gui-b_voice.png"
+BOT_NORMAL_USER						= ":/gui-b_normal.png"
+BOT_NORMAL_USER_DARK				= ":/gui-b_normal_dark.png"
+BOT_PROTECTED_USER					= ":/gui-b_protected.png"
+
+# |-------------|
+# | 32x32 icons |
+# |-------------|
+
+PREVIOUS_ICON						= ":/icon-previous.png"
+CLOSE_ICON							= ":/icon-close.png"
+VISITED_BOOKMARK_ICON				= ":/icon-visited_bookmark.png"
+VISITED_SECURE_ICON					= ":/icon-visited_secure.png"
+BOOKMARK_ICON						= ":/icon-bookmark.png"
+SECURE_ICON							= ":/icon-secure.png"
+SEARCH_ICON							= ":/icon-search.png"
+QUIT_ICON							= ":/icon-quit.png"
+EDIT_ICON							= ":/icon-edit.png"
+NEXT_ICON							= ":/icon-next.png"
+TIMESTAMP_ICON						= ":/icon-timestamp.png"
+NETWORK_MENU_ICON					= ":/icon-network_menu.png"
+
+# |-------------|
+# | 24x24 icons |
+# |-------------|
+
+SCRIPT_MENU_ICON					= ":/icon-script_menu.png"
+SETTINGS_MENU_ICON					= ":/icon-settings_menu.png"
+STYLE_MENU_ICON						= ":/icon-style_menu.png"
+LOG_MENU_ICON						= ":/icon-log_menu.png"
+APPLICATION_MENU_ICON				= ":/icon-app_menu.png"
+PRIVATE_MENU_ICON					= ":/icon-private_menu.png"
+CONNECT_MENU_ICON					= ":/icon-connect_menu.png"
+DISCONNECT_MENU_ICON				= ":/icon-disconnect_menu.png"
+CHANNEL_MENU_ICON					= ":/icon-channel_menu.png"
+README_MENU_ICON					= ":/icon-readme_menu.png"
+INFO_MENU_ICON						= ":/icon-info_menu.png"
+HOTKEY_MENU_ICON					= ":/icon-hotkey_menu.png"
+HIDE_MENU_ICON						= ":/icon-hide_menu.png"
+PLUGIN_MENU_ICON					= ":/icon-plugin_menu.png"
+LINK_MENU_ICON						= ":/icon-link_menu.png"
+PDF_MENU_ICON						= ":/icon-pdf_menu.png"
+USER_MENU_ICON						= ":/icon-user_menu.png"
+CONSOLE_WINDOW_ICON					= ":/icon-console_menu.png"
+PRIVATE_WINDOW_ICON					= ":/icon-private_menu.png"
+CHANNEL_WINDOW_ICON					= ":/icon-channel_menu.png"
+
+# |--------------|
+# | GUI elements |
+# |--------------|
+
+SPLASH_LOGO							= ":/gui-splash.png"
+DISCONNECT_DIALOG_IMAGE				= ":/gui-disconnect_dialog.png"
+HORIZONTAL_DOTTED_BACKGROUND		= ":/gui-horizontal_dotted.png"
+HORIZONTAL_RULE_BACKGROUND			= ":/gui-horizontal_rule.png"
+LIGHT_HORIZONTAL_DOTTED_BACKGROUND	= ":/gui-light_horizontal_dotted.png"
+LIGHT_HORIZONTAL_RULE_BACKGROUND	= ":/gui-light_horizontal_rule.png"
+COFFEE_LOGO							= ":/gui-coffee.png"
+SPLASH_FULL_LOGO					= ":/gui-splash_full.png"
+
+# |----------------------------|
+# | Default notification sound |
+# |----------------------------|
+
+BELL_NOTIFICATION					= ":/sound-notification.wav"
 
 # |===========|
 # | CONSTANTS |
@@ -138,6 +318,7 @@ IRC_COLORS = {
 }
 
 # Window types
+
 CHANNEL_WINDOW = 0
 SERVER_WINDOW = 1
 PRIVATE_WINDOW = 2
@@ -154,6 +335,7 @@ TIPS_WINDOW = 12
 LOGDUMP_WINDOW = 13
 
 # Message types
+
 SYSTEM_MESSAGE = 0
 ERROR_MESSAGE = 1
 ACTION_MESSAGE = 2
@@ -170,11 +352,13 @@ WHOIS_MESSAGE = 12
 DATE_MESSAGE = 13
 
 # Shortcut error codes
+
 GOOD_SHORTCUT = 0
 BAD_SHORTCUT = 1
 SHORTCUT_IN_USE = 2
 
 # Error codes
+
 INVALID_STYLE = 1
 INVALID_JUSTIFY = 2
 INVALID_COLOR = 3
@@ -194,6 +378,7 @@ INVALID_CODEC = 16
 ALL_VALID_SETTINGS = 0
 
 # Plugin method error codes
+
 EVENT_METHOD = 0
 BUILT_IN_METHOD = 1
 NO_METHOD = 2
@@ -201,6 +386,7 @@ VALID_METHOD = 3
 INVALID_METHOD = 4
 
 # Scripting constants
+
 READ_OPERATION = 0
 WRITE_OPERATION = 1
 APPEND_OPERATION = 2
@@ -213,15 +399,24 @@ FILE_DIALOG = 4
 DECIMAL_DIALOG = 5
 
 # Help display templates
-HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
-HELP_ENTRY_COMMAND_TEMPLATE='''%_USAGE_%&nbsp;&nbsp;-&nbsp;&nbsp;%_DESCRIPTION_%'''
+
+USAGE_TEMPLATE_TAG			= '%_USAGE_%'
+DESCRIPTION_TEMPLATE_TAG	= '%_DESCRIPTION_%'
+PREFIX_TEMPLATE_TAG			= "%_PREFIX_%"
+POSTFIX_TEMPLATE_TAG		= "%_POSTFIX_%"
+AUTOCOMPLETE_TEMPLATE_TAG	= "%_AUTOCOMPLETE_%"
+COMMAND_LIST_TEMPLATE_TAG	= "%_LIST_%"
+ENDING_TEMPLATE_TAG			= "%_ENDING_%"
+
+HELP_ENTRY_TEMPLATE=f'''<tr><td>{USAGE_TEMPLATE_TAG}&nbsp;</td><td>{DESCRIPTION_TEMPLATE_TAG}</td></tr>'''
+HELP_ENTRY_COMMAND_TEMPLATE=f'''{USAGE_TEMPLATE_TAG}&nbsp;&nbsp;-&nbsp;&nbsp;{DESCRIPTION_TEMPLATE_TAG}'''
 
 HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 	<tbody>
 				<tr>
 					<td><center><b>{APPLICATION_NAME} Commands</b></center></td>
 				</tr>
-				%_PREFIX_%
+				{PREFIX_TEMPLATE_TAG}
 				<tr>
 					<td><small>
 					Arguments inside brackets are optional. If called from a channel window,
@@ -229,44 +424,48 @@ HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 					Commands that take the optional <b>SERVER</b> argument accept either the
 					name of the host connected to, or the hostname and port of the connection
 					in the format <b>HOST:PORT</b>. Commands that take the optional <b>WINDOW</b>
-					argument can reference the server window by setting <b>WINDOW</b> to <b>*</b>.
-					%_AUTOCOMPLETE_%
+					argument can reference the server window by setting <b>WINDOW</b> to <b>&</b>.
+					{AUTOCOMPLETE_TEMPLATE_TAG}
 					</small></td>
 				</tr>
-				%_POSTFIX_%
+				{POSTFIX_TEMPLATE_TAG}
 				<tr><td>&nbsp;</center></td></tr>
 				<tr>
 					<td>
 						<table style="width: 100%" border="0">
 							<tbody>
-								%_LIST_%
+								{COMMAND_LIST_TEMPLATE_TAG}
 							</tbody>
 						</table>
 					</td>
 				</tr>
-				%_ENDING_%
+				{ENDING_TEMPLATE_TAG}
 			</tbody>
 		</table>'''
 
-EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace("%_VERSION_%", f"{APPLICATION_NAME} {APPLICATION_VERSION}")
-pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
-EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace("%_DATE_%", f"{pretty_timestamp}")
+# Plugin generation templates
 
-DEFAULT_PLUGIN_README = f"""%_NAME_% %_VERSION_%
-By %_AUTHOR_%
-%_URL_%
+PLUGIN_VERSION_TEMPLATE_TAG = "%_VERSION_%"
+PLUGIN_DATE_TEMPLATE_TAG	= "%_DATE_%"
+PLUGIN_NAME_TEMPLATE_TAG	= "%_NAME_%"
+PLUGIN_AUTHOR_TEMPLATE_TAG	= "%_AUTHOR_%"
+PLUGIN_URL_TEMPLATE_TAG		= "%_URL_%"
+
+EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_VERSION_TEMPLATE_TAG, f"{APPLICATION_NAME} {APPLICATION_VERSION}")
+EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_DATE_TEMPLATE_TAG, f"{datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')}")
+
+DEFAULT_PLUGIN_README = f"""%_NAME_% {PLUGIN_VERSION_TEMPLATE_TAG}
+By {PLUGIN_AUTHOR_TEMPLATE_TAG}
+{PLUGIN_URL_TEMPLATE_TAG}
 Generated by {APPLICATION_NAME} {APPLICATION_VERSION}
-Exported on %_DATE_%
+Exported on {PLUGIN_DATE_TEMPLATE_TAG}
 
 This contains a plugin for the {APPLICATION_NAME} Internet Relay Chat client.
 
-Install this plugin with {APPLICATION_NAME}'s Plugin Manager, or extract this
-ZIP into {APPLICATION_NAME}'s plugin directory.
+Install this plugin with {APPLICATION_NAME}'s Plugin Manager, or extract this ZIP into {APPLICATION_NAME}'s plugin directory.
 """
 
 # Other constants
-
-UNKNOWN_NETWORK = "UNKNOWN"
 
 CHAT_WINDOW_WIDGET_SPACING = 5
 
@@ -321,157 +520,10 @@ OPTION_BUTTON_BUTTON_SIZE = 15
 
 CHANNEL_STATUS_ICON_SIZE_PERCENT = 0.75
 
-CID_ITEM_ADDON_HEIGHT = 4
+CHANNEL_ID_ITEM_ADDON_HEIGHT = 4
 
-# |=================|
-# | ICONS AND MEDIA |
-# |=================|
-
-# Light mode 96x96 icons
-ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
-ROUND_CHECKED_ICON = ":/icon-rchecked.png"
-CHECKED_ICON = ":/icon-checked.png"
-UNCHECKED_ICON = ":/icon-unchecked.png"
-OPTIONS_ICON = ":/icon-options.png"
-MDI_BACKGROUND = ":/gui-background.png"
-
-# Dark mode 96x96 icons
-DARK_ROUND_UNCHECKED_ICON = ":/icon-dark_runchecked.png"
-DARK_ROUND_CHECKED_ICON = ":/icon-dark_rchecked.png"
-DARK_CHECKED_ICON = ":/icon-dark_checked.png"
-DARK_UNCHECKED_ICON = ":/icon-dark_unchecked.png"
-DARK_OPTIONS_ICON = ":/icon-dark_options.png"
-DARK_MDI_BACKGROUND = ":/gui-dark_background.png"
-
-# 48x48 icons
-BOLD_ICON = ":/icon-bold.png"
-ITALIC_ICON = ":/icon-italic.png"
-LENGTH_ICON = ":/icon-length.png"
-KICK_ICON = ":/icon-kick.png"
-BAN_ICON = ":/icon-ban.png"
-CLIPBOARD_ICON = ":/icon-clipboard.png"
-FONT_ICON = ":/icon-font.png"
-MESSAGE_ICON = ":/icon-message.png"
-FOLDER_ICON = ":/icon-folder.png"
-DICTIONARY_ICON = ":/icon-dictionary.png"
-NEWFILE_ICON = ":/icon-new_file.png"
-OPENFILE_ICON = ":/icon-file_open.png"
-SAVEFILE_ICON = ":/icon-save_file.png"
-SAVEASFILE_ICON = ":/icon-save_as.png"
-UNDO_ICON = ":/icon-undo.png"
-REDO_ICON = ":/icon-redo.png"
-CUT_ICON = ":/icon-cut.png"
-COPY_ICON = ":/icon-copy.png"
-SELECTALL_ICON = ":/icon-select_all.png"
-CLEAR_ICON = ":/icon-clear.png"
-NOTIFICATION_ICON = ":/icon-notifications.png"
-DISCONNECT_WINDOW_ICON = ":/icon-disconnect_window.png"
-SUBWINDOW_ICON = ":/icon-subwindow.png"
-REFRESH_ICON = ":/icon-refresh.png"
-TILE_ICON = ":/icon-tile.png"
-CASCADE_ICON = ":/icon-cascade.png"
-GO_AWAY_ICON = ":/icon-go_away.png"
-GO_BACK_ICON = ":/icon-go_back.png"
-SHOW_ICON = ":/icon-show.png"
-EXE_ICON = ":/icon-exe.png"
-SPELLCHECK_ICON = ":/icon-spellcheck.png"
-MENU_ICON = ":/icon-menu.png"
-WINDOW_ICON = ":/icon-window.png"
-SYSTRAY_ICON = ":/icon-tray.png"
-MISC_ICON = ":/icon-misc.png"
-HIDE_WINDOW_ICON = ":/icon-hide_window.png"
-TOOLS_ICON = ":/icon-tools.png"
-IMPORT_ICON = ":/icon-import.png"
-EXPORT_ICON = ":/icon-export.png"
-PLAY_ICON = ":/icon-play.png"
-PAUSE_ICON = ":/icon-pause.png"
-CURSOR_ICON = ":/icon-cursor.png"
-IMAGE_ICON = ":/icon-image.png"
-RELOAD_ICON = ":/icon-reload.png"
-COLOR_ICON = ":/icon-color.png"
-LIGHTBULB_ICON = ":/icon-lightbulb.png"
-DOWN_ICON = ":/icon-down.png"
-UP_ICON = ":/icon-up.png"
-APPLICATION_ICON = ":/icon-app.png"
-ADVANCED_ICON = ":/icon-warn.png"
-PLUGIN_ICON = ":/icon-plugin.png"
-SERVER_ICON = ":/icon-server.png"
-QT_ICON = ":/icon-qt.png"
-PYTHON_ICON = ":/icon-python.png"
-TWISTED_BUTTON_ICON = ":/icon-twisted_button.png"
-PYINSTALLER_ICON = ":/icon-pyinstaller.png"
-PYQT_ICON = ":/icon-pyqt.png"
-PLUS_ICON = ":/icon-plus.png"
-MINUS_ICON = ":/icon-minus.png"
-SORT_ICON = ":/icon-sort.png"
-
-# User list status 48x48 icons
-ADMIN_USER = ":/gui-admin.png"
-HALFOP_USER = ":/gui-halfop.png"
-OP_USER = ":/gui-op.png"
-OWNER_USER = ":/gui-owner.png"
-VOICE_USER = ":/gui-voice.png"
-NORMAL_USER = ":/gui-normal.png"
-PROTECTED_USER = ":/gui-protected.png"
-
-# User list status 48x48 icons for bots
-BOT_ADMIN_USER = ":/gui-b_admin.png"
-BOT_HALFOP_USER = ":/gui-b_halfop.png"
-BOT_OP_USER = ":/gui-b_op.png"
-BOT_OWNER_USER = ":/gui-b_owner.png"
-BOT_VOICE_USER = ":/gui-b_voice.png"
-BOT_NORMAL_USER = ":/gui-b_normal.png"
-BOT_NORMAL_USER_DARK = ":/gui-b_normal_dark.png"
-BOT_PROTECTED_USER = ":/gui-b_protected.png"
-
-# 32x32 icons
-PREVIOUS_ICON = ":/icon-previous.png"
-CLOSE_ICON = ":/icon-close.png"
-VISITED_BOOKMARK_ICON = ":/icon-visited_bookmark.png"
-VISITED_SECURE_ICON = ":/icon-visited_secure.png"
-BOOKMARK_ICON = ":/icon-bookmark.png"
-SECURE_ICON = ":/icon-secure.png"
-SEARCH_ICON = ":/icon-search.png"
-QUIT_ICON = ":/icon-quit.png"
-EDIT_ICON = ":/icon-edit.png"
-NEXT_ICON = ":/icon-next.png"
-TIMESTAMP_ICON = ":/icon-timestamp.png"
-NETWORK_MENU_ICON = ":/icon-network_menu.png"
-
-# 24x24 icons
-SCRIPT_MENU_ICON = ":/icon-script_menu.png"
-SETTINGS_MENU_ICON = ":/icon-settings_menu.png"
-STYLE_MENU_ICON = ":/icon-style_menu.png"
-LOG_MENU_ICON = ":/icon-log_menu.png"
-APPLICATION_MENU_ICON = ":/icon-app_menu.png"
-PRIVATE_MENU_ICON = ":/icon-private_menu.png"
-CONNECT_MENU_ICON = ":/icon-connect_menu.png"
-DISCONNECT_MENU_ICON = ":/icon-disconnect_menu.png"
-CHANNEL_MENU_ICON = ":/icon-channel_menu.png"
-README_MENU_ICON = ":/icon-readme_menu.png"
-INFO_MENU_ICON = ":/icon-info_menu.png"
-HOTKEY_MENU_ICON = ":/icon-hotkey_menu.png"
-HIDE_MENU_ICON = ":/icon-hide_menu.png"
-PLUGIN_MENU_ICON = ":/icon-plugin_menu.png"
-LINK_MENU_ICON = ":/icon-link_menu.png"
-PDF_MENU_ICON = ":/icon-pdf_menu.png"
-USER_MENU_ICON = ":/icon-user_menu.png"
-CONSOLE_WINDOW_ICON = ":/icon-console_menu.png"
-PRIVATE_WINDOW_ICON = ":/icon-private_menu.png"
-CHANNEL_WINDOW_ICON = ":/icon-channel_menu.png"
-
-# GUI elements
-SPLASH_LOGO = ":/gui-splash.png"
-DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
-HORIZONTAL_DOTTED_BACKGROUND = ":/gui-horizontal_dotted.png"
-HORIZONTAL_RULE_BACKGROUND = ":/gui-horizontal_rule.png"
-LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
-LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
-COFFEE_LOGO = ":/gui-coffee.png"
-SPLASH_FULL_LOGO = ":/gui-splash_full.png"
-
-# Default notification sound
-BELL_NOTIFICATION = ":/sound-notification.wav"
+HTML_RED_COLOR = "red"
+HTML_RED_COLOR_DARK_MODE = "lightcoral"
 
 # |=========|
 # | CLASSES |

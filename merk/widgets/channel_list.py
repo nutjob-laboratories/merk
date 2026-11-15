@@ -68,7 +68,7 @@ class Window(QMainWindow):
 			else:
 				self.setWindowTitle(f"Channels on {self.server_name} ({self.client.network})")
 		else:
-			self.network = config.UNKNOWN_NETWORK_NAME.capitalize()+" network"
+			self.network = "Unknown network"
 			self.setWindowTitle(f"Channels on {self.server_name}")
 
 		self.window_type = LIST_WINDOW

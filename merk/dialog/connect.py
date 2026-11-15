@@ -131,6 +131,16 @@ class Dialog(QDialog):
 		if self.check_input():
 
 			user_history = list(user.HISTORY)
+
+			# The "no network" tag for servers that don't have
+			# a network was being changed in the user file; here,
+			# we change it back  to config.UNKNOWN_NETWORK_NAME
+			updated = []
+			for u in user_history:
+				if u[2]=="No network": u[2] = config.UNKNOWN_NETWORK_NAME
+				updated.append(u)
+			user_history = updated
+
 			hostid = self.host.text()+":"+self.port.text()
 
 			if self.use_SASL:
@@ -730,7 +740,7 @@ class Dialog(QDialog):
 		serverInfoLayout = QVBoxLayout()
 		if self.not_simplified:
 			serverInfoLayout.addWidget(self.serverDescription)
-			serverInfoLayout.addWidget(QLabel(' '))
+			serverInfoLayout.addStretch()
 		else:
 			serverInfoLayout.addStretch()
 		serverInfoLayout.addWidget(self.servers)
@@ -869,12 +879,25 @@ class Dialog(QDialog):
 
 		if self.disconnect_message!='':
 
-			discoMessage = QLabel(f"""
-				<center>
-					<b><div style="color: red;" alt="{self.reason}">{self.disconnect_message}</div></b><br>
-					<small><b>Please select another server below.</b></small>
-				</center>
-				""")
+			if self.dark_mode:
+				tcolor = HTML_RED_COLOR_DARK_MODE
+			else:
+				tcolor = HTML_RED_COLOR
+
+			if self.reason!=self.disconnect_message:
+				discoMessage = QLabel(f"""
+					<center>
+						<b><div style="color: {tcolor};">{self.disconnect_message}</div></b><br>
+						<small><i>{self.reason}</i></small><br>
+					</center>
+					""")
+			else:
+				discoMessage = QLabel(f"""
+					<center>
+						<b><div style="color: {tcolor};">{self.disconnect_message}</div></b><br>
+						<small><b>Please select another server below.</b></small>
+					</center>
+					""")
 
 			bannerTabs = QVBoxLayout()
 			bannerTabs.setSpacing(0)
@@ -1015,6 +1038,7 @@ class Dialog(QDialog):
 
 		for s in finallist:
 			if s[0]:
+				if s[1][2]==config.UNKNOWN_NETWORK_NAME: s[1][2] = "No network"
 				if s[1][3].lower()=='ssl':
 					self.servers.addItem(QIcon(VISITED_SECURE_ICON),s[1][2]+" - "+s[1][0])
 				else:

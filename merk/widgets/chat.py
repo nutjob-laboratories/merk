@@ -473,13 +473,13 @@ class Window(QMainWindow):
 			self.channel_mode_display.setStyleSheet(f"border: {MODE_AND_USER_DISPLAY_BORDER} {border_color}; padding: {MODE_AND_USER_DISPLAY_PADDING};")
 			self.channel_mode_display.setContextMenuPolicy(Qt.CustomContextMenu)
 			self.channel_mode_display.customContextMenuRequested.connect(self.buildOperatorMenu)
-			self.channel_mode_display.setFixedHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_mode_display.setFixedHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
 
 			# Channel users display
 			self.channel_users_display = QLabel("<b><small>1</small></b>")
 			self.channel_users_display.setStyleSheet(f"border: {MODE_AND_USER_DISPLAY_BORDER} {border_color}; padding: {MODE_AND_USER_DISPLAY_PADDING};")
 			self.channel_users_display.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
-			self.channel_users_display.setFixedHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_users_display.setFixedHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
 			
 			# Create topic editor
 			self.topic = TopicEdit(self)
@@ -788,14 +788,19 @@ class Window(QMainWindow):
 			# Here, we display the server the chat window is associated
 			# with, as well as how the client is connected to it (using
 			# SSL/TLS or not) and other information
-			if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
-				netlink = get_network_link(self.client.network)
-				if netlink!=None:
-					self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> (<a href=\"{netlink}\">{self.client.network}</a>){cid}</small>")
+
+			if self.client.network!=config.UNKNOWN_NETWORK_NAME:
+				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+					netlink = get_network_link(self.client.network)
+					if netlink!=None:
+						self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> (<a href=\"{netlink}\">{self.client.network}</a>){cid}</small>")
+					else:
+						self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> ({self.client.network}){cid}</small>")
 				else:
 					self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> ({self.client.network}){cid}</small>")
 			else:
-				self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> ({self.client.network}){cid}</small>")
+				self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b>{cid}</small>")
+			
 			self.status_server.setOpenExternalLinks(True)
 			self.status.addPermanentWidget(self.status_server,0)
 
@@ -2051,18 +2056,18 @@ class Window(QMainWindow):
 		fm = self.fontMetrics()
 
 		if hasattr(self,"channel_mode_display"):
-			self.channel_mode_display.setMinimumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
-			self.channel_mode_display.setMaximumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_mode_display.setMinimumHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
+			self.channel_mode_display.setMaximumHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
 			self.channel_mode_display.updateGeometry()
 
 		if hasattr(self,"channel_users_display"):
-			self.channel_users_display.setMinimumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
-			self.channel_users_display.setMaximumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.channel_users_display.setMinimumHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
+			self.channel_users_display.setMaximumHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
 			self.channel_users_display.updateGeometry()
 
 		if hasattr(self,"topic"):
-			self.topic.setMinimumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
-			self.topic.setMaximumHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+			self.topic.setMinimumHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
+			self.topic.setMaximumHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
 			self.topic.updateGeometry()
 
 		if hasattr(self,"input"):
@@ -4599,7 +4604,7 @@ class TopicEdit(QPlainTextEdit):
 		self.is_enabled = True
 
 		fm = self.fontMetrics()
-		self.setFixedHeight(fm.height()+CID_ITEM_ADDON_HEIGHT)
+		self.setFixedHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
 		self.setWordWrapMode(QTextOption.NoWrap)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

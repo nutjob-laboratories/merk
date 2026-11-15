@@ -620,32 +620,32 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	global HELP_DISPLAY_TEMPLATE
 	if config.AUTOCOMPLETE_COMMANDS:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command.")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(AUTOCOMPLETE_TEMPLATE_TAG,"Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command.")
 	else:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned off.")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(AUTOCOMPLETE_TEMPLATE_TAG,"Command autocomplete is turned off.")
 
 	if HELP_PREFIX!=None:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_PREFIX_%","<tr><td><small>"+HELP_PREFIX+"</small></td></tr>")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(PREFIX_TEMPLATE_TAG,"<tr><td><small>"+HELP_PREFIX+"</small></td></tr>")
 	else:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_PREFIX_%","")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(PREFIX_TEMPLATE_TAG,"")
 
 	if HELP_POSTFIX!=None:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_POSTFIX_%","<tr><td><small>"+HELP_POSTFIX+"</small></td></tr>")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(POSTFIX_TEMPLATE_TAG,"<tr><td><small>"+HELP_POSTFIX+"</small></td></tr>")
 	else:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_POSTFIX_%","")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(POSTFIX_TEMPLATE_TAG,"")
 
 	if HELP_EPILOGUE!=None:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_ENDING_%","<tr><td>&nbsp;</center></td></tr><tr><td><small>"+HELP_EPILOGUE+"</small></td></tr>")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(ENDING_TEMPLATE_TAG,"<tr><td>&nbsp;</center></td></tr><tr><td><small>"+HELP_EPILOGUE+"</small></td></tr>")
 	else:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_ENDING_%","")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(ENDING_TEMPLATE_TAG,"")
 
 	hdisplay = []
 	for e in COMMAND_HELP_INFORMATION:
 		t = HELP_ENTRY_TEMPLATE
-		t = t.replace("%_USAGE_%",e[0])
-		t = t.replace("%_DESCRIPTION_%",e[1])
+		t = t.replace(USAGE_TEMPLATE_TAG,e[0])
+		t = t.replace(DESCRIPTION_TEMPLATE_TAG,e[1])
 		hdisplay.append(t)
-	help_display = HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
+	help_display = HELP_DISPLAY_TEMPLATE.replace(COMMAND_LIST_TEMPLATE_TAG,"\n".join(hdisplay))
 
 	HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
@@ -9005,8 +9005,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			for entry in COMMAND_HELP_INFORMATION:
 				if cmd in entry[0]:
 					h = HELP_ENTRY_COMMAND_TEMPLATE
-					h = h.replace("%_USAGE_%",entry[0])
-					h = h.replace("%_DESCRIPTION_%",entry[1])
+					h = h.replace(USAGE_TEMPLATE_TAG,entry[0])
+					h = h.replace(DESCRIPTION_TEMPLATE_TAG,entry[1])
 					t = Message(SYSTEM_MESSAGE,'',h)
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					found = True
@@ -9015,11 +9015,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			for entry in MACRO_USAGE:
 				if cmd==entry:
 					h = HELP_ENTRY_COMMAND_TEMPLATE
-					h = h.replace("%_USAGE_%",MACRO_USAGE[entry])
+					h = h.replace(USAGE_TEMPLATE_TAG,MACRO_USAGE[entry])
 					if entry in MACRO_HELP:
-						h = h.replace("%_DESCRIPTION_%",MACRO_HELP[entry])
+						h = h.replace(DESCRIPTION_TEMPLATE_TAG,MACRO_HELP[entry])
 					else:
-						h = h.replace("%_DESCRIPTION_%",f"Executes script \"{USER_MACROS[entry].script}\"")
+						h = h.replace(DESCRIPTION_TEMPLATE_TAG,f"Executes script \"{USER_MACROS[entry].script}\"")
 					t = Message(SYSTEM_MESSAGE,'',h)
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					found = True

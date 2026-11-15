@@ -374,7 +374,7 @@ MANAGERS_ALWAYS_ON_TOP = True
 SCRIPT_THREAD_QUIT_TIMEOUT = 1000
 PRINT_SCRIPT_ERRORS_TO_STDOUT = False
 SAVE_CONNECTION_HISTORY = True
-UNKNOWN_NETWORK_NAME = "Unknown"
+UNKNOWN_NETWORK_NAME = "[NO_NETWORK]"
 WINDOWBAR_TOPIC_IN_TOOLTIP = False
 EXECUTE_INIT_ON_PLUGIN_RELOAD = True
 CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = True
@@ -607,7 +607,7 @@ def build_settings():
 		"clear_plugins_from_memory_on_reload": CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD,
 		"execute_init_event_on_plugin_reload": EXECUTE_INIT_ON_PLUGIN_RELOAD,
 		"windowbar_channel_topic_in_tooltip": WINDOWBAR_TOPIC_IN_TOOLTIP,
-		"unknown_network_name": UNKNOWN_NETWORK_NAME,
+		"no_network_identifier": UNKNOWN_NETWORK_NAME,
 		"save_connection_history": SAVE_CONNECTION_HISTORY,
 		"print_script_errors_to_stdout": PRINT_SCRIPT_ERRORS_TO_STDOUT,
 		"script_thread_quit_timeout": SCRIPT_THREAD_QUIT_TIMEOUT,
@@ -1170,8 +1170,8 @@ def patch_settings(settings):
 		settings["execute_init_event_on_plugin_reload"] = EXECUTE_INIT_ON_PLUGIN_RELOAD
 	if not "windowbar_channel_topic_in_tooltip" in settings:
 		settings["windowbar_channel_topic_in_tooltip"] = WINDOWBAR_TOPIC_IN_TOOLTIP
-	if not "unknown_network_name" in settings:
-		settings["unknown_network_name"] = UNKNOWN_NETWORK_NAME
+	if not "no_network_identifier" in settings:
+		settings["no_network_identifier"] = UNKNOWN_NETWORK_NAME
 	if not "save_connection_history" in settings:
 		settings["save_connection_history"] = SAVE_CONNECTION_HISTORY
 	if not "print_script_errors_to_stdout" in settings:
@@ -2401,7 +2401,7 @@ def load_settings(filename):
 		CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = settings["clear_plugins_from_memory_on_reload"]
 		EXECUTE_INIT_ON_PLUGIN_RELOAD = settings["execute_init_event_on_plugin_reload"]
 		WINDOWBAR_TOPIC_IN_TOOLTIP = settings["windowbar_channel_topic_in_tooltip"]
-		UNKNOWN_NETWORK_NAME = settings["unknown_network_name"]
+		UNKNOWN_NETWORK_NAME = settings["no_network_identifier"]
 		SAVE_CONNECTION_HISTORY = settings["save_connection_history"]
 		PRINT_SCRIPT_ERRORS_TO_STDOUT = settings["print_script_errors_to_stdout"]
 		SCRIPT_THREAD_QUIT_TIMEOUT = settings["script_thread_quit_timeout"]

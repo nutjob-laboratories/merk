@@ -1,4 +1,33 @@
 |------------------------------------------------------------------------------|
+|                                    0.500.100                                 |
+|------------------------------------------------------------------------------|
+
+What's new:
+
+- **Connections to servers not in a network are now made clearer in the client**. Instead of "unknown", the client will no longer attempt to display a network name, and will just display the name of the server. Styles and logs for these connections will no longer be loaded, but are not deleted. Instead of "uknown" being used as the filename prefix for these files, the prefix "[no_network]" is used. The log files can still be viewed in the log viewer, under the "unknown" network, and style files can be loaded with the style editor so they do not have to be recreated. For connections to servers ON a network, nothing will change, and files will still be saved/loaded normally.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Bugfix: The "select a server" connection dialog that pops up when a connection
+  fails now shows the Twisted error message directly on the dialog. Previously,
+  the Twisted error message was "shown" in a fashion that would not be actually
+  visible to the user.
+* The "red" color in the connection dialog error message, the "advanced" section
+  of the "settings" dialog, and the log manager has now been set to the HTML
+  color "lightcoral" when the application is in "dark mode".
+* Tweaked the "you are already connected to this server" messagebox to use the
+  new "red" colors.
+* Major change to how servers that do NOT belong to a network are displayed.
+  From now on, servers that do not belong to a network will no longer have
+  the "uknown" tag displayed, and no attempt will be made by the client to
+  display a network name. The tag for "no network" has been changed in all
+  files, including in how styles and logs are saved. This changes how style and
+  log files are saved and loaded; the files are not deleted or changed, but may
+  need to be reloaded.
+
+|------------------------------------------------------------------------------|
 |                                    0.500.050                                 |
 |------------------------------------------------------------------------------|
 

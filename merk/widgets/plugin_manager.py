@@ -92,15 +92,15 @@ class Window(QMainWindow):
 						shutil.copy(ifileName, imported_file)
 
 			README = DEFAULT_PLUGIN_README
-			README = README.replace("%_NAME_%",item.NAME)
-			README = README.replace("%_VERSION_%",item.VERSION)
-			README = README.replace("%_AUTHOR_%",item.AUTHOR)
-			README = README.replace("%_URL_%",item.SOURCE)
+			README = README.replace(PLUGIN_NAME_TEMPLATE_TAG,item.NAME)
+			README = README.replace(PLUGIN_VERSION_TEMPLATE_TAG,item.VERSION)
+			README = README.replace(PLUGIN_AUTHOR_TEMPLATE_TAG,item.AUTHOR)
+			README = README.replace(PLUGIN_URL_TEMPLATE_TAG,item.SOURCE)
 			if config.SHOW_TIMESTAMPS_IN_UTC:
 				pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime('%m/%d/%Y')
 			else:
 				pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
-			README = README.replace("%_DATE_%", f"{pretty_timestamp}")
+			README = README.replace(PLUGIN_DATE_TEMPLATE_TAG, f"{pretty_timestamp}")
 
 			_, file_extension = os.path.splitext(fileName)
 			if file_extension=='':
