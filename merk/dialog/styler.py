@@ -350,18 +350,19 @@ class Dialog(QDialog):
 		self.setWindowIcon(QIcon(STYLE_MENU_ICON))
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
-
-		# First column
-		self.system_style = widgets.MiniStyler(	'system',		'<small><pre><b>System messages&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['system'],False,self)
-		self.link_style = widgets.MiniStyler(	'hyperlink',	'<small><pre><b>Hyperlinks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['hyperlink'],True,self)
-		self.self_style = widgets.MiniStyler(	'self',			'<small><pre><b>Your nickname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['self'],False,self)
-		self.action_style = widgets.MiniStyler(	'action',		'<small><pre><b>CTCP ACTION message</b></pre></small>',self.style['action'],False,self)
-		# Second column
-		self.error_style = widgets.MiniStyler(	'error',		'<small><pre>&nbsp;<b>Error message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['error'],False,self)
-		self.server_style = widgets.MiniStyler(	'server',		'<small><pre>&nbsp;<b>Server message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['server'],False,self)
-		self.user_style = widgets.MiniStyler(	'username',		'<small><pre>&nbsp;<b>Other nicknames&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['username'],False,self)
-		self.notice_style = widgets.MiniStyler(	'notice',		'<small><pre>&nbsp;<b>Notice nicknames&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['notice'],False,self)
 		
+		# First column
+		self.server_style = widgets.MiniStyler(	'server',		'<small><pre><b>Server message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['server'],False,self)
+		self.system_style = widgets.MiniStyler(	'system',		'<small><pre><b>System messages&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['system'],False,self)
+		self.error_style = widgets.MiniStyler(	'error',		'<small><pre><b>Error message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['error'],False,self)
+		self.notice_style = widgets.MiniStyler(	'notice',		'<small><pre><b>Notice nicknames&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['notice'],False,self)
+
+		# Second column
+		self.user_style = widgets.MiniStyler(	'username',		'<small><pre>&nbsp;<b>Other nicknames&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['username'],False,self)
+		self.self_style = widgets.MiniStyler(	'self',			'<small><pre>&nbsp;<b>Your nickname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['self'],False,self)
+		self.link_style = widgets.MiniStyler(	'hyperlink',	'<small><pre>&nbsp;<b>Hyperlinks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['hyperlink'],True,self)
+		self.action_style = widgets.MiniStyler(	'action',		'<small><pre>&nbsp;<b>CTCP ACTION message</b></pre></small>',self.style['action'],False,self)
+
 		self.system_style.qssChanged.connect(self.qssChanged)
 		self.link_style.qssChanged.connect(self.qssChanged)
 		self.action_style.qssChanged.connect(self.qssChanged)
@@ -690,19 +691,33 @@ class Dialog(QDialog):
 		separator.setFrameShape(QFrame.VLine)
 		separator.setFrameShadow(QFrame.Sunken)
 
+		# leftColumn = QVBoxLayout()
+		# leftColumn.setSpacing(0)
+		# leftColumn.addWidget(self.system_style)
+		# leftColumn.addWidget(self.link_style)
+		# leftColumn.addWidget(self.self_style)
+		# leftColumn.addWidget(self.action_style)
+
+		# rightColumn = QVBoxLayout()
+		# rightColumn.setSpacing(0)
+		# rightColumn.addWidget(self.error_style)
+		# rightColumn.addWidget(self.server_style)
+		# rightColumn.addWidget(self.user_style)
+		# rightColumn.addWidget(self.notice_style)
+
 		leftColumn = QVBoxLayout()
 		leftColumn.setSpacing(0)
+		leftColumn.addWidget(self.server_style)
 		leftColumn.addWidget(self.system_style)
-		leftColumn.addWidget(self.link_style)
-		leftColumn.addWidget(self.self_style)
-		leftColumn.addWidget(self.action_style)
+		leftColumn.addWidget(self.error_style)
+		leftColumn.addWidget(self.notice_style)
 
 		rightColumn = QVBoxLayout()
 		rightColumn.setSpacing(0)
-		rightColumn.addWidget(self.error_style)
-		rightColumn.addWidget(self.server_style)
 		rightColumn.addWidget(self.user_style)
-		rightColumn.addWidget(self.notice_style)
+		rightColumn.addWidget(self.self_style)
+		rightColumn.addWidget(self.link_style)
+		rightColumn.addWidget(self.action_style)
 
 		allStyles.addLayout(leftColumn, 0, 0)
 		allStyles.addWidget(separator, 0, 1)
@@ -736,23 +751,12 @@ class Dialog(QDialog):
 		buttonLayout.addLayout(button_layout)
 
 		if not self.simple:
+			tdesc = TEXT_STYLER_DESCRIPTION
 			if self.parent.connected_to_something:
-				sintro = """Select what text style you'd like to edit with the <b>Currently editing text style</b> control, which lists
-				all chat and server windows that are currently open."""
+				tdesc = tdesc.replace(TEXT_STYLER_INTRO_TEMPLATE_TAG,TEXT_STYLER_INTRO)
 			else:
-				sintro = ''
-			self.stylerDescription = QLabel(f"""
-				<small>{sintro}
-				Click <b>Text Color</b> to set the color of text, and <b>Background Color</b>
-				to set the color of the chat and userlist background. Clicking <b>Set colors
-				to app default</b> will set all colors to the default text style built into
-				<b>{APPLICATION_NAME}</b>. Clicking <b>Load style</b> will allow you to load a previously
-				saved style file, and clicking <b>Load default</b> will load in the default style into
-				the current style. <b>Save style as...</b> will save the current style to a
-				file. Click <b>Apply</b> to apply and save the current text style.
-				Click <b>Cancel</b> to exit.
-				</small>
-				""")
+				tdesc = tdesc.replace(TEXT_STYLER_INTRO_TEMPLATE_TAG,'')
+			self.stylerDescription = QLabel(tdesc)
 			self.stylerDescription.setWordWrap(True)
 			self.stylerDescription.setAlignment(Qt.AlignJustify)
 

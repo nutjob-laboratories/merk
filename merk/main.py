@@ -1381,8 +1381,12 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 
 		# Trigger notifications
+		if client.hostname:
+			sname = client.hostname
+		else:
+			sname = f"{client.server}:{client.port}"
 		try:
-			if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications(f"Connection to {client.hostname} lost")
+			if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications(f"Connection to {sname} lost")
 		except:
 			pass
 
@@ -1403,7 +1407,8 @@ class Merk(QMainWindow):
 		if w:
 			if client.hostname:
 				w.name = client.hostname
-				w.updateTitle()
+
+			w.updateTitle()
 
 			w.nick_button.setEnabled(True)
 			w.join_button.setEnabled(True)
@@ -2087,7 +2092,7 @@ class Merk(QMainWindow):
 	def names(self,client,channel,users):
 		w = self.getWindow(channel,client)
 		if w:
-			w.writeUserlist(users)
+			w.buildUserlist(users)
 
 	def rerenderNickDisplay(self,client):
 		for window in self.MDI.subWindowList():
@@ -7124,23 +7129,6 @@ class Merk(QMainWindow):
 								self.setWindowTitle(' ')
 							else:
 								self.setWindowTitle(self.application_title_name)
-
-class UptimeHeartbeat(QThread):
-
-	beat = pyqtSignal()
-
-	def __init__(self,parent=None):
-		super(UptimeHeartbeat, self).__init__(parent)
-		self.threadactive = True
-
-	def run(self):
-		while self.threadactive:
-			time.sleep(1)
-			self.beat.emit()
-
-	def stop(self):
-		self.threadactive = False
-		self.wait()
 
 class MerkSubwindow(QMdiSubWindow):
 	def __init__(self, parent=None):

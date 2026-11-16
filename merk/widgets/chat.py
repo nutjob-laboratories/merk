@@ -472,7 +472,7 @@ class Window(QMainWindow):
 			self.channel_mode_display = QLabel(f"<small><b>{self.name}</b></small>")
 			self.channel_mode_display.setStyleSheet(f"border: {MODE_AND_USER_DISPLAY_BORDER} {border_color}; padding: {MODE_AND_USER_DISPLAY_PADDING};")
 			self.channel_mode_display.setContextMenuPolicy(Qt.CustomContextMenu)
-			self.channel_mode_display.customContextMenuRequested.connect(self.buildOperatorMenu)
+			self.channel_mode_display.customContextMenuRequested.connect(self.buildChannelModeMenu)
 			self.channel_mode_display.setFixedHeight(fm.height()+CHANNEL_ID_ITEM_ADDON_HEIGHT)
 
 			# Channel users display
@@ -501,7 +501,7 @@ class Window(QMainWindow):
 			# Create the userlist
 			self.userlist = QListWidget(self)
 			self.userlist.setFocusPolicy(Qt.NoFocus)
-			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
+			self.userlist.itemDoubleClicked.connect(self.handleUserlistDoubleClick)
 			self.userlist.installEventFilter(self)
 			fm = QFontMetrics(self.app.font())
 			self.userlist.setIconSize(QSize((fm.averageCharWidth() + USERLIST_ICON_SIZE_ADDON), (fm.averageCharWidth() + USERLIST_ICON_SIZE_ADDON)))
@@ -529,7 +529,7 @@ class Window(QMainWindow):
 		self.chat = ChatViewer(self)
 		self.chat.anchorClicked.connect(self.linkClicked)
 		self.chat.setContextMenuPolicy(Qt.CustomContextMenu)
-		self.chat.customContextMenuRequested.connect(self.chatMenu)
+		self.chat.customContextMenuRequested.connect(self.buildChatDisplayContextMenu)
 
 		# Create text input widget
 		self.input = TextInputWidget(self)
@@ -789,17 +789,22 @@ class Window(QMainWindow):
 			# with, as well as how the client is connected to it (using
 			# SSL/TLS or not) and other information
 
+			if hasattr(self.client,"hostname"):
+				server_name = self.client.hostname
+			else:
+				server_name = f"{self.client.server}:{self.client.port}"
+
 			if self.client.network!=config.UNKNOWN_NETWORK_NAME:
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
 					if netlink!=None:
-						self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> (<a href=\"{netlink}\">{self.client.network}</a>){cid}</small>")
+						self.status_server = QLabel(f"<small><b>{wid}{server_name}</b> (<a href=\"{netlink}\">{self.client.network}</a>){cid}</small>")
 					else:
-						self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> ({self.client.network}){cid}</small>")
+						self.status_server = QLabel(f"<small><b>{wid}{server_name}</b> ({self.client.network}){cid}</small>")
 				else:
-					self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b> ({self.client.network}){cid}</small>")
+					self.status_server = QLabel(f"<small><b>{wid}{server_name}</b> ({self.client.network}){cid}</small>")
 			else:
-				self.status_server = QLabel(f"<small><b>{wid}{self.client.hostname}</b>{cid}</small>")
+				self.status_server = QLabel(f"<small><b>{wid}{server_name}</b>{cid}</small>")
 			
 			self.status_server.setOpenExternalLinks(True)
 			self.status.addPermanentWidget(self.status_server,0)
@@ -815,8 +820,6 @@ class Window(QMainWindow):
 				self.status.addPermanentWidget(self.key_value,0)
 				self.key_value.hide()
 				self.key_value.installEventFilter(self)
-
-			if self.window_type==CHANNEL_WINDOW:
 				self.key_spacer = QLabel("")
 				self.status.addPermanentWidget(self.key_spacer,0)
 				self.key_spacer.hide()
@@ -983,14 +986,22 @@ class Window(QMainWindow):
 					wid = ''
 					cid = ''
 
-				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
-					netlink = get_network_link(self.client.network)
-					if netlink!=None:
-						self.status_server.setText(f"<small><b>{wid}{self.client.hostname}</b> (<a href=\"{netlink}\">{self.client.network}</a>){cid}</small>")
-					else:
-						self.status_server.setText(f"<small><b>{wid}{self.client.hostname}</b> ({self.client.network}){cid}</small>")
+				if hasattr(self.client,"hostname"):
+					server_name = self.client.hostname
 				else:
-					self.status_server.setText(f"<small><b>{wid}{self.client.hostname}</b> ({self.client.network}){cid}</small>")
+					server_name = f"{self.client.server}:{self.client.port}"
+
+				if self.client.network!=config.UNKNOWN_NETWORK_NAME:
+					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+						netlink = get_network_link(self.client.network)
+						if netlink!=None:
+							self.status_server.setText(f"<small><b>{wid}{server_name}</b> (<a href=\"{netlink}\">{self.client.network}</a>){cid}</small>")
+						else:
+							self.status_server.setText(f"<small><b>{wid}{server_name}</b> ({self.client.network}){cid}</small>")
+					else:
+						self.status_server.setText(f"<small><b>{wid}{server_name}</b> ({self.client.network}){cid}</small>")
+				else:
+					self.status_server.setText(f"<small><b>{wid}{server_name}</b> {cid}</small>")
 
 	def toggleServNicks(self):
 		if self.window_type==SERVER_WINDOW:
@@ -1026,7 +1037,7 @@ class Window(QMainWindow):
 		if self.owner: return True
 		if self.admin: return True
 
-	def buildOperatorMenu(self,position):
+	def buildChannelModeMenu(self,position):
 
 		if not config.CHANNEL_MODE_CONTEXT_MENU: return
 
@@ -1347,7 +1358,7 @@ class Window(QMainWindow):
 			self.rerendered_chat = True
 			self.force_chat_log_rerender = 0
 
-	def chatMenu(self,location):
+	def buildChatDisplayContextMenu(self,location):
 
 		viewport_pos = self.chat.viewport().mapFrom(self.chat, location)
 		doc_pos = viewport_pos
@@ -2394,18 +2405,21 @@ class Window(QMainWindow):
 
 			if hasattr(self.client,"hostname"):
 				self.name = self.client.hostname
+				server_name = self.client.hostname
+			else:
+				server_name = f"{self.client.server}:{self.client.port}"
 
 			if hasattr(self.client,"network"):
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
 					if netlink!=None:
-						self.status_server.setText(f"<small><b>{self.client.hostname}</b> (<a href=\"{netlink}\">{self.client.network}</a>)</small>")
+						self.status_server.setText(f"<small><b>{server_name}</b> (<a href=\"{netlink}\">{self.client.network}</a>)</small>")
 					else:
-						self.status_server.setText(f"<small><b>{self.client.hostname}</b> ({self.client.network})</small>")
+						self.status_server.setText(f"<small><b>{server_name}</b> ({self.client.network})</small>")
 				else:
-					self.status_server.setText(f"<small><b>{self.client.hostname}</b> ({self.client.network})</small>")
+					self.status_server.setText(f"<small><b>{server_name}</b> ({self.client.network})</small>")
 			else:
-				self.status_server.setText(f"<small><b>{self.client.hostname}</b></small>")
+				self.status_server.setText(f"<small><b>{server_name}</b></small>")
 
 		if self.window_type==CHANNEL_WINDOW:
 			if self.name in self.client.channelmodes:
@@ -2540,8 +2554,8 @@ class Window(QMainWindow):
 					self.client.setNick(info)
 				return True
 
+		# Userlist context menu
 		if config.USERLIST_CONTEXT_MENU:
-			# User List Menu
 			if (event.type() == QtCore.QEvent.ContextMenu and source is self.userlist):
 
 				item = source.itemAt(event.pos())
@@ -3140,7 +3154,7 @@ class Window(QMainWindow):
 			else:
 				b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
-				self.writeUserlist(self.full_nicks)
+				self.buildUserlist(self.full_nicks)
 
 		if initial_application: return
 		self.rerenderChatLog()
@@ -3148,7 +3162,7 @@ class Window(QMainWindow):
 
 	def rerenderUserlist(self):
 		self.buildUserColors()
-		self.writeUserlist(self.users)
+		self.buildUserlist(self.users)
 
 	def change_to_away_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
@@ -3258,7 +3272,7 @@ class Window(QMainWindow):
 			font.setStrikeOut(True)
 			w.setFont(font)
 
-	def writeUserlist(self,users):
+	def buildUserlist(self,users):
 
 		if not hasattr(self,"userlist"): return
 
@@ -4120,7 +4134,6 @@ class Window(QMainWindow):
 			self.parent.handleConsoleInput(self,cmd)
 
 	def changeSpellcheckLanguage(self,lang):
-
 		# Set the new language
 		self.language = lang
 		self.input.changeLanguage(lang)
@@ -4170,7 +4183,7 @@ class Window(QMainWindow):
 
 		self.topic.setText(topic)
 
-	def handleDoubleClick(self,item):
+	def handleUserlistDoubleClick(self,item):
 		if not config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: return
 		item.setSelected(False)
 		user = item.text()

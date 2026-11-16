@@ -340,3 +340,12 @@ def ExtendedMenuItemNoAction(self,icon,title,description,icon_size):
 	erkmenuAction.setDefaultWidget(erkmenuLabel)
 
 	return erkmenuAction
+
+def RunMenuItem(self,icon,title,description,icon_size,func):
+
+	erkmenuLabel = MenuLabel( menuHtml(icon,title,description,icon_size) )
+	erkmenuAction = QWidgetAction(self)
+	erkmenuAction.setDefaultWidget(erkmenuLabel)
+	erkmenuLabel.clicked.connect(func)
+
+	return erkmenuAction

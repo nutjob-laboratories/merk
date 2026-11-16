@@ -45,7 +45,7 @@ from .. import syntax
 from .. import commands
 from .. import user
 from .. import plugins
-from .extendedmenuitem import MenuLabel,menuHtml
+from .extendedmenuitem import RunMenuItem
 from .plain_text import PlainIconTextAction
 
 class Window(QMainWindow):
@@ -1529,10 +1529,8 @@ class Window(QMainWindow):
 				else:
 					cname = c.name
 
-				runmenuLabel = MenuLabel( menuHtml(CONSOLE_WINDOW_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE) )
-				runmenuAction = QWidgetAction(self)
-				runmenuAction.setDefaultWidget(runmenuLabel)
-				runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
+				rma = lambda u=c: self.executeScript(u)
+				runmenuAction = RunMenuItem(self,CONSOLE_WINDOW_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE,rma)
 				self.runMenu.addAction(runmenuAction)
 
 				chats = self.parent.getAllConnectedChatWindows(c.client)
@@ -1554,10 +1552,9 @@ class Window(QMainWindow):
 						ctype = "private chat"
 						privates = privates + 1
 						icon = PRIVATE_MENU_ICON
-					runmenuLabel = MenuLabel( menuHtml(icon,"Run on "+c.name+"&nbsp;","<b>Host:</b> "+cname+" ("+network+")<br>Execute on "+ctype+" window",CUSTOM_MENU_ICON_SIZE) )
-					runmenuAction = QWidgetAction(self)
-					runmenuAction.setDefaultWidget(runmenuLabel)
-					runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
+
+					rma = lambda u=c: self.executeScript(u)
+					runmenuAction = RunMenuItem(self,icon,"Run on "+c.name+"&nbsp;","<b>Host:</b> "+cname+" ("+network+")<br>Execute on "+ctype+" window",CUSTOM_MENU_ICON_SIZE,rma)
 					self.runMenu.addAction(runmenuAction)
 
 				self.runMenu.addSeparator()

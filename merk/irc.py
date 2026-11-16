@@ -67,51 +67,6 @@ if is_running_from_pyinstaller():
 else:
 	PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION}"
 
-def connect(**kwargs):
-	kwargs["client_id"] = str(uuid.uuid4())
-	bot = IRC_Connection_Factory(**kwargs)
-	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
-
-def connectSSL(**kwargs):
-	kwargs["client_id"] = str(uuid.uuid4())
-	bot = IRC_Connection_Factory(**kwargs)
-	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
-
-def reconnect(**kwargs):
-	kwargs["client_id"] = str(uuid.uuid4())
-	kwargs["reconnected"] = 0
-	bot = IRC_ReConnection_Factory(**kwargs)
-	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
-
-def reconnectSSL(**kwargs):
-	kwargs["client_id"] = str(uuid.uuid4())
-	kwargs["reconnected"] = 0
-	bot = IRC_ReConnection_Factory(**kwargs)
-	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
-
-def regenerate_environment_variables():
-	global PYTHON_VERSION
-	global OS_VERSION
-	global PLATFORM
-
-	PYTHON_VERSION = f"{platform.python_version().strip()}"
-	OS_VERSION = f"{platform.system().strip()} {platform.release().strip()}"
-	if is_running_from_pyinstaller():
-		PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION} via PyInstaller {get_pyinstaller_version()}"
-	else:
-		PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION}"
-
-def reset_environment():
-	for c in CONNECTIONS:
-		CONNECTIONS[c].reset_environment()
-
-def new_error_nickname():
-	for c in CONNECTIONS:
-		if len(config.BAD_NICKNAME_FALLBACK)>=MAX_ERR_NICK_SIZE:
-			config.BAD_NICKNAME_FALLBACK = "Guest"
-			config.save_settings(config.CONFIG_FILE)
-		CONNECTIONS[c].erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
-
 class IRC_Connection(irc.IRCClient):
 	nickname = 'merk'
 	realname = 'merk'
@@ -164,7 +119,7 @@ class IRC_Connection(irc.IRCClient):
 		self.erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
 		self.heartbeatInterval = config.TWISTED_CLIENT_HEARTBEAT
 
-		if len(self.erroneousNickFallback)>=MAX_ERR_NICK_SIZE:
+		if len(self.erroneousNickFallback)>=MAXIMUM_ERRONEOUS_NICKNAME_LENGTH:
 			self.erroneousNickFallback = "Guest"
 			config.BAD_NICKNAME_FALLBACK = "Guest"
 			config.save_settings(config.CONFIG_FILE)
@@ -574,7 +529,7 @@ class IRC_Connection(irc.IRCClient):
 		# If we're past the connection timeout limit,
 		# then disconnect and show the connection dialog
 		if self.connection_timer>config.CONNECTION_TIMEOUT:
-			self.lose_connection("Connection timed out!","Connection timed out!")
+			self.lose_connection("Connection failed","Connection timed out")
 
 	def irc_329(self, prefix, params):
 		channel = params[1]
@@ -697,7 +652,6 @@ class IRC_Connection(irc.IRCClient):
 		if params[0] == "+" and (self.sasl_username!=None and self.sasl_password!=None):
 			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
 			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
-			self.gui.systemMessage(self,f'Requesting SASL authentication...')
 			self.sendLine(f"AUTHENTICATE {encoded}")
 			
 	def irc_903(self, prefix, params):
@@ -729,7 +683,7 @@ class IRC_Connection(irc.IRCClient):
 			self.connection_timer = 0
 
 		if config.PROMPT_ON_FAILED_CONNECTION:
-			self.gui.connectToIrcFail(message,message)
+			self.gui.connectToIrcFail(message,dialog)
 		else:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(SERVER_ICON))
@@ -756,7 +710,7 @@ class IRC_Connection(irc.IRCClient):
 		plugins.call(self.gui,"error",client=self,message=f"SASL login failed")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			self.lose_connection("SASL login failed<br>Check your username and password.","Check your username and password, and try to reconnect again.")
+			self.lose_connection("SASL login failed","Check your username and password")
 		else:
 			self.gui.systemMessage(self,'SASL login failed! Check your username and password')
 
@@ -777,7 +731,7 @@ class IRC_Connection(irc.IRCClient):
 		plugins.call(self.gui,"error",client=self,message=f"SASL login failed (message too long)")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			self.lose_connection("SASL login failed<br>SASL message was too long.","SASL message was too long. Check your username and password, and try to reconnect again.")
+			self.lose_connection("SASL login failed","SASL message was too long")
 		else:
 			self.gui.systemMessage(self,'SASL login failed! SASL message was too long')
 
@@ -1003,7 +957,7 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.gotTime(self,server,time)
 
 	def irc_RPL_BANLIST(self,prefix,params):
-		# bans
+
 		channel = params[1]
 		mask = params[2]
 		banner = params[3]
@@ -1014,7 +968,7 @@ class IRC_Connection(irc.IRCClient):
 		self.banlists[channel].append(e)
 
 	def irc_RPL_ENDOFBANLIST(self,prefix,params):
-		# bans end
+
 		channel = params[1]
 
 		banlist = []
@@ -1178,7 +1132,7 @@ class IRC_Connection(irc.IRCClient):
 	def irc_ERR_ERRONEUSNICKNAME(self, prefix, params):
 		if self.registered==False:
 			# Pad out the erroneous nickname in config, and use that
-			padnick = pad_nickname_fallback(self.erroneousNickFallback)
+			padnick = generate_fallback_nickname(self.erroneousNickFallback)
 			self.setNick(padnick)
 			self.gui.receivedUsingErroneous(self,padnick)
 
@@ -1213,7 +1167,7 @@ class IRC_Connection(irc.IRCClient):
 		# so we're going to pad out the erroneous nickname
 		# fallback to a maximum of 9 characters and try that
 		if self.nick_attempts>=config.REGISTRATION_NICK_ERROR_LIMIT:
-			padnick = pad_nickname_fallback(self.erroneousNickFallback)
+			padnick = generate_fallback_nickname(self.erroneousNickFallback)
 			self.setNick(padnick)
 			self.gui.receivedUsingErroneous(self,padnick)
 			return
@@ -1612,13 +1566,10 @@ class IRC_Connection(irc.IRCClient):
 		return irc.IRCClient.sendLine(self, line)
 
 	def irc_RPL_AWAY(self,user,message):
-
-		if message=='':
-			# user is back
-			self.gui.gotBack(self,user)
-		else:
-			# user is away
+		if message:
 			self.gui.gotAway(self,user,message)
+		else:
+			self.gui.gotBack(self,user)
 
 	def irc_RPL_UNAWAY(self,prefix,params):
 		msg = params[1]
@@ -1688,7 +1639,7 @@ class IRC_Connection(irc.IRCClient):
 		elif len(s)==2:
 			if s[1].lower()=='away':
 				nick = s[0][1:]
-				self.irc_RPL_AWAY(nick,'')
+				self.irc_RPL_AWAY(nick,None)
 
 		# This makes sure that "named" message type are
 		# passed on. Messages with numerics as a type are
@@ -1884,23 +1835,6 @@ class IRC_Connection(irc.IRCClient):
 						user.HISTORY = list(user_history)
 						user.save_user(user.USER_FILE)
 
-class UptimeHeartbeat(QThread):
-
-	beat = pyqtSignal()
-
-	def __init__(self,parent=None):
-		super(UptimeHeartbeat, self).__init__(parent)
-		self.threadactive = True
-
-	def run(self):
-		while self.threadactive:
-			time.sleep(1)
-			self.beat.emit()
-
-	def stop(self):
-		self.threadactive = False
-		self.wait()
-
 def objectconfig(obj,**kwargs):
 
 	for key, value in kwargs.items():
@@ -1958,6 +1892,51 @@ def objectconfig(obj,**kwargs):
 
 		if key=="execute_script":
 			obj.execute_script = value
+
+def connect(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
+	bot = IRC_Connection_Factory(**kwargs)
+	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
+
+def connectSSL(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
+	bot = IRC_Connection_Factory(**kwargs)
+	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
+
+def reconnect(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
+	kwargs["reconnected"] = 0
+	bot = IRC_ReConnection_Factory(**kwargs)
+	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
+
+def reconnectSSL(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
+	kwargs["reconnected"] = 0
+	bot = IRC_ReConnection_Factory(**kwargs)
+	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
+
+def regenerate_environment_variables():
+	global PYTHON_VERSION
+	global OS_VERSION
+	global PLATFORM
+
+	PYTHON_VERSION = f"{platform.python_version().strip()}"
+	OS_VERSION = f"{platform.system().strip()} {platform.release().strip()}"
+	if is_running_from_pyinstaller():
+		PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION} via PyInstaller {get_pyinstaller_version()}"
+	else:
+		PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION}"
+
+def reset_environment():
+	for c in CONNECTIONS:
+		CONNECTIONS[c].reset_environment()
+
+def new_error_nickname():
+	for c in CONNECTIONS:
+		if len(config.BAD_NICKNAME_FALLBACK)>=MAXIMUM_ERRONEOUS_NICKNAME_LENGTH:
+			config.BAD_NICKNAME_FALLBACK = "Guest"
+			config.save_settings(config.CONFIG_FILE)
+		CONNECTIONS[c].erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
 
 class IRC_Connection_Factory(protocol.ClientFactory):
 	def __init__(self,**kwargs):

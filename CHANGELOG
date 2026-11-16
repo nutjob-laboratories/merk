@@ -5,6 +5,8 @@
 What's new:
 
 - **Connections to servers not in a network are now made clearer in the client**. Instead of "unknown", the client will no longer attempt to display a network name, and will just display the name of the server. Styles and logs for these connections will no longer be loaded, but are not deleted. Instead of "uknown" being used as the filename prefix for these files, the prefix "[no_network]" is used. The log files can still be viewed in the log viewer, under the "unknown" network, and style files can be loaded with the style editor so they do not have to be recreated. For connections to servers ON a network, nothing will change, and files will still be saved/loaded normally.
+- **The log manager description has been re-added to the client**. If "simplified dialogs" is turned off (the default), a short descriptive text will appear at the top to the log manager dialog describing how to use the log manager and what it does.
+- **Many bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -26,6 +28,18 @@ What's new:
   files, including in how styles and logs are saved. This changes how style and
   log files are saved and loaded; the files are not deleted or changed, but may
   need to be reloaded.
+* Re-added the description text to the log manager. This text will be displayed
+  only if "simplified dialogs" is turned off (the default).
+* Reworked the layout of the text style editor; the two column list of colors/
+  styles is now in the same order that the text is displayed in the display.
+* Rearranged the resources file (which contains constants, classes, functions,
+  etc) and added comments so that what the file contains is much clearer.
+* Bugfix: servers that didn't have the "hostname" config entry set could cause
+  display problems in the client.
+* Added the Codeberg and MansionNET mirror repository links to the README.
+* Cleaned up the code considerably.
+* Moved a number of the HTML templates used for message display and widgets to
+  the main resource file.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.050                                 |

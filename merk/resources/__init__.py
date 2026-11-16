@@ -37,6 +37,7 @@ import ast
 import string
 import re
 import random
+import time
 
 import emoji
 
@@ -236,40 +237,9 @@ BELL_NOTIFICATION					= ":/sound-notification.wav"
 # | CONSTANTS |
 # |===========|
 
-SYSTEM_PREPEND_OPTIONS = [
-	"Nothing",
-	"&diams;",
-	"&loz;",
-	"&rarr;",
-	"&dagger;",
-	"&Dagger;",
-	"&lambda;",
-	"&Delta;",
-	"&there4;",
-	"&infin;",
-	"&sect;",
-	"&lt;",
-	"&gt;",
-	"&sum;",
-	"&le;",
-	"&ge;",
-	"&oplus;",
-	"&harr;",
-	"&spades;",
-	"&clubs;",
-	"&hearts;",
-	"&bull;",
-	"&mdash;",
-	"*",
-	"#",
-	"@",
-	"&",
-	"$",
-	">",
-	"!",
-]
-
-LOG_AND_STYLE_FILENAME_DELIMITER = "-"
+# |---------------------------------|
+# | Important application constants |
+# |---------------------------------|
 
 INSTALL_DIRECTORY = sys.path[0]
 MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
@@ -290,15 +260,13 @@ FOUNDER_LINK = "https://github.com/danhetrick"
 
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")
+EMOJI_AUTOCOMPLETE.sort(key=len)
 
 LIST_OF_NETWORK_LINKS = []
 for line in NETWORK_LINKS.split("\n"):
 		line = line.strip()
 		p = line.split(":",1)
 		LIST_OF_NETWORK_LINKS.append(p)
-
-# Sort the emoji autocomplete list by length
-EMOJI_AUTOCOMPLETE.sort(key=len)
 
 BUNDLED_FONT = ":/font-FiraMono-Regular.ttf"
 OTHER_BUNDLED_FONTS = [
@@ -310,12 +278,285 @@ BUNDLED_FONT_SIZE = 10
 QT_STYLES = QStyleFactory.keys()
 if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
 
-IRC_COLORS = {
-	'00': '#FFFFFF', '01': '#000000', '02': '#00007F', '03': '#009300',
-	'04': '#FF0000', '05': '#7F0000', '06': '#9C009C', '07': '#FC7F00',
-	'08': '#FFFF00', '09': '#00FC00', '10': '#009393', '11': '#00FFFF',
-	'12': '#0000FC', '13': '#FF00FF', '14': '#7F7F7F', '15': '#D2D2D2',
-}
+LOG_AND_STYLE_FILENAME_DELIMITER = "-"
+
+# |---------------------------|
+# | Message display templates |
+# |---------------------------|
+
+TIMESTAMP_TEMPLATE_TAG			= "%_TIMESTAMP_%"
+MESSAGE_INSERT_TEMPLATE_TAG		= "%_INSERT_MESSAGE_%"
+TIMESTAMP_STYLE_TEMPLATE_TAG	= "%_TIMESTAMP_STYLE_%"
+MESSAGE_TEMPLATE_TAG			= "%_MESSAGE_%"
+NICK_TEMPLATE_TAG				= "%_NICKNAME_%"
+NICK_STYLE_TEMPLATE_TAG			= "%_NICKNAME_STYLE_%"
+TIMESTAMP_TIME_TEMPLATE_TAG		= "%_TIME_%"
+MESSAGE_STYLE_TEMPLATE_TAG		= "%_MESSAGE_STYLE_%"
+
+TIMESTAMP_TEMPLATE = f"""<td style="vertical-align:top; font-size:small; text-align:left;"><div style="{TIMESTAMP_STYLE_TEMPLATE_TAG}">[{TIMESTAMP_TIME_TEMPLATE_TAG}]</div></td><td style="font-size:small;">&nbsp;</td>"""
+
+MESSAGE_TEMPLATE = f"""
+<table style="width: 100%;" border="0">
+	<tbody>
+	<tr>{TIMESTAMP_TEMPLATE_TAG}
+		<td style="text-align: right; vertical-align: top;"><div style="{NICK_STYLE_TEMPLATE_TAG}">{NICK_TEMPLATE_TAG}</div></td>
+		<td style="text-align: left; vertical-align: top;">&nbsp;</td>
+		{MESSAGE_INSERT_TEMPLATE_TAG}
+	</tr>
+	</tbody>
+</table>
+"""
+
+SYSTEM_TEMPLATE = f"""
+<table style="width: 100%;" border="0">
+	<tbody>
+	<tr>{TIMESTAMP_TEMPLATE_TAG}
+		{MESSAGE_INSERT_TEMPLATE_TAG}
+	</tr>
+	</tbody>
+</table>
+"""
+
+MESSAGE_STYLE_TEMPLATE = f"""<td style="text-align: left; vertical-align: top;"><div style="{MESSAGE_STYLE_TEMPLATE_TAG}">{MESSAGE_TEMPLATE_TAG}</div></td>"""
+MESSAGE_NO_STYLE_TEMPLATE = f"""<td style="text-align: left; vertical-align: top;">{MESSAGE_TEMPLATE_TAG}</td>"""
+
+HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+HARD_HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+LIGHT_HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+HARD_LIGHT_HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td><small><center>{MESSAGE_TEMPLATE_TAG}</center></small></td>
+			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td><small><center>{MESSAGE_TEMPLATE_TAG}</center></small></td>
+			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+DATE_MESSAGE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td><center><small><b>{MESSAGE_TEMPLATE_TAG}</b></small></center></td>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+LIGHT_DATE_MESSAGE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td><center><small><b>{MESSAGE_TEMPLATE_TAG}</b></small></center></td>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+# |------------------------|
+# | Help display templates |
+# |------------------------|
+
+USAGE_TEMPLATE_TAG			= '%_USAGE_%'
+DESCRIPTION_TEMPLATE_TAG	= '%_DESCRIPTION_%'
+PREFIX_TEMPLATE_TAG			= "%_PREFIX_%"
+POSTFIX_TEMPLATE_TAG		= "%_POSTFIX_%"
+AUTOCOMPLETE_TEMPLATE_TAG	= "%_AUTOCOMPLETE_%"
+COMMAND_LIST_TEMPLATE_TAG	= "%_LIST_%"
+ENDING_TEMPLATE_TAG			= "%_ENDING_%"
+
+HELP_ENTRY_TEMPLATE=f'''<tr><td>{USAGE_TEMPLATE_TAG}&nbsp;</td><td>{DESCRIPTION_TEMPLATE_TAG}</td></tr>'''
+HELP_ENTRY_COMMAND_TEMPLATE=f'''{USAGE_TEMPLATE_TAG}&nbsp;&nbsp;-&nbsp;&nbsp;{DESCRIPTION_TEMPLATE_TAG}'''
+
+HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
+	<tbody>
+				<tr>
+					<td><center><b>{APPLICATION_NAME} Commands</b></center></td>
+				</tr>
+				{PREFIX_TEMPLATE_TAG}
+				<tr>
+					<td><small>
+					Arguments inside brackets are optional. If called from a channel window,
+					channel windows can be omitted to apply the command to the current channel.
+					Commands that take the optional <b>SERVER</b> argument accept either the
+					name of the host connected to, or the hostname and port of the connection
+					in the format <b>HOST:PORT</b>. Commands that take the optional <b>WINDOW</b>
+					argument can reference the server window by setting <b>WINDOW</b> to <b>&</b>.
+					{AUTOCOMPLETE_TEMPLATE_TAG}
+					</small></td>
+				</tr>
+				{POSTFIX_TEMPLATE_TAG}
+				<tr><td>&nbsp;</center></td></tr>
+				<tr>
+					<td>
+						<table style="width: 100%" border="0">
+							<tbody>
+								{COMMAND_LIST_TEMPLATE_TAG}
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				{ENDING_TEMPLATE_TAG}
+			</tbody>
+		</table>'''
+
+AUTOCOMPLETE_ON_MESSAGE = "Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command."
+AUTOCOMPLETE_OFF_MESSAGE = "Command autocomplete is turned off."
+
+# |-----------------------------|
+# | Plugin generation templates |
+# |-----------------------------|
+
+PLUGIN_VERSION_TEMPLATE_TAG = "%_VERSION_%"
+PLUGIN_DATE_TEMPLATE_TAG	= "%_DATE_%"
+PLUGIN_NAME_TEMPLATE_TAG	= "%_NAME_%"
+PLUGIN_AUTHOR_TEMPLATE_TAG	= "%_AUTHOR_%"
+PLUGIN_URL_TEMPLATE_TAG		= "%_URL_%"
+
+EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_VERSION_TEMPLATE_TAG, f"{APPLICATION_NAME} {APPLICATION_VERSION}")
+EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_DATE_TEMPLATE_TAG, f"{datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')}")
+
+DEFAULT_PLUGIN_README = f"""%_NAME_% {PLUGIN_VERSION_TEMPLATE_TAG}
+By {PLUGIN_AUTHOR_TEMPLATE_TAG}
+{PLUGIN_URL_TEMPLATE_TAG}
+Generated by {APPLICATION_NAME} {APPLICATION_VERSION}
+Exported on {PLUGIN_DATE_TEMPLATE_TAG}
+
+This contains a plugin for the {APPLICATION_NAME} Internet Relay Chat client.
+
+Install this plugin with {APPLICATION_NAME}'s Plugin Manager, or extract this ZIP into {APPLICATION_NAME}'s plugin directory.
+"""
+
+# |---------------------|
+# | Dialog descriptions |
+# |---------------------|
+
+# Connect dialog descriptions
+
+CONNECT_SCRIPT_SERVER_TEMPLATE_TAG = "%_SERVER_%"
+
+CONNECT_SCRIPT_SHORT_DESCRIPTION = f"""
+		<center><b>{CONNECT_SCRIPT_SERVER_TEMPLATE_TAG}</b></center>
+		"""
+
+CONNECT_SCRIPT_LONG_DESCRIPTION = f"""
+		<small>
+		Execute these commands upon connection to <b>{CONNECT_SCRIPT_SERVER_TEMPLATE_TAG}</b>.
+		To insert a pause in between commands, use the <b>wait</b> command, passing the number
+		of seconds to pause as an argument.
+		</small>
+		"""
+
+CONNECT_USER_DESCRIPTION = """
+		<small>
+		<b>Nickname</b> is the nickname you want to use, and <b>alternate</b> (optional) is used
+		if your primary choice is taken. If both <b>nickname</b> and <b>alternate</b> are taken,
+		a random number will be attached to <b>nickname</b>, and that will be used as the nickname.
+		All settings are saved when you click <b>Connect</b>, unless you uncheck <b>Save to user
+		settings file</b> below. Click <b>Save as server profile</b> if you'd like to use this user
+		information every time you connect to this specific server.
+		</small>
+		"""
+
+CONNECT_SERVER_DESCRIPTION = """
+		<small>
+		Select a server below, or enter connection information by hand. To automatically
+		reconnect on disconnection, check the <b>Reconnect</b> checkbox. To login
+		with SASL, check the <b>Login with SASL</b> checkbox. If <b>Execute connection
+		script</b> is enabled, commands entered in the <b>Script</b> tab will be executed
+		when connection to the server is complete.
+		</small>
+		"""
+
+# Log manager description
+
+LOG_LENGTH_TEMPLATE_TAG = "%_LENGTH_%"
+
+LOG_MANAGER_DESCRIPTION = f"""
+		<small>
+		Here, you can view, search, and export log files. The panel on the left contains a list of all
+		<b>logs</b> saved to {APPLICATION_NAME}; select a <b>log</b> to view and search that <b>log</b>.
+		Loading a log for viewing will take a few moments to render the log in the viewer.
+		If a <b>log</b> is longer than <b>{LOG_LENGTH_TEMPLATE_TAG} lines</b>, only the last <b>{LOG_LENGTH_TEMPLATE_TAG}
+		lines</b> will be displayed. Selecting text in the viewer and copying it with <b>Control+C</b> will copy <i>all</i>
+		the text in the selection, including any IRC color or formatting codes. To strip IRC color and formatting
+		codes from the selection, use <b>Control+X</b> to copy the "clean" text. Use <b>Control+A</b> to select
+		the entire displayed log. Right click on an individual <b>log</b> in the panel for to open the
+		native JSON <b>log</b>, the <b>log</b> directory, copy the <b>log</b>'s filename or chat name to the clipboard, export
+		the <b>log</b>, backup the <b>log</b>, or delete the <b>log</b>.
+		</small>
+		"""
+
+# Text style editor description
+
+TEXT_STYLER_INTRO_TEMPLATE_TAG = "%_INTRO_%"
+
+TEXT_STYLER_INTRO = """Select what text style you'd like to edit with the <b>Currently editing text style</b> control, which lists
+				all chat and server windows that are currently open."""
+
+TEXT_STYLER_DESCRIPTION = f"""
+		<small>%_INTRO_%
+		Click <b>Text Color</b> to set the color of text, and <b>Background Color</b>
+		to set the color of the chat and userlist background. Clicking <b>Set colors
+		to app default</b> will set all colors to the default text style built into
+		<b>{APPLICATION_NAME}</b>. Clicking <b>Load style</b> will allow you to load a previously
+		saved style file, and clicking <b>Load default</b> will load in the default style into
+		the current style. <b>Save style as...</b> will save the current style to a
+		file. Click <b>Apply</b> to apply and save the current text style.
+		Click <b>Cancel</b> to exit.
+		</small>
+		"""
+
+# |-----------------|
+# | Other constants |
+# |-----------------|
 
 # Window types
 
@@ -398,81 +639,56 @@ HALT_DIALOG = 3
 FILE_DIALOG = 4
 DECIMAL_DIALOG = 5
 
-# Help display templates
+# Settings constants
 
-USAGE_TEMPLATE_TAG			= '%_USAGE_%'
-DESCRIPTION_TEMPLATE_TAG	= '%_DESCRIPTION_%'
-PREFIX_TEMPLATE_TAG			= "%_PREFIX_%"
-POSTFIX_TEMPLATE_TAG		= "%_POSTFIX_%"
-AUTOCOMPLETE_TEMPLATE_TAG	= "%_AUTOCOMPLETE_%"
-COMMAND_LIST_TEMPLATE_TAG	= "%_LIST_%"
-ENDING_TEMPLATE_TAG			= "%_ENDING_%"
+SYSTEM_PREPEND_OPTIONS = [
+	"Nothing",
+	"&diams;",
+	"&loz;",
+	"&rarr;",
+	"&dagger;",
+	"&Dagger;",
+	"&lambda;",
+	"&Delta;",
+	"&there4;",
+	"&infin;",
+	"&sect;",
+	"&lt;",
+	"&gt;",
+	"&sum;",
+	"&le;",
+	"&ge;",
+	"&oplus;",
+	"&harr;",
+	"&spades;",
+	"&clubs;",
+	"&hearts;",
+	"&bull;",
+	"&mdash;",
+	"*",
+	"#",
+	"@",
+	"&",
+	"$",
+	">",
+	"!",
+]
 
-HELP_ENTRY_TEMPLATE=f'''<tr><td>{USAGE_TEMPLATE_TAG}&nbsp;</td><td>{DESCRIPTION_TEMPLATE_TAG}</td></tr>'''
-HELP_ENTRY_COMMAND_TEMPLATE=f'''{USAGE_TEMPLATE_TAG}&nbsp;&nbsp;-&nbsp;&nbsp;{DESCRIPTION_TEMPLATE_TAG}'''
+# GUI constants
 
-HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
-	<tbody>
-				<tr>
-					<td><center><b>{APPLICATION_NAME} Commands</b></center></td>
-				</tr>
-				{PREFIX_TEMPLATE_TAG}
-				<tr>
-					<td><small>
-					Arguments inside brackets are optional. If called from a channel window,
-					channel windows can be omitted to apply the command to the current channel.
-					Commands that take the optional <b>SERVER</b> argument accept either the
-					name of the host connected to, or the hostname and port of the connection
-					in the format <b>HOST:PORT</b>. Commands that take the optional <b>WINDOW</b>
-					argument can reference the server window by setting <b>WINDOW</b> to <b>&</b>.
-					{AUTOCOMPLETE_TEMPLATE_TAG}
-					</small></td>
-				</tr>
-				{POSTFIX_TEMPLATE_TAG}
-				<tr><td>&nbsp;</center></td></tr>
-				<tr>
-					<td>
-						<table style="width: 100%" border="0">
-							<tbody>
-								{COMMAND_LIST_TEMPLATE_TAG}
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				{ENDING_TEMPLATE_TAG}
-			</tbody>
-		</table>'''
-
-# Plugin generation templates
-
-PLUGIN_VERSION_TEMPLATE_TAG = "%_VERSION_%"
-PLUGIN_DATE_TEMPLATE_TAG	= "%_DATE_%"
-PLUGIN_NAME_TEMPLATE_TAG	= "%_NAME_%"
-PLUGIN_AUTHOR_TEMPLATE_TAG	= "%_AUTHOR_%"
-PLUGIN_URL_TEMPLATE_TAG		= "%_URL_%"
-
-EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_VERSION_TEMPLATE_TAG, f"{APPLICATION_NAME} {APPLICATION_VERSION}")
-EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_DATE_TEMPLATE_TAG, f"{datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')}")
-
-DEFAULT_PLUGIN_README = f"""%_NAME_% {PLUGIN_VERSION_TEMPLATE_TAG}
-By {PLUGIN_AUTHOR_TEMPLATE_TAG}
-{PLUGIN_URL_TEMPLATE_TAG}
-Generated by {APPLICATION_NAME} {APPLICATION_VERSION}
-Exported on {PLUGIN_DATE_TEMPLATE_TAG}
-
-This contains a plugin for the {APPLICATION_NAME} Internet Relay Chat client.
-
-Install this plugin with {APPLICATION_NAME}'s Plugin Manager, or extract this ZIP into {APPLICATION_NAME}'s plugin directory.
-"""
-
-# Other constants
+IRC_COLORS = {
+	'00': '#FFFFFF', '01': '#000000', '02': '#00007F', '03': '#009300',
+	'04': '#FF0000', '05': '#7F0000', '06': '#9C009C', '07': '#FC7F00',
+	'08': '#FFFF00', '09': '#00FC00', '10': '#009393', '11': '#00FFFF',
+	'12': '#0000FC', '13': '#FF00FF', '14': '#7F7F7F', '15': '#D2D2D2',
+}
 
 CHAT_WINDOW_WIDGET_SPACING = 5
 
 CUSTOM_MENU_ICON_SIZE = 24
 NETWORK_MENU_ICON_SIZE = 32
 
-MAX_ERR_NICK_SIZE = 9
+MAXIMUM_ERRONEOUS_NICKNAME_LENGTH = 9
 
 USERLIST_ICON_SIZE_ADDON = 5
 
@@ -528,6 +744,10 @@ HTML_RED_COLOR_DARK_MODE = "lightcoral"
 # |=========|
 # | CLASSES |
 # |=========|
+
+# |------------------------|
+# | Internal class objects |
+# |------------------------|
 
 class Message:
 	def __init__(self,mtype,sender,contents,timestamp=None):
@@ -586,6 +806,10 @@ class UserMacro:
 		self.name = name
 		self.script = script
 
+# |----------------------|
+# | Math evaluator class |
+# |----------------------|
+
 class MathEvaluator(ast.NodeVisitor):
 	def visit_Expression(self, node):
 		return self.visit(node.body)
@@ -601,12 +825,10 @@ class MathEvaluator(ast.NodeVisitor):
 		elif isinstance(node.op, ast.Mult):
 			return left_val * right_val
 		elif isinstance(node.op, ast.Div):
-			# Handle division by zero
 			if right_val == 0:
 				raise ValueError("Division by zero is not allowed")
 			return left_val / right_val
 		elif isinstance(node.op, ast.Mod):
-			# Handle modulus by zero
 			if right_val == 0:
 				raise ValueError("Modulus by zero is not allowed")
 			return left_val % right_val
@@ -626,6 +848,10 @@ class MathEvaluator(ast.NodeVisitor):
 
 	def visit_Constant(self, node):
 		return node.value
+
+# |------------|
+# | Qt Widgets |
+# |------------|
 
 class StrictViewportFilter(QObject):
 	def __init__(self, editor_widget, parent=None):
@@ -654,10 +880,348 @@ class StrictViewportFilter(QObject):
 					self._tracking_interaction = False 
 					return True
 		return False
+class LogViewer(QTextEdit):
+	def __init__(self):
+		super().__init__()
+		self.url_pattern = re.compile(
+			r"((?:https?://|www\.)"
+			r"(?:[^\s<>'\"&]|&(?!gt;|quot;))+" 
+			r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
+			re.IGNORECASE
+		)
+		self.trailing_punct = set('.,:;!?\'")}]')
+		self.setMouseTracking(True)
+		self._hovered_url_range = None
+
+		# Force black text/white background on the log viewer
+		palette = QPalette()
+		palette.setColor(QPalette.Text, QColor('black'))
+		palette.setColor(QPalette.Base, QColor('white'))
+		self.setPalette(palette)
+	
+	def _clean_url(self, url):
+		while url and url[-1] in self.trailing_punct:
+			url = url[:-1]
+		return url
+	
+	def mouseMoveEvent(self, event):
+		cursor = self.cursorForPosition(event.pos())
+		block = cursor.block()
+		text = block.text()
+		pos_in_block = cursor.positionInBlock()
+
+		hovered = None
+		for match in self.url_pattern.finditer(text):
+			clean_url = self._clean_url(match.group())
+			clean_end = match.start() + len(clean_url)
+			if match.start() <= pos_in_block <= clean_end:
+				hovered = (block.position() + match.start(), len(clean_url))
+				break
+
+		if hovered == self._hovered_url_range:
+			if hovered:
+				self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
+			else:
+				self.viewport().setCursor(QCursor(Qt.ArrowCursor))
+			super().mouseMoveEvent(event)
+			return
+
+		underline_fmt = QTextCharFormat()
+		underline_fmt.setFontUnderline(True)
+		underline_fmt.setFontWeight(QFont.Bold)
+		underline_fmt.setForeground(self.palette().color(self.foregroundRole()))
+
+		clear_fmt = QTextCharFormat()
+		clear_fmt.setFontUnderline(False)
+		clear_fmt.setForeground(self.palette().color(self.foregroundRole()))
+
+		doc_cursor = self.textCursor()
+		doc_cursor.beginEditBlock()
+		try:
+			if self._hovered_url_range:
+				start, length = self._hovered_url_range
+				doc_cursor.setPosition(start)
+				doc_cursor.setPosition(start + length, QTextCursor.KeepAnchor)
+				doc_cursor.setCharFormat(clear_fmt)
+
+			if hovered:
+				start, length = hovered
+				doc_cursor.setPosition(start)
+				doc_cursor.setPosition(start + length, QTextCursor.KeepAnchor)
+				doc_cursor.setCharFormat(underline_fmt)
+		finally:
+			doc_cursor.endEditBlock()
+
+		self._hovered_url_range = hovered
+
+		if hovered:
+			self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
+		else:
+			self.viewport().setCursor(QCursor(Qt.ArrowCursor))
+
+		super().mouseMoveEvent(event)
+
+	def mousePressEvent(self, event):
+		cursor = self.cursorForPosition(event.pos())
+		text = cursor.block().text()
+		pos_in_block = cursor.positionInBlock()
+		
+		for match in self.url_pattern.finditer(text):
+			clean_url = self._clean_url(match.group())
+			clean_end = match.start() + len(clean_url)
+			if match.start() <= pos_in_block <= clean_end:
+				url = clean_url
+				if not url.startswith('http'):
+					url = 'http://' + url
+				QDesktopServices.openUrl(QUrl(url))
+				return
+		
+		super().mousePressEvent(event)
+
+class LineNumberArea(QWidget):
+	def __init__(self, editor):
+		super().__init__(editor)
+		self.editor = editor
+	
+	def sizeHint(self):
+		return QSize(self.editor.lineNumberAreaWidth(), 0)
+	
+	def paintEvent(self, event):
+		self.editor.lineNumberAreaPaintEvent(event)
+
+class CodeEditor(QTextEdit):
+	def __init__(self,highlight_line=True):
+		super().__init__()
+		self.highlight_line = highlight_line
+		self.lineNumberArea = LineNumberArea(self)
+		self.setAcceptRichText(False)
+
+		self.background = self.palette().color(QPalette.Window).name()
+		self.foreground = self.palette().color(QPalette.WindowText).name()
+
+		self.document().blockCountChanged.connect(self.updateLineNumberAreaWidth)
+		self.verticalScrollBar().valueChanged.connect(self.updateLineNumberArea)
+		self.document().contentsChanged.connect(self.updateLineNumberArea)
+		self.cursorPositionChanged.connect(self.highlight_current_line)
+		self.updateLineNumberAreaWidth(0)
+
+		self.line_highlight_color = self.get_line_highlight_color()
+		if not self.highlight_line: self.line_highlight_color = self.get_background_color()
+
+		self.highlight_current_line()
+
+	def setHighlightLine(self,set_value):
+		self.highlight_line = set_value
+		self.highlight_current_line(True)
+		
+	def lineNumberAreaWidth(self):
+		digits = len(str(self.document().blockCount()))
+		return 3 + self.fontMetrics().horizontalAdvance('9') * digits
+	
+	def updateLineNumberAreaWidth(self, _):
+		self.setViewportMargins(self.lineNumberAreaWidth(), 0, 0, 0)
+	
+	def updateLineNumberArea(self, _=None):
+		self.lineNumberArea.update()
+	
+	def resizeEvent(self, event):
+		super().resizeEvent(event)
+		cr = self.contentsRect()
+		self.lineNumberArea.setGeometry(QRect(cr.left(), cr.top(), self.lineNumberAreaWidth(), cr.height()))
+	
+	def lineNumberAreaPaintEvent(self, event):
+		painter = QPainter(self.lineNumberArea)
+		painter.fillRect(event.rect(), QColor(self.background))
+		
+		doc = self.document()
+		block = doc.firstBlock()
+		blockNumber = 0
+		
+		fontMetrics = self.fontMetrics()
+		
+		while block.isValid():
+			cursor = self.textCursor()
+			cursor.setPosition(block.position())
+			blockRect = self.cursorRect(cursor)
+			
+			top = blockRect.top()
+			height = blockRect.height()
+			
+			if top + height > event.rect().top() and top <= event.rect().bottom():
+				number = str(blockNumber + 1)
+				painter.setPen(QColor(self.foreground))
+				painter.drawText(0, top, self.lineNumberAreaWidth() - 3, height,
+							   Qt.AlignRight, number)
+			
+			block = block.next()
+			blockNumber += 1
+
+	def get_line_highlight_color(self):
+		# Get the background color as set by stylesheet
+		stylesheet = self.styleSheet()
+		match = re.search(r'background-color\s*:\s*([^;]+);', stylesheet)
+		if match:
+			fcolor = match.group(1)
+		else:
+			fcolor = self.palette().color(QPalette.Base).name()
+
+		# Determine if the stylesheet background color is
+		# darker or lighter; if lighter, slightly darken the
+		# color, and if darker, lighten the color
+		if QColor(fcolor).lightness() > 127:
+			fcolor = QColor(fcolor).darker(105)
+		else:
+			if QColor(fcolor).lightness() < 30:
+				fcolor = QColor("#404040")
+			else:
+				fcolor = QColor(fcolor).lighter(125)
+
+		return fcolor
+
+	def get_background_color(self):
+		# Get the background color as set by stylesheet
+		stylesheet = self.styleSheet()
+		match = re.search(r'background-color\s*:\s*([^;]+);', stylesheet)
+		if match:
+			fcolor = match.group(1)
+		else:
+			fcolor = self.palette().color(QPalette.Base).name()
+
+		return QColor(fcolor)
+
+	def highlight_current_line(self,refresh=False):
+
+		if refresh: self.line_highlight_color = self.get_line_highlight_color()
+
+		if not self.highlight_line: self.line_highlight_color = self.get_background_color()
+
+		extra_selections = []
+		selection = QTextEdit.ExtraSelection()
+		selection.format.setBackground(self.line_highlight_color)
+		selection.format.setProperty(QTextFormat.FullWidthSelection, True)
+		selection.cursor = self.textCursor()
+		selection.cursor.clearSelection()
+		extra_selections.append(selection)
+		self.setExtraSelections(extra_selections)
+
+class QNoSpaceLineEdit(QLineEdit):
+	def __init__(self, *args):
+		QLineEdit.__init__(self, *args)
+
+	# Prevent spaces from being entered
+	def keyPressEvent(self,event):
+		if event.key() == Qt.Key_Space:
+			return
+		else:
+			return super().keyPressEvent(event)
+
+class QNickEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		# Block forbidden characters from nicknames,
+		# including nicknames that start with numbers
+		pattern = r"^[a-zA-Z\[\\\]^_\{\|\}][a-zA-Z0-9\[\\\]^_\{\|\}\-]*$"
+		
+		self.validator = QRegExpValidator(QRegExp(pattern), self)
+		self.setValidator(self.validator)
+
+class QChannelEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		# Block forbidden characters and control codes
+		# from being entered as channel names
+		regex = QRegularExpression(r"^[&#+!][^\p{Cc}\x2c\s]*$")
+		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
+		
+		self.validator = QRegularExpressionValidator(regex)
+		self.setValidator(self.validator)
+
+class QRealnameEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		# Block control codes from being entered
+		regex = QRegularExpression(r"^[\P{Cc}]*$")
+		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
+		
+		self.validator = QRegularExpressionValidator(regex)
+		self.setValidator(self.validator)
+
+class QErrNickEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		# Set maximum length to the max errorneous nickname length minus 1
+		self.setMaxLength(MAXIMUM_ERRONEOUS_NICKNAME_LENGTH-1)
+
+		# Block forbidden characters from nicknames,
+		# including nicknames that start with numbers
+		pattern = r"^[a-zA-Z\[\\\]^_\{\|\}][a-zA-Z0-9\[\\\]^_\{\|\}\-]*$"
+		
+		self.validator = QRegExpValidator(QRegExp(pattern), self)
+		self.setValidator(self.validator)
+
+class QNumberEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		# Block anything that isn't a number from being entered
+		pattern = r"^[0-9]+$"
+		self.validator = QRegExpValidator(QRegExp(pattern), self)
+		self.setValidator(self.validator)
+
+class ScrollableMenuStyle(QProxyStyle):
+	def styleHint(self, hint, option=None, widget=None, returnData=None):
+		if hint == QStyle.SH_Menu_Scrollable:
+			return True
+		return super().styleHint(hint, option, widget, returnData)
+
+class SmallButton(QPushButton):
+	def sizeHint(self):
+		size = super().sizeHint()
+		size.setHeight(size.height() - 5)
+		return size
+
+class StylerButton(QPushButton):
+	def sizeHint(self):
+		size = super().sizeHint()
+		size.setHeight(size.height() - 2)
+		return size
+
+class NoScrollTextBrowser(QTextBrowser):
+	def wheelEvent(self, event):
+		event.ignore()
+	
+	def keyPressEvent(self, event):
+		if event.key() in (Qt.Key_Up, Qt.Key_Down, Qt.Key_PageUp, Qt.Key_PageDown):
+			event.ignore()
+		else:
+			super().keyPressEvent(event)
+
+class UptimeHeartbeat(QThread):
+	beat = pyqtSignal()
+
+	def __init__(self,parent=None):
+		super(UptimeHeartbeat, self).__init__(parent)
+		self.threadactive = True
+
+	def run(self):
+		while self.threadactive:
+			time.sleep(1)
+			self.beat.emit()
+			
+	def stop(self):
+		self.threadactive = False
+		self.wait()
 
 # |===========|		
 # | FUNCTIONS |
 # |===========|
+
+def replace_first_style_color(style, new_color):
+	return re.sub(r'#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}', new_color, style, count=1)
 
 def get_network_link(network):
 	for ent in LIST_OF_NETWORK_LINKS:
@@ -733,11 +1297,10 @@ def is_allowed_nickname(s):
 	regex = re.compile(pattern)
 	return bool(regex.match(s))
 
-def pad_nickname_fallback(input_str):
-	max_length = 9
-	remaining_length = max_length - len(input_str)
+def generate_fallback_nickname(input_str):
+	remaining_length = MAXIMUM_ERRONEOUS_NICKNAME_LENGTH - len(input_str)
 	if remaining_length <= 0:
-		return input_str[:max_length]
+		return input_str[:MAXIMUM_ERRONEOUS_NICKNAME_LENGTH]
 	random_digits = ''.join(random.choices('0123456789', k=remaining_length))
 	return input_str + random_digits
 
@@ -1179,7 +1742,6 @@ def prettyUptime(uptime):
 	return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 def test_if_window_background_is_light(obj):
-	# Determine if window color is dark or light
 		mbcolor = obj.palette().color(QPalette.Window).name()
 		c = tuple(int(mbcolor[i:i + 2], 16) / 255. for i in (1, 3, 5))
 		luma = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
@@ -1237,325 +1799,3 @@ def test_if_color_is_light(bg):
 		return True
 	else:
 		return False
-
-# |============|
-# | QT WIDGETS |
-# |============|
-
-class LogViewer(QTextEdit):
-	def __init__(self):
-		super().__init__()
-		self.url_pattern = re.compile(
-			r"((?:https?://|www\.)"
-			r"(?:[^\s<>'\"&]|&(?!gt;|quot;))+" 
-			r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
-			re.IGNORECASE
-		)
-		self.trailing_punct = set('.,:;!?\'")}]')
-		self.setMouseTracking(True)
-		self._hovered_url_range = None
-
-		# Force black text/white background on the log viewer
-		palette = QPalette()
-		palette.setColor(QPalette.Text, QColor('black'))
-		palette.setColor(QPalette.Base, QColor('white'))
-		self.setPalette(palette)
-	
-	def _clean_url(self, url):
-		while url and url[-1] in self.trailing_punct:
-			url = url[:-1]
-		return url
-	
-	def mouseMoveEvent(self, event):
-		cursor = self.cursorForPosition(event.pos())
-		block = cursor.block()
-		text = block.text()
-		pos_in_block = cursor.positionInBlock()
-
-		hovered = None
-		for match in self.url_pattern.finditer(text):
-			clean_url = self._clean_url(match.group())
-			clean_end = match.start() + len(clean_url)
-			if match.start() <= pos_in_block <= clean_end:
-				hovered = (block.position() + match.start(), len(clean_url))
-				break
-
-		if hovered == self._hovered_url_range:
-			if hovered:
-				self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
-			else:
-				self.viewport().setCursor(QCursor(Qt.ArrowCursor))
-			super().mouseMoveEvent(event)
-			return
-
-		underline_fmt = QTextCharFormat()
-		underline_fmt.setFontUnderline(True)
-		underline_fmt.setFontWeight(QFont.Bold)
-		underline_fmt.setForeground(self.palette().color(self.foregroundRole()))
-
-		clear_fmt = QTextCharFormat()
-		clear_fmt.setFontUnderline(False)
-		clear_fmt.setForeground(self.palette().color(self.foregroundRole()))
-
-		doc_cursor = self.textCursor()
-		doc_cursor.beginEditBlock()
-		try:
-			if self._hovered_url_range:
-				start, length = self._hovered_url_range
-				doc_cursor.setPosition(start)
-				doc_cursor.setPosition(start + length, QTextCursor.KeepAnchor)
-				doc_cursor.setCharFormat(clear_fmt)
-
-			if hovered:
-				start, length = hovered
-				doc_cursor.setPosition(start)
-				doc_cursor.setPosition(start + length, QTextCursor.KeepAnchor)
-				doc_cursor.setCharFormat(underline_fmt)
-		finally:
-			doc_cursor.endEditBlock()
-
-		self._hovered_url_range = hovered
-
-		if hovered:
-			self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
-		else:
-			self.viewport().setCursor(QCursor(Qt.ArrowCursor))
-
-		super().mouseMoveEvent(event)
-
-	def mousePressEvent(self, event):
-		cursor = self.cursorForPosition(event.pos())
-		text = cursor.block().text()
-		pos_in_block = cursor.positionInBlock()
-		
-		for match in self.url_pattern.finditer(text):
-			clean_url = self._clean_url(match.group())
-			clean_end = match.start() + len(clean_url)
-			if match.start() <= pos_in_block <= clean_end:
-				url = clean_url
-				if not url.startswith('http'):
-					url = 'http://' + url
-				QDesktopServices.openUrl(QUrl(url))
-				return
-		
-		super().mousePressEvent(event)
-
-class LineNumberArea(QWidget):
-	def __init__(self, editor):
-		super().__init__(editor)
-		self.editor = editor
-	
-	def sizeHint(self):
-		return QSize(self.editor.lineNumberAreaWidth(), 0)
-	
-	def paintEvent(self, event):
-		self.editor.lineNumberAreaPaintEvent(event)
-
-class CodeEditor(QTextEdit):
-	def __init__(self,highlight_line=True):
-		super().__init__()
-		self.highlight_line = highlight_line
-		self.lineNumberArea = LineNumberArea(self)
-		self.setAcceptRichText(False)
-
-		self.background = self.palette().color(QPalette.Window).name()
-		self.foreground = self.palette().color(QPalette.WindowText).name()
-
-		self.document().blockCountChanged.connect(self.updateLineNumberAreaWidth)
-		self.verticalScrollBar().valueChanged.connect(self.updateLineNumberArea)
-		self.document().contentsChanged.connect(self.updateLineNumberArea)
-		self.cursorPositionChanged.connect(self.highlight_current_line)
-		self.updateLineNumberAreaWidth(0)
-
-		self.line_highlight_color = self.get_line_highlight_color()
-		if not self.highlight_line: self.line_highlight_color = self.get_background_color()
-
-		self.highlight_current_line()
-
-	def setHighlightLine(self,set_value):
-		self.highlight_line = set_value
-		self.highlight_current_line(True)
-		
-	def lineNumberAreaWidth(self):
-		digits = len(str(self.document().blockCount()))
-		return 3 + self.fontMetrics().horizontalAdvance('9') * digits
-	
-	def updateLineNumberAreaWidth(self, _):
-		self.setViewportMargins(self.lineNumberAreaWidth(), 0, 0, 0)
-	
-	def updateLineNumberArea(self, _=None):
-		self.lineNumberArea.update()
-	
-	def resizeEvent(self, event):
-		super().resizeEvent(event)
-		cr = self.contentsRect()
-		self.lineNumberArea.setGeometry(QRect(cr.left(), cr.top(), self.lineNumberAreaWidth(), cr.height()))
-	
-	def lineNumberAreaPaintEvent(self, event):
-		painter = QPainter(self.lineNumberArea)
-		painter.fillRect(event.rect(), QColor(self.background))
-		
-		doc = self.document()
-		block = doc.firstBlock()
-		blockNumber = 0
-		
-		fontMetrics = self.fontMetrics()
-		
-		while block.isValid():
-			cursor = self.textCursor()
-			cursor.setPosition(block.position())
-			blockRect = self.cursorRect(cursor)
-			
-			top = blockRect.top()
-			height = blockRect.height()
-			
-			if top + height > event.rect().top() and top <= event.rect().bottom():
-				number = str(blockNumber + 1)
-				painter.setPen(QColor(self.foreground))
-				painter.drawText(0, top, self.lineNumberAreaWidth() - 3, height,
-							   Qt.AlignRight, number)
-			
-			block = block.next()
-			blockNumber += 1
-
-	def get_line_highlight_color(self):
-		# Get the background color as set by stylesheet
-		stylesheet = self.styleSheet()
-		match = re.search(r'background-color\s*:\s*([^;]+);', stylesheet)
-		if match:
-			fcolor = match.group(1)
-		else:
-			fcolor = self.palette().color(QPalette.Base).name()
-
-		# Determine if the stylesheet background color is
-		# darker or lighter; if lighter, slightly darken the
-		# color, and if darker, lighten the color
-		if QColor(fcolor).lightness() > 127:
-			fcolor = QColor(fcolor).darker(105)
-		else:
-			if QColor(fcolor).lightness() < 30:
-				fcolor = QColor("#404040")
-			else:
-				fcolor = QColor(fcolor).lighter(125)
-
-		return fcolor
-
-	def get_background_color(self):
-		# Get the background color as set by stylesheet
-		stylesheet = self.styleSheet()
-		match = re.search(r'background-color\s*:\s*([^;]+);', stylesheet)
-		if match:
-			fcolor = match.group(1)
-		else:
-			fcolor = self.palette().color(QPalette.Base).name()
-
-		return QColor(fcolor)
-
-	def highlight_current_line(self,refresh=False):
-
-		if refresh: self.line_highlight_color = self.get_line_highlight_color()
-
-		if not self.highlight_line: self.line_highlight_color = self.get_background_color()
-
-		extra_selections = []
-		selection = QTextEdit.ExtraSelection()
-		selection.format.setBackground(self.line_highlight_color)
-		selection.format.setProperty(QTextFormat.FullWidthSelection, True)
-		selection.cursor = self.textCursor()
-		selection.cursor.clearSelection()
-		extra_selections.append(selection)
-		self.setExtraSelections(extra_selections)
-
-class QNoSpaceLineEdit(QLineEdit):
-	def __init__(self, *args):
-		QLineEdit.__init__(self, *args)
-
-	# Prevent spaces from being entered
-	def keyPressEvent(self,event):
-		if event.key() == Qt.Key_Space:
-			return
-		else:
-			return super().keyPressEvent(event)
-
-class QNickEdit(QLineEdit):
-	def __init__(self, parent=None):
-		super().__init__(parent)
-
-		# Block forbidden characters from nicknames,
-		# including nicknames that start with numbers
-		pattern = r"^[a-zA-Z\[\\\]^_\{\|\}][a-zA-Z0-9\[\\\]^_\{\|\}\-]*$"
-		
-		self.validator = QRegExpValidator(QRegExp(pattern), self)
-		self.setValidator(self.validator)
-
-class QChannelEdit(QLineEdit):
-	def __init__(self, parent=None):
-		super().__init__(parent)
-
-		# Block forbidden characters and control codes
-		# from being entered
-		regex = QRegularExpression(r"^[&#+!][^\p{Cc}\x2c\s]*$")
-		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
-		
-		self.validator = QRegularExpressionValidator(regex)
-		self.setValidator(self.validator)
-
-class QRealnameEdit(QLineEdit):
-	def __init__(self, parent=None):
-		super().__init__(parent)
-
-		# Block control codes from being entered
-		regex = QRegularExpression(r"^[\P{Cc}]*$")
-		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
-		
-		self.validator = QRegularExpressionValidator(regex)
-		self.setValidator(self.validator)
-
-class QErrNickEdit(QLineEdit):
-	def __init__(self, parent=None):
-		super().__init__(parent)
-
-		# Set maximum length of 8 characters
-		self.setMaxLength(8)
-
-		# Block forbidden characters from nicknames,
-		# including nicknames that start with numbers
-		pattern = r"^[a-zA-Z\[\\\]^_\{\|\}][a-zA-Z0-9\[\\\]^_\{\|\}\-]*$"
-		
-		self.validator = QRegExpValidator(QRegExp(pattern), self)
-		self.setValidator(self.validator)
-
-class QNumberEdit(QLineEdit):
-	def __init__(self, parent=None):
-		super().__init__(parent)
-		pattern = r"^[0-9]+$"
-		self.validator = QRegExpValidator(QRegExp(pattern), self)
-		self.setValidator(self.validator)
-
-class ScrollableMenuStyle(QProxyStyle):
-	def styleHint(self, hint, option=None, widget=None, returnData=None):
-		if hint == QStyle.SH_Menu_Scrollable:
-			return True
-		return super().styleHint(hint, option, widget, returnData)
-
-class SmallButton(QPushButton):
-	def sizeHint(self):
-		size = super().sizeHint()
-		size.setHeight(size.height() - 5)
-		return size
-
-class StylerButton(QPushButton):
-	def sizeHint(self):
-		size = super().sizeHint()
-		size.setHeight(size.height() - 2)
-		return size
-
-class NoScrollTextBrowser(QTextBrowser):
-	def wheelEvent(self, event):
-		event.ignore()
-	
-	def keyPressEvent(self, event):
-		if event.key() in (Qt.Key_Up, Qt.Key_Down, Qt.Key_PageUp, Qt.Key_PageDown):
-			event.ignore()
-		else:
-			super().keyPressEvent(event)

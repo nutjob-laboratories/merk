@@ -33,125 +33,6 @@ from .resources import *
 from . import config
 from . import styles
 
-TIMESTAMP_TEMPLATE = """<td style="vertical-align:top; font-size:small; text-align:left;"><div style="!TIMESTAMP_STYLE!">[!TIME!]</div></td><td style="font-size:small;">&nbsp;</td>"""
-
-MESSAGE_TEMPLATE = f"""
-<table style="width: 100%;" border="0">
-	<tbody>
-	<tr>!TIMESTAMP!
-		<td style="text-align: right; vertical-align: top;"><div style="!ID_STYLE!">!ID!</div></td>
-		<td style="text-align: left; vertical-align: top;">&nbsp;</td>
-		!INSERT_MESSAGE_TEMPLATE!
-	</tr>
-	</tbody>
-</table>
-"""
-
-SYSTEM_TEMPLATE = f"""
-<table style="width: 100%;" border="0">
-	<tbody>
-	<tr>!TIMESTAMP!
-		!INSERT_MESSAGE_TEMPLATE!
-	</tr>
-	</tbody>
-</table>
-"""
-
-MESSAGE_STYLE_TEMPLATE = """<td style="text-align: left; vertical-align: top;"><div style="!MESSAGE_STYLE!">!MESSAGE!</div></td>"""
-MESSAGE_NO_STYLE_TEMPLATE = """<td style="text-align: left; vertical-align: top;">!MESSAGE!</td>"""
-
-HORIZONTAL_RULE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
-HARD_HORIZONTAL_RULE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
-LIGHT_HORIZONTAL_RULE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
-HARD_LIGHT_HORIZONTAL_RULE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
-TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-			<td><small><center>!MESSAGE!</center></small></td>
-			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
-LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-			<td><small><center>!MESSAGE!</center></small></td>
-			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
-DATE_MESSAGE_TEMPLATE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-			<td><center><small><b>!MESSAGE!</b></small></center></td>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
-LIGHT_DATE_MESSAGE_TEMPLATE = f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-			<td><center><small><b>!MESSAGE!</b></small></center></td>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
-			</td>
-		</tr>
-	</tbody>
-</table>'''
-
 def render_message(message,style,client=None,no_padding=False,nicks={},non_color_nicks=[],highlighted_words={}):
 
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
@@ -307,10 +188,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 
 	replacements = {}
 	if style == "":
-		replacements["!INSERT_MESSAGE_TEMPLATE!"] = MESSAGE_NO_STYLE_TEMPLATE
+		replacements[MESSAGE_INSERT_TEMPLATE_TAG] = MESSAGE_NO_STYLE_TEMPLATE
 	else:
-		replacements["!INSERT_MESSAGE_TEMPLATE!"] = MESSAGE_STYLE_TEMPLATE
-		replacements["!MESSAGE_STYLE!"] = output_style
+		replacements[MESSAGE_INSERT_TEMPLATE_TAG] = MESSAGE_STYLE_TEMPLATE
+		replacements[MESSAGE_STYLE_TEMPLATE_TAG] = output_style
 
 	# Handle timestamps
 	if (message.type != HORIZONTAL_RULE_MESSAGE and
@@ -322,10 +203,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 				pretty_timestamp = datetime.fromtimestamp(message.timestamp,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT)
 			else:
 				pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(config.TIMESTAMP_FORMAT)
-			ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!", style["timestamp"]).replace("!TIME!", pretty_timestamp)
-			replacements["!TIMESTAMP!"] = ts
+			ts = TIMESTAMP_TEMPLATE.replace(TIMESTAMP_STYLE_TEMPLATE_TAG, style["timestamp"]).replace(TIMESTAMP_TIME_TEMPLATE_TAG, pretty_timestamp)
+			replacements[TIMESTAMP_TEMPLATE_TAG] = ts
 		else:
-			replacements["!TIMESTAMP!"] = ''
+			replacements[TIMESTAMP_TEMPLATE_TAG] = ''
 
 	# Apply all insertions to the template
 	for key, value in replacements.items():
@@ -367,21 +248,18 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 
 	# Insert nicks into the template
 	replacements = {
-		"!ID_STYLE!": user_style,
-		"!ID!": nick,
+		NICK_STYLE_TEMPLATE_TAG: user_style,
+		NICK_TEMPLATE_TAG: nick,
 	}
 	if message.type == ACTION_MESSAGE:
-		replacements["!MESSAGE!"] = nick + " " + msg_to_display
+		replacements[MESSAGE_TEMPLATE_TAG] = nick + " " + msg_to_display
 	else:
-		replacements["!MESSAGE!"] = msg_to_display
+		replacements[MESSAGE_TEMPLATE_TAG] = msg_to_display
 	for key, value in replacements.items():
 		output = output.replace(key, value)
 
 	# Message has been rendered, so return it
 	return output
-
-def replace_first_style_color(style, new_color):
-	return re.sub(r'#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}', new_color, style, count=1)
 
 def highlight_words_in_chat(text, target_words, user_colors, highlighted_words, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:

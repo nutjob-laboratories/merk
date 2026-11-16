@@ -482,11 +482,16 @@ class Window(QMainWindow):
 		self.shortcut = QShortcut(QKeySequence("Ctrl+X"), self.dump)
 		self.shortcut.activated.connect(self.copy_modified)
 
-		managerLayout = QHBoxLayout()
-		managerLayout.addWidget(self.horizontalSplitter)
-
 		finalLayout = QVBoxLayout()
-		finalLayout.addLayout(managerLayout)
+		if not config.SIMPLIFIED_DIALOGS:
+			log_description = LOG_MANAGER_DESCRIPTION.replace(LOG_LENGTH_TEMPLATE_TAG,f"{config.MAX_LOG_DISPLAY_SIZE}")
+			desc = QLabel(log_description)
+			desc.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+			desc.setWordWrap(True)
+			finalLayout.addWidget(desc, 0, Qt.AlignTop)
+			finalLayout.addWidget(self.horizontalSplitter, 1)
+		else:
+			finalLayout.addWidget(self.horizontalSplitter, 1)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()

@@ -57,7 +57,7 @@ class Window(QMainWindow):
 		if self.client.hostname:
 			self.server_name = self.client.hostname
 		else:
-			self.server_name = self.client.server+":"+str(self.client.port)
+			self.server_name = f"{self.client.server}:{self.client.port}"
 
 		self.name = self.server_name + " channels"
 

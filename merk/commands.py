@@ -620,9 +620,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	global HELP_DISPLAY_TEMPLATE
 	if config.AUTOCOMPLETE_COMMANDS:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(AUTOCOMPLETE_TEMPLATE_TAG,"Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command.")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(AUTOCOMPLETE_TEMPLATE_TAG,AUTOCOMPLETE_ON_MESSAGE)
 	else:
-		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(AUTOCOMPLETE_TEMPLATE_TAG,"Command autocomplete is turned off.")
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(AUTOCOMPLETE_TEMPLATE_TAG,AUTOCOMPLETE_OFF_MESSAGE)
 
 	if HELP_PREFIX!=None:
 		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace(PREFIX_TEMPLATE_TAG,"<tr><td><small>"+HELP_PREFIX+"</small></td></tr>")

@@ -467,7 +467,7 @@ class Dialog(QDialog):
 			self.ok_button.setEnabled(True)
 			self.sasl.setEnabled(True)
 			if config.ENABLE_SCRIPTING_ENGINE and hasattr(self,"commands_tab"):
-				self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
+				self.commandHost.setText(self.exeTemplate.replace(CONNECT_SCRIPT_SERVER_TEMPLATE_TAG,hostid))
 			self.profile.setEnabled(True)
 			
 			if hostid in user.COMMANDS:
@@ -565,17 +565,9 @@ class Dialog(QDialog):
 		self.SAVE = True
 
 		if not self.not_simplified:
-			self.exeTemplate = f"""
-				<center><b>%__SERVER__%</b></center>
-			"""
+			self.exeTemplate = CONNECT_SCRIPT_SHORT_DESCRIPTION
 		else:
-			self.exeTemplate = f"""
-				<small>
-				Execute these commands upon connection to <b>%__SERVER__%</b>. To insert a pause in between commands,
-				use the <b>wait</b> command, passing the number
-				of seconds to pause as an argument.
-				</small>
-			"""
+			self.exeTemplate = CONNECT_SCRIPT_LONG_DESCRIPTION
 
 		if self.initial:
 			self.setWindowTitle(f"{APPLICATION_NAME} IRC Client")
@@ -699,16 +691,7 @@ class Dialog(QDialog):
 
 		if user.LAST_RECONNECT: self.reconnect.toggle()
 
-		self.serverDescription = QLabel("""
-			<small>
-			Select a server below, or enter connection information by hand. To automatically
-			reconnect on disconnection, check the <b>Reconnect</b> checkbox. To login
-			with SASL, check the <b>Login with SASL</b> checkbox. If <b>Execute connection
-			script</b> is enabled, commands entered in the <b>Script</b> tab will be executed
-			when connection to the server is complete.
-			</small>
-
-			""")
+		self.serverDescription = QLabel(CONNECT_SERVER_DESCRIPTION)
 		self.serverDescription.setWordWrap(True)
 		self.serverDescription.setAlignment(Qt.AlignJustify)
 
@@ -748,7 +731,7 @@ class Dialog(QDialog):
 		serverInfoLayout.addLayout(optionLayout)
 		serverInfoLayout.addStretch()
 
-		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
+		self.commandHost = QLabel(self.exeTemplate.replace(CONNECT_SCRIPT_SERVER_TEMPLATE_TAG,'UNKNOWN'))
 		self.commandHost.setWordWrap(True)
 		self.commandHost.setAlignment(Qt.AlignJustify)
 
@@ -780,17 +763,7 @@ class Dialog(QDialog):
 		self.tabs.tabBar().setExpanding(True)
 		self.tabs.tabBar().setDocumentMode(True)
 
-		self.userDescription = QLabel(f"""
-			<small>
-			<b>Nickname</b> is the nickname you want to use, and
-			<b>alternate</b> (optional) is used if your primary choice is taken. If both <b>nickname</b>
-			and <b>alternate</b> are taken, a random number will be attached to <b>nickname</b>, and that
-			will be used as the nickname. All settings are saved when you click <b>Connect</b>,
-			unless you uncheck <b>Save to user settings file</b> below. Click <b>Save as server profile</b>
-			if you'd like to use this user information every time you connect to this specific server.
-			</small>
-
-			""")
+		self.userDescription = QLabel(CONNECT_USER_DESCRIPTION)
 		self.userDescription.setWordWrap(True)
 		self.userDescription.setAlignment(Qt.AlignJustify)
 
