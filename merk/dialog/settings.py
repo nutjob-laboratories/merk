@@ -558,20 +558,17 @@ class Dialog(QDialog):
 		self.logsize = self.logSizeBox.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def setHistorySize(self):
 		self.historysize = self.historySizeBox.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def setUlistWidth(self):
 		self.USERLIST_WIDTH_IN_CHARACTERS = self.ulistWidthBox.value()
 		self.rerenderUsers = True
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def selEnglish(self):
 		self.spellLang = "en"
@@ -1183,6 +1180,7 @@ class Dialog(QDialog):
 		if self.showInfo.isChecked() or self.displayServNicks.isChecked():
 			self.showAwayNick.setEnabled(True)
 			self.enableNickClick.setEnabled(True)
+			self.showUsermodes.setEnabled(True)
 			if self.showAwayNick.isChecked():
 				self.showNickItalics.setEnabled(True)
 				self.showAwayTooltip.setEnabled(True)
@@ -1191,6 +1189,7 @@ class Dialog(QDialog):
 				self.showAwayTooltip.setEnabled(False)
 			self.nnDisplayDesc.hide()
 		else:
+			self.showUsermodes.setEnabled(False)
 			self.enableNickClick.setEnabled(False)
 			self.showAwayNick.setEnabled(False)
 			self.showNickItalics.setEnabled(False)
@@ -1224,7 +1223,6 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
-		self.selector.setFocus()
 
 	def changedSettingHostmask(self,state):
 		if self.autoHostmasks.isChecked() or self.autoBots.isChecked():
@@ -1245,51 +1243,43 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
-		self.selector.setFocus()
 
 	def updateDelay(self,state):
 		self.RECONNECTION_DELAY = self.delayTime.value()
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
-		self.selector.setFocus()
 
 	def updateLogLimit(self,state):
 		self.MAX_LOG_DISPLAY_SIZE = self.logViewLimit.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def updateDistance(self,state):
 		self.SUBWINDOW_SNAP_DISTANCE = self.snapDistance.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def updateNickHighlightLength(self,state):
 		self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = self.nickLengthHighlight.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def updateConnectionTimeout(self,state):
 		self.CONNECTION_TIMEOUT = self.timeoutLength.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def updateBlinkRate(self,state):
 		self.CURSOR_BLINK_RATE = self.blinkRate.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def updateinputCursor(self,state):
 		self.INPUT_CURSOR_WIDTH = self.inputCursor.value()
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
-		self.selector.setFocus()
 
 	def updateMaxChat(self,state):
 		self.changed_advanced_setting = True
@@ -1297,14 +1287,11 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
-		self.selector.setFocus()
 
 	def updateHeartbeat(self,state):
-		self.changed_advanced_setting = True
 		self.heartbeat = self.heartbeatLength.value()
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def changeTimestamp(self,state):
 		if self.showTimestamps.isChecked():
@@ -1653,9 +1640,6 @@ class Dialog(QDialog):
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
 			self.enablePing.setEnabled(True)
-			self.serverHeartbeatLabel.setEnabled(True)
-			self.heartbeatLength.setEnabled(True)
-			self.heartbeatLabelSpec.setEnabled(True)
 			self.maxChatLabel.setEnabled(True)
 			self.maxChat.setEnabled(True)
 			self.maxChatLabelSpec.setEnabled(True)
@@ -1676,9 +1660,6 @@ class Dialog(QDialog):
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
 			self.enablePing.setEnabled(False)
-			self.serverHeartbeatLabel.setEnabled(False)
-			self.heartbeatLength.setEnabled(False)
-			self.heartbeatLabelSpec.setEnabled(False)
 			self.maxChatLabel.setEnabled(False)
 			self.maxChat.setEnabled(False)
 			self.maxChatLabelSpec.setEnabled(False)
@@ -1740,9 +1721,6 @@ class Dialog(QDialog):
 
 			self.maxChat.setValue(config.IRC_MAX_PAYLOAD_LENGTH)
 			self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
-
-			self.heartbeatLength.setValue(config.TWISTED_CLIENT_HEARTBEAT)
-			self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
 
 			if config.SHOW_PINGS_IN_CONSOLE:
 				self.enablePing.setChecked(True)
@@ -2789,6 +2767,417 @@ class Dialog(QDialog):
 
 		self.applicationPage.setLayout(applicationLayout)
 
+		# User page
+
+		self.userPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("User")
+		entry.widget = self.userPage
+		entry.setIcon(QIcon(USER_MENU_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.userPage)
+
+		if config.PREVENT_ILLEGAL_NICKNAMES:
+			self.nick = QNickEdit(user.NICKNAME)
+			self.alternative = QNickEdit(user.ALTERNATE)
+		else:
+			self.nick = QNoSpaceLineEdit(user.NICKNAME)
+			self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
+		self.username = QNoSpaceLineEdit(user.USERNAME)
+		self.realname = QRealnameEdit(user.REALNAME)
+		self.userinfo = QLineEdit(user.USERINFO)
+		self.finger = QLineEdit(user.FINGER)
+
+		self.nick.textChanged.connect(self.changeUser)
+		self.alternative.textChanged.connect(self.changeUser)
+		self.username.textChanged.connect(self.changeUser)
+		self.realname.textChanged.connect(self.changeUser)
+		self.userinfo.textChanged.connect(self.changeUserInfor)
+		self.finger.textChanged.connect(self.changeUserInfor)
+
+		font = self.font()
+		font.setBold(True)
+
+		self.nickLabel = QLabel("Nickname ")
+		self.nickLabel.setFont(font)
+		self.alternateLabel = QLabel("Alternate ")
+		self.alternateLabel.setFont(font)
+		self.usernameLabel = QLabel("Username ")
+		self.usernameLabel.setFont(font)
+		self.realnameLabel = QLabel("Realname ")
+		self.realnameLabel.setFont(font)
+
+		udataLayout = QFormLayout()
+		udataLayout.addRow(self.nickLabel,self.nick)
+		udataLayout.addRow(self.alternateLabel,self.alternative)
+		udataLayout.addRow(self.usernameLabel,self.username)
+		udataLayout.addRow(self.realnameLabel,self.realname)
+
+		self.uinfoLabel = QLabel("USERINFO ")
+		self.uinfoLabel.setFont(font)
+		self.finLabel = QLabel("FINGER ")
+		self.finLabel.setFont(font)
+
+		ctcpLayout = QFormLayout()
+		ctcpLayout.addRow(self.uinfoLabel,self.userinfo)
+		ctcpLayout.addRow(self.finLabel,self.finger)
+
+		self.userDescription = QLabel(f"""
+			<small>
+			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP replies</b>.
+			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
+			current connections. <b>Alternate</b> is completely optional.<br>
+			</small>
+			""")
+		self.userDescription.setWordWrap(True)
+		self.userDescription.setAlignment(Qt.AlignJustify)
+
+		self.ctcpDescription = QLabel(f"""
+			<small>
+			Changes to <b>USERINFO</b> and <b>FINGER</b> replies will be used immediately.
+			Both of these values are optional. If not set to a value, <b>{APPLICATION_NAME}</b>
+			will not reply to the CTCP request.<br>
+			</small>
+			""")
+		self.ctcpDescription.setWordWrap(True)
+		self.ctcpDescription.setAlignment(Qt.AlignJustify)
+
+		self.noEnviron = QCheckBox(f"Do not show environment in CTCP VERSION",self)
+		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
+		self.noEnviron.stateChanged.connect(self.changedSetting)
+		
+		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
+		self.noVersion.stateChanged.connect(self.changedSettingVersion)
+
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
+			self.noEnviron.setEnabled(False)
+
+		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
+		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
+		self.noSource.stateChanged.connect(self.changedSetting)
+
+		self.resetHistory = SmallButton("Connection history")
+		self.resetHistory.clicked.connect(self.deleteHistory)
+		self.resetHistory.setAutoDefault(False)
+
+		self.resetSasl = SmallButton("SASL accounts")
+		self.resetSasl.clicked.connect(self.deleteSasl)
+		self.resetSasl.setAutoDefault(False)
+
+		self.resetConnection = SmallButton("Connection scripts")
+		self.resetConnection.clicked.connect(self.deleteConnection)
+		self.resetConnection.setAutoDefault(False)
+
+		self.resetLast = SmallButton("Last server connection")
+		self.resetLast.clicked.connect(self.deleteLast)
+		self.resetLast.setAutoDefault(False)
+
+		self.resetProfiles = SmallButton("Server profiles")
+		self.resetProfiles.clicked.connect(self.deleteProfile)
+		self.resetProfiles.setAutoDefault(False)
+
+		bdLayout1 = QHBoxLayout()
+		bdLayout1.setSpacing(0)
+		bdLayout1.addWidget(self.resetLast)
+		bdLayout1.addWidget(self.resetHistory)
+
+		bdLayout2 = QHBoxLayout()
+		bdLayout2.setSpacing(0)
+		bdLayout2.addWidget(self.resetSasl)
+		bdLayout2.addWidget(self.resetConnection)
+
+		bdLayout = QVBoxLayout()
+		bdLayout.setSpacing(0)
+		bdLayout.addLayout(bdLayout1)
+		bdLayout.addLayout(bdLayout2)
+		bdLayout.addWidget(self.resetProfiles)
+
+		self.useProfiles = QCheckBox(f"Always use server profiles for connections",self)
+		if config.ALWAYS_USE_SERVER_PROFILES: self.useProfiles.setChecked(True)
+		self.useProfiles.stateChanged.connect(self.changedSetting)
+
+		profLayout = QHBoxLayout()
+		profLayout.addStretch()
+		profLayout.addWidget(self.useProfiles)
+		profLayout.addStretch()
+
+		self.notifyCTCP = QCheckBox("Notify when a CTCP request is received",self)
+		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
+		self.notifyCTCP.stateChanged.connect(self.changedSetting)
+
+		userLayout = QVBoxLayout()
+		userLayout.setSpacing(0)
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user settings</b>"))
+		userLayout.addWidget(self.userDescription)
+		userLayout.addLayout(udataLayout)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server profiles</b>"))
+		userLayout.addLayout(profLayout)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
+		userLayout.addWidget(self.ctcpDescription)
+		userLayout.addLayout(ctcpLayout)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(self.notifyCTCP)
+		userLayout.addWidget(self.noSource)
+		userLayout.addWidget(self.noVersion)
+		userLayout.addWidget(self.noEnviron)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored user settings</b>"))
+		userLayout.addLayout(bdLayout)
+		userLayout.addStretch()
+
+		self.userPage.setLayout(userLayout)
+
+		# Connection page
+
+		self.connectionsPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Connections")
+		entry.widget = self.connectionsPage
+		entry.setIcon(QIcon(SERVER_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.connectionsPage)
+
+		self.askBeforeDisconnect = QCheckBox("Ask before disconnecting",self)
+		if config.ASK_BEFORE_DISCONNECT: self.askBeforeDisconnect.setChecked(True)
+		self.askBeforeDisconnect.stateChanged.connect(self.changedSetting)
+
+		self.askBeforeReconnect = QCheckBox("Ask before reconnecting",self)
+		if config.ASK_BEFORE_RECONNECT: self.askBeforeReconnect.setChecked(True)
+		self.askBeforeReconnect.stateChanged.connect(self.changedSetting)
+
+		self.notifyOnLostConnection = QCheckBox("Notify on lost/failed connection",self)
+		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION: self.notifyOnLostConnection.setChecked(True)
+		self.notifyOnLostConnection.stateChanged.connect(self.changedSetting)
+
+		self.promptFail = QCheckBox("Prompt for new server on connection failure",self)
+		if config.PROMPT_ON_FAILED_CONNECTION: self.promptFail.setChecked(True)
+		self.promptFail.stateChanged.connect(self.changedSetting)
+		
+		self.showList = QCheckBox("Show channel list dialog on connection",self)
+		if config.SHOW_CHANNEL_LIST_ON_CONNECT: self.showList.setChecked(True)
+		self.showList.stateChanged.connect(self.changedSetting)
+
+		if not config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.showList.setEnabled(False)
+
+		self.requestList = QCheckBox("Fetch channel list from server on connection",self)
+		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
+		self.requestList.stateChanged.connect(self.changedSettingList)
+		
+		self.autoHostmasks = QCheckBox("Fetch user hostmasks on channel join",self)
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
+		self.autoHostmasks.stateChanged.connect(self.changedSettingHostmask)
+
+		self.autoBots = QCheckBox("Fetch user bot status on channel join",self)
+		if config.GET_BOTS_ON_CHANNEL_JOIN: self.autoBots.setChecked(True)
+		self.autoBots.stateChanged.connect(self.changedSettingHostmask)
+
+		self.showNetLinks = QCheckBox("Show known links to network homepages",self)
+		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
+		self.showNetLinks.stateChanged.connect(self.changedSettingStatusBar)
+		
+		self.fetchFreqLabel = QLabel("Fetch user data every ")
+		self.fetchFreqLabelSpec = QLabel(" seconds")
+		self.fetchFreq = QSpinBox()
+		self.fetchFreq.setRange(1,99)
+		self.fetchFreq.setValue(self.USER_DATA_FETCH_FREQUENCY)
+		self.fetchFreq.valueChanged.connect(self.updateFreq)
+
+		freqLayout = QHBoxLayout()
+		freqLayout.addWidget(self.fetchFreqLabel)
+		freqLayout.addWidget(self.fetchFreq)
+		freqLayout.addWidget(self.fetchFreqLabelSpec)
+		freqLayout.addStretch()
+
+		if not config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+			self.fetchFreqLabel.setEnabled(False)
+			self.fetchFreq.setEnabled(False)
+			self.fetchFreqLabelSpec.setEnabled(False)
+
+		self.delayReconnect = QCheckBox("Delay reconnection by",self)
+		if config.DELAY_AUTO_RECONNECTION: self.delayReconnect.setChecked(True)
+		self.delayReconnect.stateChanged.connect(self.changedSetting)
+
+		self.delayTimeLabelSpec = QLabel(" seconds")
+		self.delayTime = QSpinBox()
+		self.delayTime.setRange(1,99)
+		self.delayTime.setValue(self.RECONNECTION_DELAY)
+		self.delayTime.valueChanged.connect(self.updateDelay)
+
+		delayLayout = QHBoxLayout()
+		delayLayout.addWidget(self.delayReconnect)
+		delayLayout.addWidget(self.delayTime)
+		delayLayout.addWidget(self.delayTimeLabelSpec)
+		delayLayout.addStretch()
+
+		self.saveHistory = QCheckBox("Save connection history",self)
+		if config.SAVE_CONNECTION_HISTORY: self.saveHistory.setChecked(True)
+		self.saveHistory.stateChanged.connect(self.changedSetting)
+
+		self.notifyRepeated = QCheckBox("Notify on repeated failed reconnections",self)
+		if config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS: self.notifyRepeated.setChecked(True)
+		self.notifyRepeated.stateChanged.connect(self.changedSetting)
+
+		self.ircErrors = QCheckBox("Display server errors in the current subwindow",self)
+		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW: self.ircErrors.setChecked(True)
+		self.ircErrors.stateChanged.connect(self.changedSetting)
+
+		self.ircAllErrors = QCheckBox("Display all server errors, even those handled\nautomatically",self)
+		if config.SHOW_ALL_SERVER_ERRORS: self.ircAllErrors.setChecked(True)
+		self.ircAllErrors.stateChanged.connect(self.changedSetting)
+
+		self.automaticList = QCheckBox("Refresh channel list every",self)
+		if config.AUTOMATICALLY_REFRESH_CHANNEL_LIST: self.automaticList.setChecked(True)
+		self.automaticList.stateChanged.connect(self.changedSetting)
+
+		self.listInterval = QComboBox(self)
+		added = False
+		if config.REFRESH_CHANNEL_LIST==60:
+			self.listInterval.addItem("hour")
+			added = True
+		if config.REFRESH_CHANNEL_LIST==120:
+			self.listInterval.addItem("2 hours")
+			added = True
+		if config.REFRESH_CHANNEL_LIST==180:
+			self.listInterval.addItem("3 hours")
+			added = True
+		if config.REFRESH_CHANNEL_LIST==240:
+			self.listInterval.addItem("4 hours")
+			added = True
+		if added==False: self.listInterval.addItem(f"{config.REFRESH_CHANNEL_LIST} minutes")
+		if config.REFRESH_CHANNEL_LIST!=60: self.listInterval.addItem("1 hour")
+		if config.REFRESH_CHANNEL_LIST!=120: self.listInterval.addItem("2 hours")
+		if config.REFRESH_CHANNEL_LIST!=180: self.listInterval.addItem("3 hours")
+		if config.REFRESH_CHANNEL_LIST!=240: self.listInterval.addItem("4 hours")
+		self.listInterval.currentIndexChanged.connect(self.intervalList)
+
+		refreshLayout = QHBoxLayout()
+		refreshLayout.addWidget(self.automaticList)
+		refreshLayout.addWidget(self.listInterval)
+		refreshLayout.addStretch()
+
+		self.failSasl = QCheckBox("Disconnect on SASL authentication failure",self)
+		if config.DISCONNECT_ON_SASL_FAIL: self.failSasl.setChecked(True)
+		self.failSasl.stateChanged.connect(self.changedSetting)
+
+		self.doConnectionTimeout = QCheckBox("Disconnect if registration takes more than",self)
+		if config.TIMEOUT_CONNECTIONS: self.doConnectionTimeout.setChecked(True)
+		self.doConnectionTimeout.stateChanged.connect(self.changedSetting)
+
+		self.timeoutLengthSpec = QLabel(" seconds to complete")
+		self.timeoutLength = QSpinBox()
+		self.timeoutLength.setRange(1,999)
+		self.timeoutLength.setValue(self.CONNECTION_TIMEOUT)
+		self.timeoutLength.valueChanged.connect(self.updateConnectionTimeout)
+
+		self.useSasl = QCheckBox("Always use SASL logins",self)
+		if config.ALWAYS_USE_SASL_LOGINS: self.useSasl.setChecked(True)
+		self.useSasl.stateChanged.connect(self.changedSetting)
+
+		self.showFullUser = QCheckBox("Show full user data in CTCP replies",self)
+		if config.SHOW_FULL_USER_IN_CTCP_REPLY: self.showFullUser.setChecked(True)
+		self.showFullUser.stateChanged.connect(self.changedSetting)
+
+		self.connectMultiple = QCheckBox("Ask before connecting to a server more than once",self)
+		if config.ASK_BEFORE_MULTIPLE_CONNECTIONS: self.connectMultiple.setChecked(True)
+		self.connectMultiple.stateChanged.connect(self.changedSetting)
+
+		self.useHeartbeat = QCheckBox("Ping server every",self)
+		if config.USE_KEEPALIVE_HEARTBEAT: self.useHeartbeat.setChecked(True)
+		self.useHeartbeat.stateChanged.connect(self.changedSetting)
+
+		self.heartbeatLabelSpec = QLabel(" seconds")
+		self.heartbeatLength = QSpinBox()
+		self.heartbeatLength.setRange(1,300)
+		self.heartbeatLength.setValue(self.heartbeat)
+		self.heartbeatLength.valueChanged.connect(self.updateHeartbeat)
+
+		hbLayout = QHBoxLayout()
+		hbLayout.addWidget(self.useHeartbeat)
+		hbLayout.addWidget(self.heartbeatLength)
+		hbLayout.addWidget(self.heartbeatLabelSpec)
+		hbLayout.addStretch()
+
+		lspacer = QLabel()
+		lspacer.setFixedWidth(self.doConnectionTimeout.style().pixelMetric(QStyle.PM_IndicatorWidth) * 2)
+
+		connTimeoutLayout1 = QHBoxLayout()
+		connTimeoutLayout1.addWidget(lspacer)
+		connTimeoutLayout1.addWidget(self.timeoutLength)
+		connTimeoutLayout1.addWidget(self.timeoutLengthSpec)
+		connTimeoutLayout1.addStretch()
+
+		connTimeoutLayout = QVBoxLayout()
+		connTimeoutLayout.addWidget(self.doConnectionTimeout)
+		connTimeoutLayout.addLayout(connTimeoutLayout1)
+		connTimeoutLayout.addStretch()
+
+		csLayout = QVBoxLayout()
+		csLayout.setSpacing(0)
+		csLayout.addLayout(hbLayout)
+		csLayout.addWidget(self.saveHistory)
+		csLayout.addWidget(self.askBeforeDisconnect)
+		csLayout.addWidget(self.notifyOnLostConnection)
+		csLayout.addWidget(self.promptFail)
+		csLayout.addWidget(self.askBeforeReconnect)
+		csLayout.addLayout(delayLayout)
+		csLayout.addWidget(self.notifyRepeated)
+		csLayout.addWidget(self.connectMultiple)
+		csLayout.addWidget(self.useSasl)
+		csLayout.addWidget(self.failSasl)
+		csLayout.addLayout(connTimeoutLayout)
+		csLayout.addWidget(self.showNetLinks)
+		csLayout.addWidget(self.ircErrors)
+		csLayout.addWidget(self.ircAllErrors)
+		csLayout.addWidget(self.showFullUser)
+		csLayout.addWidget(self.requestList)
+		csLayout.addWidget(self.showList)
+		csLayout.addLayout(refreshLayout)
+		csLayout.addWidget(self.autoHostmasks)
+		csLayout.addWidget(self.autoBots)
+		csLayout.addLayout(freqLayout)
+
+		self.erroneousDescription = QLabel(f"""
+			<small>
+			If your <b>nickname</b> "breaks" the rules of a given <b>server</b>, this is the <b>nickname</b> that will
+			be used, limited to 8 characters.<br>
+			</small>
+			""")
+		self.erroneousDescription.setWordWrap(True)
+		self.erroneousDescription.setAlignment(Qt.AlignJustify)
+
+		self.errNick = QErrNickEdit(config.BAD_NICKNAME_FALLBACK)
+
+		self.errNick.textChanged.connect(self.changedErr)
+
+		font = self.font()
+		font.setBold(True)
+
+		self.errNickLabel = QLabel("Erroneous Nickname: ")
+		self.errNickLabel.setFont(font)
+
+		eLayout = QFormLayout()
+		eLayout.addRow(self.errNickLabel,self.errNick)
+
+		connectionsLayout = QVBoxLayout()
+		connectionsLayout.setSpacing(0)
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
+		connectionsLayout.addLayout(csLayout)
+		connectionsLayout.addWidget(QLabel(' '))
+		connectionsLayout.addWidget(self.erroneousDescription)
+		connectionsLayout.addLayout(eLayout)
+		connectionsLayout.addStretch()
+
+		self.connectionsPage.setLayout(connectionsLayout)
+
 		# Appearance page
 
 		self.appearancePage = QWidget()
@@ -3708,6 +4097,13 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
 		self.showStatusEditor.stateChanged.connect(self.changedSettingStatusBar)
 
+		self.showUsermodes = QCheckBox("Show usermodes in nickname display",self)
+		if config.SHOW_USERMODE_DISPLAY: self.showUsermodes.setChecked(True)
+		self.showUsermodes.stateChanged.connect(self.changedSettingRerenderNickShow)
+
+		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS and not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
+			self.showUsermodes.setEnabled(False)
+
 		statusLayout = QHBoxLayout()
 		statusLayout.addStretch()
 		statusLayout.addWidget(self.showStatusServer)
@@ -3821,6 +4217,7 @@ class Dialog(QDialog):
 		swsSettings.addLayout(distanceLayout)
 		swsSettings.addWidget(self.showInfo)
 		swsSettings.addWidget(self.enableNickClick)
+		swsSettings.addWidget(self.showUsermodes)
 		swsSettings.addWidget(self.statusInfo)
 		swsSettings.addLayout(rbLayout)
 
@@ -3869,16 +4266,24 @@ class Dialog(QDialog):
 		sizeLayoutCenter.addLayout(sizeLayout)
 		sizeLayoutCenter.addStretch()
 
+		orderLayout2 = QVBoxLayout()
+		orderLayout2.setSpacing(0)
+		orderLayout2.addWidget(widgets.textSeparatorLabel(self,"<b>order subwindows on...</b>"))
+		orderLayout2.addLayout(orderLayout)
+
+		statusLayout2 = QVBoxLayout()
+		statusLayout2.setSpacing(0)
+		statusLayout2.addWidget(widgets.textSeparatorLabel(self,"<b>show status bars on these subwindow types</b>"))
+		statusLayout2.addLayout(statusLayout)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addLayout(sizeLayoutCenter)
 		subwindowLayout.addLayout(swsSettings)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow background image</b>"))
 		subwindowLayout.addLayout(subwbackgroundLayout)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>order subwindows on...</b>"))
-		subwindowLayout.addLayout(orderLayout)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show status bars on these subwindow types</b>"))
-		subwindowLayout.addLayout(statusLayout)
+		subwindowLayout.addLayout(orderLayout2)
+		subwindowLayout.addLayout(statusLayout2)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server subwindow settings</b>"))
 		subwindowLayout.addLayout(ssLayout)
 		subwindowLayout.addStretch()
@@ -4280,172 +4685,6 @@ class Dialog(QDialog):
 		audioLayout.addStretch()
 
 		self.notificationsPage.setLayout(audioLayout)
-
-		# User page
-
-		self.userPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("User")
-		entry.widget = self.userPage
-		entry.setIcon(QIcon(USER_MENU_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.userPage)
-
-		if config.PREVENT_ILLEGAL_NICKNAMES:
-			self.nick = QNickEdit(user.NICKNAME)
-			self.alternative = QNickEdit(user.ALTERNATE)
-		else:
-			self.nick = QNoSpaceLineEdit(user.NICKNAME)
-			self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
-		self.username = QNoSpaceLineEdit(user.USERNAME)
-		self.realname = QRealnameEdit(user.REALNAME)
-		self.userinfo = QLineEdit(user.USERINFO)
-		self.finger = QLineEdit(user.FINGER)
-
-		self.nick.textChanged.connect(self.changeUser)
-		self.alternative.textChanged.connect(self.changeUser)
-		self.username.textChanged.connect(self.changeUser)
-		self.realname.textChanged.connect(self.changeUser)
-		self.userinfo.textChanged.connect(self.changeUserInfor)
-		self.finger.textChanged.connect(self.changeUserInfor)
-
-		font = self.font()
-		font.setBold(True)
-
-		self.nickLabel = QLabel("Nickname ")
-		self.nickLabel.setFont(font)
-		self.alternateLabel = QLabel("Alternate ")
-		self.alternateLabel.setFont(font)
-		self.usernameLabel = QLabel("Username ")
-		self.usernameLabel.setFont(font)
-		self.realnameLabel = QLabel("Realname ")
-		self.realnameLabel.setFont(font)
-
-		udataLayout = QFormLayout()
-		udataLayout.addRow(self.nickLabel,self.nick)
-		udataLayout.addRow(self.alternateLabel,self.alternative)
-		udataLayout.addRow(self.usernameLabel,self.username)
-		udataLayout.addRow(self.realnameLabel,self.realname)
-
-		self.uinfoLabel = QLabel("USERINFO ")
-		self.uinfoLabel.setFont(font)
-		self.finLabel = QLabel("FINGER ")
-		self.finLabel.setFont(font)
-
-		ctcpLayout = QFormLayout()
-		ctcpLayout.addRow(self.uinfoLabel,self.userinfo)
-		ctcpLayout.addRow(self.finLabel,self.finger)
-
-		self.userDescription = QLabel(f"""
-			<small>
-			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP replies</b>.
-			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
-			current connections. <b>Alternate</b> is completely optional.<br>
-			</small>
-			""")
-		self.userDescription.setWordWrap(True)
-		self.userDescription.setAlignment(Qt.AlignJustify)
-
-		self.ctcpDescription = QLabel(f"""
-			<small>
-			Changes to <b>USERINFO</b> and <b>FINGER</b> replies will be used immediately.
-			Both of these values are optional. If not set to a value, <b>{APPLICATION_NAME}</b>
-			will not reply to the CTCP request.<br>
-			</small>
-			""")
-		self.ctcpDescription.setWordWrap(True)
-		self.ctcpDescription.setAlignment(Qt.AlignJustify)
-
-		self.noEnviron = QCheckBox(f"Do not show environment in CTCP VERSION",self)
-		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
-		self.noEnviron.stateChanged.connect(self.changedSetting)
-		
-		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
-		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
-		self.noVersion.stateChanged.connect(self.changedSettingVersion)
-
-		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
-			self.noEnviron.setEnabled(False)
-
-		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
-		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
-		self.noSource.stateChanged.connect(self.changedSetting)
-
-		self.resetHistory = SmallButton("Connection history")
-		self.resetHistory.clicked.connect(self.deleteHistory)
-		self.resetHistory.setAutoDefault(False)
-
-		self.resetSasl = SmallButton("SASL accounts")
-		self.resetSasl.clicked.connect(self.deleteSasl)
-		self.resetSasl.setAutoDefault(False)
-
-		self.resetConnection = SmallButton("Connection scripts")
-		self.resetConnection.clicked.connect(self.deleteConnection)
-		self.resetConnection.setAutoDefault(False)
-
-		self.resetLast = SmallButton("Last server connection")
-		self.resetLast.clicked.connect(self.deleteLast)
-		self.resetLast.setAutoDefault(False)
-
-		self.resetProfiles = SmallButton("Server profiles")
-		self.resetProfiles.clicked.connect(self.deleteProfile)
-		self.resetProfiles.setAutoDefault(False)
-
-		bdLayout1 = QHBoxLayout()
-		bdLayout1.setSpacing(0)
-		bdLayout1.addWidget(self.resetLast)
-		bdLayout1.addWidget(self.resetHistory)
-
-		bdLayout2 = QHBoxLayout()
-		bdLayout2.setSpacing(0)
-		bdLayout2.addWidget(self.resetSasl)
-		bdLayout2.addWidget(self.resetConnection)
-
-		bdLayout = QVBoxLayout()
-		bdLayout.setSpacing(0)
-		bdLayout.addLayout(bdLayout1)
-		bdLayout.addLayout(bdLayout2)
-		bdLayout.addWidget(self.resetProfiles)
-
-		self.useProfiles = QCheckBox(f"Always use server profiles for connections",self)
-		if config.ALWAYS_USE_SERVER_PROFILES: self.useProfiles.setChecked(True)
-		self.useProfiles.stateChanged.connect(self.changedSetting)
-
-		profLayout = QHBoxLayout()
-		profLayout.addStretch()
-		profLayout.addWidget(self.useProfiles)
-		profLayout.addStretch()
-
-		self.notifyCTCP = QCheckBox("Notify when a CTCP request is received",self)
-		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
-		self.notifyCTCP.stateChanged.connect(self.changedSetting)
-
-		userLayout = QVBoxLayout()
-		userLayout.setSpacing(0)
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user settings</b>"))
-		userLayout.addWidget(self.userDescription)
-		userLayout.addLayout(udataLayout)
-		userLayout.addWidget(QLabel(' '))
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server profiles</b>"))
-		userLayout.addLayout(profLayout)
-		userLayout.addWidget(QLabel(' '))
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
-		userLayout.addWidget(self.ctcpDescription)
-		userLayout.addLayout(ctcpLayout)
-		userLayout.addWidget(QLabel(' '))
-		userLayout.addWidget(self.notifyCTCP)
-		userLayout.addWidget(self.noSource)
-		userLayout.addWidget(self.noVersion)
-		userLayout.addWidget(self.noEnviron)
-		userLayout.addWidget(QLabel(' '))
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored user settings</b>"))
-		userLayout.addLayout(bdLayout)
-		userLayout.addStretch()
-
-		self.userPage.setLayout(userLayout)
 
 		# Channels
 
@@ -4883,240 +5122,6 @@ class Dialog(QDialog):
 		timestampLayout.addStretch()
 
 		self.timestampPage.setLayout(timestampLayout)
-
-		# Connection page
-
-		self.connectionsPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Connections")
-		entry.widget = self.connectionsPage
-		entry.setIcon(QIcon(SERVER_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.connectionsPage)
-
-		self.askBeforeDisconnect = QCheckBox("Ask before disconnecting",self)
-		if config.ASK_BEFORE_DISCONNECT: self.askBeforeDisconnect.setChecked(True)
-		self.askBeforeDisconnect.stateChanged.connect(self.changedSetting)
-
-		self.askBeforeReconnect = QCheckBox("Ask before reconnecting",self)
-		if config.ASK_BEFORE_RECONNECT: self.askBeforeReconnect.setChecked(True)
-		self.askBeforeReconnect.stateChanged.connect(self.changedSetting)
-
-		self.notifyOnLostConnection = QCheckBox("Notify on lost/failed connection",self)
-		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION: self.notifyOnLostConnection.setChecked(True)
-		self.notifyOnLostConnection.stateChanged.connect(self.changedSetting)
-
-		self.promptFail = QCheckBox("Prompt for new server on connection failure",self)
-		if config.PROMPT_ON_FAILED_CONNECTION: self.promptFail.setChecked(True)
-		self.promptFail.stateChanged.connect(self.changedSetting)
-		
-		self.showList = QCheckBox("Show channel list dialog on connection",self)
-		if config.SHOW_CHANNEL_LIST_ON_CONNECT: self.showList.setChecked(True)
-		self.showList.stateChanged.connect(self.changedSetting)
-
-		if not config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.showList.setEnabled(False)
-
-		self.requestList = QCheckBox("Fetch channel list from server on connection",self)
-		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
-		self.requestList.stateChanged.connect(self.changedSettingList)
-		
-		self.autoHostmasks = QCheckBox("Fetch user hostmasks on channel join",self)
-		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
-		self.autoHostmasks.stateChanged.connect(self.changedSettingHostmask)
-
-		self.autoBots = QCheckBox("Fetch user bot status on channel join",self)
-		if config.GET_BOTS_ON_CHANNEL_JOIN: self.autoBots.setChecked(True)
-		self.autoBots.stateChanged.connect(self.changedSettingHostmask)
-
-		self.showNetLinks = QCheckBox("Show known links to network homepages",self)
-		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
-		self.showNetLinks.stateChanged.connect(self.changedSettingStatusBar)
-		
-		self.fetchFreqLabel = QLabel("Fetch user data every ")
-		self.fetchFreqLabelSpec = QLabel(" seconds")
-		self.fetchFreq = QSpinBox()
-		self.fetchFreq.setRange(1,99)
-		self.fetchFreq.setValue(self.USER_DATA_FETCH_FREQUENCY)
-		self.fetchFreq.valueChanged.connect(self.updateFreq)
-
-		freqLayout = QHBoxLayout()
-		freqLayout.addWidget(self.fetchFreqLabel)
-		freqLayout.addWidget(self.fetchFreq)
-		freqLayout.addWidget(self.fetchFreqLabelSpec)
-		freqLayout.addStretch()
-
-		if not config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
-			self.fetchFreqLabel.setEnabled(False)
-			self.fetchFreq.setEnabled(False)
-			self.fetchFreqLabelSpec.setEnabled(False)
-
-		self.delayReconnect = QCheckBox("Delay reconnection by",self)
-		if config.DELAY_AUTO_RECONNECTION: self.delayReconnect.setChecked(True)
-		self.delayReconnect.stateChanged.connect(self.changedSetting)
-
-		self.delayTimeLabelSpec = QLabel(" seconds")
-		self.delayTime = QSpinBox()
-		self.delayTime.setRange(1,99)
-		self.delayTime.setValue(self.RECONNECTION_DELAY)
-		self.delayTime.valueChanged.connect(self.updateDelay)
-
-		delayLayout = QHBoxLayout()
-		delayLayout.addWidget(self.delayReconnect)
-		delayLayout.addWidget(self.delayTime)
-		delayLayout.addWidget(self.delayTimeLabelSpec)
-		delayLayout.addStretch()
-
-		self.saveHistory = QCheckBox("Save connection history",self)
-		if config.SAVE_CONNECTION_HISTORY: self.saveHistory.setChecked(True)
-		self.saveHistory.stateChanged.connect(self.changedSetting)
-
-		self.notifyRepeated = QCheckBox("Notify on repeated failed reconnections",self)
-		if config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS: self.notifyRepeated.setChecked(True)
-		self.notifyRepeated.stateChanged.connect(self.changedSetting)
-
-		self.ircErrors = QCheckBox("Display server errors in the current subwindow",self)
-		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW: self.ircErrors.setChecked(True)
-		self.ircErrors.stateChanged.connect(self.changedSetting)
-
-		self.ircAllErrors = QCheckBox("Display all server errors, even those handled\nautomatically",self)
-		if config.SHOW_ALL_SERVER_ERRORS: self.ircAllErrors.setChecked(True)
-		self.ircAllErrors.stateChanged.connect(self.changedSetting)
-
-		self.automaticList = QCheckBox("Refresh channel list every",self)
-		if config.AUTOMATICALLY_REFRESH_CHANNEL_LIST: self.automaticList.setChecked(True)
-		self.automaticList.stateChanged.connect(self.changedSetting)
-
-		self.listInterval = QComboBox(self)
-		added = False
-		if config.REFRESH_CHANNEL_LIST==60:
-			self.listInterval.addItem("hour")
-			added = True
-		if config.REFRESH_CHANNEL_LIST==120:
-			self.listInterval.addItem("2 hours")
-			added = True
-		if config.REFRESH_CHANNEL_LIST==180:
-			self.listInterval.addItem("3 hours")
-			added = True
-		if config.REFRESH_CHANNEL_LIST==240:
-			self.listInterval.addItem("4 hours")
-			added = True
-		if added==False: self.listInterval.addItem(f"{config.REFRESH_CHANNEL_LIST} minutes")
-		if config.REFRESH_CHANNEL_LIST!=60: self.listInterval.addItem("1 hour")
-		if config.REFRESH_CHANNEL_LIST!=120: self.listInterval.addItem("2 hours")
-		if config.REFRESH_CHANNEL_LIST!=180: self.listInterval.addItem("3 hours")
-		if config.REFRESH_CHANNEL_LIST!=240: self.listInterval.addItem("4 hours")
-		self.listInterval.currentIndexChanged.connect(self.intervalList)
-
-		refreshLayout = QHBoxLayout()
-		refreshLayout.addWidget(self.automaticList)
-		refreshLayout.addWidget(self.listInterval)
-		refreshLayout.addStretch()
-
-		self.failSasl = QCheckBox("Disconnect on SASL authentication failure",self)
-		if config.DISCONNECT_ON_SASL_FAIL: self.failSasl.setChecked(True)
-		self.failSasl.stateChanged.connect(self.changedSetting)
-
-		self.doConnectionTimeout = QCheckBox("Disconnect if registration takes more than",self)
-		if config.TIMEOUT_CONNECTIONS: self.doConnectionTimeout.setChecked(True)
-		self.doConnectionTimeout.stateChanged.connect(self.changedSetting)
-
-		self.timeoutLengthSpec = QLabel(" seconds to complete")
-		self.timeoutLength = QSpinBox()
-		self.timeoutLength.setRange(1,999)
-		self.timeoutLength.setValue(self.CONNECTION_TIMEOUT)
-		self.timeoutLength.valueChanged.connect(self.updateConnectionTimeout)
-
-		self.useSasl = QCheckBox("Always use SASL logins",self)
-		if config.ALWAYS_USE_SASL_LOGINS: self.useSasl.setChecked(True)
-		self.useSasl.stateChanged.connect(self.changedSetting)
-
-		self.showFullUser = QCheckBox("Show full user data in CTCP replies",self)
-		if config.SHOW_FULL_USER_IN_CTCP_REPLY: self.showFullUser.setChecked(True)
-		self.showFullUser.stateChanged.connect(self.changedSetting)
-
-		self.connectMultiple = QCheckBox("Ask before connecting to a server more than once",self)
-		if config.ASK_BEFORE_MULTIPLE_CONNECTIONS: self.connectMultiple.setChecked(True)
-		self.connectMultiple.stateChanged.connect(self.changedSetting)
-
-		lspacer = QLabel()
-		lspacer.setFixedWidth(self.doConnectionTimeout.style().pixelMetric(QStyle.PM_IndicatorWidth) * 2)
-
-		connTimeoutLayout1 = QHBoxLayout()
-		connTimeoutLayout1.addWidget(lspacer)
-		connTimeoutLayout1.addWidget(self.timeoutLength)
-		connTimeoutLayout1.addWidget(self.timeoutLengthSpec)
-		connTimeoutLayout1.addStretch()
-
-		connTimeoutLayout = QVBoxLayout()
-		connTimeoutLayout.addWidget(self.doConnectionTimeout)
-		connTimeoutLayout.addLayout(connTimeoutLayout1)
-		connTimeoutLayout.addStretch()
-
-		csLayout = QVBoxLayout()
-		csLayout.setSpacing(0)
-		csLayout.addWidget(self.saveHistory)
-		csLayout.addWidget(self.askBeforeDisconnect)
-		csLayout.addWidget(self.notifyOnLostConnection)
-		csLayout.addWidget(self.promptFail)
-		csLayout.addWidget(self.askBeforeReconnect)
-		csLayout.addLayout(delayLayout)
-		csLayout.addWidget(self.notifyRepeated)
-		csLayout.addWidget(self.connectMultiple)
-		csLayout.addWidget(self.useSasl)
-		csLayout.addWidget(self.failSasl)
-		csLayout.addLayout(connTimeoutLayout)
-
-		afLayout = QVBoxLayout()
-		afLayout.setSpacing(0)
-		afLayout.addWidget(self.showNetLinks)
-		afLayout.addWidget(self.ircErrors)
-		afLayout.addWidget(self.ircAllErrors)
-		afLayout.addWidget(self.showFullUser)
-		afLayout.addWidget(self.requestList)
-		afLayout.addWidget(self.showList)
-		afLayout.addLayout(refreshLayout)
-		afLayout.addWidget(self.autoHostmasks)
-		afLayout.addWidget(self.autoBots)
-		afLayout.addLayout(freqLayout)
-
-		self.erroneousDescription = QLabel(f"""
-			<small>
-			If your <b>nickname</b> "breaks" the rules of a given <b>server</b>, this is the <b>nickname</b> that will
-			be used, limited to 8 characters.<br>
-			</small>
-			""")
-		self.erroneousDescription.setWordWrap(True)
-		self.erroneousDescription.setAlignment(Qt.AlignJustify)
-
-		self.errNick = QErrNickEdit(config.BAD_NICKNAME_FALLBACK)
-
-		self.errNick.textChanged.connect(self.changedErr)
-
-		font = self.font()
-		font.setBold(True)
-
-		self.errNickLabel = QLabel("Erroneous Nickname: ")
-		self.errNickLabel.setFont(font)
-
-		eLayout = QFormLayout()
-		eLayout.addRow(self.errNickLabel,self.errNick)
-
-		connectionsLayout = QVBoxLayout()
-		connectionsLayout.setSpacing(0)
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
-		connectionsLayout.addLayout(csLayout)
-		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(self.erroneousDescription)
-		connectionsLayout.addLayout(eLayout)
-		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
-		connectionsLayout.addLayout(afLayout)
-		connectionsLayout.addStretch()
-
-		self.connectionsPage.setLayout(connectionsLayout)
 
 		# Away
 
@@ -7246,23 +7251,6 @@ class Dialog(QDialog):
 		aoLayout.addWidget(self.advancedEnable)
 		aoLayout.addStretch()
 
-		self.serverHeartbeatLabel = QLabel("Connection heartbeat:")
-		self.heartbeatLabelSpec = QLabel("seconds")
-		self.heartbeatLength = QSpinBox()
-		self.heartbeatLength.setRange(1,300)
-		self.heartbeatLength.setValue(self.heartbeat)
-		self.heartbeatLength.valueChanged.connect(self.updateHeartbeat)
-
-		hbLayout = QHBoxLayout()
-		hbLayout.addWidget(self.serverHeartbeatLabel)
-		hbLayout.addWidget(self.heartbeatLength)
-		hbLayout.addWidget(self.heartbeatLabelSpec)
-		hbLayout.addStretch()
-
-		self.serverHeartbeatLabel.setEnabled(False)
-		self.heartbeatLength.setEnabled(False)
-		self.heartbeatLabelSpec.setEnabled(False)
-
 		self.maxChatLabel = QLabel("Max message length:")
 		self.maxChatLabelSpec = QLabel("characters")
 		self.maxChat = QSpinBox()
@@ -7385,7 +7373,6 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
 		advancedLayout.addWidget(QLabel(' '))
-		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
 		advancedLayout.addLayout(asetLayout)
 		advancedLayout.addWidget(QLabel(' '))
@@ -7940,6 +7927,8 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_IN_SYSTRAY_MENU = self.stmAway.isChecked()
 		config.SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = self.showAwayUserlistTooltip.isChecked()
 		config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU = self.changeChanMode.isChecked()
+		config.SHOW_USERMODE_DISPLAY = self.showUsermodes.isChecked()
+		config.USE_KEEPALIVE_HEARTBEAT = self.useHeartbeat.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True
@@ -8273,6 +8262,7 @@ class Dialog(QDialog):
 							c.refreshHighlighter()
 
 			irc.reset_environment()
+			irc.toggleHeartbeat()
 
 			if not config.APPLICATION_SHORTCUTS:
 				self.parent.style_shortcut.setEnabled(False)

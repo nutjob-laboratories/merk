@@ -3403,6 +3403,7 @@ class Merk(QMainWindow):
 			self.tray.hide()
 
 		irc.new_error_nickname()
+		irc.toggleHeartbeat()
 
 		self.MDI.viewport().update()
 

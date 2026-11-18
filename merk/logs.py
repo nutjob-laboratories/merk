@@ -352,7 +352,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 			# for the log viewer, so notify the user that the
 			# log has been trimmed
 			if trimmed==True:
-				out.append(f"\x02\x1d\x0304Viewing only the last {len(logs)} lines of the log\x0f")
+				out.append(f"\x02\x1d\x03{LOG_VIEWER_SYSTEM_COLOR}Viewing only the last {len(logs)} lines of the log\x0f")
 				trimmed = False
 
 			# Now, we handle showing different dates.
@@ -378,7 +378,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 				# Regular chat
 				if render_for_viewer:
 					pretty_timestamp = pretty_timestamp_time(timestamp)
-					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0302{username}\x0f: {message}"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x03{LOG_VIEWER_NICK_COLOR}{username}\x0f: {message}"
 				else:
 					if epoch:
 						pretty_timestamp = timestamp
@@ -389,7 +389,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 				# Private message
 				if render_for_viewer:
 					pretty_timestamp = pretty_timestamp_time(timestamp)
-					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x1d\x0302{username}\x0f: {message}"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x1d\x03{LOG_VIEWER_NICK_COLOR}{username}\x0f: {message}"
 				else:
 					if epoch:
 						pretty_timestamp = timestamp
@@ -400,7 +400,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 				# Regular chat
 				if render_for_viewer:
 					pretty_timestamp = pretty_timestamp_time(timestamp)
-					entry = f"\x02[{pretty_timestamp}]\x0f \x1F\x02\x0302{username}\x0f: {message}"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x1F\x02\x03{LOG_VIEWER_NICK_COLOR}{username}\x0f: {message}"
 				else:
 					if epoch:
 						pretty_timestamp = timestamp
@@ -411,7 +411,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 				# CTCP Action message
 				if render_for_viewer:
 					pretty_timestamp = pretty_timestamp_time(timestamp)
-					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x1d\x0302{username} {message}\x0f"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x1d\x03{LOG_VIEWER_NICK_COLOR}{username} {message}\x0f"
 				else:
 					if epoch:
 						pretty_timestamp = timestamp
@@ -422,7 +422,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 				# Notice message
 				if render_for_viewer:
 					pretty_timestamp = pretty_timestamp_time(timestamp)
-					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0302*{username}\x0f*: {message}"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x03{LOG_VIEWER_NICK_COLOR}*{username}\x0f*: {message}"
 				else:
 					if epoch:
 						pretty_timestamp = timestamp
@@ -433,7 +433,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 				# Everything else; this is usually logged system messages
 				if render_for_viewer:
 					pretty_timestamp = pretty_timestamp_time(timestamp)
-					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0304{message}\x0f"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x03{LOG_VIEWER_SYSTEM_COLOR}{message}\x0f"
 				else:
 					if epoch:
 						pretty_timestamp = timestamp

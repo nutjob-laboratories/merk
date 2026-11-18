@@ -5,7 +5,16 @@
 What's new:
 
 - **Connections to servers not in a network are now made clearer in the client**. Instead of "unknown", the client will no longer attempt to display a network name, and will just display the name of the server. Styles and logs for these connections will no longer be loaded, but are not deleted. Instead of "uknown" being used as the filename prefix for these files, the prefix "[no_network]" is used. The log files can still be viewed in the log viewer, under the "unknown" network, and style files can be loaded with the style editor so they do not have to be recreated. For connections to servers ON a network, nothing will change, and files will still be saved/loaded normally.
-- **The log manager description has been re-added to the client**. If "simplified dialogs" is turned off (the default), a short descriptive text will appear at the top to the log manager dialog describing how to use the log manager and what it does.
+- **The log manager description has been re-added to the client**. If "simplified dialogs" is turned off (the default), a short descriptive text will appear at the top of the log manager dialog describing how to use the log manager and what it does.
+- **The `README` now contains a section on MERK "markdown"**.
+- **New built-in alias: `$_ME`**. This contains the client's hostname or IP address as reported by the server. If the server doesn't report a hostname or IP address, this is set to `unknown`.
+- **New built-in alias: `$_WHEN`**. This contains the date and time the server that the current window is connected to connected to the server. This will use all settings used for timestamps for their display (for example, if timestamps are displayed in UTC, the alias will use UTC).
+- **New built-in alias: `$_CREATED`**. This contains the time the server that the current window is connected to, as reported by the server. If the server does not report a creation time, this will be set to `unknown`.
+- **New built-in alias: `$_MAX`**. This contains the maximum number of users on the server the window is connected to, or `0` if unknown.
+- **New built-in alias: `$_USERS`**. This contains the number of users on the server the window is connected to, or `0` if unknown.
+- **The usermode display can now be hidden**. The usermode display in the nickname display can now be toggled, allowing for usermodes to be hidden.
+- **The "keep alive" heartbeat is now functional**. Whether MERK uses it or not (it's on by default) can be set in the "Settings" dialog or with the `/config` command, as well as the length of the heartbeat.
+- **The "Settings" dialog has been re-arranged**. More important sections, like "Connections" and "User" are now towards the top of the section selector.
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -40,6 +49,41 @@ What's new:
 * Cleaned up the code considerably.
 * Moved a number of the HTML templates used for message display and widgets to
   the main resource file.
+* Bugfix: fixed a typo in the README.
+* Added a section on MERK "markdown" to the README.
+* Bugfix: fixed an error in the documentation.
+* New built-in alias: "_ME". This contains the client's hostname or IP address
+  as reported by the server. If the server did not report a hostname, this is
+  set to "unknown".
+* Bugfix: the "_NETWORK" built-in alias will now be set to "none" if the server
+  is not part of a network.
+* New built-in alias: "_WHEN". This contains the time that the server the
+  current window is connected to connected to the server.
+* The channel status icon that appears next to the nick and text input widget
+  now shows the name of the channel status in its tooltip.
+* The usermode display in the nickname display can now be toggled. The default
+  is set to force the usermode display to be visible. This setting can be
+  changed in the "settings" dialog or with the "/config" command.
+* Bugfix: sometimes a WHOIS could be requested automatically on a user who has
+  just quit the server.
+* New built-in alias: "_CREATED". This contains the server creation time that
+  the server the window is connected to reports, or "unknown" if the time is
+  not reported.
+* New built-in alias: "_MAX". This contains the maximum number of users that
+  have connected to the server the window is connected to, or "0" if unknown.
+* New built-in alias: "_USERS". This contains the number of users that are
+  connected to the server the window is connected to, or "0" if unknown.
+* Bugfix: typing numbers in the spinboxes in the settings dialog would always
+  switch focus to the section selector.
+* Bugfix: the "keep alive" heartbeat was never being started.
+* Added an option to toggle the "keep alive" heartbeat. The setting can be
+  toggled in the "settings" dialog or with the "/config" command.
+* The heartbeat settings have been moved off the of the "advanced" section of
+  the settings dialog and onto the "connection" section.
+* Cleaned up the "connections" page in the "settings" dialog, and removed the
+  "miscellaneous" section, so that I could fit more options.
+* Re-arranged the "settings" dialog, so that the "connections" and "user"
+  sections are closer to the "top" of the section selector.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.050                                 |

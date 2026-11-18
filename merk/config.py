@@ -490,9 +490,13 @@ SHOW_JOIN_IN_SYSTRAY_MENU = True
 SHOW_AWAY_IN_SYSTRAY_MENU = True
 SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = True
 CHANGE_CHANNEL_MODE_FROM_MODE_MENU = True
+SHOW_USERMODE_DISPLAY = True
+USE_KEEPALIVE_HEARTBEAT = True
 
 def build_settings():
 	settings = {
+		"use_twisted_irc_client_heartbeat": USE_KEEPALIVE_HEARTBEAT,
+		"show_usermodes_in_nick_display": SHOW_USERMODE_DISPLAY,
 		"change_channel_mode_from_mode_menu": CHANGE_CHANNEL_MODE_FROM_MODE_MENU,
 		"show_away_message_in_userlist_tooltip": SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP,
 		"show_nick_in_systray_menu": SHOW_NICK_IN_SYSTRAY_MENU,
@@ -942,6 +946,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "use_twisted_irc_client_heartbeat" in settings:
+		settings["use_twisted_irc_client_heartbeat"] = USE_KEEPALIVE_HEARTBEAT
+	if not "show_usermodes_in_nick_display" in settings:
+		settings["show_usermodes_in_nick_display"] = SHOW_USERMODE_DISPLAY
 	if not "change_channel_mode_from_mode_menu" in settings:
 		settings["change_channel_mode_from_mode_menu"] = CHANGE_CHANNEL_MODE_FROM_MODE_MENU
 	if not "show_away_message_in_userlist_tooltip" in settings:
@@ -2278,6 +2286,8 @@ def load_settings(filename):
 	global SHOW_AWAY_IN_SYSTRAY_MENU
 	global SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP
 	global CHANGE_CHANNEL_MODE_FROM_MODE_MENU
+	global SHOW_USERMODE_DISPLAY
+	global USE_KEEPALIVE_HEARTBEAT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2287,6 +2297,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		USE_KEEPALIVE_HEARTBEAT = settings["use_twisted_irc_client_heartbeat"]
+		SHOW_USERMODE_DISPLAY = settings["show_usermodes_in_nick_display"]
 		CHANGE_CHANNEL_MODE_FROM_MODE_MENU = settings["change_channel_mode_from_mode_menu"]
 		SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = settings["show_away_message_in_userlist_tooltip"]
 		SHOW_NICK_IN_SYSTRAY_MENU = settings["show_nick_in_systray_menu"]

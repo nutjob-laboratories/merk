@@ -67,6 +67,10 @@ if is_running_from_pyinstaller():
 else:
 	PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION}"
 
+def toggleHeartbeat():
+	for c in CONNECTIONS:
+		CONNECTIONS[c].toggleHeartbeat()
+
 class IRC_Connection(irc.IRCClient):
 	nickname = 'merk'
 	realname = 'merk'
@@ -189,6 +193,8 @@ class IRC_Connection(irc.IRCClient):
 		self.logged_in_via_sasl = False
 		self.pings = {}
 		self.sent_end = False
+		self.my_hostname = None
+		self.server_created = None
 
 		if user.USERINFO=='':
 			self.userinfo = None
@@ -425,20 +431,30 @@ class IRC_Connection(irc.IRCClient):
 
 	def uptime_beat(self):
 
+		# Increment the uptime
 		self.uptime = self.uptime + 1
 
+		# Update the autoaway timer
+		if config.USE_AUTOAWAY:
+			if self.last_interaction!=-1:
+				self.last_interaction = self.last_interaction + 1
+
+		# Send commands from the batch queue
 		if len(self.batch)>0:
 			e = self.batch.pop(0)
 			self.sendLine(e)
 
+		# Send messages from the long message queue
 		if len(self.long_messages)>0:
 			e = self.long_messages.pop(0)
 			self.msg(e[0],e[1])
 
+		# Send messages from the long notices queue
 		if len(self.long_notices)>0:
 			e = self.long_notices.pop(0)
 			self.notice(e[0],e[1])
 
+		# Automatically request channel lists
 		if config.AUTOMATICALLY_REFRESH_CHANNEL_LIST:
 			dt1 = datetime.fromtimestamp(self.last_list_timestamp)
 			dt2 = datetime.fromtimestamp(datetime.utcnow().timestamp())
@@ -446,10 +462,7 @@ class IRC_Connection(irc.IRCClient):
 			if time_difference.total_seconds() / 60 > config.REFRESH_CHANNEL_LIST:
 				self.sendLine("LIST")
 
-		if config.USE_AUTOAWAY:
-			if self.last_interaction!=-1:
-				self.last_interaction = self.last_interaction + 1
-
+		# Request the channel list on connection
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			if self.uptime>=PAUSE_FOR_DELAYED_CHANNEL_LIST:
 				if len(self.server_channel_list)==0:
@@ -463,21 +476,29 @@ class IRC_Connection(irc.IRCClient):
 						self.did_second_delayed_channel_list_retrieval = True
 						self.sendLine(f"LIST")
 
+		# Send WHOIS requests for hostmask retrieval or bot identification
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN or config.GET_BOTS_ON_CHANNEL_JOIN:
-			# Do a whois request every 5 seconds so
-			# we don't get kicked for flooding
+			# Do a whois request every X seconds, as set in
+			# the config file, so we don't flood the server
 			if self.uptime % config.USER_DATA_FETCH_FREQUENCY==0:
 				if len(self.do_whois)>0:
 					nick = self.do_whois.pop(0)
 					if len(nick.strip())>0:
-						self.request_whois.append(nick)
-						self.sendLine("WHOIS "+nick)
+						# Before we send the WHOIS request,
+						# make sure that we can still "see"
+						# them. This prevents sending a WHOIS
+						# request for someone who just joins
+						# and parts/quits quickly
+						if nick in self.all_visible_nicknames:
+							self.request_whois.append(nick)
+							self.sendLine("WHOIS "+nick)
 
+		# Trigger the uptime event
 		self.gui.uptime(self,self.uptime)
 
 		# Remove ping requests that are 2 minutes or older
 		for p in self.pings:
-			if ((time.time() - self.pings[p]) * 1000)>=120000: self.pings.pop(p,'')
+			if ((time.time() - self.pings[p]) * 1000)>=PING_REMOVAL_TIME_IN_MILLISECONDS: self.pings.pop(p,'')
 
 	def connectionMade(self):
 
@@ -492,8 +513,6 @@ class IRC_Connection(irc.IRCClient):
 		# Negotiate IRCv3 capabilities
 		self.sendLine("CAP LS")
 
-		irc.IRCClient.connectionMade(self)
-
 		CONNECTIONS[self.client_id] = self
 
 		self.gui.connectionMade(self)
@@ -504,6 +523,8 @@ class IRC_Connection(irc.IRCClient):
 			self.connectTimer = UptimeHeartbeat()
 			self.connectTimer.beat.connect(self.connect_beat)
 			self.connectTimer.start()
+
+		irc.IRCClient.connectionMade(self)
 
 	def connect_beat(self):
 
@@ -764,7 +785,19 @@ class IRC_Connection(irc.IRCClient):
 
 		irc.IRCClient.connectionLost(self, reason)
 
+	def toggleHeartbeat(self):
+
+		self.stopHeartbeat()
+
+		if config.USE_KEEPALIVE_HEARTBEAT:
+			self.startHeartbeat()
+		else:
+			self.stopHeartbeat()
+
 	def signedOn(self):
+
+		if config.USE_KEEPALIVE_HEARTBEAT:
+			self.startHeartbeat()
 
 		self.uptimeTimer = UptimeHeartbeat()
 		self.uptimeTimer.beat.connect(self.uptime_beat)
@@ -1347,6 +1380,10 @@ class IRC_Connection(irc.IRCClient):
 		# Sort the list of all visible nicknames
 		self.all_visible_nicknames = sorted(list(set(self.all_visible_nicknames)),key=str.lower)
 
+		# Remove nicks from the WHOIS requst list that have left
+		for n in self.do_whois:
+			if not n in self.all_visible_nicknames: self.do_whois.remove(n)
+
 	def irc_RPL_TOPIC(self, prefix, params):
 		if not params[2].isspace():
 			TOPIC = params[2]
@@ -1663,6 +1700,7 @@ class IRC_Connection(irc.IRCClient):
 		return irc.IRCClient.lineReceived(self, line)
 
 	def created(self,when):
+		self.server_created = when
 		self.gui.serverMessage(self,when)
 
 	def isupport(self,options):
@@ -1677,6 +1715,15 @@ class IRC_Connection(irc.IRCClient):
 					self.network = p[1]
 
 		self.server_options(options)
+
+	def irc_RPL_WELCOME(self, prefix, params):
+		# Parse out our hostname from the server welcome message
+		welcome_msg = params[1] if len(params) > 1 else ""
+		match = re.search(r"[^\s!]+![^\s@]+@([^\s]+)", welcome_msg)
+		if match:
+		  self.my_hostname = match.group(1)
+
+		super().irc_RPL_WELCOME(prefix, params)
 
 	def server_options(self,options):
 

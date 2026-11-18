@@ -729,6 +729,7 @@ BUILT_IN_ALIAS_LIST = [
 	"_CONNECTION",
 	"_CONNECTED",
 	"_COUNT",
+	"_CREATED",
 	"_CUPTIME",
 	"_HCHANNELS",
 	"_HOSTID",
@@ -746,6 +747,8 @@ BUILT_IN_ALIAS_LIST = [
 	"_FILE",
 	"_GLOBAL",
 	"_LATEST",
+	"_MAX",
+	"_ME",
 	"_MODE",
 	"_MONTH",
 	"_NETWORK",
@@ -769,10 +772,12 @@ BUILT_IN_ALIAS_LIST = [
 	"_TIME",
 	"_TOPIC",
 	"_UPTIME",
+	"_USERS",
 	"_UTC",
 	"_VERSION",
 	"_USERNAME",
 	"_WEB",
+	"_WHEN",
 	"_WINDOW",
 	"_WTYPE",
 	"_YEAR",
@@ -798,6 +803,17 @@ def buildTemporaryAliases(gui,window):
 		c = w.widget()
 		all_servers.append(f"{c.client.server}:{c.client.port}")
 
+	if config.TIMESTAMP_24_HOUR:
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			connection_time = datetime.fromtimestamp(window.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' UTC %m/%d/%Y')
+		else:
+			connection_time = datetime.fromtimestamp(window.connection_time).strftime(config.TIMESTAMP_FORMAT+' %m/%d/%Y')
+	else:
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			connection_time = datetime.fromtimestamp(window.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' %p UTC %m/%d/%Y')
+		else:
+			connection_time = datetime.fromtimestamp(window.connection_time).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
+
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
 	if window.name in window.client.channelmodes and window.window_type==CHANNEL_WINDOW:
 		if window.client.channelmodes[window.name].strip()=='':
@@ -818,6 +834,10 @@ def buildTemporaryAliases(gui,window):
 			addTemporaryAlias('_COUNT',f"0")
 		else:
 			addTemporaryAlias('_COUNT',f"2")
+	if window.client.server_created:
+		addTemporaryAlias('_CREATED',f"{window.client.server_created}")
+	else:
+		addTemporaryAlias('_CREATED',"unknown")
 	addTemporaryAlias('_CUPTIME',f"{gui.client_uptime}")
 	addTemporaryAlias('_HOSTID',f"{window.client.server}:{window.client.port}")
 	if hasattr(window.client,"hostname"):
@@ -839,6 +859,14 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_GLOBAL',f"0")
 	addTemporaryAlias('_LATEST',f"{APPLICATION_DEVELOPMENT}")
+	if window.client.max_user_count==0:
+		addTemporaryAlias('_MAX',"0")
+	else:
+		addTemporaryAlias('_MAX',f"{window.client.max_user_count}")
+	if window.client.my_hostname!=None:
+		addTemporaryAlias('_ME',f"{window.client.my_hostname}")
+	else:
+		addTemporaryAlias('_ME',f"unknown")
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
 	else:
@@ -846,11 +874,14 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_MONTH',month)
 	if hasattr(window.client,"network"):
 		if window.client.network:
-			addTemporaryAlias('_NETWORK',window.client.network)
+			if window.client.network==config.UNKNOWN_NETWORK_NAME:
+				addTemporaryAlias('_NETWORK',"none")
+			else:
+				addTemporaryAlias('_NETWORK',window.client.network)
 		else:
-			addTemporaryAlias('_NETWORK',"unknown")
+			addTemporaryAlias('_NETWORK',"none")
 	else:
-		addTemporaryAlias('_NETWORK',"unknown")
+		addTemporaryAlias('_NETWORK',"none")
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
 	addTemporaryAlias('_ORDINAL',ordinal)
 	addTemporaryAlias('_PORT',f"{window.client.port}")
@@ -921,9 +952,14 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_UPTIME',f"{window.uptime}")
 	else:
 		addTemporaryAlias('_UPTIME',"0")
+	if window.client.server_user_count==0:
+		addTemporaryAlias('_USERS',"0")
+	else:
+		addTemporaryAlias('_USERS',f"{window.client.server_user_count}")
 	addTemporaryAlias('_UTC',utc_time)
 	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
 	addTemporaryAlias('_USERNAME',window.client.username)
+	addTemporaryAlias('_WHEN',connection_time)
 	addTemporaryAlias('_WINDOW',window.name)
 	addTemporaryAlias('_WEB',APPLICATION_WEB)
 	if window.window_type==SERVER_WINDOW:

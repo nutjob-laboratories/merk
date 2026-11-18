@@ -39,7 +39,6 @@ import shlex
 import time
 
 import emoji
-
 from spellchecker import SpellChecker
 
 from ..resources import *
@@ -558,6 +557,8 @@ class Window(QMainWindow):
 				self.nick_display.hide()
 				self.mode_display.hide()
 
+		if not config.SHOW_USERMODE_DISPLAY: self.mode_display.hide()
+
 		self.settingsMenu = QMenu("")
 
 		self.buildInputOptionsMenu()
@@ -588,26 +589,31 @@ class Window(QMainWindow):
 			pixmap = QPixmap(OP_USER)
 			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.op_icon.setPixmap(pixmap)
+			self.op_icon.setToolTip(CHANNEL_OP_TITLE)
 
 			self.voice_icon = QLabel(self)
 			pixmap = QPixmap(VOICE_USER)
 			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.voice_icon.setPixmap(pixmap)
+			self.voice_icon.setToolTip(CHANNEL_VOICE_TITLE)
 
 			self.owner_icon = QLabel(self)
 			pixmap = QPixmap(OWNER_USER)
 			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.owner_icon.setPixmap(pixmap)
+			self.owner_icon.setToolTip(CHANNEL_OWNER_TITLE)
 
 			self.admin_icon = QLabel(self)
 			pixmap = QPixmap(ADMIN_USER)
 			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.admin_icon.setPixmap(pixmap)
+			self.admin_icon.setToolTip(CHANNEL_ADMIN_TITLE)
 
 			self.halfop_icon = QLabel(self)
 			pixmap = QPixmap(HALFOP_USER)
 			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.halfop_icon.setPixmap(pixmap)
+			self.halfop_icon.setToolTip(CHANNEL_HALFOP_TITLE)
 
 			self.key_icon = QLabel(self)
 			pixmap = QPixmap(VISITED_SECURE_ICON)
@@ -618,6 +624,7 @@ class Window(QMainWindow):
 			pixmap = QPixmap(PROTECTED_USER)
 			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.protected_icon.setPixmap(pixmap)
+			self.protected_icon.setToolTip(CHANNEL_PROTECTED_TITLE)
 
 			self.op_icon.setFocusPolicy(Qt.NoFocus)
 			self.voice_icon.setFocusPolicy(Qt.NoFocus)
@@ -656,6 +663,8 @@ class Window(QMainWindow):
 				if hasattr(self,"name_spacer"): self.name_spacer.hide()
 				self.nick_display.hide()
 				self.mode_display.hide()
+
+		if not config.SHOW_USERMODE_DISPLAY: self.mode_display.hide()
 
 		self.too_long_icon = QLabel(self)
 		pixmap = QPixmap(LENGTH_ICON)
@@ -1014,6 +1023,8 @@ class Window(QMainWindow):
 					self.mode_display.show()
 				else:
 					self.mode_display.hide()
+
+				if not config.SHOW_USERMODE_DISPLAY: self.mode_display.hide()
 
 	def unset_mode(self,mode):
 		self.client.mode(self.name,False,mode)
@@ -2244,6 +2255,8 @@ class Window(QMainWindow):
 				if hasattr(self,"name_spacer"): self.name_spacer.show()
 				self.nick_display.show()
 				self.mode_display.show()
+
+				if not config.SHOW_USERMODE_DISPLAY: self.mode_display.hide()
 		else:
 			if self.window_type!=SERVER_WINDOW:
 				if hasattr(self,"name_spacer"): self.name_spacer.hide()
@@ -2380,8 +2393,10 @@ class Window(QMainWindow):
 			self.mode_display.setText(f"<small>+{self.client.usermodes}&nbsp;</small>")
 			if config.SHOW_USER_INFO_ON_CHAT_WINDOWS and self.window_type!=SERVER_WINDOW:
 				self.mode_display.show()
+				if not config.SHOW_USERMODE_DISPLAY: self.mode_display.hide()
 			if config.DISPLAY_NICK_ON_SERVER_WINDOWS and self.window_type==SERVER_WINDOW:
 				self.mode_display.show() 
+				if not config.SHOW_USERMODE_DISPLAY: self.mode_display.hide()
 		self.updateTitle()
 
 		if hasattr(self,"key_icon"):
@@ -2677,30 +2692,30 @@ class Window(QMainWindow):
 		if user_is_admin:
 			ICON = ADMIN_USER
 			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_ADMIN_USER
-			OTHER_TEXT = "Channel Administrator"
+			OTHER_TEXT = CHANNEL_ADMIN_TITLE
 		elif user_is_owner:
 			ICON = OWNER_USER
 			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OWNER_USER
-			OTHER_TEXT = "Channel Owner"
+			OTHER_TEXT = CHANNEL_OWNER_TITLE
 		elif user_is_op:
 			ICON = OP_USER
 			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OP_USER
-			OTHER_TEXT = "Channel Operator"
+			OTHER_TEXT = CHANNEL_OP_TITLE
 		elif user_is_halfop:
 			ICON = HALFOP_USER
 			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_HALFOP_USER
-			OTHER_TEXT = "Channel Half-Operator"
+			OTHER_TEXT = CHANNEL_HALFOP_TITLE
 		elif user_is_voiced:
 			ICON = VOICE_USER
 			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_VOICE_USER
-			OTHER_TEXT = "Voiced User"
+			OTHER_TEXT = CHANNEL_VOICE_TITLE
 		elif user_is_protected:
 			ICON = PROTECTED_USER
 			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_PROTECTED_USER
-			OTHER_TEXT = "Protected User"
+			OTHER_TEXT = CHANNEL_PROTECTED_TITLE
 		else:
 			ICON = USER_MENU_ICON
-			OTHER_TEXT = "Normal User"
+			OTHER_TEXT = CHANNEL_NORMAL_TITLE
 		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT!="": OTHER_TEXT = OTHER_TEXT+" (Bot)"
 		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT=="": OTHER_TEXT = "Bot"
 
@@ -2743,17 +2758,17 @@ class Window(QMainWindow):
 
 					status_text = ''
 					if user_is_admin:
-						status_text = "Channel Administrator"
+						status_text = CHANNEL_ADMIN_TITLE
 					elif user_is_owner:
-						status_text = "Channel Owner"
+						status_text = CHANNEL_OWNER_TITLE
 					elif user_is_op:
-						status_text = "Channel Operator"
+						status_text = CHANNEL_OP_TITLE
 					elif user_is_halfop:
-						status_text = "Channel Half-Operator"
+						status_text = CHANNEL_HALFOP_TITLE
 					elif user_is_voiced:
-						status_text = "Voiced User"
+						status_text = CHANNEL_VOICE_TITLE
 					elif user_is_protected:
-						status_text = "Protected User"
+						status_text = CHANNEL_PROTECTED_TITLE
 					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (Bot)"
 					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 					if status_text!='':
@@ -2789,17 +2804,17 @@ class Window(QMainWindow):
 
 					status_text = ''
 					if user_is_admin:
-						status_text = "Channel Administrator"
+						status_text = CHANNEL_ADMIN_TITLE
 					elif user_is_owner:
-						status_text = "Channel Owner"
+						status_text = CHANNEL_OWNER_TITLE
 					elif user_is_op:
-						status_text = "Channel Operator"
+						status_text = CHANNEL_OP_TITLE
 					elif user_is_halfop:
-						status_text = "Channel Half-Operator"
+						status_text = CHANNEL_HALFOP_TITLE
 					elif user_is_voiced:
-						status_text = "Voiced User"
+						status_text = CHANNEL_VOICE_TITLE
 					elif user_is_protected:
-						status_text = "Protected User"
+						status_text = CHANNEL_PROTECTED_TITLE
 					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (Bot)"
 					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 					if status_text!='':
@@ -2838,17 +2853,17 @@ class Window(QMainWindow):
 
 				status_text = ''
 				if user_is_admin:
-					status_text = "Channel Administrator"
+					status_text = CHANNEL_ADMIN_TITLE
 				elif user_is_owner:
-					status_text = "Channel Owner"
+					status_text = CHANNEL_OWNER_TITLE
 				elif user_is_op:
-					status_text = "Channel Operator"
+					status_text = CHANNEL_OP_TITLE
 				elif user_is_halfop:
-					status_text = "Channel Half-Operator"
+					status_text = CHANNEL_HALFOP_TITLE
 				elif user_is_voiced:
-					status_text = "Voiced User"
+					status_text = CHANNEL_VOICE_TITLE
 				elif user_is_protected:
-					status_text = "Protected User"
+					status_text = CHANNEL_PROTECTED_TITLE
 				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (Bot)"
 				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 				if status_text!='':
