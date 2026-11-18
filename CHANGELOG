@@ -14,7 +14,11 @@ What's new:
 - **New built-in alias: `$_USERS`**. This contains the number of users on the server the window is connected to, or `0` if unknown.
 - **The usermode display can now be hidden**. The usermode display in the nickname display can now be toggled, allowing for usermodes to be hidden.
 - **The "keep alive" heartbeat is now functional**. Whether MERK uses it or not (it's on by default) can be set in the "Settings" dialog or with the `/config` command, as well as the length of the heartbeat.
-- **The "Settings" dialog has been re-arranged**. More important sections, like "Connections" and "User" are now towards the top of the section selector.
+- **The "Settings" dialog has been re-arranged**. IRC related settings have been moved to the top of the section selector, while GUI and interface options are now lower.
+- **The `ping` plugin event has been removed**.
+- **CTCP replies can now be completely disabled**. By default, MERK replies to CTCP queries. This can be disabled in the "Settings" dialog, on the "User" section, or with the `/config` command. If CTCP query notification is turned on, the client will still display that a request has been made, it will just not respond.
+- **New plugin API event: `ctcp`**. This triggeres every time the client receives a CTCP reply from another user.
+- **New plugin API `Window` class method: `ping()`**. This method sends a CTCP PING to a user.
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -82,8 +86,32 @@ What's new:
   the settings dialog and onto the "connection" section.
 * Cleaned up the "connections" page in the "settings" dialog, and removed the
   "miscellaneous" section, so that I could fit more options.
-* Re-arranged the "settings" dialog, so that the "connections" and "user"
-  sections are closer to the "top" of the section selector.
+* Re-arranged the "settings" dialog, so that IRC related sections are closer to
+  the "top" of the section selector. GUI and interface options are now lower in
+  the section display.
+* Reworked the layout of the settings dialog. This shrunk the size of the
+  dialog (by a very small amount), and made the layout a bit more visually
+  attractive.
+* Bugfix: If "show CTCP queries" is turned on, the client now makes it clearer
+  that a CTCP query has been received.
+* Bugfix: when receiving a CTCP SOURCE reply, the client would display a reply
+  with a blank reply along with the actual reply.
+* CTCP replies can now be disabled. By default, the client will reply to any
+  CTCP replies that are set up. This can be toggled in the "settings" dialog
+  with or with the "/config" command.
+* If CTCP replies are disabled, the client can still be notified if a CTCP
+  request has been made, even though the client is no longer replying to it.
+* Bugfix: fixed a typo in the plugin skeleton.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Bugfix: the "ping" plugin event didn't work as advertised (if at all) and has
+  been removed from the API.
+* New plugin event: ctcp() (which triggeres every time the client receives a
+  CTCP reply from another user).
+* New Window class method: ping() (which sends a CTCP ping to a user).
 
 |------------------------------------------------------------------------------|
 |                                    0.500.050                                 |

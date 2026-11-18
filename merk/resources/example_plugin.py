@@ -183,7 +183,7 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever a user changes their
-    # status to "away" in the presence of the MERK client.
+    # status to "away" in the "presence" of the MERK client.
     #
     # Arguments:
     #   client = The Twisted IRC object that triggered the event
@@ -200,7 +200,7 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever a user changes their
-    # status to "back" in the presence of the MERK client.
+    # status to "back" in the "presence" of the MERK client.
     #
     # Arguments:
     #   client = The Twisted IRC object that triggered the event
@@ -226,7 +226,7 @@ class ExamplePlugin(Plugin):
     # | connected |
     # |===========|
     #
-    # This event is triggered whenever a MERK has completed
+    # This event is triggered whenever MERK has completed
     # connection to an IRC server. Window will be set to None
     # if the window can't be found.
     #
@@ -242,7 +242,7 @@ class ExamplePlugin(Plugin):
     # | connecting |
     # |============|
     #
-    # This event is triggered whenever a MERK has begins
+    # This event is triggered whenever MERK begins
     # connecting to an IRC server. If the Twisted IRC object
     # is used to issue commands, they probably won't work.
     #
@@ -251,6 +251,29 @@ class ExamplePlugin(Plugin):
     #
     def connecting(self,**args):
         client = args["client"]
+
+    # |======|
+    # | ctcp |
+    # |======|
+    #
+    # This event is triggered whenever a CTCP reply is
+    # received.
+    #
+    # Arguments:
+    #   client = The Twisted IRC object that triggered the event
+    #   user = The user that sent the CTCP reply
+    #   ctype = The type of CTCP reply received
+    #   data = The data contained in the CTCP reply. If the reply
+    #          is a CTCP PING initiated from the client GUI, this
+    #          will contain the number of milliseconds between
+    #          the request and the reply; otherwise, it will
+    #          contain the data sent in the ping.
+    #
+    def ctcp(self,**args):
+        client = args["client"]
+        user = args["user"]
+        ctype = args["ctype"]
+        data = args["data"]
 
     # |=======|
     # | ctick |
@@ -347,8 +370,8 @@ class ExamplePlugin(Plugin):
     # | join |
     # |======|
     #
-    # This event is triggered user joins a channel in the 
-    # presence of MERK. Window will be set to None
+    # This event is triggered when a user joins a channel in the 
+    # "presence" of MERK. Window will be set to None
     # if the window can't be found.
     #
     # Arguments:
@@ -382,7 +405,7 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever a user is kicked from
-    # a channel in MERK's presence. Window will be set to None
+    # a channel in MERK's "presence". Window will be set to None
     # if the window can't be found.
     #
     # Arguments:
@@ -532,7 +555,7 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever a mode is set in
-    # MERK's presence. This can be a user mode or a channel
+    # MERK's "presence". This can be a user mode or a channel
     # mode.
     #
     # Arguments:
@@ -629,7 +652,7 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever a user leaves a channel
-    # in MERK's presence. Window will be set to None if the
+    # in MERK's "presence". Window will be set to None if the
     # window can't be found.
     #
     # Arguments:
@@ -645,24 +668,11 @@ class ExamplePlugin(Plugin):
         user = args["user"]
 
     # |======|
-    # | ping |
-    # |======|
-    #
-    # This event is triggered whenever the server sends a
-    # ping to the client.
-    #
-    # Arguments:
-    #   client = Twisted IRC object that triggered the event
-    #
-    def ping(self,**args):
-        client = args["client"]
-
-    # |======|
     # | quit |
     # |======|
     #
     # This event is triggered whenever a user disconnects from
-    # from IRC in MERK's presence.
+    # from IRC in MERK's "presence".
     #
     # Arguments:
     #   client = The Twisted IRC object that triggered the event
@@ -679,7 +689,7 @@ class ExamplePlugin(Plugin):
     # |========|
     #
     # This event is triggered whenever a user changes their
-    # nickname in MERK's presence.
+    # nickname in MERK's "presence".
     #
     # Arguments:
     #   client = The Twisted IRC object that triggered the event
@@ -741,7 +751,7 @@ class ExamplePlugin(Plugin):
     # |=======|
     #
     # This event is triggered whenever a channel's topic
-    # changes in MERK's presence. This will also be triggered
+    # changes in MERK's "presence". This will also be triggered
     # when MERK joins a channel. Window will be set to None if the
     # window can't be found.
     #
@@ -765,7 +775,7 @@ class ExamplePlugin(Plugin):
     # |========|
     #
     # This event is triggered whenever a mode is removed in
-    # MERK's presence. This can be a user mode or a channel
+    # MERK's "presence". This can be a user mode or a channel
     # mode.
     #
     # Arguments:

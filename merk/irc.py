@@ -67,10 +67,6 @@ if is_running_from_pyinstaller():
 else:
 	PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION}"
 
-def toggleHeartbeat():
-	for c in CONNECTIONS:
-		CONNECTIONS[c].toggleHeartbeat()
-
 class IRC_Connection(irc.IRCClient):
 	nickname = 'merk'
 	realname = 'merk'
@@ -350,6 +346,11 @@ class IRC_Connection(irc.IRCClient):
 			ctype = e[0]
 			data = e[1]
 
+			if data==None: return
+
+			if ctype!="PING":
+				plugins.call(self,"ctcp",client=self,user=user,ctype=ctype,data=data)
+
 			if ctype=="VERSION":
 				self.gui.receivedClientVersion(self,user,data)
 
@@ -379,14 +380,16 @@ class IRC_Connection(irc.IRCClient):
 			message_type = 'UNKNOWN'
 
 		if config.NOTIFY_ON_CTCP_REQUESTS:
-			self.gui.systemMessage(self,f"Received CTCP {message_type} from {user}")
+			self.gui.systemMessage(self,f"Received CTCP {message_type} query from {user}")
 
 			if self.gui.current_window!=None:
 				if hasattr(self.gui.current_window,"client"):
 					if self.gui.current_window.client == self:
 						if self.gui.current_window.window_type==CHANNEL_WINDOW or self.gui.current_window.window_type==PRIVATE_WINDOW:
-							t = Message(SYSTEM_MESSAGE,"",f"Received CTCP {message_type} from {user}")
+							t = Message(SYSTEM_MESSAGE,"",f"Received CTCP {message_type} query from {user}")
 							self.gui.current_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+		if config.DO_NOT_RESPOND_TO_CTCP: return
 
 		return irc.IRCClient.ctcpQuery(self, user, channel, messages)
 
@@ -395,10 +398,6 @@ class IRC_Connection(irc.IRCClient):
 			for c in self.server_channel_list:
 				if c[0]==channel: return True
 		return False
-
-	def irc_PING(self,prefix,params):
-		self.gui.receivedPing(self)
-		return irc.IRCClient.irc_PING(self,prefix,params)
 
 	def irc_RPL_LIST(self,prefix,params):
 		server = prefix
@@ -1984,6 +1983,10 @@ def new_error_nickname():
 			config.BAD_NICKNAME_FALLBACK = "Guest"
 			config.save_settings(config.CONFIG_FILE)
 		CONNECTIONS[c].erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
+
+def toggleHeartbeat():
+	for c in CONNECTIONS:
+		CONNECTIONS[c].toggleHeartbeat()
 
 class IRC_Connection_Factory(protocol.ClientFactory):
 	def __init__(self,**kwargs):

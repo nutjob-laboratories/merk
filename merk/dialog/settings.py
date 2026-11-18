@@ -339,6 +339,29 @@ class Dialog(QDialog):
 		self.centerMDI.setEnabled(False)
 		self.tileMDI.setEnabled(False)
 
+	def changedSettingCTCP(self):
+
+		if self.noCTCP.isChecked():
+			self.noSource.setEnabled(False)
+			self.noVersion.setEnabled(False)
+			self.noEnviron.setEnabled(False)
+			self.uinfoLabel.setEnabled(False)
+			self.userinfo.setEnabled(False)
+			self.finLabel.setEnabled(False)
+			self.finger.setEnabled(False)
+		else:
+			self.noSource.setEnabled(True)
+			self.noVersion.setEnabled(True)
+			self.noEnviron.setEnabled(True)
+			self.uinfoLabel.setEnabled(True)
+			self.userinfo.setEnabled(True)
+			self.finLabel.setEnabled(True)
+			self.finger.setEnabled(True)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSettingMDI(self):
 		self.rerender_mdi = True
 		self.changed.show()
@@ -783,7 +806,6 @@ class Dialog(QDialog):
 			self.plugCtick.setEnabled(True)
 			self.plugNick.setEnabled(True)
 			self.plugDisconnect.setEnabled(True)
-			self.plugPing.setEnabled(True)
 			self.plugMotd.setEnabled(True)
 			self.plugEditor.setEnabled(True)
 			self.plugServer.setEnabled(True)
@@ -809,6 +831,7 @@ class Dialog(QDialog):
 			self.plugUnpause.setEnabled(True)
 			self.plugNak.setEnabled(True)
 			self.plugAck.setEnabled(True)
+			self.plugCtcp.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -844,7 +867,6 @@ class Dialog(QDialog):
 			self.plugCtick.setEnabled(False)
 			self.plugNick.setEnabled(False)
 			self.plugDisconnect.setEnabled(False)
-			self.plugPing.setEnabled(False)
 			self.plugMotd.setEnabled(False)
 			self.plugEditor.setEnabled(False)
 			self.plugServer.setEnabled(False)
@@ -871,6 +893,7 @@ class Dialog(QDialog):
 			self.plugUnpause.setEnabled(False)
 			self.plugNak.setEnabled(False)
 			self.plugAck.setEnabled(False)
+			self.plugCtcp.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -2751,16 +2774,16 @@ class Dialog(QDialog):
 		applicationLayout = QVBoxLayout()
 		applicationLayout.setSpacing(0)
 		applicationLayout.addLayout(logLayout)
-		applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addStretch()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application font</b>"))
 		applicationLayout.addLayout(fontLayout)
-		applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addStretch()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window settings</b>"))
 		applicationLayout.addLayout(mwsLayout)
-		applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addStretch()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application title settings</b>"))
 		applicationLayout.addLayout(titleLayout)
-		applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addStretch()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		applicationLayout.addLayout(misLayout)
 		applicationLayout.addStretch()
@@ -2827,7 +2850,7 @@ class Dialog(QDialog):
 
 		self.userDescription = QLabel(f"""
 			<small>
-			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP replies</b>.
+			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP queries</b>.
 			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
 			current connections. <b>Alternate</b> is completely optional.<br>
 			</small>
@@ -2839,7 +2862,7 @@ class Dialog(QDialog):
 			<small>
 			Changes to <b>USERINFO</b> and <b>FINGER</b> replies will be used immediately.
 			Both of these values are optional. If not set to a value, <b>{APPLICATION_NAME}</b>
-			will not reply to the CTCP request.<br>
+			will not reply to the CTCP query.<br>
 			</small>
 			""")
 		self.ctcpDescription.setWordWrap(True)
@@ -2849,14 +2872,14 @@ class Dialog(QDialog):
 		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
 		self.noEnviron.stateChanged.connect(self.changedSetting)
 		
-		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
+		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION queries",self)
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
 		self.noVersion.stateChanged.connect(self.changedSettingVersion)
 
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
 			self.noEnviron.setEnabled(False)
 
-		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
+		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE queries",self)
 		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
 		self.noSource.stateChanged.connect(self.changedSetting)
 
@@ -2905,28 +2928,42 @@ class Dialog(QDialog):
 		profLayout.addWidget(self.useProfiles)
 		profLayout.addStretch()
 
-		self.notifyCTCP = QCheckBox("Notify when a CTCP request is received",self)
+		self.notifyCTCP = QCheckBox("Notify when a CTCP query is received",self)
 		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
 		self.notifyCTCP.stateChanged.connect(self.changedSetting)
+
+		self.noCTCP = QCheckBox("Do not reply to CTCP queries",self)
+		if config.DO_NOT_RESPOND_TO_CTCP: self.noCTCP.setChecked(True)
+		self.noCTCP.stateChanged.connect(self.changedSettingCTCP)
+
+		if config.DO_NOT_RESPOND_TO_CTCP:
+			self.noSource.setEnabled(False)
+			self.noVersion.setEnabled(False)
+			self.noEnviron.setEnabled(False)
+			self.uinfoLabel.setEnabled(False)
+			self.userinfo.setEnabled(False)
+			self.finLabel.setEnabled(False)
+			self.finger.setEnabled(False)
 
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(0)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user settings</b>"))
 		userLayout.addWidget(self.userDescription)
 		userLayout.addLayout(udataLayout)
-		userLayout.addWidget(QLabel(' '))
+		userLayout.addStretch()
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server profiles</b>"))
 		userLayout.addLayout(profLayout)
-		userLayout.addWidget(QLabel(' '))
+		userLayout.addStretch()
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
 		userLayout.addWidget(self.ctcpDescription)
 		userLayout.addLayout(ctcpLayout)
-		userLayout.addWidget(QLabel(' '))
+		userLayout.addStretch()
 		userLayout.addWidget(self.notifyCTCP)
+		userLayout.addWidget(self.noCTCP)
 		userLayout.addWidget(self.noSource)
 		userLayout.addWidget(self.noVersion)
 		userLayout.addWidget(self.noEnviron)
-		userLayout.addWidget(QLabel(' '))
+		userLayout.addStretch()
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored user settings</b>"))
 		userLayout.addLayout(bdLayout)
 		userLayout.addStretch()
@@ -3171,12 +3208,1053 @@ class Dialog(QDialog):
 		connectionsLayout.setSpacing(0)
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addLayout(csLayout)
-		connectionsLayout.addWidget(QLabel(' '))
+		connectionsLayout.addStretch()
 		connectionsLayout.addWidget(self.erroneousDescription)
 		connectionsLayout.addLayout(eLayout)
 		connectionsLayout.addStretch()
 
 		self.connectionsPage.setLayout(connectionsLayout)
+
+		# Channels
+
+		self.channelInfoPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Channels")
+		entry.widget = self.channelInfoPage
+		entry.setIcon(QIcon(CHANNEL_MENU_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.channelInfoPage)
+
+		self.topicDisplay = QCheckBox("Show channel information display",self)
+		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
+		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
+
+		self.channelName = QCheckBox("Channel name",self)
+		if config.SHOW_CHANNEL_NAME: self.channelName.setChecked(True)
+		self.channelName.stateChanged.connect(self.topicChangeNameModes)
+
+		self.channelModes = QCheckBox("Channel modes",self)
+		if config.SHOW_CHANNEL_MODES: self.channelModes.setChecked(True)
+		self.channelModes.stateChanged.connect(self.topicChangeNameModes)
+
+		self.channelCount = QCheckBox("User count",self)
+		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
+		self.channelCount.stateChanged.connect(self.topicChange)
+
+		self.channelTooltip = QCheckBox("Topic in tooltip",self)
+		if config.SHOW_TOPIC_IN_EDITOR_TOOLTIP: self.channelTooltip.setChecked(True)
+		self.channelTooltip.stateChanged.connect(self.topicChange)
+
+		self.channelColors = QCheckBox("IRC colors in topics",self)
+		if config.IRC_COLOR_IN_TOPICS: self.channelColors.setChecked(True)
+		self.channelColors.stateChanged.connect(self.topicChange)
+
+		self.topicEditor = QCheckBox("Enable topic editor",self)
+		if config.ALLOW_TOPIC_EDIT: self.topicEditor.setChecked(True)
+		self.topicEditor.stateChanged.connect(self.changedSetting)
+
+		self.chanMode = QCheckBox("Channel mode menu",self)
+		if config.CHANNEL_MODE_CONTEXT_MENU: self.chanMode.setChecked(True)
+		self.chanMode.stateChanged.connect(self.changeChannelModeMenu)
+
+		self.changeChanMode = QCheckBox("Change modes in menu",self)
+		if config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU: self.changeChanMode.setChecked(True)
+		self.changeChanMode.stateChanged.connect(self.changedSetting)
+
+		if not config.CHANNEL_MODE_CONTEXT_MENU: self.changeChanMode.setEnabled(False)
+
+		if not config.SHOW_CHANNEL_TOPIC:
+			self.channelName.setEnabled(False)
+			self.channelCount.setEnabled(False)
+			self.channelTooltip.setEnabled(False)
+			self.channelColors.setEnabled(False)
+			self.topicEditor.setEnabled(False)
+			self.chanMode.setEnabled(False)
+			self.changeChanMode.setEnabled(False)
+
+		if not config.SHOW_CHANNEL_NAME:
+			self.chanMode.setEnabled(False)
+			self.channelModes.setEnabled(False)
+			self.changeChanMode.setEnabled(False)
+
+		self.channelDescription = QLabel("""
+			<small>
+			The <b>channel information display</b> is a bar shown at the top of
+			every channel subwindow that displays the channel <b>name</b>, any <b>modes</b> set,
+			the channel <b>topic</b>, and the <b>user count</b>.<br>
+			</small>
+			""")
+		self.channelDescription.setWordWrap(True)
+		self.channelDescription.setAlignment(Qt.AlignJustify)
+
+		self.showUserlistLeft = QCheckBox("Display on left",self)
+		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
+		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
+
+		self.plainUserLists = QCheckBox("Plain text only",self)
+		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
+		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlistsPlain)
+
+		self.showUserlists = QCheckBox("Show user lists",self)
+		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
+		self.showUserlists.stateChanged.connect(self.changedUserlistVisibility)
+
+		self.hideScroll = QCheckBox("Hide horizontal scrollbars",self)
+		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
+		self.hideScroll.stateChanged.connect(self.changedSettingScrollbar)
+
+		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
+		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
+		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.ignoreUserlist = QCheckBox("Mark ignored users ",self)
+		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlist.setChecked(True)
+		self.ignoreUserlist.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.showAwayStatus = QCheckBox("Mark away users",self)
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
+		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.dcPrivate = QCheckBox("Double click user for private chat",self)
+		if config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: self.dcPrivate.setChecked(True)
+		self.dcPrivate.stateChanged.connect(self.changedSetting)
+
+		self.elideAway = QCheckBox("Elide away message ",self)
+		if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT: self.elideAway.setChecked(True)
+		self.elideAway.stateChanged.connect(self.changedSetting)
+
+		self.elideHostmask = QCheckBox("Elide hostmask",self)
+		if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT: self.elideHostmask.setChecked(True)
+		self.elideHostmask.stateChanged.connect(self.changedSetting)
+
+		self.ulistContext = QCheckBox("Enable right click menu ",self)
+		if config.USERLIST_CONTEXT_MENU: self.ulistContext.setChecked(True)
+		self.ulistContext.stateChanged.connect(self.changedSettingContext)
+
+		self.ulistWidthLabel = QLabel("Base userlist width: ")
+		self.ulistWidthBox = QSpinBox()
+		self.ulistWidthBox.setRange(1,100)
+		self.ulistWidthBox.setValue(self.USERLIST_WIDTH_IN_CHARACTERS)
+		self.ulistWidthBox.valueChanged.connect(self.setUlistWidth)
+		self.ulistWidthLabel2 = QLabel(" characters")
+
+		ulistWidthLayout = QHBoxLayout()
+		ulistWidthLayout.addWidget(self.ulistWidthLabel)
+		ulistWidthLayout.addWidget(self.ulistWidthBox)
+		ulistWidthLayout.addWidget(self.ulistWidthLabel2)
+		ulistWidthLayout.addStretch()
+
+		self.colorUserlists = QCheckBox("Show user colors",self)
+		if config.SHOW_COLORS_IN_USERLISTS: self.colorUserlists.setChecked(True)
+		self.colorUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.underlineSelf = QCheckBox("Underline self",self)
+		if config.UNDERLINE_SELF_IN_USERLISTS: self.underlineSelf.setChecked(True)
+		self.underlineSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.styleSelf = QCheckBox("Use style color for self",self)
+		if config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS: self.styleSelf.setChecked(True)
+		self.styleSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.saveWidth = QCheckBox("Load and save channel userlist width",self)
+		if config.LOAD_AND_SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
+		self.saveWidth.stateChanged.connect(self.changedSetting)
+
+		self.styleBots = QCheckBox("Show bots",self)
+		if config.SHOW_BOTS_IN_USERLISTS: self.styleBots.setChecked(True)
+		self.styleBots.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.statusMenus = QCheckBox("Full channel status",self)
+		if config.SHOW_STATUS_IN_USERLIST_MENU: self.statusMenus.setChecked(True)
+		self.statusMenus.stateChanged.connect(self.changedSetting)
+
+		self.showAwayUserlistTooltip = QCheckBox("Show away message in user tooltips",self)
+		if config.SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP: self.showAwayUserlistTooltip.setChecked(True)
+		self.showAwayUserlistTooltip.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		if not config.SHOW_USERLIST:
+			self.ulistWidthLabel.setEnabled(False)
+			self.ulistWidthBox.setEnabled(False)
+			self.ulistWidthLabel2.setEnabled(False)
+			self.plainUserLists.setEnabled(False)
+			self.showUserlistLeft.setEnabled(False)
+			self.hideScroll.setEnabled(False)
+			self.noSelectUserlists.setEnabled(False)
+			self.ignoreUserlist.setEnabled(False)
+			self.showAwayStatus.setEnabled(False)
+			self.dcPrivate.setEnabled(False)
+			self.elideAway.setEnabled(False)
+			self.elideHostmask.setEnabled(False)
+			self.ulistContext.setEnabled(False)
+			self.colorUserlists.setEnabled(False)
+			self.underlineSelf.setEnabled(False)
+			self.styleSelf.setEnabled(False)
+			self.saveWidth.setEnabled(False)
+			self.styleBots.setEnabled(False)
+			self.statusMenus.setEnabled(False)
+			self.showAwayUserlistTooltip.setEnabled(False)
+
+		if not config.USERLIST_CONTEXT_MENU:
+			if config.SHOW_USERLIST:
+				self.elideAway.setEnabled(False)
+				self.elideHostmask.setEnabled(False)
+				self.statusMenus.setEnabled(False)
+
+		if config.PLAIN_USER_LISTS:
+			self.styleBots.setEnabled(False)
+
+		cbL1 = QHBoxLayout()
+		cbL1.addWidget(self.channelName)
+		cbL1.addWidget(self.channelModes)
+		
+		cbL2 = QHBoxLayout()
+		cbL2.addWidget(self.channelCount)
+		cbL2.addWidget(self.channelColors)
+
+		cbL3 = QHBoxLayout()
+		cbL3.addWidget(self.channelTooltip)
+		cbL3.addWidget(self.topicEditor)
+
+		cbL4 = QHBoxLayout()
+		cbL4.addWidget(self.chanMode)
+		cbL4.addWidget(self.changeChanMode)
+
+		chanButtonLayout = QVBoxLayout()
+		chanButtonLayout.setSpacing(0)
+		chanButtonLayout.addLayout(cbL1)
+		chanButtonLayout.addLayout(cbL2)
+		chanButtonLayout.addLayout(cbL3)
+		chanButtonLayout.addLayout(cbL4)
+
+		ulistDisplay1 = QFormLayout()
+		ulistDisplay1.setSpacing(0)
+		ulistDisplay1.addRow(self.showUserlists,self.showUserlistLeft)
+		ulistDisplay1.addRow(self.plainUserLists,self.styleBots)
+		ulistDisplay1.addRow(self.ignoreUserlist,self.showAwayStatus)
+		ulistDisplay1.addRow(self.colorUserlists,self.noSelectUserlists)
+		ulistDisplay1.addRow(self.underlineSelf,self.styleSelf)
+		ulistDisplay1.addRow(self.hideScroll)
+		ulistDisplay1.addRow(self.dcPrivate)
+
+		ulistDisplay = QVBoxLayout()
+		ulistDisplay.setSpacing(0)
+		ulistDisplay.addLayout(ulistDisplay1)
+		ulistDisplay.addLayout(ulistWidthLayout)
+		ulistDisplay.addWidget(self.saveWidth)
+		ulistDisplay.addWidget(self.showAwayUserlistTooltip)
+
+		infoExist = QHBoxLayout()
+		infoExist.addStretch()
+		infoExist.addWidget(self.topicDisplay)
+		infoExist.addStretch()
+
+		self.nameTitleDisplay = QCheckBox("Show name in title",self)
+		if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE: self.nameTitleDisplay.setChecked(True)
+		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
+
+		self.topicTitleDisplay = QCheckBox("Show topic in title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
+		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
+
+		self.showJoin = QCheckBox("JOIN",self)
+		if config.SHOW_CHANNEL_JOIN_MESSAGES: self.showJoin.setChecked(True)
+		self.showJoin.stateChanged.connect(self.changedSettingRerender)
+
+		self.showPart = QCheckBox("PART",self)
+		if config.SHOW_CHANNEL_PART_MESSAGES: self.showPart.setChecked(True)
+		self.showPart.stateChanged.connect(self.changedSettingRerender)
+
+		self.showQuit = QCheckBox("QUIT",self)
+		if config.SHOW_CHANNEL_QUIT_MESSAGES: self.showQuit.setChecked(True)
+		self.showQuit.stateChanged.connect(self.changedSettingRerender)
+
+		self.showModes = QCheckBox("MODE",self)
+		if config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES: self.showModes.setChecked(True)
+		self.showModes.stateChanged.connect(self.changedSettingRerender)
+
+		self.showNicks = QCheckBox("NICK",self)
+		if config.SHOW_CHANNEL_NICK_MESSAGES: self.showNicks.setChecked(True)
+		self.showNicks.stateChanged.connect(self.changedSettingRerender)
+
+		self.showTopic = QCheckBox("TOPIC",self)
+		if config.SHOW_CHANNEL_TOPIC_MESSAGES: self.showTopic.setChecked(True)
+		self.showTopic.stateChanged.connect(self.changedSettingRerender)
+
+		cfLayout = QHBoxLayout()
+		cfLayout.setSpacing(0)
+		cfLayout.addWidget(self.showJoin)
+		cfLayout.addWidget(self.showPart)
+		cfLayout.addWidget(self.showQuit)
+		cfLayout.addWidget(self.showModes)
+		cfLayout.addWidget(self.showNicks)
+		cfLayout.addWidget(self.showTopic)
+
+		showCM3 = QHBoxLayout()
+		showCM3.setSpacing(0)
+		showCM3.addStretch()
+		showCM3.addWidget(self.nameTitleDisplay)
+		showCM3.addStretch()
+		showCM3.addWidget(self.topicTitleDisplay)
+		showCM3.addStretch()
+
+		showCM = QVBoxLayout()
+		showCM.setSpacing(0)
+		showCM.addLayout(showCM3)
+
+		ulistMenu = QFormLayout()
+		ulistMenu.setSpacing(0)
+		ulistMenu.addRow(self.ulistContext,self.elideHostmask)
+		ulistMenu.addRow(self.elideAway,self.statusMenus)
+
+		menuLayout = QVBoxLayout()
+		menuLayout.setSpacing(0)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
+		menuLayout.addWidget(self.channelDescription)
+		menuLayout.addLayout(infoExist)
+		menuLayout.addLayout(chanButtonLayout)
+		menuLayout.addStretch()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
+		menuLayout.addLayout(ulistDisplay)
+		menuLayout.addStretch()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list right click menu</b>"))
+		menuLayout.addLayout(ulistMenu)
+		menuLayout.addStretch()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show message types in all channels</b>"))
+		menuLayout.addLayout(cfLayout)
+		menuLayout.addStretch()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
+		menuLayout.addLayout(showCM)
+		menuLayout.addStretch()
+
+		self.channelInfoPage.setLayout(menuLayout)
+
+		# Time
+
+		self.timestampPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Time")
+		entry.widget = self.timestampPage
+		entry.setIcon(QIcon(TIMESTAMP_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.timestampPage)
+
+		self.showTimestamps = QCheckBox("Show timestamps",self)
+		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
+		self.showTimestamps.stateChanged.connect(self.changeTimestamp)
+
+		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
+		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
+		self.timestamp24hour.stateChanged.connect(self.changedSettingRerenderTimestamp)
+
+		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
+		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
+		self.timestampSeconds.stateChanged.connect(self.changedSettingRerenderTimestamp)
+
+		self.timestampUTC = QCheckBox("Show timestamps in chat and logs in Coordinated\nUniversal Time (UTC)",self)
+		if config.SHOW_TIMESTAMPS_IN_UTC: self.timestampUTC.setChecked(True)
+		self.timestampUTC.stateChanged.connect(self.changedSettingRerenderTimestamp)
+
+		if not config.DISPLAY_TIMESTAMP:
+			self.timestamp24hour.setEnabled(False)
+			self.timestampSeconds.setEnabled(False)
+
+		self.showUptime = QCheckBox("Show connection uptime",self)
+		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
+		self.showUptime.stateChanged.connect(self.changedSetting)
+
+		self.showChanUptime = QCheckBox("Show channel uptime",self)
+		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
+		self.showChanUptime.stateChanged.connect(self.changedSetting)
+
+		self.timestampDescription = QLabel("""
+			<small>
+			<b>Timestamps</b>, if turned on, are shown as the beginning of all displayed
+			messages in the chat display. They are saved to the log in <b><a href="https://en.wikipedia.org/wiki/Unix_time">UNIX
+			epoch time</a></b> regardless of whether they are visible or not. <b>Timestamps</b> and other
+			date and time displays in chat and the <b>Log Manager</b> can be displayed in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
+			<b>Coordinated Universal Time</b></a> (UTC) rather than in local time.
+			</small>
+			<br>
+			""")
+		self.timestampDescription.setWordWrap(True)
+		self.timestampDescription.setAlignment(Qt.AlignJustify)
+		self.timestampDescription.setOpenExternalLinks(True)
+
+		self.uptimeDescription = QLabel("""
+			<small>
+			<b>Uptimes</b> (that is, the length of time you have been connected to a
+			<b>server</b> or been in a <b>channel</b>) are generally displayed in the subwindow's
+			<b>status bar</b>. For <b>server</b> subwindows, if the <b>status bar</b>
+			is turned off, the connection <b>uptime</b> is displayed in the toolbar.
+			Uptimes are displayed in the format <b>HOURS:MINUTES:SECONDS</b>; if the uptime
+			is longer than a day, the format will be <b>DAYS:HOURS:MINUTES:SECONDS</b>.
+			</small>
+			<br>
+			""")
+		self.uptimeDescription.setWordWrap(True)
+		self.uptimeDescription.setAlignment(Qt.AlignJustify)
+
+		self.showDates = QCheckBox("Show dates in chat displays",self)
+		if config.SHOW_DATES_IN_LOGS: self.showDates.setChecked(True)
+		self.showDates.stateChanged.connect(self.changedSettingRerender)
+
+		stsLayout = QHBoxLayout()
+		stsLayout.addStretch()
+		stsLayout.addWidget(self.showTimestamps)
+		stsLayout.addStretch()
+
+		tsLayout = QVBoxLayout()
+		tsLayout.setSpacing(0)
+		tsLayout.addWidget(self.timestampDescription)
+		tsLayout.addLayout(stsLayout)
+		
+
+		upLayout = QVBoxLayout()
+		upLayout.setSpacing(0)
+		upLayout.addWidget(self.uptimeDescription)
+		upLayout.addWidget(self.showUptime)
+		upLayout.addWidget(self.showChanUptime)
+
+		tmLayout = QVBoxLayout()
+		tmLayout.setSpacing(0)
+		tmLayout.addWidget(self.timestamp24hour)
+		tmLayout.addWidget(self.timestampSeconds)
+		tmLayout.addWidget(self.showDates)
+		tmLayout.addWidget(self.timestampUTC)
+
+		timestampLayout = QVBoxLayout()
+		timestampLayout.setSpacing(0)
+		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
+		timestampLayout.addLayout(tsLayout)
+		timestampLayout.addWidget(QLabel(' '))
+		timestampLayout.addLayout(tmLayout)
+		timestampLayout.addWidget(QLabel(' '))
+		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime display settings</b>"))
+		timestampLayout.addLayout(upLayout)
+		timestampLayout.addStretch()
+
+		self.timestampPage.setLayout(timestampLayout)
+
+		# Away
+
+		self.awayPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Away")
+		entry.widget = self.awayPage
+		entry.setIcon(QIcon(GO_AWAY_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.awayPage)
+
+		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided\nwith the {config.ISSUE_COMMAND_SYMBOL}away command or when pressing the\n\"Set status to away\" button on the server\nsubwindow toolbar or menus",self)
+		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
+		self.promptAway.stateChanged.connect(self.changedSetting)
+
+		self.autoAway = QCheckBox("Auto-away after",self)
+		if config.USE_AUTOAWAY: self.autoAway.setChecked(True)
+		self.autoAway.stateChanged.connect(self.changedAutoAway)
+
+		self.autoawayInterval = QComboBox(self)
+		added = False
+		if config.AUTOAWAY_TIME==300:
+			self.autoawayInterval.addItem("5 minutes")
+			added = True
+		if config.AUTOAWAY_TIME==900:
+			self.autoawayInterval.addItem("15 minutes")
+			added = True
+		if config.AUTOAWAY_TIME==1800:
+			self.autoawayInterval.addItem("30 minutes")
+			added = True
+		if config.AUTOAWAY_TIME==3600:
+			self.autoawayInterval.addItem("1 hour")
+			added = True
+		if config.AUTOAWAY_TIME==7200:
+			self.autoawayInterval.addItem("2 hours")
+			added = True
+		if config.AUTOAWAY_TIME==10800:
+			self.autoawayInterval.addItem("3 hours")
+			added = True
+		if config.AUTOAWAY_TIME==14400:
+			self.autoawayInterval.addItem("4 hours")
+			added = True
+		if added==False: self.autoawayInterval.addItem(f"{config.AUTOAWAY_TIME} seconds")
+		if config.AUTOAWAY_TIME!=300: self.autoawayInterval.addItem("5 minutes")
+		if config.AUTOAWAY_TIME!=900: self.autoawayInterval.addItem("15 minutes")
+		if config.AUTOAWAY_TIME!=1800: self.autoawayInterval.addItem("30 minutes")
+		if config.AUTOAWAY_TIME!=3600: self.autoawayInterval.addItem("1 hour")
+		if config.AUTOAWAY_TIME!=7200: self.autoawayInterval.addItem("2 hours")
+		if config.AUTOAWAY_TIME!=10800: self.autoawayInterval.addItem("3 hours")
+		if config.AUTOAWAY_TIME!=14400: self.autoawayInterval.addItem("4 hours")
+		self.autoawayInterval.currentIndexChanged.connect(self.autoawayChange)
+
+		intervalBox = QHBoxLayout()
+		intervalBox.addWidget(self.autoAway)
+		intervalBox.addWidget(self.autoawayInterval)
+		intervalBox.addStretch()
+
+		self.showAwayBack = QCheckBox("Show user away and back notification messages",self)
+		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
+		self.showAwayBack.stateChanged.connect(self.changedSettingRerender)
+		
+		self.showAwayNick = QCheckBox("Show away status in nickname display",self)
+		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY: self.showAwayNick.setChecked(True)
+		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNickAway)
+
+		self.showNickItalics = QCheckBox("Show nickname display in italics if away",self)
+		if config.SHOW_AWAY_NICKNAME_IN_ITALICS: self.showNickItalics.setChecked(True)
+		self.showNickItalics.stateChanged.connect(self.changedSettingRerenderNick)
+
+		self.showAwayTooltip = QCheckBox("Show away message in nickname display tooltip",self)
+		if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP: self.showAwayTooltip.setChecked(True)
+		self.showAwayTooltip.stateChanged.connect(self.changedSettingRerenderNick)
+
+		self.nnDisplayDesc = QLabel(f"""
+			<small>
+			The nickname display on chat windows has been disabled. It can be enabled in the <b>Subwindows</b> section.<br>
+			</small>
+			""")
+		self.nnDisplayDesc.setWordWrap(True)
+		self.nnDisplayDesc.setAlignment(Qt.AlignJustify)
+
+		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS and not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
+			self.showAwayNick.setEnabled(False)
+			self.showNickItalics.setEnabled(False)
+			self.showAwayTooltip.setEnabled(False)
+			self.nnDisplayDesc.show()
+		else:
+			self.nnDisplayDesc.hide()
+
+		if not config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
+			self.showNickItalics.setEnabled(False)
+			self.showAwayTooltip.setEnabled(False)
+		
+		self.typeCancelInput = QCheckBox("Interacting with the text input widget cancels\nautoaway",self)
+		if config.TYPING_INPUT_CANCELS_AUTOAWAY: self.typeCancelInput.setChecked(True)
+		self.typeCancelInput.stateChanged.connect(self.changedSetting)
+	
+		self.windowCancelAway = QCheckBox("Interacting with subwindows cancels autoaway",self)
+		if config.WINDOW_INTERACTION_CANCELS_AUTOAWAY: self.windowCancelAway.setChecked(True)
+		self.windowCancelAway.stateChanged.connect(self.changedSetting)
+		
+		self.appCancelAway = QCheckBox("Interacting with application cancels autoaway",self)
+		if config.APP_INTERACTION_CANCELS_AUTOAWAY: self.appCancelAway.setChecked(True)
+		self.appCancelAway.stateChanged.connect(self.changedSetting)
+		
+		if not config.USE_AUTOAWAY:
+			self.autoawayInterval.setEnabled(False)
+			self.typeCancelInput.setEnabled(False)
+			self.windowCancelAway.setEnabled(False)
+			self.appCancelAway.setEnabled(False)
+			self.autoawayInterval.setEnabled(False)
+
+		self.awayMsg = EmojiAwayAutocomplete(self)
+		self.awayMsg.setText(self.default_away)
+
+		fm = self.awayMsg.fontMetrics()
+		self.awayMsg.setFixedHeight(fm.height()+10)
+		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.awayMsg.textChanged.connect(self.setAwayMsg)
+
+		self.autoEmojiAway = QCheckBox(f"Autocomplete",self)
+		if config.AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
+		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiAway.setEnabled(False)
+
+		self.autoAliasAway = QCheckBox(f"Interpolate aliases",self)
+		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
+		self.autoAliasAway.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasAway.setEnabled(False)
+
+		awaymsgLayout = QHBoxLayout()
+		awaymsgLayout.addStretch()
+		awaymsgLayout.addWidget(self.autoEmojiAway)
+		awaymsgLayout.addStretch()
+		awaymsgLayout.addWidget(self.autoAliasAway)
+		awaymsgLayout.addStretch()
+
+		amLayout = QVBoxLayout()
+		amLayout.setSpacing(0)
+		amLayout.addWidget(self.awayMsg)
+		amLayout.addLayout(awaymsgLayout)
+
+		asLayout = QVBoxLayout()
+		asLayout.setSpacing(0)
+		asLayout.addWidget(self.promptAway)
+		asLayout.addWidget(self.showAwayBack)
+
+		anLayout = QVBoxLayout()
+		anLayout.setSpacing(0)
+		anLayout.addWidget(self.showAwayNick)
+		anLayout.addWidget(self.showNickItalics)
+		anLayout.addWidget(self.showAwayTooltip)
+
+		aasLayout = QVBoxLayout()
+		aasLayout.setSpacing(0)
+		aasLayout.addLayout(intervalBox)
+		aasLayout.addWidget(self.typeCancelInput)
+		aasLayout.addWidget(self.windowCancelAway)
+		aasLayout.addWidget(self.appCancelAway)
+
+		awayLayout = QVBoxLayout()
+		awayLayout.setSpacing(0)
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		awayLayout.addLayout(amLayout)
+		awayLayout.addWidget(QLabel(' '))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
+		awayLayout.addLayout(asLayout)
+		awayLayout.addWidget(QLabel(' '))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>\"away\" nickname display settiings</b>"))
+		awayLayout.addWidget(self.nnDisplayDesc)
+		awayLayout.addLayout(anLayout)
+		awayLayout.addWidget(QLabel(' '))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autoaway settiings</b>"))
+		awayLayout.addLayout(aasLayout)
+		awayLayout.addStretch()
+
+		self.awayPage.setLayout(awayLayout)
+
+		# Log page
+
+		self.logPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Logs")
+		entry.widget = self.logPage
+		entry.setIcon(QIcon(LOG_MENU_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.logPage)
+
+		self.saveChanLogs = QCheckBox("Save channel logs",self)
+		if config.SAVE_CHANNEL_LOGS: self.saveChanLogs.setChecked(True)
+		self.saveChanLogs.stateChanged.connect(self.changedChanLogs)
+
+		self.loadChanLogs = QCheckBox("Load channel logs",self)
+		if config.LOAD_CHANNEL_LOGS: self.loadChanLogs.setChecked(True)
+		self.loadChanLogs.stateChanged.connect(self.changedLoadLogs)
+
+		self.savePrivLogs = QCheckBox("Save private logs",self)
+		if config.SAVE_PRIVATE_LOGS: self.savePrivLogs.setChecked(True)
+		self.savePrivLogs.stateChanged.connect(self.changedPrivLogs)
+
+		self.loadPrivLogs = QCheckBox("Load private logs",self)
+		if config.LOAD_PRIVATE_LOGS: self.loadPrivLogs.setChecked(True)
+		self.loadPrivLogs.stateChanged.connect(self.changedLoadLogs)
+
+		self.markLog = QCheckBox("Mark end of loaded log",self)
+		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
+		self.markLog.stateChanged.connect(self.changedSetting)
+
+		self.intermittentLog = QCheckBox("Save logs every",self)
+		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
+		self.intermittentLog.stateChanged.connect(self.changedSetting)
+
+		self.logInterval = QComboBox(self)
+		added = False
+		if config.LOG_SAVE_INTERVAL==900000:
+			self.logInterval.addItem("15 minutes")
+			added = True
+		if config.LOG_SAVE_INTERVAL==1800000:
+			self.logInterval.addItem("30 minutes")
+			added = True
+		if config.LOG_SAVE_INTERVAL==3600000:
+			self.logInterval.addItem("hour")
+			added = True
+		if config.LOG_SAVE_INTERVAL==7200000:
+			self.logInterval.addItem("2 hours")
+			added = True
+		if config.LOG_SAVE_INTERVAL==10800000:
+			self.logInterval.addItem("3 hours")
+			added = True
+		if config.LOG_SAVE_INTERVAL==14400000:
+			self.logInterval.addItem("4 hours")
+			added = True
+		if added==False: self.logInterval.addItem(f"{config.LOG_SAVE_INTERVAL} ms")
+		if config.LOG_SAVE_INTERVAL!=900000: self.logInterval.addItem("15 minutes")
+		if config.LOG_SAVE_INTERVAL!=1800000: self.logInterval.addItem("30 minutes")
+		if config.LOG_SAVE_INTERVAL!=3600000: self.logInterval.addItem("hour")
+		if config.LOG_SAVE_INTERVAL!=7200000: self.logInterval.addItem("2 hours")
+		if config.LOG_SAVE_INTERVAL!=10800000: self.logInterval.addItem("3 hours")
+		if config.LOG_SAVE_INTERVAL!=14400000: self.logInterval.addItem("4 hours")
+		self.logInterval.currentIndexChanged.connect(self.intervalChange)
+
+		intervalBox = QHBoxLayout()
+		intervalBox.addWidget(self.intermittentLog)
+		intervalBox.addWidget(self.logInterval)
+		intervalBox.addStretch()
+
+		if config.SAVE_PRIVATE_LOGS or config.SAVE_CHANNEL_LOGS:
+			self.intermittentLog.setEnabled(True)
+			self.logInterval.setEnabled(True)
+		else:
+			self.intermittentLog.setEnabled(False)
+			self.logInterval.setEnabled(False)
+
+		self.logDescription = QLabel(f"""
+			<small>
+			Full <b>logs</b> are not loaded for display. The below setting
+			controls how much of the <b>log</b> is loaded for display.
+			</small>
+			""")
+		self.logDescription.setWordWrap(True)
+		self.logDescription.setAlignment(Qt.AlignJustify)
+
+		self.logSizeLabel = QLabel(" lines")
+		self.logSizeBox = QSpinBox()
+		self.logSizeBox.setRange(1,1000)
+		self.logSizeBox.setValue(self.logsize)
+		self.logSizeBox.valueChanged.connect(self.setLogSize)
+
+		logsizeLayout = QHBoxLayout()
+		logsizeLayout.addStretch()
+		logsizeLayout.addWidget(self.logSizeBox)
+		logsizeLayout.addWidget(self.logSizeLabel)
+		logsizeLayout.addStretch()
+
+		if config.LOAD_CHANNEL_LOGS or config.LOAD_PRIVATE_LOGS:
+			self.markLog.setEnabled(True)
+			self.logSizeBox.setEnabled(True)
+			self.logSizeLabel.setEnabled(True)
+		else:
+			self.markLog.setEnabled(False)
+			self.logSizeBox.setEnabled(False)
+			self.logSizeLabel.setEnabled(False)
+
+		self.logFullDescription = QLabel(f"""
+			<small>
+			<b>Logs</b> are saved in JavaScript Object Notation (<b><a href="https://en.wikipedia.org/wiki/JSON">JSON</a></b>), and use a format that can
+			be read and displayed easily by <b>{APPLICATION_NAME}</b>. If you want to export your <b>logs</b> so
+			that they can be used or parsed by other software, or just view them, use the <b>Log Manager</b>,
+			located in the "<b>{self.default_tools_menu}</b>" menu.
+			</small>
+			""")
+		self.logFullDescription.setWordWrap(True)
+		self.logFullDescription.setAlignment(Qt.AlignJustify)
+		self.logFullDescription.setOpenExternalLinks(True)
+
+		self.topicLog = QCheckBox("Topics",self)
+		if config.LOG_CHANNEL_TOPICS: self.topicLog.setChecked(True)
+		self.topicLog.stateChanged.connect(self.changedSetting)
+
+		self.joinLog = QCheckBox("Joins",self)
+		if config.LOG_CHANNEL_JOIN: self.joinLog.setChecked(True)
+		self.joinLog.stateChanged.connect(self.changedSetting)
+
+		self.partLog = QCheckBox("Parts",self)
+		if config.LOG_CHANNEL_PART: self.partLog.setChecked(True)
+		self.partLog.stateChanged.connect(self.changedSetting)
+
+		self.quitLog = QCheckBox("Quits",self)
+		if config.LOG_CHANNEL_QUIT: self.quitLog.setChecked(True)
+		self.quitLog.stateChanged.connect(self.changedSetting)
+
+		self.nickLog = QCheckBox("Nick changes",self)
+		if config.LOG_CHANNEL_NICKNAME_CHANGE: self.nickLog.setChecked(True)
+		self.nickLog.stateChanged.connect(self.changedSetting)
+
+		self.noticeLog = QCheckBox("Channel notices",self)
+		if config.LOG_CHANNEL_NOTICE: self.noticeLog.setChecked(True)
+		self.noticeLog.stateChanged.connect(self.changedSetting)
+
+		self.ignoreLog = QCheckBox("Ignored chat",self)
+		if config.LOG_IGNORED_USERS: self.ignoreLog.setChecked(True)
+		self.ignoreLog.stateChanged.connect(self.changedSetting)
+
+		if config.SAVE_CHANNEL_LOGS:
+			self.topicLog.setEnabled(True)
+			self.joinLog.setEnabled(True)
+			self.partLog.setEnabled(True)
+			self.quitLog.setEnabled(True)
+			self.nickLog.setEnabled(True)
+			self.noticeLog.setEnabled(True)
+			self.ignoreLog.setEnabled(True)
+		else:
+			self.topicLog.setEnabled(False)
+			self.joinLog.setEnabled(False)
+			self.partLog.setEnabled(False)
+			self.quitLog.setEnabled(False)
+			self.nickLog.setEnabled(False)
+			self.noticeLog.setEnabled(False)
+			self.ignoreLog.setEnabled(False)
+
+		self.logViewSize = QCheckBox("Log viewer only displays last",self)
+		if config.LIMIT_LOG_VIEW: self.logViewSize.setChecked(True)
+		self.logViewSize.stateChanged.connect(self.changedSetting)
+
+		self.logViewLimitLabelSpec = QLabel(" lines")
+		self.logViewLimit = QSpinBox()
+		self.logViewLimit.setRange(1,99999)
+		self.logViewLimit.setValue(self.MAX_LOG_DISPLAY_SIZE)
+		self.logViewLimit.valueChanged.connect(self.updateLogLimit)
+
+		logViewLayout = QHBoxLayout()
+		logViewLayout.addWidget(self.logViewSize)
+		logViewLayout.addWidget(self.logViewLimit)
+		logViewLayout.addWidget(self.logViewLimitLabelSpec)
+		logViewLayout.addStretch()
+
+		chanLayout = QHBoxLayout()
+		chanLayout.addStretch()
+		chanLayout.addWidget(self.saveChanLogs)
+		chanLayout.addStretch()
+		chanLayout.addWidget(self.loadChanLogs)
+		chanLayout.addStretch()
+
+		privLayout = QHBoxLayout()
+		privLayout.addStretch()
+		privLayout.addWidget(self.savePrivLogs)
+		privLayout.addStretch()
+		privLayout.addWidget(self.loadPrivLogs)
+		privLayout.addStretch()
+
+		contLayout = QHBoxLayout()
+		contLayout.addStretch()
+		contLayout.addWidget(self.topicLog)
+		contLayout.addStretch()
+		contLayout.addWidget(self.joinLog)
+		contLayout.addStretch()
+		contLayout.addWidget(self.partLog)
+		contLayout.addStretch()
+		contLayout.addWidget(self.quitLog)
+		contLayout.addStretch()
+
+		cont2Layout = QHBoxLayout()
+		cont2Layout.addStretch()
+		cont2Layout.addWidget(self.nickLog)
+		cont2Layout.addStretch()
+		cont2Layout.addWidget(self.noticeLog)
+		cont2Layout.addStretch()
+		cont2Layout.addWidget(self.ignoreLog)
+		cont2Layout.addStretch()
+
+		self.logChanDescription = QLabel(f"""
+			<small>
+			These message types will still be displayed in <b>channel chat displays</b>, but will only be saved to the <b>log</b> if enabled below.
+			To prevent some of the <b>message types</b> from appearing at all, please see the <b>Channels</b> section of this dialog.
+			</small><br>
+			""")
+		self.logChanDescription.setWordWrap(True)
+		self.logChanDescription.setAlignment(Qt.AlignJustify)
+
+		logLayout = QVBoxLayout()
+		logLayout.setSpacing(0)
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
+		logLayout.addWidget(self.logFullDescription)
+		logLayout.addStretch()
+		logLayout.addLayout(chanLayout)
+		logLayout.addLayout(privLayout)
+		logLayout.addStretch()
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
+		logLayout.addWidget(self.logChanDescription)
+		logLayout.addLayout(contLayout)
+		logLayout.addLayout(cont2Layout)
+		logLayout.addStretch()
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log display size</b>"))
+		logLayout.addWidget(self.logDescription)
+		logLayout.addWidget(QLabel(' '))
+		logLayout.addLayout(logsizeLayout)
+		logLayout.addStretch()
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log manager settings</b>"))
+		logLayout.addLayout(logViewLayout)
+		logLayout.addStretch()
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
+		logLayout.addWidget(self.markLog)
+		logLayout.addLayout(intervalBox)
+		logLayout.addStretch()
+
+		self.logPage.setLayout(logLayout)
+
+		# Messages
+
+		self.messagePage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Messages")
+		entry.widget = self.messagePage
+		entry.setIcon(QIcon(MESSAGE_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.messagePage)
+
+		self.showColors = QCheckBox("Show IRC colors and formatting",self)
+		if config.DISPLAY_IRC_COLORS: self.showColors.setChecked(True)
+		self.showColors.stateChanged.connect(self.changedSettingRerender)
+
+		self.showLinks = QCheckBox("Convert URLs to hyperlinks",self)
+		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
+		self.showLinks.stateChanged.connect(self.changedSettingRerender)
+
+		self.createWindow = QCheckBox("Create subwindows for incoming private messages",self)
+		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
+		self.createWindow.stateChanged.connect(self.changedSetting)
+		
+		self.createWindowOut = QCheckBox("Create subwindows for outgoing private messages",self)
+		if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES: self.createWindowOut.setChecked(True)
+		self.createWindowOut.stateChanged.connect(self.changedSetting)
+		
+		self.writePrivate = QCheckBox("Write private messages to server subwindow",self)
+		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
+		self.writePrivate.stateChanged.connect(self.changedSetting)
+		
+		self.writeScroll = QCheckBox("Always scroll to bottom when displaying text",self)
+		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
+		self.writeScroll.stateChanged.connect(self.changedSetting)
+		
+		self.sysPrepend = QComboBox(self)
+		if config.SYSTEM_MESSAGE_PREFIX=='':
+			current = "Nothing"
+		else:
+			current = config.SYSTEM_MESSAGE_PREFIX
+		self.sysPrepend.addItem(current)
+		for s in SYSTEM_PREPEND_OPTIONS:
+			if s==current: continue
+			self.sysPrepend.addItem(s)
+		self.sysPrepend.currentIndexChanged.connect(self.prependChange)
+
+		self.setSystemPrepend = QLabel(f"Currently selected: <big>{current}</big> ")
+
+		prepLayout = QHBoxLayout()
+		prepLayout.addWidget(self.setSystemPrepend)
+		prepLayout.addWidget(self.sysPrepend)
+		prepLayout.addStretch()
+	
+		self.ignoreCreateWindow = QCheckBox("Do not create subwindows for ignored users",self)
+		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
+		self.ignoreCreateWindow.stateChanged.connect(self.changedSetting)
+		
+		self.createNotice = QCheckBox("Create subwindows for incoming private notices",self)
+		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
+		self.createNotice.stateChanged.connect(self.changedSetting)
+
+		self.writeMessageOut = QCheckBox("Write outgoing private messages to the current\nsubwindow",self)
+		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
+		self.writeMessageOut.stateChanged.connect(self.changedSetting)
+
+		self.showFullMode = QCheckBox("Full user info in mode messages",self)
+		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES: self.showFullMode.setChecked(True)
+		self.showFullMode.stateChanged.connect(self.changedSettingRerender)
+
+		self.ignoreChannelNotice = QCheckBox("Reject all channel notices",self)
+		if config.REJECT_ALL_CHANNEL_NOTICES: self.ignoreChannelNotice.setChecked(True)
+		self.ignoreChannelNotice.stateChanged.connect(self.changedSetting)
+
+		self.enableIgnore = QCheckBox("Enable ignoring users",self)
+		if config.ENABLE_IGNORE: self.enableIgnore.setChecked(True)
+		self.enableIgnore.stateChanged.connect(self.changedSettingIgnore)
+
+		self.showLusers = QCheckBox("Show LUSERS in the current subwindow",self)
+		if config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW: self.showLusers.setChecked(True)
+		self.showLusers.stateChanged.connect(self.changedSetting)
+
+		self.showIson = QCheckBox("Show ISON in the current subwindow",self)
+		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
+		self.showIson.stateChanged.connect(self.changedSetting)
+
+		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
+		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
+		self.autoJoin.stateChanged.connect(self.changedSetting)
+
+		self.dblNick = QCheckBox("Double click nicks in chat to private message",self)
+		if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE: self.dblNick.setChecked(True)
+		self.dblNick.stateChanged.connect(self.changedSetting)
+
+		self.undMention = QCheckBox("Underline users that mention nick",self)
+		if config.UNDERLINE_MENTION: self.undMention.setChecked(True)
+		self.undMention.stateChanged.connect(self.changedSettingRerender)
+
+		msLayout = QVBoxLayout()
+		msLayout.setSpacing(0)
+		msLayout.addWidget(self.showColors)
+		msLayout.addWidget(self.showLinks)
+		msLayout.addWidget(self.undMention)
+		msLayout.addWidget(self.writeScroll)
+		msLayout.addWidget(self.showFullMode)
+		msLayout.addWidget(self.ignoreChannelNotice)
+		msLayout.addWidget(self.enableIgnore)
+		msLayout.addWidget(self.showLusers)
+		msLayout.addWidget(self.showIson)
+		msLayout.addWidget(self.autoJoin)
+
+		pmLayout = QVBoxLayout()
+		pmLayout.setSpacing(0)
+		pmLayout.addWidget(self.dblNick)
+		pmLayout.addWidget(self.createWindow)
+		pmLayout.addWidget(self.createNotice)
+		pmLayout.addWidget(self.ignoreCreateWindow)
+		pmLayout.addWidget(self.createWindowOut)
+		pmLayout.addWidget(self.writePrivate)
+		pmLayout.addWidget(self.writeMessageOut)
+
+		self.partMsg = EmojiQuitAutocomplete(self)
+		self.partMsg.setText(self.default_quit_part)
+
+		fm = self.partMsg.fontMetrics()
+		self.partMsg.setFixedHeight(fm.height()+10)
+		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.partMsg.textChanged.connect(self.setQuitMsg)
+
+		self.autoEmojiQuit = QCheckBox(f"Autocomplete",self)
+		if config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
+		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiQuit.setEnabled(False)
+
+		self.autoAliasQuit = QCheckBox(f"Interpolate aliases",self)
+		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
+		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasQuit.setEnabled(False)
+
+		pmoLayout = QHBoxLayout()
+		pmoLayout.addStretch()
+		pmoLayout.addWidget(self.autoEmojiQuit)
+		pmoLayout.addStretch()
+		pmoLayout.addWidget(self.autoAliasQuit)
+		pmoLayout.addStretch()
+
+		qmLayout = QVBoxLayout()
+		qmLayout.setSpacing(0)
+		qmLayout.addWidget(self.partMsg)
+		qmLayout.addLayout(pmoLayout)
+
+		messageLayout = QVBoxLayout()
+		messageLayout.setSpacing(0)
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit message</b>"))
+		messageLayout.addLayout(qmLayout)
+		messageLayout.addStretch()
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
+		messageLayout.addLayout(msLayout)
+		messageLayout.addStretch()
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private message settings</b>"))
+		messageLayout.addLayout(pmLayout)
+		messageLayout.addStretch()
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
+		messageLayout.addLayout(prepLayout)
+		messageLayout.addStretch()
+
+		self.messagePage.setLayout(messageLayout)
 
 		# Appearance page
 
@@ -3408,24 +4486,24 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
-		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addStretch()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
-		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addStretch()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>workspace background image</b>"))
 		appearanceLayout.addLayout(backgroundLayout)
 		appearanceLayout.addLayout(mdiOpts)
-		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addStretch()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
-		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addStretch()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname display settings</b>"))
 		appearanceLayout.addLayout(nLayout)
-		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addStretch()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursor settings</b>"))
 		appearanceLayout.addLayout(cursLayout)
-		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addStretch()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addStretch()
@@ -3728,11 +4806,11 @@ class Dialog(QDialog):
 		menuLayout.setSpacing(0)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addLayout(msLayout)
-		menuLayout.addWidget(QLabel(' '))
+		menuLayout.addStretch()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
 		menuLayout.addWidget(self.menuNameDescription)
 		menuLayout.addLayout(nameMenuEntries)
-		menuLayout.addWidget(QLabel(' '))
+		menuLayout.addStretch()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,f"<b>\"{config.MAIN_MENU_WINDOWS_NAME}\" menu includes...</b>"))
 		menuLayout.addLayout(menu6Layout)
 		menuLayout.addLayout(menu3Layout)
@@ -4216,8 +5294,8 @@ class Dialog(QDialog):
 		swsSettings.addWidget(self.autoMaxSubwindow)
 		swsSettings.addLayout(distanceLayout)
 		swsSettings.addWidget(self.showInfo)
-		swsSettings.addWidget(self.enableNickClick)
 		swsSettings.addWidget(self.showUsermodes)
+		swsSettings.addWidget(self.enableNickClick)
 		swsSettings.addWidget(self.statusInfo)
 		swsSettings.addLayout(rbLayout)
 
@@ -4289,1026 +5367,6 @@ class Dialog(QDialog):
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
-
-		# Systray page
-
-		self.systrayPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("System Tray")
-		entry.widget = self.systrayPage
-		entry.setIcon(QIcon(SYSTRAY_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.systrayPage)
-
-		self.showSystrayMenu = QCheckBox("Show right click menu",self)
-		if config.SYSTRAY_MENU: self.showSystrayMenu.setChecked(True)
-		self.showSystrayMenu.stateChanged.connect(self.changedSystrayMin)
-
-		self.minSystray = QCheckBox("Minimize to system tray",self)
-		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
-		self.minSystray.stateChanged.connect(self.changedSystrayMin)
-
-		self.systrayNotify = QCheckBox("Show system tray notifications when minimized\nto system tray",self)
-		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
-		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
-
-		self.listSystray = QCheckBox("List notifications in tooltip",self)
-		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
-		self.listSystray.stateChanged.connect(self.changedSetting)
-
-		self.systrayDisconnect = QCheckBox("Server disconnect",self)
-		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
-		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
-
-		self.systrayNickname = QCheckBox("Nickname mentions",self)
-		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
-		self.systrayNickname.stateChanged.connect(self.changedSetting)
-		
-		self.systrayPrivate = QCheckBox("Private messages",self)
-		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
-		self.systrayPrivate.stateChanged.connect(self.changedSetting)
-		
-		self.systrayKick = QCheckBox("Channel kick",self)
-		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
-		self.systrayKick.stateChanged.connect(self.changedSetting)
-
-		self.systrayInvite = QCheckBox("Channel invite",self)
-		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
-		self.systrayInvite.stateChanged.connect(self.changedSetting)
-		
-		self.systrayNotice = QCheckBox("Notice",self)
-		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
-		self.systrayNotice.stateChanged.connect(self.changedSetting)
-
-		self.systrayMode = QCheckBox("Mode set on user",self)
-		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
-		self.systrayMode.stateChanged.connect(self.changedSetting)
-
-		self.systrayChannel = QCheckBox("Channel chat",self)
-		if config.FLASH_SYSTRAY_CHANNEL: self.systrayChannel.setChecked(True)
-		self.systrayChannel.stateChanged.connect(self.changedSetting)
-		
-		self.systrayMinOnClose = QCheckBox("Closing main window with window controls\nminimizes to tray",self)
-		if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY: self.systrayMinOnClose.setChecked(True)
-		self.systrayMinOnClose.stateChanged.connect(self.changedSetting)
-
-		self.showSystray = QCheckBox("Show system tray icon",self)
-		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
-		self.showSystray.stateChanged.connect(self.changedSystrayMin)
-
-		nickPriv = QHBoxLayout()
-		nickPriv.addWidget(self.systrayNickname)
-		nickPriv.addWidget(self.systrayPrivate)
-
-		kickInvite = QHBoxLayout()
-		kickInvite.addWidget(self.systrayKick)
-		kickInvite.addWidget(self.systrayInvite)
-
-		noticeMode = QHBoxLayout()
-		noticeMode.addWidget(self.systrayNotice)
-		noticeMode.addWidget(self.systrayMode)
-
-		channelDisco = QHBoxLayout()
-		channelDisco.addWidget(self.systrayDisconnect)
-		channelDisco.addWidget(self.systrayChannel)
-
-		notiLayout = QVBoxLayout()
-		notiLayout.setSpacing(0)
-		notiLayout.addLayout(nickPriv)
-		notiLayout.addLayout(kickInvite)
-		notiLayout.addLayout(noticeMode)
-		notiLayout.addLayout(channelDisco)
-
-		self.setFlashInterval = QLabel("Flash icon every ")
-
-		self.flashInterval = QComboBox(self)
-		added = False
-		if config.FLASH_SYSTRAY_SPEED==250:
-			self.flashInterval.addItem("250 ms")
-			added = True
-		if config.FLASH_SYSTRAY_SPEED==500:
-			self.flashInterval.addItem("500 ms")
-			added = True
-		if config.FLASH_SYSTRAY_SPEED==750:
-			self.flashInterval.addItem("750 ms")
-			added = True
-		if config.FLASH_SYSTRAY_SPEED==1000:
-			self.flashInterval.addItem("1 second")
-			added = True
-		if added==False: self.flashInterval.addItem(f"{config.FLASH_SYSTRAY_SPEED} ms")
-		if config.FLASH_SYSTRAY_SPEED!=250: self.flashInterval.addItem("250 ms")
-		if config.FLASH_SYSTRAY_SPEED!=500: self.flashInterval.addItem("500 ms")
-		if config.FLASH_SYSTRAY_SPEED!=750: self.flashInterval.addItem("750 ms")
-		if config.FLASH_SYSTRAY_SPEED!=1000: self.flashInterval.addItem("1 second")
-		self.flashInterval.currentIndexChanged.connect(self.flashChange)
-
-		flashBox = QHBoxLayout()
-		flashBox.addWidget(self.setFlashInterval)
-		flashBox.addWidget(self.flashInterval)
-		flashBox.addStretch()
-
-		self.doubleclickRestore = QCheckBox("Click systray icon to toggle window visibility",self)
-		if config.CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY: self.doubleclickRestore.setChecked(True)
-		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
-		
-		self.stmConnections = QCheckBox("Connections",self)
-		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
-		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
-
-		self.stmNick = QCheckBox("Nicks",self)
-		if config.SHOW_NICK_IN_SYSTRAY_MENU: self.stmNick.setChecked(True)
-		self.stmNick.stateChanged.connect(self.changedSetting)
-
-		self.stmJoin = QCheckBox("Channel join",self)
-		if config.SHOW_JOIN_IN_SYSTRAY_MENU: self.stmJoin.setChecked(True)
-		self.stmJoin.stateChanged.connect(self.changedSetting)
-
-		self.stmAway = QCheckBox("Away/back",self)
-		if config.SHOW_AWAY_IN_SYSTRAY_MENU: self.stmAway.setChecked(True)
-		self.stmAway.stateChanged.connect(self.changedSetting)
-
-		menuRow1 = QHBoxLayout()
-		menuRow1.addStretch()
-		menuRow1.addWidget(self.stmConnections)
-		menuRow1.addStretch()
-
-		menuRow3 = QHBoxLayout()
-		menuRow3.addStretch()
-		menuRow3.addWidget(self.stmNick)
-		menuRow3.addWidget(self.stmJoin)
-		menuRow3.addWidget(self.stmAway)
-		menuRow3.addStretch()
-
-		menuBox = QVBoxLayout()
-		menuBox.addLayout(menuRow1)
-		menuBox.addLayout(menuRow3)
-
-		if not config.SYSTRAY_MENU:
-			self.stmConnections.setEnabled(False)
-			self.stmNick.setEnabled(False)
-			self.stmJoin.setEnabled(False)
-			self.stmAway.setEnabled(False)
-
-		if not config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
-			self.stmNick.setEnabled(False)
-			self.stmJoin.setEnabled(False)
-			self.stmAway.setEnabled(False)
-
-		stLayout = QVBoxLayout()
-		stLayout.setSpacing(0)
-		stLayout.addWidget(self.showSystray)
-		stLayout.addWidget(self.showSystrayMenu)
-		stLayout.addWidget(self.minSystray)
-		stLayout.addWidget(self.systrayMinOnClose)
-		stLayout.addWidget(self.doubleclickRestore)
-
-		nsLayout = QVBoxLayout()
-		nsLayout.setSpacing(0)
-		nsLayout.addWidget(self.systrayNotify)
-		nsLayout.addWidget(self.listSystray)
-		nsLayout.addLayout(flashBox)
-
-		systrayLayout = QVBoxLayout()
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
-		systrayLayout.addLayout(stLayout)
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
-		systrayLayout.addLayout(nsLayout)
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification events</b>"))
-		systrayLayout.addLayout(notiLayout)
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray menu includes...</b>"))
-		systrayLayout.addLayout(menuBox)
-		systrayLayout.addStretch()
-
-		self.systrayPage.setLayout(systrayLayout)
-
-		if config.SHOW_SYSTRAY_ICON:
-			self.showSystrayMenu.setEnabled(True)
-			self.minSystray.setEnabled(True)
-			if config.MINIMIZE_TO_SYSTRAY:
-				self.systrayNotify.setEnabled(True)
-				self.listSystray.setEnabled(True)
-				self.systrayDisconnect.setEnabled(True)
-				self.systrayNickname.setEnabled(True)
-				self.systrayPrivate.setEnabled(True)
-				self.systrayKick.setEnabled(True)
-				self.systrayInvite.setEnabled(True)
-				self.systrayNotice.setEnabled(True)
-				self.systrayMode.setEnabled(True)
-				self.systrayMinOnClose.setEnabled(True)
-				self.setFlashInterval.setEnabled(True)
-				self.flashInterval.setEnabled(True)
-				self.doubleclickRestore.setEnabled(True)
-				self.systrayChannel.setEnabled(True)
-			else:
-				self.systrayNotify.setEnabled(False)
-				self.listSystray.setEnabled(False)
-				self.systrayDisconnect.setEnabled(False)
-				self.systrayNickname.setEnabled(False)
-				self.systrayPrivate.setEnabled(False)
-				self.systrayKick.setEnabled(False)
-				self.systrayInvite.setEnabled(False)
-				self.systrayNotice.setEnabled(False)
-				self.systrayMode.setEnabled(False)
-				self.systrayMinOnClose.setEnabled(False)
-				self.setFlashInterval.setEnabled(False)
-				self.flashInterval.setEnabled(False)
-				self.doubleclickRestore.setEnabled(False)
-				self.systrayChannel.setEnabled(False)
-		else:
-			self.showSystrayMenu.setEnabled(False)
-			self.minSystray.setEnabled(False)
-			self.systrayNotify.setEnabled(False)
-			self.listSystray.setEnabled(False)
-			self.systrayDisconnect.setEnabled(False)
-			self.systrayNickname.setEnabled(False)
-			self.systrayPrivate.setEnabled(False)
-			self.systrayKick.setEnabled(False)
-			self.systrayInvite.setEnabled(False)
-			self.systrayNotice.setEnabled(False)
-			self.systrayMode.setEnabled(False)
-			self.systrayMinOnClose.setEnabled(False)
-			self.setFlashInterval.setEnabled(False)
-			self.flashInterval.setEnabled(False)
-			self.doubleclickRestore.setEnabled(False)
-			self.stmConnections.setEnabled(False)
-			self.stmNick.setEnabled(False)
-			self.stmJoin.setEnabled(False)
-			self.stmAway.setEnabled(False)
-			self.systrayChannel.setEnabled(False)
-
-		# Notifications
-
-		self.notificationsPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Notifications")
-		entry.widget = self.notificationsPage
-		entry.setIcon(QIcon(NOTIFICATION_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.notificationsPage)
-
-		self.audioNotifications = QCheckBox("Play audio notifications",self)
-		if config.SOUND_NOTIFICATIONS: self.audioNotifications.setChecked(True)
-		self.audioNotifications.stateChanged.connect(self.changedNotifications)
-
-		self.notifyDisco = QCheckBox("Disconnection from server",self)
-		if config.SOUND_NOTIFICATION_DISCONNECT: self.notifyDisco.setChecked(True)
-		self.notifyDisco.stateChanged.connect(self.changedSetting)
-
-		self.notifyNickname = QCheckBox("Nickname mention",self)
-		if config.SOUND_NOTIFICATION_NICKNAME: self.notifyNickname.setChecked(True)
-		self.notifyNickname.stateChanged.connect(self.changedSetting)
-		
-		self.notifyPrivate = QCheckBox("Private message",self)
-		if config.SOUND_NOTIFICATION_PRIVATE: self.notifyPrivate.setChecked(True)
-		self.notifyPrivate.stateChanged.connect(self.changedSetting)
-		
-		self.notifyNotice = QCheckBox("Notice",self)
-		if config.SOUND_NOTIFICATION_NOTICE: self.notifyNotice.setChecked(True)
-		self.notifyNotice.stateChanged.connect(self.changedSetting)
-
-		self.notifyKick = QCheckBox("Kick",self)
-		if config.SOUND_NOTIFICATION_KICK: self.notifyKick.setChecked(True)
-		self.notifyKick.stateChanged.connect(self.changedSetting)
-
-		self.notifyInvite = QCheckBox("Invite",self)
-		if config.SOUND_NOTIFICATION_INVITE: self.notifyInvite.setChecked(True)
-		self.notifyInvite.stateChanged.connect(self.changedSetting)
-
-		self.notifyMode = QCheckBox("Channel mode change",self)
-		if config.SOUND_NOTIFICATION_MODE: self.notifyMode.setChecked(True)
-		self.notifyMode.stateChanged.connect(self.changedSetting)
-		
-		self.notifyDescription = QLabel("""
-			<small>
-			<b>Audio notifications</b>, when enabled, play a sound (by default, a bell) every time
-			one of the listed <b>events</b> occur. Any file of any length can be used for the notification
-			sound; the only limitation is that the file <b><i>must</i> be a WAV file</b>.
-			</small>
-			<br>
-			""")
-		self.notifyDescription.setWordWrap(True)
-		self.notifyDescription.setAlignment(Qt.AlignJustify)
-
-		anickPriv = QHBoxLayout()
-		anickPriv.addWidget(self.notifyNickname)
-		anickPriv.addWidget(self.notifyPrivate)
-
-		akickInvite = QHBoxLayout()
-		akickInvite.addWidget(self.notifyKick)
-		akickInvite.addWidget(self.notifyInvite)
-
-		anoticeMode = QHBoxLayout()
-		anoticeMode.addWidget(self.notifyNotice)
-		anoticeMode.addWidget(self.notifyMode)
-
-		eventsLayout = QVBoxLayout()
-		eventsLayout.setSpacing(0)
-		eventsLayout.addLayout(anickPriv)
-		eventsLayout.addLayout(akickInvite)
-		eventsLayout.addLayout(anoticeMode)
-		eventsLayout.addWidget(self.notifyDisco)
-
-		bname = os.path.basename(self.sound)
-		self.soundLabel = QLabel("<b>"+bname+"</b>")
-
-		self.soundButton = QPushButton("")
-		self.soundButton.clicked.connect(self.setSound)
-		self.soundButton.setAutoDefault(False)
-
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		self.soundButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
-		self.soundButton.setIcon(QIcon(EDIT_ICON))
-		self.soundButton.setToolTip("Set notification sound file")
-
-		self.playButton = QPushButton(" Play")
-		self.playButton.clicked.connect(self.playSound)
-		self.playButton.setAutoDefault(False)
-		self.playButton.setIcon(QIcon(PLAY_ICON))
-		self.playButton.setToolTip("Play sound")
-
-		self.soundDefaultButton = QPushButton("Reset to default")
-		self.soundDefaultButton.clicked.connect(self.soundDefault)
-		self.soundDefaultButton.setAutoDefault(False)
-		self.soundDefaultButton.setToolTip("Reset to default")
-
-		if not config.SOUND_NOTIFICATIONS:
-			self.notifyDisco.setEnabled(False)
-			self.notifyNickname.setEnabled(False)
-			self.notifyPrivate.setEnabled(False)
-			self.notifyNotice.setEnabled(False)
-			self.notifyKick.setEnabled(False)
-			self.notifyInvite.setEnabled(False)
-			self.notifyMode.setEnabled(False)
-			self.soundLabel.setEnabled(False)
-			self.soundButton.setEnabled(False)
-			self.playButton.setEnabled(False)
-			self.soundDefaultButton.setEnabled(False)
-
-		sbLayout = QHBoxLayout()
-		sbLayout.addStretch()
-		sbLayout.addWidget(self.soundButton)
-		sbLayout.addWidget(self.soundLabel)
-		sbLayout.addStretch()
-
-		sbLayout2 = QHBoxLayout()
-		sbLayout2.addStretch()
-		sbLayout2.addWidget(self.playButton)
-		sbLayout2.addWidget(self.soundDefaultButton)
-		sbLayout2.addStretch()
-
-		audioMaster = QHBoxLayout()
-		audioMaster.addStretch()
-		audioMaster.addWidget(self.audioNotifications)
-		audioMaster.addStretch()
-
-		audioLayout = QVBoxLayout()
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
-		audioLayout.addWidget(self.notifyDescription)
-		audioLayout.addLayout(audioMaster)
-		audioLayout.addWidget(QLabel(' '))
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification events</b>"))
-		audioLayout.addLayout(eventsLayout)
-		audioLayout.addWidget(QLabel(' '))
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification sound</b>"))
-		audioLayout.addLayout(sbLayout)
-		audioLayout.addLayout(sbLayout2)
-		audioLayout.addStretch()
-
-		self.notificationsPage.setLayout(audioLayout)
-
-		# Channels
-
-		self.channelInfoPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Channels")
-		entry.widget = self.channelInfoPage
-		entry.setIcon(QIcon(CHANNEL_MENU_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.channelInfoPage)
-
-		self.topicDisplay = QCheckBox("Show channel information display",self)
-		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
-		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
-
-		self.channelName = QCheckBox("Channel name",self)
-		if config.SHOW_CHANNEL_NAME: self.channelName.setChecked(True)
-		self.channelName.stateChanged.connect(self.topicChangeNameModes)
-
-		self.channelModes = QCheckBox("Channel modes",self)
-		if config.SHOW_CHANNEL_MODES: self.channelModes.setChecked(True)
-		self.channelModes.stateChanged.connect(self.topicChangeNameModes)
-
-		self.channelCount = QCheckBox("User count",self)
-		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
-		self.channelCount.stateChanged.connect(self.topicChange)
-
-		self.channelTooltip = QCheckBox("Topic in tooltip",self)
-		if config.SHOW_TOPIC_IN_EDITOR_TOOLTIP: self.channelTooltip.setChecked(True)
-		self.channelTooltip.stateChanged.connect(self.topicChange)
-
-		self.channelColors = QCheckBox("IRC colors in topics",self)
-		if config.IRC_COLOR_IN_TOPICS: self.channelColors.setChecked(True)
-		self.channelColors.stateChanged.connect(self.topicChange)
-
-		self.topicEditor = QCheckBox("Enable topic editor",self)
-		if config.ALLOW_TOPIC_EDIT: self.topicEditor.setChecked(True)
-		self.topicEditor.stateChanged.connect(self.changedSetting)
-
-		self.chanMode = QCheckBox("Channel mode menu",self)
-		if config.CHANNEL_MODE_CONTEXT_MENU: self.chanMode.setChecked(True)
-		self.chanMode.stateChanged.connect(self.changeChannelModeMenu)
-
-		self.changeChanMode = QCheckBox("Change modes in menu",self)
-		if config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU: self.changeChanMode.setChecked(True)
-		self.changeChanMode.stateChanged.connect(self.changedSetting)
-
-		if not config.CHANNEL_MODE_CONTEXT_MENU: self.changeChanMode.setEnabled(False)
-
-		if not config.SHOW_CHANNEL_TOPIC:
-			self.channelName.setEnabled(False)
-			self.channelCount.setEnabled(False)
-			self.channelTooltip.setEnabled(False)
-			self.channelColors.setEnabled(False)
-			self.topicEditor.setEnabled(False)
-			self.chanMode.setEnabled(False)
-			self.changeChanMode.setEnabled(False)
-
-		if not config.SHOW_CHANNEL_NAME:
-			self.chanMode.setEnabled(False)
-			self.channelModes.setEnabled(False)
-			self.changeChanMode.setEnabled(False)
-
-		self.channelDescription = QLabel("""
-			<small>
-			The <b>channel information display</b> is a bar shown at the top of
-			every channel subwindow that displays the channel <b>name</b>, any <b>modes</b> set,
-			the channel <b>topic</b>, and the <b>user count</b>.<br>
-			</small>
-			""")
-		self.channelDescription.setWordWrap(True)
-		self.channelDescription.setAlignment(Qt.AlignJustify)
-
-		self.showUserlistLeft = QCheckBox("Display on left",self)
-		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
-		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
-
-		self.plainUserLists = QCheckBox("Plain text only",self)
-		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
-		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlistsPlain)
-
-		self.showUserlists = QCheckBox("Show user lists",self)
-		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
-		self.showUserlists.stateChanged.connect(self.changedUserlistVisibility)
-
-		self.hideScroll = QCheckBox("Hide horizontal scrollbars",self)
-		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
-		self.hideScroll.stateChanged.connect(self.changedSettingScrollbar)
-
-		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
-		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
-		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.ignoreUserlist = QCheckBox("Mark ignored users ",self)
-		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlist.setChecked(True)
-		self.ignoreUserlist.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.showAwayStatus = QCheckBox("Mark away users",self)
-		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
-		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.dcPrivate = QCheckBox("Double click user for private chat",self)
-		if config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: self.dcPrivate.setChecked(True)
-		self.dcPrivate.stateChanged.connect(self.changedSetting)
-
-		self.elideAway = QCheckBox("Elide away message ",self)
-		if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT: self.elideAway.setChecked(True)
-		self.elideAway.stateChanged.connect(self.changedSetting)
-
-		self.elideHostmask = QCheckBox("Elide hostmask",self)
-		if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT: self.elideHostmask.setChecked(True)
-		self.elideHostmask.stateChanged.connect(self.changedSetting)
-
-		self.ulistContext = QCheckBox("Enable right click menu ",self)
-		if config.USERLIST_CONTEXT_MENU: self.ulistContext.setChecked(True)
-		self.ulistContext.stateChanged.connect(self.changedSettingContext)
-
-		self.ulistWidthLabel = QLabel("Base userlist width: ")
-		self.ulistWidthBox = QSpinBox()
-		self.ulistWidthBox.setRange(1,100)
-		self.ulistWidthBox.setValue(self.USERLIST_WIDTH_IN_CHARACTERS)
-		self.ulistWidthBox.valueChanged.connect(self.setUlistWidth)
-		self.ulistWidthLabel2 = QLabel(" characters")
-
-		ulistWidthLayout = QHBoxLayout()
-		ulistWidthLayout.addWidget(self.ulistWidthLabel)
-		ulistWidthLayout.addWidget(self.ulistWidthBox)
-		ulistWidthLayout.addWidget(self.ulistWidthLabel2)
-		ulistWidthLayout.addStretch()
-
-		self.colorUserlists = QCheckBox("Show user colors",self)
-		if config.SHOW_COLORS_IN_USERLISTS: self.colorUserlists.setChecked(True)
-		self.colorUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.underlineSelf = QCheckBox("Underline self",self)
-		if config.UNDERLINE_SELF_IN_USERLISTS: self.underlineSelf.setChecked(True)
-		self.underlineSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.styleSelf = QCheckBox("Use style color for self",self)
-		if config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS: self.styleSelf.setChecked(True)
-		self.styleSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.saveWidth = QCheckBox("Load and save channel userlist width",self)
-		if config.LOAD_AND_SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
-		self.saveWidth.stateChanged.connect(self.changedSetting)
-
-		self.styleBots = QCheckBox("Show bots",self)
-		if config.SHOW_BOTS_IN_USERLISTS: self.styleBots.setChecked(True)
-		self.styleBots.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.statusMenus = QCheckBox("Full channel status",self)
-		if config.SHOW_STATUS_IN_USERLIST_MENU: self.statusMenus.setChecked(True)
-		self.statusMenus.stateChanged.connect(self.changedSetting)
-
-		self.showAwayUserlistTooltip = QCheckBox("Show away message in user tooltips",self)
-		if config.SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP: self.showAwayUserlistTooltip.setChecked(True)
-		self.showAwayUserlistTooltip.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		if not config.SHOW_USERLIST:
-			self.ulistWidthLabel.setEnabled(False)
-			self.ulistWidthBox.setEnabled(False)
-			self.ulistWidthLabel2.setEnabled(False)
-			self.plainUserLists.setEnabled(False)
-			self.showUserlistLeft.setEnabled(False)
-			self.hideScroll.setEnabled(False)
-			self.noSelectUserlists.setEnabled(False)
-			self.ignoreUserlist.setEnabled(False)
-			self.showAwayStatus.setEnabled(False)
-			self.dcPrivate.setEnabled(False)
-			self.elideAway.setEnabled(False)
-			self.elideHostmask.setEnabled(False)
-			self.ulistContext.setEnabled(False)
-			self.colorUserlists.setEnabled(False)
-			self.underlineSelf.setEnabled(False)
-			self.styleSelf.setEnabled(False)
-			self.saveWidth.setEnabled(False)
-			self.styleBots.setEnabled(False)
-			self.statusMenus.setEnabled(False)
-			self.showAwayUserlistTooltip.setEnabled(False)
-
-		if not config.USERLIST_CONTEXT_MENU:
-			if config.SHOW_USERLIST:
-				self.elideAway.setEnabled(False)
-				self.elideHostmask.setEnabled(False)
-				self.statusMenus.setEnabled(False)
-
-		if config.PLAIN_USER_LISTS:
-			self.styleBots.setEnabled(False)
-
-		cbL1 = QHBoxLayout()
-		cbL1.addWidget(self.channelName)
-		cbL1.addWidget(self.channelModes)
-		
-		cbL2 = QHBoxLayout()
-		cbL2.addWidget(self.channelCount)
-		cbL2.addWidget(self.channelColors)
-
-		cbL3 = QHBoxLayout()
-		cbL3.addWidget(self.channelTooltip)
-		cbL3.addWidget(self.topicEditor)
-
-		cbL4 = QHBoxLayout()
-		cbL4.addWidget(self.chanMode)
-		cbL4.addWidget(self.changeChanMode)
-
-		chanButtonLayout = QVBoxLayout()
-		chanButtonLayout.setSpacing(0)
-		chanButtonLayout.addLayout(cbL1)
-		chanButtonLayout.addLayout(cbL2)
-		chanButtonLayout.addLayout(cbL3)
-		chanButtonLayout.addLayout(cbL4)
-
-		ulistDisplay1 = QFormLayout()
-		ulistDisplay1.setSpacing(0)
-		ulistDisplay1.addRow(self.showUserlists,self.showUserlistLeft)
-		ulistDisplay1.addRow(self.plainUserLists,self.styleBots)
-		ulistDisplay1.addRow(self.ignoreUserlist,self.showAwayStatus)
-		ulistDisplay1.addRow(self.colorUserlists,self.noSelectUserlists)
-		ulistDisplay1.addRow(self.underlineSelf,self.styleSelf)
-		ulistDisplay1.addRow(self.hideScroll)
-		ulistDisplay1.addRow(self.dcPrivate)
-
-		ulistDisplay = QVBoxLayout()
-		ulistDisplay.setSpacing(0)
-		ulistDisplay.addLayout(ulistDisplay1)
-		ulistDisplay.addLayout(ulistWidthLayout)
-		ulistDisplay.addWidget(self.saveWidth)
-		ulistDisplay.addWidget(self.showAwayUserlistTooltip)
-
-		infoExist = QHBoxLayout()
-		infoExist.addStretch()
-		infoExist.addWidget(self.topicDisplay)
-		infoExist.addStretch()
-
-		self.nameTitleDisplay = QCheckBox("Show name in title",self)
-		if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE: self.nameTitleDisplay.setChecked(True)
-		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
-
-		self.topicTitleDisplay = QCheckBox("Show topic in title",self)
-		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
-		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
-
-		self.showJoin = QCheckBox("JOIN",self)
-		if config.SHOW_CHANNEL_JOIN_MESSAGES: self.showJoin.setChecked(True)
-		self.showJoin.stateChanged.connect(self.changedSettingRerender)
-
-		self.showPart = QCheckBox("PART",self)
-		if config.SHOW_CHANNEL_PART_MESSAGES: self.showPart.setChecked(True)
-		self.showPart.stateChanged.connect(self.changedSettingRerender)
-
-		self.showQuit = QCheckBox("QUIT",self)
-		if config.SHOW_CHANNEL_QUIT_MESSAGES: self.showQuit.setChecked(True)
-		self.showQuit.stateChanged.connect(self.changedSettingRerender)
-
-		self.showModes = QCheckBox("MODE",self)
-		if config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES: self.showModes.setChecked(True)
-		self.showModes.stateChanged.connect(self.changedSettingRerender)
-
-		self.showNicks = QCheckBox("NICK",self)
-		if config.SHOW_CHANNEL_NICK_MESSAGES: self.showNicks.setChecked(True)
-		self.showNicks.stateChanged.connect(self.changedSettingRerender)
-
-		self.showTopic = QCheckBox("TOPIC",self)
-		if config.SHOW_CHANNEL_TOPIC_MESSAGES: self.showTopic.setChecked(True)
-		self.showTopic.stateChanged.connect(self.changedSettingRerender)
-
-		cfLayout = QHBoxLayout()
-		cfLayout.setSpacing(0)
-		cfLayout.addWidget(self.showJoin)
-		cfLayout.addWidget(self.showPart)
-		cfLayout.addWidget(self.showQuit)
-		cfLayout.addWidget(self.showModes)
-		cfLayout.addWidget(self.showNicks)
-		cfLayout.addWidget(self.showTopic)
-
-		showCM3 = QHBoxLayout()
-		showCM3.setSpacing(0)
-		showCM3.addStretch()
-		showCM3.addWidget(self.nameTitleDisplay)
-		showCM3.addStretch()
-		showCM3.addWidget(self.topicTitleDisplay)
-		showCM3.addStretch()
-
-		showCM = QVBoxLayout()
-		showCM.setSpacing(0)
-		showCM.addLayout(showCM3)
-
-		ulistMenu = QFormLayout()
-		ulistMenu.setSpacing(0)
-		ulistMenu.addRow(self.ulistContext,self.elideHostmask)
-		ulistMenu.addRow(self.elideAway,self.statusMenus)
-
-		menuLayout = QVBoxLayout()
-		menuLayout.setSpacing(0)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
-		menuLayout.addWidget(self.channelDescription)
-		menuLayout.addLayout(infoExist)
-		menuLayout.addLayout(chanButtonLayout)
-		menuLayout.addWidget(QLabel(' '))
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
-		menuLayout.addLayout(ulistDisplay)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list right click menu</b>"))
-		menuLayout.addLayout(ulistMenu)
-		menuLayout.addWidget(QLabel(' '))
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show message types in all channels</b>"))
-		menuLayout.addLayout(cfLayout)
-		menuLayout.addWidget(QLabel(' '))
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
-		menuLayout.addLayout(showCM)
-		menuLayout.addStretch()
-
-		self.channelInfoPage.setLayout(menuLayout)
-
-		# Time
-
-		self.timestampPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Time")
-		entry.widget = self.timestampPage
-		entry.setIcon(QIcon(TIMESTAMP_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.timestampPage)
-
-		self.showTimestamps = QCheckBox("Show timestamps",self)
-		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
-		self.showTimestamps.stateChanged.connect(self.changeTimestamp)
-
-		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
-		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
-		self.timestamp24hour.stateChanged.connect(self.changedSettingRerenderTimestamp)
-
-		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
-		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
-		self.timestampSeconds.stateChanged.connect(self.changedSettingRerenderTimestamp)
-
-		self.timestampUTC = QCheckBox("Show timestamps in chat and logs in Coordinated\nUniversal Time (UTC)",self)
-		if config.SHOW_TIMESTAMPS_IN_UTC: self.timestampUTC.setChecked(True)
-		self.timestampUTC.stateChanged.connect(self.changedSettingRerenderTimestamp)
-
-		if not config.DISPLAY_TIMESTAMP:
-			self.timestamp24hour.setEnabled(False)
-			self.timestampSeconds.setEnabled(False)
-
-		self.showUptime = QCheckBox("Show connection uptime",self)
-		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
-		self.showUptime.stateChanged.connect(self.changedSetting)
-
-		self.showChanUptime = QCheckBox("Show channel uptime",self)
-		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
-		self.showChanUptime.stateChanged.connect(self.changedSetting)
-
-		self.timestampDescription = QLabel("""
-			<small>
-			<b>Timestamps</b>, if turned on, are shown as the beginning of all displayed
-			messages in the chat display. They are saved to the log in <b><a href="https://en.wikipedia.org/wiki/Unix_time">UNIX
-			epoch time</a></b> regardless of whether they are visible or not. <b>Timestamps</b> and other
-			date and time displays in chat and the <b>Log Manager</b> can be displayed in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
-			<b>Coordinated Universal Time</b></a> (UTC) rather than in local time.
-			</small>
-			<br>
-			""")
-		self.timestampDescription.setWordWrap(True)
-		self.timestampDescription.setAlignment(Qt.AlignJustify)
-		self.timestampDescription.setOpenExternalLinks(True)
-
-		self.uptimeDescription = QLabel("""
-			<small>
-			<b>Uptimes</b> (that is, the length of time you have been connected to a
-			<b>server</b> or been in a <b>channel</b>) are generally displayed in the subwindow's
-			<b>status bar</b>. For <b>server</b> subwindows, if the <b>status bar</b>
-			is turned off, the connection <b>uptime</b> is displayed in the toolbar.
-			Uptimes are displayed in the format <b>HOURS:MINUTES:SECONDS</b>; if the uptime
-			is longer than a day, the format will be <b>DAYS:HOURS:MINUTES:SECONDS</b>.
-			</small>
-			<br>
-			""")
-		self.uptimeDescription.setWordWrap(True)
-		self.uptimeDescription.setAlignment(Qt.AlignJustify)
-
-		self.showDates = QCheckBox("Show dates in chat displays",self)
-		if config.SHOW_DATES_IN_LOGS: self.showDates.setChecked(True)
-		self.showDates.stateChanged.connect(self.changedSettingRerender)
-
-		stsLayout = QHBoxLayout()
-		stsLayout.addStretch()
-		stsLayout.addWidget(self.showTimestamps)
-		stsLayout.addStretch()
-
-		tsLayout = QVBoxLayout()
-		tsLayout.setSpacing(0)
-		tsLayout.addWidget(self.timestampDescription)
-		tsLayout.addLayout(stsLayout)
-		
-
-		upLayout = QVBoxLayout()
-		upLayout.setSpacing(0)
-		upLayout.addWidget(self.uptimeDescription)
-		upLayout.addWidget(self.showUptime)
-		upLayout.addWidget(self.showChanUptime)
-
-		self.miscTimeDescription = QLabel("""
-			<small>
-			These settings will be used in all server, channel, and private chat window displays,
-			as well as in the <b>Log Manager</b> and in log exports (if UNIX epoch time is turned off).
-			</small>
-			<br>
-			""")
-		self.miscTimeDescription.setWordWrap(True)
-		self.miscTimeDescription.setAlignment(Qt.AlignJustify)
-
-		tmLayout = QVBoxLayout()
-		tmLayout.setSpacing(0)
-		tmLayout.addWidget(self.miscTimeDescription)
-		tmLayout.addWidget(self.timestamp24hour)
-		tmLayout.addWidget(self.timestampSeconds)
-		tmLayout.addWidget(self.showDates)
-		tmLayout.addWidget(self.timestampUTC)
-
-		timestampLayout = QVBoxLayout()
-		timestampLayout.setSpacing(0)
-		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
-		timestampLayout.addLayout(tsLayout)
-		timestampLayout.addWidget(QLabel(' '))
-		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime display settings</b>"))
-		timestampLayout.addLayout(upLayout)
-		timestampLayout.addWidget(QLabel(' '))
-		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
-		timestampLayout.addLayout(tmLayout)
-		timestampLayout.addStretch()
-
-		self.timestampPage.setLayout(timestampLayout)
-
-		# Away
-
-		self.awayPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Away")
-		entry.widget = self.awayPage
-		entry.setIcon(QIcon(GO_AWAY_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.awayPage)
-
-		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided\nwith the {config.ISSUE_COMMAND_SYMBOL}away command or when pressing the\n\"Set status to away\" button on the server\nsubwindow toolbar or menus",self)
-		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
-		self.promptAway.stateChanged.connect(self.changedSetting)
-
-		self.autoAway = QCheckBox("Auto-away after",self)
-		if config.USE_AUTOAWAY: self.autoAway.setChecked(True)
-		self.autoAway.stateChanged.connect(self.changedAutoAway)
-
-		self.autoawayInterval = QComboBox(self)
-		added = False
-		if config.AUTOAWAY_TIME==300:
-			self.autoawayInterval.addItem("5 minutes")
-			added = True
-		if config.AUTOAWAY_TIME==900:
-			self.autoawayInterval.addItem("15 minutes")
-			added = True
-		if config.AUTOAWAY_TIME==1800:
-			self.autoawayInterval.addItem("30 minutes")
-			added = True
-		if config.AUTOAWAY_TIME==3600:
-			self.autoawayInterval.addItem("1 hour")
-			added = True
-		if config.AUTOAWAY_TIME==7200:
-			self.autoawayInterval.addItem("2 hours")
-			added = True
-		if config.AUTOAWAY_TIME==10800:
-			self.autoawayInterval.addItem("3 hours")
-			added = True
-		if config.AUTOAWAY_TIME==14400:
-			self.autoawayInterval.addItem("4 hours")
-			added = True
-		if added==False: self.autoawayInterval.addItem(f"{config.AUTOAWAY_TIME} seconds")
-		if config.AUTOAWAY_TIME!=300: self.autoawayInterval.addItem("5 minutes")
-		if config.AUTOAWAY_TIME!=900: self.autoawayInterval.addItem("15 minutes")
-		if config.AUTOAWAY_TIME!=1800: self.autoawayInterval.addItem("30 minutes")
-		if config.AUTOAWAY_TIME!=3600: self.autoawayInterval.addItem("1 hour")
-		if config.AUTOAWAY_TIME!=7200: self.autoawayInterval.addItem("2 hours")
-		if config.AUTOAWAY_TIME!=10800: self.autoawayInterval.addItem("3 hours")
-		if config.AUTOAWAY_TIME!=14400: self.autoawayInterval.addItem("4 hours")
-		self.autoawayInterval.currentIndexChanged.connect(self.autoawayChange)
-
-		intervalBox = QHBoxLayout()
-		intervalBox.addWidget(self.autoAway)
-		intervalBox.addWidget(self.autoawayInterval)
-		intervalBox.addStretch()
-
-		self.showAwayBack = QCheckBox("Show user away and back notification messages",self)
-		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
-		self.showAwayBack.stateChanged.connect(self.changedSettingRerender)
-		
-		self.showAwayNick = QCheckBox("Show away status in nickname display",self)
-		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY: self.showAwayNick.setChecked(True)
-		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNickAway)
-
-		self.showNickItalics = QCheckBox("Show nickname display in italics if away",self)
-		if config.SHOW_AWAY_NICKNAME_IN_ITALICS: self.showNickItalics.setChecked(True)
-		self.showNickItalics.stateChanged.connect(self.changedSettingRerenderNick)
-
-		self.showAwayTooltip = QCheckBox("Show away message in nickname display tooltip",self)
-		if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP: self.showAwayTooltip.setChecked(True)
-		self.showAwayTooltip.stateChanged.connect(self.changedSettingRerenderNick)
-
-		self.nnDisplayDesc = QLabel(f"""
-			<small>
-			The nickname display on chat windows has been disabled. It can be enabled in the <b>Subwindows</b> section.<br>
-			</small>
-			""")
-		self.nnDisplayDesc.setWordWrap(True)
-		self.nnDisplayDesc.setAlignment(Qt.AlignJustify)
-
-		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS and not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
-			self.showAwayNick.setEnabled(False)
-			self.showNickItalics.setEnabled(False)
-			self.showAwayTooltip.setEnabled(False)
-			self.nnDisplayDesc.show()
-		else:
-			self.nnDisplayDesc.hide()
-
-		if not config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
-			self.showNickItalics.setEnabled(False)
-			self.showAwayTooltip.setEnabled(False)
-		
-		self.typeCancelInput = QCheckBox("Interacting with the text input widget cancels\nautoaway",self)
-		if config.TYPING_INPUT_CANCELS_AUTOAWAY: self.typeCancelInput.setChecked(True)
-		self.typeCancelInput.stateChanged.connect(self.changedSetting)
-	
-		self.windowCancelAway = QCheckBox("Interacting with subwindows cancels autoaway",self)
-		if config.WINDOW_INTERACTION_CANCELS_AUTOAWAY: self.windowCancelAway.setChecked(True)
-		self.windowCancelAway.stateChanged.connect(self.changedSetting)
-		
-		self.appCancelAway = QCheckBox("Interacting with application cancels autoaway",self)
-		if config.APP_INTERACTION_CANCELS_AUTOAWAY: self.appCancelAway.setChecked(True)
-		self.appCancelAway.stateChanged.connect(self.changedSetting)
-		
-		if not config.USE_AUTOAWAY:
-			self.autoawayInterval.setEnabled(False)
-			self.typeCancelInput.setEnabled(False)
-			self.windowCancelAway.setEnabled(False)
-			self.appCancelAway.setEnabled(False)
-			self.autoawayInterval.setEnabled(False)
-
-		self.awayMsg = EmojiAwayAutocomplete(self)
-		self.awayMsg.setText(self.default_away)
-
-		fm = self.awayMsg.fontMetrics()
-		self.awayMsg.setFixedHeight(fm.height()+10)
-		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		self.awayMsg.textChanged.connect(self.setAwayMsg)
-
-		self.autoEmojiAway = QCheckBox(f"Autocomplete",self)
-		if config.AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
-		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiAway.setEnabled(False)
-
-		self.autoAliasAway = QCheckBox(f"Interpolate aliases",self)
-		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
-		self.autoAliasAway.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasAway.setEnabled(False)
-
-		awaymsgLayout = QHBoxLayout()
-		awaymsgLayout.addStretch()
-		awaymsgLayout.addWidget(self.autoEmojiAway)
-		awaymsgLayout.addStretch()
-		awaymsgLayout.addWidget(self.autoAliasAway)
-		awaymsgLayout.addStretch()
-
-		amLayout = QVBoxLayout()
-		amLayout.setSpacing(0)
-		amLayout.addWidget(self.awayMsg)
-		amLayout.addLayout(awaymsgLayout)
-
-		asLayout = QVBoxLayout()
-		asLayout.setSpacing(0)
-		asLayout.addWidget(self.promptAway)
-		asLayout.addWidget(self.showAwayBack)
-
-		anLayout = QVBoxLayout()
-		anLayout.setSpacing(0)
-		anLayout.addWidget(self.showAwayNick)
-		anLayout.addWidget(self.showNickItalics)
-		anLayout.addWidget(self.showAwayTooltip)
-
-		aasLayout = QVBoxLayout()
-		aasLayout.setSpacing(0)
-		aasLayout.addLayout(intervalBox)
-		aasLayout.addWidget(self.typeCancelInput)
-		aasLayout.addWidget(self.windowCancelAway)
-		aasLayout.addWidget(self.appCancelAway)
-
-		awayLayout = QVBoxLayout()
-		awayLayout.setSpacing(0)
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
-		awayLayout.addLayout(asLayout)
-		awayLayout.addWidget(QLabel(' '))
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autoaway settiings</b>"))
-		awayLayout.addLayout(aasLayout)
-		awayLayout.addWidget(QLabel(' '))
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		awayLayout.addLayout(amLayout)
-		awayLayout.addWidget(QLabel(' '))
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>\"away\" nickname display settiings</b>"))
-		awayLayout.addWidget(self.nnDisplayDesc)
-		awayLayout.addLayout(anLayout)
-		awayLayout.addStretch()
-
-		self.awayPage.setLayout(awayLayout)
 
 		# Input page
 
@@ -5733,433 +5791,400 @@ class Dialog(QDialog):
 
 		self.spellcheckPage.setLayout(spellcheckLayout)
 
-		# Log page
+		# Systray page
 
-		self.logPage = QWidget()
+		self.systrayPage = QWidget()
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Logs")
-		entry.widget = self.logPage
-		entry.setIcon(QIcon(LOG_MENU_ICON))
+		entry.setText("System Tray")
+		entry.widget = self.systrayPage
+		entry.setIcon(QIcon(SYSTRAY_ICON))
 		self.selector.addItem(entry)
 
-		self.stack.addWidget(self.logPage)
+		self.stack.addWidget(self.systrayPage)
 
-		self.saveChanLogs = QCheckBox("Save channel logs",self)
-		if config.SAVE_CHANNEL_LOGS: self.saveChanLogs.setChecked(True)
-		self.saveChanLogs.stateChanged.connect(self.changedChanLogs)
+		self.showSystrayMenu = QCheckBox("Show right click menu",self)
+		if config.SYSTRAY_MENU: self.showSystrayMenu.setChecked(True)
+		self.showSystrayMenu.stateChanged.connect(self.changedSystrayMin)
 
-		self.loadChanLogs = QCheckBox("Load channel logs",self)
-		if config.LOAD_CHANNEL_LOGS: self.loadChanLogs.setChecked(True)
-		self.loadChanLogs.stateChanged.connect(self.changedLoadLogs)
+		self.minSystray = QCheckBox("Minimize to system tray",self)
+		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
+		self.minSystray.stateChanged.connect(self.changedSystrayMin)
 
-		self.savePrivLogs = QCheckBox("Save private logs",self)
-		if config.SAVE_PRIVATE_LOGS: self.savePrivLogs.setChecked(True)
-		self.savePrivLogs.stateChanged.connect(self.changedPrivLogs)
+		self.systrayNotify = QCheckBox("Show system tray notifications when minimized\nto system tray",self)
+		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
+		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
 
-		self.loadPrivLogs = QCheckBox("Load private logs",self)
-		if config.LOAD_PRIVATE_LOGS: self.loadPrivLogs.setChecked(True)
-		self.loadPrivLogs.stateChanged.connect(self.changedLoadLogs)
+		self.listSystray = QCheckBox("List notifications in tooltip",self)
+		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
+		self.listSystray.stateChanged.connect(self.changedSetting)
 
-		self.markLog = QCheckBox("Mark end of loaded log",self)
-		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
-		self.markLog.stateChanged.connect(self.changedSetting)
+		self.systrayDisconnect = QCheckBox("Server disconnect",self)
+		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
+		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
 
-		self.intermittentLog = QCheckBox("Save logs every",self)
-		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
-		self.intermittentLog.stateChanged.connect(self.changedSetting)
+		self.systrayNickname = QCheckBox("Nickname mentions",self)
+		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
+		self.systrayNickname.stateChanged.connect(self.changedSetting)
+		
+		self.systrayPrivate = QCheckBox("Private messages",self)
+		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
+		self.systrayPrivate.stateChanged.connect(self.changedSetting)
+		
+		self.systrayKick = QCheckBox("Channel kick",self)
+		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
+		self.systrayKick.stateChanged.connect(self.changedSetting)
 
-		self.logInterval = QComboBox(self)
+		self.systrayInvite = QCheckBox("Channel invite",self)
+		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
+		self.systrayInvite.stateChanged.connect(self.changedSetting)
+		
+		self.systrayNotice = QCheckBox("Notice",self)
+		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
+		self.systrayNotice.stateChanged.connect(self.changedSetting)
+
+		self.systrayMode = QCheckBox("Mode set on user",self)
+		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
+		self.systrayMode.stateChanged.connect(self.changedSetting)
+
+		self.systrayChannel = QCheckBox("Channel chat",self)
+		if config.FLASH_SYSTRAY_CHANNEL: self.systrayChannel.setChecked(True)
+		self.systrayChannel.stateChanged.connect(self.changedSetting)
+		
+		self.systrayMinOnClose = QCheckBox("Closing main window with window controls\nminimizes to tray",self)
+		if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY: self.systrayMinOnClose.setChecked(True)
+		self.systrayMinOnClose.stateChanged.connect(self.changedSetting)
+
+		self.showSystray = QCheckBox("Show system tray icon",self)
+		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
+		self.showSystray.stateChanged.connect(self.changedSystrayMin)
+
+		nickPriv = QHBoxLayout()
+		nickPriv.addWidget(self.systrayNickname)
+		nickPriv.addWidget(self.systrayPrivate)
+
+		kickInvite = QHBoxLayout()
+		kickInvite.addWidget(self.systrayKick)
+		kickInvite.addWidget(self.systrayInvite)
+
+		noticeMode = QHBoxLayout()
+		noticeMode.addWidget(self.systrayNotice)
+		noticeMode.addWidget(self.systrayMode)
+
+		channelDisco = QHBoxLayout()
+		channelDisco.addWidget(self.systrayDisconnect)
+		channelDisco.addWidget(self.systrayChannel)
+
+		notiLayout = QVBoxLayout()
+		notiLayout.setSpacing(0)
+		notiLayout.addLayout(nickPriv)
+		notiLayout.addLayout(kickInvite)
+		notiLayout.addLayout(noticeMode)
+		notiLayout.addLayout(channelDisco)
+
+		self.setFlashInterval = QLabel("Flash icon every ")
+
+		self.flashInterval = QComboBox(self)
 		added = False
-		if config.LOG_SAVE_INTERVAL==900000:
-			self.logInterval.addItem("15 minutes")
+		if config.FLASH_SYSTRAY_SPEED==250:
+			self.flashInterval.addItem("250 ms")
 			added = True
-		if config.LOG_SAVE_INTERVAL==1800000:
-			self.logInterval.addItem("30 minutes")
+		if config.FLASH_SYSTRAY_SPEED==500:
+			self.flashInterval.addItem("500 ms")
 			added = True
-		if config.LOG_SAVE_INTERVAL==3600000:
-			self.logInterval.addItem("hour")
+		if config.FLASH_SYSTRAY_SPEED==750:
+			self.flashInterval.addItem("750 ms")
 			added = True
-		if config.LOG_SAVE_INTERVAL==7200000:
-			self.logInterval.addItem("2 hours")
+		if config.FLASH_SYSTRAY_SPEED==1000:
+			self.flashInterval.addItem("1 second")
 			added = True
-		if config.LOG_SAVE_INTERVAL==10800000:
-			self.logInterval.addItem("3 hours")
-			added = True
-		if config.LOG_SAVE_INTERVAL==14400000:
-			self.logInterval.addItem("4 hours")
-			added = True
-		if added==False: self.logInterval.addItem(f"{config.LOG_SAVE_INTERVAL} ms")
-		if config.LOG_SAVE_INTERVAL!=900000: self.logInterval.addItem("15 minutes")
-		if config.LOG_SAVE_INTERVAL!=1800000: self.logInterval.addItem("30 minutes")
-		if config.LOG_SAVE_INTERVAL!=3600000: self.logInterval.addItem("hour")
-		if config.LOG_SAVE_INTERVAL!=7200000: self.logInterval.addItem("2 hours")
-		if config.LOG_SAVE_INTERVAL!=10800000: self.logInterval.addItem("3 hours")
-		if config.LOG_SAVE_INTERVAL!=14400000: self.logInterval.addItem("4 hours")
-		self.logInterval.currentIndexChanged.connect(self.intervalChange)
+		if added==False: self.flashInterval.addItem(f"{config.FLASH_SYSTRAY_SPEED} ms")
+		if config.FLASH_SYSTRAY_SPEED!=250: self.flashInterval.addItem("250 ms")
+		if config.FLASH_SYSTRAY_SPEED!=500: self.flashInterval.addItem("500 ms")
+		if config.FLASH_SYSTRAY_SPEED!=750: self.flashInterval.addItem("750 ms")
+		if config.FLASH_SYSTRAY_SPEED!=1000: self.flashInterval.addItem("1 second")
+		self.flashInterval.currentIndexChanged.connect(self.flashChange)
 
-		intervalBox = QHBoxLayout()
-		intervalBox.addWidget(self.intermittentLog)
-		intervalBox.addWidget(self.logInterval)
-		intervalBox.addStretch()
+		flashBox = QHBoxLayout()
+		flashBox.addWidget(self.setFlashInterval)
+		flashBox.addWidget(self.flashInterval)
+		flashBox.addStretch()
 
-		if config.SAVE_PRIVATE_LOGS or config.SAVE_CHANNEL_LOGS:
-			self.intermittentLog.setEnabled(True)
-			self.logInterval.setEnabled(True)
+		self.doubleclickRestore = QCheckBox("Click systray icon to toggle window visibility",self)
+		if config.CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY: self.doubleclickRestore.setChecked(True)
+		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
+		
+		self.stmConnections = QCheckBox("Connections",self)
+		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
+		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
+
+		self.stmNick = QCheckBox("Nicks",self)
+		if config.SHOW_NICK_IN_SYSTRAY_MENU: self.stmNick.setChecked(True)
+		self.stmNick.stateChanged.connect(self.changedSetting)
+
+		self.stmJoin = QCheckBox("Channel join",self)
+		if config.SHOW_JOIN_IN_SYSTRAY_MENU: self.stmJoin.setChecked(True)
+		self.stmJoin.stateChanged.connect(self.changedSetting)
+
+		self.stmAway = QCheckBox("Away/back",self)
+		if config.SHOW_AWAY_IN_SYSTRAY_MENU: self.stmAway.setChecked(True)
+		self.stmAway.stateChanged.connect(self.changedSetting)
+
+		menuRow1 = QHBoxLayout()
+		menuRow1.addStretch()
+		menuRow1.addWidget(self.stmConnections)
+		menuRow1.addStretch()
+
+		menuRow3 = QHBoxLayout()
+		menuRow3.addStretch()
+		menuRow3.addWidget(self.stmNick)
+		menuRow3.addWidget(self.stmJoin)
+		menuRow3.addWidget(self.stmAway)
+		menuRow3.addStretch()
+
+		menuBox = QVBoxLayout()
+		menuBox.addLayout(menuRow1)
+		menuBox.addLayout(menuRow3)
+
+		if not config.SYSTRAY_MENU:
+			self.stmConnections.setEnabled(False)
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
+
+		if not config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
+
+		stLayout = QVBoxLayout()
+		stLayout.setSpacing(0)
+		stLayout.addWidget(self.showSystray)
+		stLayout.addWidget(self.showSystrayMenu)
+		stLayout.addWidget(self.minSystray)
+		stLayout.addWidget(self.systrayMinOnClose)
+		stLayout.addWidget(self.doubleclickRestore)
+
+		nsLayout = QVBoxLayout()
+		nsLayout.setSpacing(0)
+		nsLayout.addWidget(self.systrayNotify)
+		nsLayout.addWidget(self.listSystray)
+		nsLayout.addLayout(flashBox)
+
+		systrayLayout = QVBoxLayout()
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
+		systrayLayout.addLayout(stLayout)
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray menu includes...</b>"))
+		systrayLayout.addLayout(menuBox)
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
+		systrayLayout.addLayout(nsLayout)
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification events</b>"))
+		systrayLayout.addLayout(notiLayout)
+		systrayLayout.addStretch()
+
+		self.systrayPage.setLayout(systrayLayout)
+
+		if config.SHOW_SYSTRAY_ICON:
+			self.showSystrayMenu.setEnabled(True)
+			self.minSystray.setEnabled(True)
+			if config.MINIMIZE_TO_SYSTRAY:
+				self.systrayNotify.setEnabled(True)
+				self.listSystray.setEnabled(True)
+				self.systrayDisconnect.setEnabled(True)
+				self.systrayNickname.setEnabled(True)
+				self.systrayPrivate.setEnabled(True)
+				self.systrayKick.setEnabled(True)
+				self.systrayInvite.setEnabled(True)
+				self.systrayNotice.setEnabled(True)
+				self.systrayMode.setEnabled(True)
+				self.systrayMinOnClose.setEnabled(True)
+				self.setFlashInterval.setEnabled(True)
+				self.flashInterval.setEnabled(True)
+				self.doubleclickRestore.setEnabled(True)
+				self.systrayChannel.setEnabled(True)
+			else:
+				self.systrayNotify.setEnabled(False)
+				self.listSystray.setEnabled(False)
+				self.systrayDisconnect.setEnabled(False)
+				self.systrayNickname.setEnabled(False)
+				self.systrayPrivate.setEnabled(False)
+				self.systrayKick.setEnabled(False)
+				self.systrayInvite.setEnabled(False)
+				self.systrayNotice.setEnabled(False)
+				self.systrayMode.setEnabled(False)
+				self.systrayMinOnClose.setEnabled(False)
+				self.setFlashInterval.setEnabled(False)
+				self.flashInterval.setEnabled(False)
+				self.doubleclickRestore.setEnabled(False)
+				self.systrayChannel.setEnabled(False)
 		else:
-			self.intermittentLog.setEnabled(False)
-			self.logInterval.setEnabled(False)
+			self.showSystrayMenu.setEnabled(False)
+			self.minSystray.setEnabled(False)
+			self.systrayNotify.setEnabled(False)
+			self.listSystray.setEnabled(False)
+			self.systrayDisconnect.setEnabled(False)
+			self.systrayNickname.setEnabled(False)
+			self.systrayPrivate.setEnabled(False)
+			self.systrayKick.setEnabled(False)
+			self.systrayInvite.setEnabled(False)
+			self.systrayNotice.setEnabled(False)
+			self.systrayMode.setEnabled(False)
+			self.systrayMinOnClose.setEnabled(False)
+			self.setFlashInterval.setEnabled(False)
+			self.flashInterval.setEnabled(False)
+			self.doubleclickRestore.setEnabled(False)
+			self.stmConnections.setEnabled(False)
+			self.stmNick.setEnabled(False)
+			self.stmJoin.setEnabled(False)
+			self.stmAway.setEnabled(False)
+			self.systrayChannel.setEnabled(False)
 
-		self.logDescription = QLabel(f"""
-			<small>
-			Full <b>logs</b> are not loaded for display. The below setting
-			controls how much of the <b>log</b> is loaded into subwindows
-			for display.
-			</small><br>
-			""")
-		self.logDescription.setWordWrap(True)
-		self.logDescription.setAlignment(Qt.AlignJustify)
+		# Notifications
 
-		self.logSizeLabel = QLabel(" lines")
-		self.logSizeBox = QSpinBox()
-		self.logSizeBox.setRange(1,1000)
-		self.logSizeBox.setValue(self.logsize)
-		self.logSizeBox.valueChanged.connect(self.setLogSize)
-
-		logsizeLayout = QHBoxLayout()
-		logsizeLayout.addStretch()
-		logsizeLayout.addWidget(self.logSizeBox)
-		logsizeLayout.addWidget(self.logSizeLabel)
-		logsizeLayout.addStretch()
-
-		if config.LOAD_CHANNEL_LOGS or config.LOAD_PRIVATE_LOGS:
-			self.markLog.setEnabled(True)
-			self.logSizeBox.setEnabled(True)
-			self.logSizeLabel.setEnabled(True)
-		else:
-			self.markLog.setEnabled(False)
-			self.logSizeBox.setEnabled(False)
-			self.logSizeLabel.setEnabled(False)
-
-		self.logFullDescription = QLabel(f"""
-			<small>
-			<b>Logs</b> are saved in JavaScript Object Notation (<b><a href="https://en.wikipedia.org/wiki/JSON">JSON</a></b>), and use a format that can
-			be read and displayed easily by <b>{APPLICATION_NAME}</b>. If you want to export your <b>logs</b> so
-			that they can be used or parsed by other software, or just view them, use the <b>Log Manager</b>,
-			located in the "<b>{self.default_tools_menu}</b>" menu.
-			</small>
-			""")
-		self.logFullDescription.setWordWrap(True)
-		self.logFullDescription.setAlignment(Qt.AlignJustify)
-		self.logFullDescription.setOpenExternalLinks(True)
-
-		self.topicLog = QCheckBox("Topics",self)
-		if config.LOG_CHANNEL_TOPICS: self.topicLog.setChecked(True)
-		self.topicLog.stateChanged.connect(self.changedSetting)
-
-		self.joinLog = QCheckBox("Joins",self)
-		if config.LOG_CHANNEL_JOIN: self.joinLog.setChecked(True)
-		self.joinLog.stateChanged.connect(self.changedSetting)
-
-		self.partLog = QCheckBox("Parts",self)
-		if config.LOG_CHANNEL_PART: self.partLog.setChecked(True)
-		self.partLog.stateChanged.connect(self.changedSetting)
-
-		self.quitLog = QCheckBox("Quits",self)
-		if config.LOG_CHANNEL_QUIT: self.quitLog.setChecked(True)
-		self.quitLog.stateChanged.connect(self.changedSetting)
-
-		self.nickLog = QCheckBox("Nick changes",self)
-		if config.LOG_CHANNEL_NICKNAME_CHANGE: self.nickLog.setChecked(True)
-		self.nickLog.stateChanged.connect(self.changedSetting)
-
-		self.noticeLog = QCheckBox("Channel notices",self)
-		if config.LOG_CHANNEL_NOTICE: self.noticeLog.setChecked(True)
-		self.noticeLog.stateChanged.connect(self.changedSetting)
-
-		self.ignoreLog = QCheckBox("Ignored chat",self)
-		if config.LOG_IGNORED_USERS: self.ignoreLog.setChecked(True)
-		self.ignoreLog.stateChanged.connect(self.changedSetting)
-
-		if config.SAVE_CHANNEL_LOGS:
-			self.topicLog.setEnabled(True)
-			self.joinLog.setEnabled(True)
-			self.partLog.setEnabled(True)
-			self.quitLog.setEnabled(True)
-			self.nickLog.setEnabled(True)
-			self.noticeLog.setEnabled(True)
-			self.ignoreLog.setEnabled(True)
-		else:
-			self.topicLog.setEnabled(False)
-			self.joinLog.setEnabled(False)
-			self.partLog.setEnabled(False)
-			self.quitLog.setEnabled(False)
-			self.nickLog.setEnabled(False)
-			self.noticeLog.setEnabled(False)
-			self.ignoreLog.setEnabled(False)
-
-		self.logViewSize = QCheckBox("Log viewer only displays last",self)
-		if config.LIMIT_LOG_VIEW: self.logViewSize.setChecked(True)
-		self.logViewSize.stateChanged.connect(self.changedSetting)
-
-		self.logViewLimitLabelSpec = QLabel(" lines")
-		self.logViewLimit = QSpinBox()
-		self.logViewLimit.setRange(1,99999)
-		self.logViewLimit.setValue(self.MAX_LOG_DISPLAY_SIZE)
-		self.logViewLimit.valueChanged.connect(self.updateLogLimit)
-
-		logViewLayout = QHBoxLayout()
-		logViewLayout.addWidget(self.logViewSize)
-		logViewLayout.addWidget(self.logViewLimit)
-		logViewLayout.addWidget(self.logViewLimitLabelSpec)
-		logViewLayout.addStretch()
-
-		chanLayout = QHBoxLayout()
-		chanLayout.addStretch()
-		chanLayout.addWidget(self.saveChanLogs)
-		chanLayout.addStretch()
-		chanLayout.addWidget(self.loadChanLogs)
-		chanLayout.addStretch()
-
-		privLayout = QHBoxLayout()
-		privLayout.addStretch()
-		privLayout.addWidget(self.savePrivLogs)
-		privLayout.addStretch()
-		privLayout.addWidget(self.loadPrivLogs)
-		privLayout.addStretch()
-
-		contLayout = QHBoxLayout()
-		contLayout.addStretch()
-		contLayout.addWidget(self.topicLog)
-		contLayout.addStretch()
-		contLayout.addWidget(self.joinLog)
-		contLayout.addStretch()
-		contLayout.addWidget(self.partLog)
-		contLayout.addStretch()
-		contLayout.addWidget(self.quitLog)
-		contLayout.addStretch()
-
-		cont2Layout = QHBoxLayout()
-		cont2Layout.addStretch()
-		cont2Layout.addWidget(self.nickLog)
-		cont2Layout.addStretch()
-		cont2Layout.addWidget(self.noticeLog)
-		cont2Layout.addStretch()
-		cont2Layout.addWidget(self.ignoreLog)
-		cont2Layout.addStretch()
-
-		self.logChanDescription = QLabel(f"""
-			<small>
-			These message types will still be displayed in <b>channel chat displays</b>, but will only be saved to the <b>log</b> if enabled below.
-			To prevent some of the <b>message types</b> from appearing at all, please see the <b>Channels</b> section of this dialog.
-			</small><br>
-			""")
-		self.logChanDescription.setWordWrap(True)
-		self.logChanDescription.setAlignment(Qt.AlignJustify)
-
-		logLayout = QVBoxLayout()
-		logLayout.setSpacing(0)
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
-		logLayout.addWidget(self.logFullDescription)
-		logLayout.addWidget(QLabel(' '))
-		logLayout.addLayout(chanLayout)
-		logLayout.addLayout(privLayout)
-		logLayout.addWidget(QLabel(' '))
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
-		logLayout.addWidget(self.logChanDescription)
-		logLayout.addLayout(contLayout)
-		logLayout.addLayout(cont2Layout)
-		logLayout.addWidget(QLabel(' '))
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log display size</b>"))
-		logLayout.addWidget(self.logDescription)
-		logLayout.addLayout(logsizeLayout)
-		logLayout.addWidget(QLabel(' '))
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log manager settings</b>"))
-		logLayout.addLayout(logViewLayout)
-		logLayout.addWidget(QLabel(' '))
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
-		logLayout.addWidget(self.markLog)
-		logLayout.addLayout(intervalBox)
-		logLayout.addStretch()
-
-		self.logPage.setLayout(logLayout)
-
-		# Messages
-
-		self.messagePage = QWidget()
+		self.notificationsPage = QWidget()
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Messages")
-		entry.widget = self.messagePage
-		entry.setIcon(QIcon(MESSAGE_ICON))
+		entry.setText("Notifications")
+		entry.widget = self.notificationsPage
+		entry.setIcon(QIcon(NOTIFICATION_ICON))
 		self.selector.addItem(entry)
 
-		self.stack.addWidget(self.messagePage)
+		self.stack.addWidget(self.notificationsPage)
 
-		self.showColors = QCheckBox("Show IRC colors and formatting",self)
-		if config.DISPLAY_IRC_COLORS: self.showColors.setChecked(True)
-		self.showColors.stateChanged.connect(self.changedSettingRerender)
+		self.audioNotifications = QCheckBox("Play audio notifications",self)
+		if config.SOUND_NOTIFICATIONS: self.audioNotifications.setChecked(True)
+		self.audioNotifications.stateChanged.connect(self.changedNotifications)
 
-		self.showLinks = QCheckBox("Convert URLs to hyperlinks",self)
-		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
-		self.showLinks.stateChanged.connect(self.changedSettingRerender)
+		self.notifyDisco = QCheckBox("Disconnection from server",self)
+		if config.SOUND_NOTIFICATION_DISCONNECT: self.notifyDisco.setChecked(True)
+		self.notifyDisco.stateChanged.connect(self.changedSetting)
 
-		self.createWindow = QCheckBox("Create subwindows for incoming private messages",self)
-		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
-		self.createWindow.stateChanged.connect(self.changedSetting)
+		self.notifyNickname = QCheckBox("Nickname mention",self)
+		if config.SOUND_NOTIFICATION_NICKNAME: self.notifyNickname.setChecked(True)
+		self.notifyNickname.stateChanged.connect(self.changedSetting)
 		
-		self.createWindowOut = QCheckBox("Create subwindows for outgoing private messages",self)
-		if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES: self.createWindowOut.setChecked(True)
-		self.createWindowOut.stateChanged.connect(self.changedSetting)
+		self.notifyPrivate = QCheckBox("Private message",self)
+		if config.SOUND_NOTIFICATION_PRIVATE: self.notifyPrivate.setChecked(True)
+		self.notifyPrivate.stateChanged.connect(self.changedSetting)
 		
-		self.writePrivate = QCheckBox("Write private messages to server subwindow",self)
-		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
-		self.writePrivate.stateChanged.connect(self.changedSetting)
+		self.notifyNotice = QCheckBox("Notice",self)
+		if config.SOUND_NOTIFICATION_NOTICE: self.notifyNotice.setChecked(True)
+		self.notifyNotice.stateChanged.connect(self.changedSetting)
+
+		self.notifyKick = QCheckBox("Kick",self)
+		if config.SOUND_NOTIFICATION_KICK: self.notifyKick.setChecked(True)
+		self.notifyKick.stateChanged.connect(self.changedSetting)
+
+		self.notifyInvite = QCheckBox("Invite",self)
+		if config.SOUND_NOTIFICATION_INVITE: self.notifyInvite.setChecked(True)
+		self.notifyInvite.stateChanged.connect(self.changedSetting)
+
+		self.notifyMode = QCheckBox("Channel mode change",self)
+		if config.SOUND_NOTIFICATION_MODE: self.notifyMode.setChecked(True)
+		self.notifyMode.stateChanged.connect(self.changedSetting)
 		
-		self.writeScroll = QCheckBox("Always scroll to bottom when displaying text",self)
-		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
-		self.writeScroll.stateChanged.connect(self.changedSetting)
-		
-		self.sysPrepend = QComboBox(self)
-		if config.SYSTEM_MESSAGE_PREFIX=='':
-			current = "Nothing"
-		else:
-			current = config.SYSTEM_MESSAGE_PREFIX
-		self.sysPrepend.addItem(current)
-		for s in SYSTEM_PREPEND_OPTIONS:
-			if s==current: continue
-			self.sysPrepend.addItem(s)
-		self.sysPrepend.currentIndexChanged.connect(self.prependChange)
+		self.notifyDescription = QLabel("""
+			<small>
+			<b>Audio notifications</b>, when enabled, play a sound (by default, a bell) every time
+			one of the listed <b>events</b> occur. Any file of any length can be used for the notification
+			sound; the only limitation is that the file <b><i>must</i> be a WAV file</b>.
+			</small>
+			<br>
+			""")
+		self.notifyDescription.setWordWrap(True)
+		self.notifyDescription.setAlignment(Qt.AlignJustify)
 
-		self.setSystemPrepend = QLabel(f"Currently selected: <big>{current}</big> ")
+		anickPriv = QHBoxLayout()
+		anickPriv.addWidget(self.notifyNickname)
+		anickPriv.addWidget(self.notifyPrivate)
 
-		prepLayout = QHBoxLayout()
-		prepLayout.addWidget(self.setSystemPrepend)
-		prepLayout.addWidget(self.sysPrepend)
-		prepLayout.addStretch()
-	
-		self.ignoreCreateWindow = QCheckBox("Do not create subwindows for ignored users",self)
-		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
-		self.ignoreCreateWindow.stateChanged.connect(self.changedSetting)
-		
-		self.createNotice = QCheckBox("Create subwindows for incoming private notices",self)
-		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
-		self.createNotice.stateChanged.connect(self.changedSetting)
+		akickInvite = QHBoxLayout()
+		akickInvite.addWidget(self.notifyKick)
+		akickInvite.addWidget(self.notifyInvite)
 
-		self.writeMessageOut = QCheckBox("Write outgoing private messages to the current\nsubwindow",self)
-		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
-		self.writeMessageOut.stateChanged.connect(self.changedSetting)
+		anoticeMode = QHBoxLayout()
+		anoticeMode.addWidget(self.notifyNotice)
+		anoticeMode.addWidget(self.notifyMode)
 
-		self.showFullMode = QCheckBox("Full user info in mode messages",self)
-		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES: self.showFullMode.setChecked(True)
-		self.showFullMode.stateChanged.connect(self.changedSettingRerender)
+		eventsLayout = QVBoxLayout()
+		eventsLayout.setSpacing(0)
+		eventsLayout.addLayout(anickPriv)
+		eventsLayout.addLayout(akickInvite)
+		eventsLayout.addLayout(anoticeMode)
+		eventsLayout.addWidget(self.notifyDisco)
 
-		self.ignoreChannelNotice = QCheckBox("Reject all channel notices",self)
-		if config.REJECT_ALL_CHANNEL_NOTICES: self.ignoreChannelNotice.setChecked(True)
-		self.ignoreChannelNotice.stateChanged.connect(self.changedSetting)
+		bname = os.path.basename(self.sound)
+		self.soundLabel = QLabel("<b>"+bname+"</b>")
 
-		self.enableIgnore = QCheckBox("Enable ignoring users",self)
-		if config.ENABLE_IGNORE: self.enableIgnore.setChecked(True)
-		self.enableIgnore.stateChanged.connect(self.changedSettingIgnore)
+		self.soundButton = QPushButton("")
+		self.soundButton.clicked.connect(self.setSound)
+		self.soundButton.setAutoDefault(False)
 
-		self.showLusers = QCheckBox("Show LUSERS in the current subwindow",self)
-		if config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW: self.showLusers.setChecked(True)
-		self.showLusers.stateChanged.connect(self.changedSetting)
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.soundButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
+		self.soundButton.setIcon(QIcon(EDIT_ICON))
+		self.soundButton.setToolTip("Set notification sound file")
 
-		self.showIson = QCheckBox("Show ISON in the current subwindow",self)
-		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
-		self.showIson.stateChanged.connect(self.changedSetting)
+		self.playButton = QPushButton(" Play")
+		self.playButton.clicked.connect(self.playSound)
+		self.playButton.setAutoDefault(False)
+		self.playButton.setIcon(QIcon(PLAY_ICON))
+		self.playButton.setToolTip("Play sound")
 
-		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
-		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
-		self.autoJoin.stateChanged.connect(self.changedSetting)
+		self.soundDefaultButton = QPushButton("Reset to default")
+		self.soundDefaultButton.clicked.connect(self.soundDefault)
+		self.soundDefaultButton.setAutoDefault(False)
+		self.soundDefaultButton.setToolTip("Reset to default")
 
-		self.dblNick = QCheckBox("Double click nicks in chat to private message",self)
-		if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE: self.dblNick.setChecked(True)
-		self.dblNick.stateChanged.connect(self.changedSetting)
+		if not config.SOUND_NOTIFICATIONS:
+			self.notifyDisco.setEnabled(False)
+			self.notifyNickname.setEnabled(False)
+			self.notifyPrivate.setEnabled(False)
+			self.notifyNotice.setEnabled(False)
+			self.notifyKick.setEnabled(False)
+			self.notifyInvite.setEnabled(False)
+			self.notifyMode.setEnabled(False)
+			self.soundLabel.setEnabled(False)
+			self.soundButton.setEnabled(False)
+			self.playButton.setEnabled(False)
+			self.soundDefaultButton.setEnabled(False)
 
-		self.undMention = QCheckBox("Underline users that mention nick",self)
-		if config.UNDERLINE_MENTION: self.undMention.setChecked(True)
-		self.undMention.stateChanged.connect(self.changedSettingRerender)
+		sbLayout = QHBoxLayout()
+		sbLayout.addStretch()
+		sbLayout.addWidget(self.soundButton)
+		sbLayout.addWidget(self.soundLabel)
+		sbLayout.addStretch()
 
-		msLayout = QVBoxLayout()
-		msLayout.setSpacing(0)
-		msLayout.addWidget(self.showColors)
-		msLayout.addWidget(self.showLinks)
-		msLayout.addWidget(self.undMention)
-		msLayout.addWidget(self.writeScroll)
-		msLayout.addWidget(self.showFullMode)
-		msLayout.addWidget(self.ignoreChannelNotice)
-		msLayout.addWidget(self.enableIgnore)
-		msLayout.addWidget(self.showLusers)
-		msLayout.addWidget(self.showIson)
-		msLayout.addWidget(self.autoJoin)
+		sbLayout2 = QHBoxLayout()
+		sbLayout2.addStretch()
+		sbLayout2.addWidget(self.playButton)
+		sbLayout2.addWidget(self.soundDefaultButton)
+		sbLayout2.addStretch()
 
-		pmLayout = QVBoxLayout()
-		pmLayout.setSpacing(0)
-		pmLayout.addWidget(self.dblNick)
-		pmLayout.addWidget(self.createWindow)
-		pmLayout.addWidget(self.createNotice)
-		pmLayout.addWidget(self.ignoreCreateWindow)
-		pmLayout.addWidget(self.createWindowOut)
-		pmLayout.addWidget(self.writePrivate)
-		pmLayout.addWidget(self.writeMessageOut)
+		audioMaster = QHBoxLayout()
+		audioMaster.addStretch()
+		audioMaster.addWidget(self.audioNotifications)
+		audioMaster.addStretch()
 
-		self.partMsg = EmojiQuitAutocomplete(self)
-		self.partMsg.setText(self.default_quit_part)
+		audioLayout = QVBoxLayout()
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
+		audioLayout.addWidget(self.notifyDescription)
+		audioLayout.addLayout(audioMaster)
+		audioLayout.addWidget(QLabel(' '))
+		audioLayout.addLayout(sbLayout)
+		audioLayout.addLayout(sbLayout2)
+		audioLayout.addWidget(QLabel(' '))
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification events</b>"))
+		audioLayout.addLayout(eventsLayout)
+		audioLayout.addStretch()
 
-		fm = self.partMsg.fontMetrics()
-		self.partMsg.setFixedHeight(fm.height()+10)
-		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		self.partMsg.textChanged.connect(self.setQuitMsg)
-
-		self.autoEmojiQuit = QCheckBox(f"Autocomplete",self)
-		if config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
-		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiQuit.setEnabled(False)
-
-		self.autoAliasQuit = QCheckBox(f"Interpolate aliases",self)
-		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
-		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasQuit.setEnabled(False)
-
-		pmoLayout = QHBoxLayout()
-		pmoLayout.addStretch()
-		pmoLayout.addWidget(self.autoEmojiQuit)
-		pmoLayout.addStretch()
-		pmoLayout.addWidget(self.autoAliasQuit)
-		pmoLayout.addStretch()
-
-		qmLayout = QVBoxLayout()
-		qmLayout.setSpacing(0)
-		qmLayout.addWidget(self.partMsg)
-		qmLayout.addLayout(pmoLayout)
-
-		messageLayout = QVBoxLayout()
-		messageLayout.setSpacing(0)
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
-		messageLayout.addLayout(msLayout)
-		messageLayout.addWidget(QLabel(' '))
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private message settings</b>"))
-		messageLayout.addLayout(pmLayout)
-		messageLayout.addWidget(QLabel(' '))
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
-		messageLayout.addLayout(prepLayout)
-		messageLayout.addWidget(QLabel(' '))
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit message</b>"))
-		messageLayout.addLayout(qmLayout)
-		messageLayout.addStretch()
-
-		self.messagePage.setLayout(messageLayout)
+		self.notificationsPage.setLayout(audioLayout)
 
 		# Scripting
 
@@ -6387,16 +6412,16 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>commands and scripting settings</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
-		scriptingLayout.addWidget(QLabel(' '))
+		scriptingLayout.addStretch()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
 		scriptingLayout.addLayout(aLayout)
-		scriptingLayout.addWidget(QLabel(' '))
+		scriptingLayout.addStretch()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error and command settings</b>"))
 		scriptingLayout.addLayout(aLayout2)
-		scriptingLayout.addWidget(QLabel(' '))
+		scriptingLayout.addStretch()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable commands</b>"))
 		scriptingLayout.addLayout(cmdLayout)
-		scriptingLayout.addWidget(QLabel(' '))
+		scriptingLayout.addStretch()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable script-only commands</b>"))
 		scriptingLayout.addLayout(cmdLayout2)
 		scriptingLayout.addStretch()
@@ -6541,10 +6566,6 @@ class Dialog(QDialog):
 		if config.PLUGIN_DISCONNECT: self.plugDisconnect.setChecked(True)
 		self.plugDisconnect.stateChanged.connect(self.changedSetting)
 
-		self.plugPing = QCheckBox("ping",self)
-		if config.PLUGIN_PING: self.plugPing.setChecked(True)
-		self.plugPing.stateChanged.connect(self.changedSetting)
-
 		self.plugMotd = QCheckBox("motd",self)
 		if config.PLUGIN_MOTD: self.plugMotd.setChecked(True)
 		self.plugMotd.stateChanged.connect(self.changedSetting)
@@ -6645,6 +6666,10 @@ class Dialog(QDialog):
 		if config.PLUGIN_ACK: self.plugAck.setChecked(True)
 		self.plugAck.stateChanged.connect(self.changedSetting)
 
+		self.plugCtcp = QCheckBox("ctcp",self)
+		if config.PLUGIN_CTCP: self.plugCtcp.setChecked(True)
+		self.plugCtcp.stateChanged.connect(self.changedSetting)
+
 		if not config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
 			self.reloadInit.setEnabled(False)
 
@@ -6688,7 +6713,6 @@ class Dialog(QDialog):
 			self.plugCtick.setEnabled(False)
 			self.plugNick.setEnabled(False)
 			self.plugDisconnect.setEnabled(False)
-			self.plugPing.setEnabled(False)
 			self.plugMotd.setEnabled(False)
 			self.plugEditor.setEnabled(False)
 			self.plugServer.setEnabled(False)
@@ -6702,6 +6726,7 @@ class Dialog(QDialog):
 			self.plugSupport.setEnabled(False)
 			self.plugNak.setEnabled(False)
 			self.plugAck.setEnabled(False)
+			self.plugCtcp.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAck)
@@ -6716,47 +6741,47 @@ class Dialog(QDialog):
 		row3Layout = QHBoxLayout()
 		row3Layout.addWidget(self.plugConnected)
 		row3Layout.addWidget(self.plugConnecting)
-		row3Layout.addWidget(self.plugCtick)
+		row3Layout.addWidget(self.plugCtcp)
 
 		row4Layout = QHBoxLayout()
+		row4Layout.addWidget(self.plugCtick)
 		row4Layout.addWidget(self.plugDisconnect)
 		row4Layout.addWidget(self.plugError)
-		row4Layout.addWidget(self.plugInit)
 
 		row5Layout = QHBoxLayout()
+		row5Layout.addWidget(self.plugInit)
 		row5Layout.addWidget(self.plugInvite)
 		row5Layout.addWidget(self.pluginIson)
-		row5Layout.addWidget(self.plugSupport)
 
 		row6Layout = QHBoxLayout()
+		row6Layout.addWidget(self.plugSupport)
 		row6Layout.addWidget(self.plugJoin)
 		row6Layout.addWidget(self.plugJoined)
-		row6Layout.addWidget(self.plugKick)
 
 		row7Layout = QHBoxLayout()
+		row7Layout.addWidget(self.plugKick)
 		row7Layout.addWidget(self.plugKicked)
 		row7Layout.addWidget(self.plugLeft)
-		row7Layout.addWidget(self.plugIn)
 
 		row8Layout = QHBoxLayout()
+		row8Layout.addWidget(self.plugIn)
 		row8Layout.addWidget(self.plugOut)
 		row8Layout.addWidget(self.plugLost)
-		row8Layout.addWidget(self.plugMe)
 
 		row9Layout = QHBoxLayout()
+		row9Layout.addWidget(self.plugMe)
 		row9Layout.addWidget(self.plugMessage)
 		row9Layout.addWidget(self.plugMode)
-		row9Layout.addWidget(self.plugMotd)
 
 		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugMotd)
 		row10Layout.addWidget(self.plugNak)
 		row10Layout.addWidget(self.plugNick)
-		row10Layout.addWidget(self.plugNotice)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugNotice)
 		row11Layout.addWidget(self.plugPart)
 		row11Layout.addWidget(self.plugPause)
-		row11Layout.addWidget(self.plugPing)
 
 		row12Layout = QHBoxLayout()
 		row12Layout.addWidget(self.plugQuit)
@@ -6836,7 +6861,7 @@ class Dialog(QDialog):
 		pluginsLayout.setSpacing(0)
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addWidget(QLabel(' '))
+		pluginsLayout.addStretch()
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
@@ -7020,12 +7045,12 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting settings</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
-		syntaxLayout.addWidget(QLabel(' '))
+		syntaxLayout.addStretch()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting settings</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addLayout(inputHigh)
 		syntaxLayout.addLayout(sbLay)
-		syntaxLayout.addWidget(QLabel(' '))
+		syntaxLayout.addStretch()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat highlighting settings</b>"))
 		syntaxLayout.addLayout(chLayout)
 		syntaxLayout.addStretch()
@@ -7169,16 +7194,16 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
-		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addStretch()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC color \"markup\"</b>"))
 		miscLayout.addLayout(inputOptionsLayout)
-		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addStretch()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addLayout(setLayout)
-		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addStretch()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkey settings</b>"))
 		miscLayout.addLayout(hkLayout)
-		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addStretch()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored configuration settings</b>"))
 		miscLayout.addLayout(resButtons)
 		miscLayout.addStretch()
@@ -7372,7 +7397,7 @@ class Dialog(QDialog):
 		advancedLayout.setSpacing(0)
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
-		advancedLayout.addWidget(QLabel(' '))
+		advancedLayout.addStretch()
 		advancedLayout.addLayout(maxLayout)
 		advancedLayout.addLayout(asetLayout)
 		advancedLayout.addWidget(QLabel(' '))
@@ -7809,7 +7834,6 @@ class Dialog(QDialog):
 		config.PLUGIN_CTICK = self.plugCtick.isChecked()
 		config.PLUGIN_NICK = self.plugNick.isChecked()
 		config.PLUGIN_DISCONNECT = self.plugDisconnect.isChecked()
-		config.PLUGIN_PING = self.plugPing.isChecked()
 		config.PLUGIN_MOTD = self.plugMotd.isChecked()
 		config.ENABLE_PLUGIN_EDITOR = self.plugEditor.isChecked()
 		config.PLUGIN_SERVER = self.plugServer.isChecked()
@@ -7929,6 +7953,8 @@ class Dialog(QDialog):
 		config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU = self.changeChanMode.isChecked()
 		config.SHOW_USERMODE_DISPLAY = self.showUsermodes.isChecked()
 		config.USE_KEEPALIVE_HEARTBEAT = self.useHeartbeat.isChecked()
+		config.DO_NOT_RESPOND_TO_CTCP = self.noCTCP.isChecked()
+		config.PLUGIN_CTCP = self.plugCtcp.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True
@@ -8070,12 +8096,12 @@ class Dialog(QDialog):
 		if self.do_filter_delete:
 			config.CHANNEL_FILTERS = {}
 
+		if self.do_profile_delete:
+			user.PROFILES = {}
+
 		if self.do_width_delete:
 			config.LOAD_AND_SAVE_USERLIST_WIDTH = {}
 			save_userlists = False
-
-		if self.do_profile_delete:
-			user.PROFILES = {}
 
 		if self.do_last_delete:
 			user.LAST_HOST = ''

@@ -340,7 +340,6 @@ PLUGIN_LOST = True
 PLUGIN_CTICK = True
 PLUGIN_NICK = True
 PLUGIN_DISCONNECT = True
-PLUGIN_PING = True
 PLUGIN_MOTD = True
 ENABLE_PLUGIN_EDITOR = True
 PLUGIN_SERVER = True
@@ -492,9 +491,13 @@ SHOW_AWAY_MESSAGE_IN_NICK_TOOLTIP = True
 CHANGE_CHANNEL_MODE_FROM_MODE_MENU = True
 SHOW_USERMODE_DISPLAY = True
 USE_KEEPALIVE_HEARTBEAT = True
+DO_NOT_RESPOND_TO_CTCP = False
+PLUGIN_CTCP = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_ctcp_event": PLUGIN_CTCP,
+		"do_not_respond_to_ctcp_queries": DO_NOT_RESPOND_TO_CTCP,
 		"use_twisted_irc_client_heartbeat": USE_KEEPALIVE_HEARTBEAT,
 		"show_usermodes_in_nick_display": SHOW_USERMODE_DISPLAY,
 		"change_channel_mode_from_mode_menu": CHANGE_CHANNEL_MODE_FROM_MODE_MENU,
@@ -645,7 +648,6 @@ def build_settings():
 		"enable_plugin_server_event": PLUGIN_SERVER,
 		"enable_plugin_editor": ENABLE_PLUGIN_EDITOR,
 		"enable_plugin_motd_event": PLUGIN_MOTD,
-		"enable_plugin_ping_event": PLUGIN_PING,
 		"enable_plugin_disconnect_event": PLUGIN_DISCONNECT,
 		"enable_plugin_nick_event": PLUGIN_NICK,
 		"enable_plugin_ctick_event": PLUGIN_CTICK,
@@ -946,6 +948,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_ctcp_event" in settings:
+		settings["enable_plugin_ctcp_event"] = PLUGIN_CTCP
+	if not "do_not_respond_to_ctcp_queries" in settings:
+		settings["do_not_respond_to_ctcp_queries"] = DO_NOT_RESPOND_TO_CTCP
 	if not "use_twisted_irc_client_heartbeat" in settings:
 		settings["use_twisted_irc_client_heartbeat"] = USE_KEEPALIVE_HEARTBEAT
 	if not "show_usermodes_in_nick_display" in settings:
@@ -1246,8 +1252,6 @@ def patch_settings(settings):
 		settings["enable_plugin_editor"] = ENABLE_PLUGIN_EDITOR
 	if not "enable_plugin_motd_event" in settings:
 		settings["enable_plugin_motd_event"] = PLUGIN_MOTD
-	if not "enable_plugin_ping_event" in settings:
-		settings["enable_plugin_ping_event"] = PLUGIN_PING
 	if not "enable_plugin_disconnect_event" in settings:
 		settings["enable_plugin_disconnect_event"] = PLUGIN_DISCONNECT
 	if not "enable_plugin_nick_event" in settings:
@@ -2137,7 +2141,6 @@ def load_settings(filename):
 	global PLUGIN_CTICK
 	global PLUGIN_NICK
 	global PLUGIN_DISCONNECT
-	global PLUGIN_PING
 	global PLUGIN_MOTD
 	global ENABLE_PLUGIN_EDITOR
 	global PLUGIN_SERVER
@@ -2288,6 +2291,8 @@ def load_settings(filename):
 	global CHANGE_CHANNEL_MODE_FROM_MODE_MENU
 	global SHOW_USERMODE_DISPLAY
 	global USE_KEEPALIVE_HEARTBEAT
+	global DO_NOT_RESPOND_TO_CTCP
+	global PLUGIN_CTCP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2297,6 +2302,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_CTCP = settings["enable_plugin_ctcp_event"]
+		DO_NOT_RESPOND_TO_CTCP = settings["do_not_respond_to_ctcp_queries"]
 		USE_KEEPALIVE_HEARTBEAT = settings["use_twisted_irc_client_heartbeat"]
 		SHOW_USERMODE_DISPLAY = settings["show_usermodes_in_nick_display"]
 		CHANGE_CHANNEL_MODE_FROM_MODE_MENU = settings["change_channel_mode_from_mode_menu"]
@@ -2447,7 +2454,6 @@ def load_settings(filename):
 		PLUGIN_SERVER = settings["enable_plugin_server_event"]
 		ENABLE_PLUGIN_EDITOR = settings["enable_plugin_editor"]
 		PLUGIN_MOTD = settings["enable_plugin_motd_event"]
-		PLUGIN_PING = settings["enable_plugin_ping_event"]
 		PLUGIN_DISCONNECT = settings["enable_plugin_disconnect_event"]
 		PLUGIN_NICK = settings["enable_plugin_nick_event"]
 		PLUGIN_CTICK = settings["enable_plugin_ctick_event"]

@@ -1470,15 +1470,6 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"connected",client=client,window=self.getServerWindow(client))
 
-	def receivedPing(self,client):
-		plugins.call(self,"ping",client=client)
-		if config.SHOW_PINGS_IN_CONSOLE:
-			if client.registered:
-				w = self.getServerWindow(client)
-				if w:
-					t = Message(SERVER_MESSAGE,'',"PING? PONG!")
-					w.writeText(t)
-
 	def receivedClientVersion(self,client,user,msg):
 
 		if not config.SHOW_FULL_USER_IN_CTCP_REPLY:
@@ -1594,6 +1585,8 @@ class Merk(QMainWindow):
 
 			client.pings.pop(data,'')
 
+			plugins.call(self,"ctcp",client=client,user=user,ctype="PING",data=f"{difference_milliseconds:.4f}")
+
 			s = self.getServerWindow(client)
 			if data==None: data=''
 			if s:
@@ -1609,6 +1602,8 @@ class Merk(QMainWindow):
 					c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			return
+
+		plugins.call(self,"ctcp",client=client,user=user,ctype="PING",data=f"{data}")
 
 		s = self.getServerWindow(client)
 		if data==None: data=''

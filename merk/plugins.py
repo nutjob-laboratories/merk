@@ -61,6 +61,9 @@ class Window():
 		else:
 			self.wtype = None
 
+	def ping(self,user):
+		self._window.sendCTCPPing(user)
+
 	def scrollTop(self):
 		self._window.moveChatToTop()
 
@@ -996,9 +999,9 @@ EVENTS = [
 	'message', 'notice', 'action', 'left', 'joined', 'part', 'join', 
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
-	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
+	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','motd',
 	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall',
-	'unload', 'uptime', 'pause', 'unpause', 'nak', 'ack',
+	'unload', 'uptime', 'pause', 'unpause', 'nak', 'ack', 'ctcp',
 ]
 
 BUILT_IN = [
@@ -1101,7 +1104,6 @@ def call(gui,method,**arguments):
 	if method=='ctick' and not config.PLUGIN_CTICK: return
 	if method=='nick' and not config.PLUGIN_NICK: return
 	if method=='disconnect' and not config.PLUGIN_DISCONNECT: return
-	if method=='ping' and not config.PLUGIN_PING: return
 	if method=='motd' and not config.PLUGIN_MOTD: return
 	if method=='server' and not config.PLUGIN_SERVER: return
 	if method=='subwindow' and not config.PLUGIN_SUBWINDOW: return
@@ -1114,6 +1116,7 @@ def call(gui,method,**arguments):
 	if method=='uptime' and not config.PLUGIN_UPTIME: return
 	if method=='nak' and not config.PLUGIN_NAK: return
 	if method=='ack' and not config.PLUGIN_ACK: return
+	if method=='ctcp' and not config.PLUGIN_CTCP: return
 
 	for obj in PLUGINS:
 		if paused(obj): continue

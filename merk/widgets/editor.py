@@ -1138,6 +1138,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="action",v=["window","client","channel","user","nickname","hostmask","message"]: self.doInsertEventMethod(u,v))
 			self.messenv.addAction(entry)
 
+			entry = QAction(QIcon(USER_MENU_ICON),"ctcp",self)
+			entry.triggered.connect(lambda state,u="ctcp",v=["client","user","ctype","data"]: self.doInsertEventMethod(u,v))
+			self.messenv.addAction(entry)
+
 			entry = QAction(QIcon(USER_MENU_ICON),"message",self)
 			entry.triggered.connect(lambda state,u="message",v=["window","client","channel","user","nickname","hostmask","message"]: self.doInsertEventMethod(u,v))
 			self.messenv.addAction(entry)
@@ -1186,10 +1190,6 @@ class Window(QMainWindow):
 
 			entry = QAction(QIcon(CONNECT_MENU_ICON),"nak",self)
 			entry.triggered.connect(lambda state,u="nak",v=["client","extension"]: self.doInsertEventMethod(u,v))
-			self.conenv.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_MENU_ICON),"ping",self)
-			entry.triggered.connect(lambda state,u="ping",v=["client"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
 			entry = QAction(QIcon(CONNECT_MENU_ICON),"quit",self)
