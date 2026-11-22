@@ -2208,7 +2208,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						c = w.widget()
 						if c.rerendered_chat!=False:
 							c.rerendered_chat = False
-							c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+							c.force_chat_log_rerender = c.uptime + random.randint(MIN_RERENDER_TIME_COLORCHANGE,MAX_RERENDER_TIME_COLORCHANGE)
 
 				t = Message(SYSTEM_MESSAGE,'',f"All word highlights removed")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2237,7 +2237,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					c = w.widget()
 					if c.rerendered_chat!=False:
 						c.rerendered_chat = False
-						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+						c.force_chat_log_rerender = c.uptime + random.randint(MIN_RERENDER_TIME_COLORCHANGE,MAX_RERENDER_TIME_COLORCHANGE)
 
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"\"{word}\"'s highlighting color has been removed")
@@ -2299,7 +2299,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						c = w.widget()
 						if c.rerendered_chat!=False:
 							c.rerendered_chat = False
-							c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+							c.force_chat_log_rerender = c.uptime + random.randint(MIN_RERENDER_TIME_COLORCHANGE,MAX_RERENDER_TIME_COLORCHANGE)
 
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{ncolor}\"")
@@ -2345,7 +2345,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					c = w.widget()
 					if c.rerendered_chat!=False:
 						c.rerendered_chat = False
-						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+						c.force_chat_log_rerender = c.uptime + random.randint(MIN_RERENDER_TIME_COLORCHANGE,MAX_RERENDER_TIME_COLORCHANGE)
 
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{color}\"")

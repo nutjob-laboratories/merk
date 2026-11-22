@@ -1001,7 +1001,7 @@ EVENTS = [
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','motd',
 	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall',
-	'unload', 'uptime', 'pause', 'unpause', 'nak', 'ack', 'ctcp',
+	'unload', 'uptime', 'pause', 'unpause', 'nak', 'ack', 'ctcp', 'input',
 ]
 
 BUILT_IN = [
@@ -1153,6 +1153,29 @@ def command_call(gui,window,method,arguments):
 						sys.stdout.write(f"Error executing {obj._filename} event \"{method}\": {e}\n")
 					else:
 						sys.stdout.write(f"Error executing {obj._filename} event \"{method}\": {e}\n")
+
+
+def input_call(gui,window,user_input):
+	if not config.ENABLE_PLUGINS: return None
+	if not config.PLUGIN_INPUT: return None
+	window = Window(gui,window)
+	for obj in PLUGINS:
+		if paused(obj): continue
+		if hasattr(obj,"input"):
+			m = getattr(obj,"input")
+
+			try:
+				retval = m(window,user_input)
+				if retval!=None: user_input = f"{retval}"
+			except Exception as e:
+				if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+					QMessageBox.critical(gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"input\": {e}')
+					sys.stdout.write(f"Error executing {obj._filename} event \"input\": {e}\n")
+				else:
+					sys.stdout.write(f"Error executing {obj._filename} event \"input\": {e}\n")
+
+	return user_input
+
 
 def pause_event(obj):
 	if not config.ENABLE_PLUGINS: return

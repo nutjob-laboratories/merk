@@ -469,7 +469,7 @@ class IRC_Connection(irc.IRCClient):
 						self.did_first_delayed_channel_list_retrieval = True
 						self.sendLine(f"LIST")
 
-			if self.uptime>=SECOND_PAUSE_FOR_DELAYED_CHANNEL_LIST:
+			if self.uptime>=DELAYED_CHANNELLIST_PAUSE:
 				if len(self.server_channel_list)==0:
 					if not self.did_second_delayed_channel_list_retrieval:
 						self.did_second_delayed_channel_list_retrieval = True

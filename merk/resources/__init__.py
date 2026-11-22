@@ -241,25 +241,25 @@ BELL_NOTIFICATION					= ":/sound-notification.wav"
 # | Important application constants |
 # |---------------------------------|
 
-INSTALL_DIRECTORY = sys.path[0]
-MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
+INSTALL_DIRECTORY					= sys.path[0]
+MERK_MODULE_DIRECTORY				= os.path.join(INSTALL_DIRECTORY, "merk")
 
-APPLICATION_NAME = "MERK"
-APPLICATION_WEB = "https://merk.chat"
-APPLICATION_DEVELOPMENT = "https://latest.merk.chat"
-SCRIPT_FILE_EXTENSION = "merk"
-STYLE_FILE_EXTENSION = "style"
-APPLICATION_SOURCE = "https://github.com/nutjob-laboratories/merk"
-CODEBERG_SOURCE = "https://codeberg.org/wraithnix/merk"
-MANSION_SOURCE = "https://git.inthemansion.com/wraithnix/merk"
-DEFAULT_CONFIGURATION_DIRECTORY = ".merk"
-DONATION_LINK = "https://buymeacoffee.com/danhetrick"
-GPL_LINK = "https://www.gnu.org/licenses/gpl-3.0.en.html"
-NUTJOB_LINK = "https://github.com/nutjob-laboratories"
-FOUNDER_LINK = "https://github.com/danhetrick"
+APPLICATION_NAME					= "MERK"
+APPLICATION_WEB						= "https://merk.chat"
+APPLICATION_DEVELOPMENT				= "https://latest.merk.chat"
+SCRIPT_FILE_EXTENSION				= "merk"
+STYLE_FILE_EXTENSION				= "style"
+APPLICATION_SOURCE					= "https://github.com/nutjob-laboratories/merk"
+CODEBERG_SOURCE						= "https://codeberg.org/wraithnix/merk"
+MANSION_SOURCE						= "https://git.inthemansion.com/wraithnix/merk"
+DEFAULT_CONFIGURATION_DIRECTORY		= ".merk"
+DONATION_LINK						= "https://buymeacoffee.com/danhetrick"
+GPL_LINK							= "https://www.gnu.org/licenses/gpl-3.0.en.html"
+NUTJOB_LINK							= "https://github.com/nutjob-laboratories"
+FOUNDER_LINK						= "https://github.com/danhetrick"
 
-EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")
-EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")
+EMOJI_AUTOCOMPLETE					= EMOJI_AUTOCOMPLETE_DATA.split("\n")
+EMOJI_AUTOCOMPLETE					= EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")
 EMOJI_AUTOCOMPLETE.sort(key=len)
 
 LIST_OF_NETWORK_LINKS = []
@@ -273,29 +273,29 @@ OTHER_BUNDLED_FONTS = [
 	":/font-FiraMono-Medium.ttf",
 	":/font-FiraMono-Bold.ttf",
 ]
-BUNDLED_FONT_SIZE = 10
+BUNDLED_FONT_SIZE					= 10
 
 QT_STYLES = QStyleFactory.keys()
 if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
 
-LOG_AND_STYLE_FILENAME_DELIMITER = "-"
+LOG_AND_STYLE_FILENAME_DELIMITER	= "-"
 
 # |---------------------------|
 # | Message display templates |
 # |---------------------------|
 
-TIMESTAMP_TEMPLATE_TAG			= "%_TIMESTAMP_%"
-MESSAGE_INSERT_TEMPLATE_TAG		= "%_INSERT_MESSAGE_%"
-TIMESTAMP_STYLE_TEMPLATE_TAG	= "%_TIMESTAMP_STYLE_%"
-MESSAGE_TEMPLATE_TAG			= "%_MESSAGE_%"
-NICK_TEMPLATE_TAG				= "%_NICKNAME_%"
-NICK_STYLE_TEMPLATE_TAG			= "%_NICKNAME_STYLE_%"
-TIMESTAMP_TIME_TEMPLATE_TAG		= "%_TIME_%"
-MESSAGE_STYLE_TEMPLATE_TAG		= "%_MESSAGE_STYLE_%"
+TIMESTAMP_TEMPLATE_TAG				= "%_TIMESTAMP_%"
+MESSAGE_INSERT_TEMPLATE_TAG			= "%_INSERT_MESSAGE_%"
+TIMESTAMP_STYLE_TEMPLATE_TAG		= "%_TIMESTAMP_STYLE_%"
+MESSAGE_TEMPLATE_TAG				= "%_MESSAGE_%"
+NICK_TEMPLATE_TAG					= "%_NICKNAME_%"
+NICK_STYLE_TEMPLATE_TAG				= "%_NICKNAME_STYLE_%"
+TIMESTAMP_TIME_TEMPLATE_TAG			= "%_TIME_%"
+MESSAGE_STYLE_TEMPLATE_TAG			= "%_MESSAGE_STYLE_%"
 
-TIMESTAMP_TEMPLATE = f"""<td style="vertical-align:top; font-size:small; text-align:left;"><div style="{TIMESTAMP_STYLE_TEMPLATE_TAG}">[{TIMESTAMP_TIME_TEMPLATE_TAG}]</div></td><td style="font-size:small;">&nbsp;</td>"""
+TIMESTAMP_TEMPLATE					= f"""<td style="vertical-align:top; font-size:small; text-align:left;"><div style="{TIMESTAMP_STYLE_TEMPLATE_TAG}">[{TIMESTAMP_TIME_TEMPLATE_TAG}]</div></td><td style="font-size:small;">&nbsp;</td>"""
 
-MESSAGE_TEMPLATE = f"""
+MESSAGE_TEMPLATE					= f"""
 <table style="width: 100%;" border="0">
 	<tbody>
 	<tr>{TIMESTAMP_TEMPLATE_TAG}
@@ -307,7 +307,7 @@ MESSAGE_TEMPLATE = f"""
 </table>
 """
 
-SYSTEM_TEMPLATE = f"""
+SYSTEM_TEMPLATE						= f"""
 <table style="width: 100%;" border="0">
 	<tbody>
 	<tr>{TIMESTAMP_TEMPLATE_TAG}
@@ -317,10 +317,10 @@ SYSTEM_TEMPLATE = f"""
 </table>
 """
 
-MESSAGE_STYLE_TEMPLATE = f"""<td style="text-align: left; vertical-align: top;"><div style="{MESSAGE_STYLE_TEMPLATE_TAG}">{MESSAGE_TEMPLATE_TAG}</div></td>"""
-MESSAGE_NO_STYLE_TEMPLATE = f"""<td style="text-align: left; vertical-align: top;">{MESSAGE_TEMPLATE_TAG}</td>"""
+MESSAGE_STYLE_TEMPLATE				= f"""<td style="text-align: left; vertical-align: top;"><div style="{MESSAGE_STYLE_TEMPLATE_TAG}">{MESSAGE_TEMPLATE_TAG}</div></td>"""
+MESSAGE_NO_STYLE_TEMPLATE			= f"""<td style="text-align: left; vertical-align: top;">{MESSAGE_TEMPLATE_TAG}</td>"""
 
-HORIZONTAL_RULE = f'''
+HORIZONTAL_RULE						= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -329,7 +329,7 @@ HORIZONTAL_RULE = f'''
 	</tbody>
 </table>'''
 
-HARD_HORIZONTAL_RULE = f'''
+HARD_HORIZONTAL_RULE				= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -338,7 +338,7 @@ HARD_HORIZONTAL_RULE = f'''
 	</tbody>
 </table>'''
 
-LIGHT_HORIZONTAL_RULE = f'''
+LIGHT_HORIZONTAL_RULE				= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -347,7 +347,7 @@ LIGHT_HORIZONTAL_RULE = f'''
 	</tbody>
 </table>'''
 
-HARD_LIGHT_HORIZONTAL_RULE = f'''
+HARD_LIGHT_HORIZONTAL_RULE			= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -356,7 +356,7 @@ HARD_LIGHT_HORIZONTAL_RULE = f'''
 	</tbody>
 </table>'''
 
-TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
+TEXT_HORIZONTAL_RULE_TEMPLATE		= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -367,7 +367,7 @@ TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
+LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE	= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -378,7 +378,7 @@ LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-DATE_MESSAGE_TEMPLATE = f'''
+DATE_MESSAGE_TEMPLATE				= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -389,7 +389,7 @@ DATE_MESSAGE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-LIGHT_DATE_MESSAGE_TEMPLATE = f'''
+LIGHT_DATE_MESSAGE_TEMPLATE			= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
@@ -404,18 +404,18 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 # | Help display templates |
 # |------------------------|
 
-USAGE_TEMPLATE_TAG			= '%_USAGE_%'
-DESCRIPTION_TEMPLATE_TAG	= '%_DESCRIPTION_%'
-PREFIX_TEMPLATE_TAG			= "%_PREFIX_%"
-POSTFIX_TEMPLATE_TAG		= "%_POSTFIX_%"
-AUTOCOMPLETE_TEMPLATE_TAG	= "%_AUTOCOMPLETE_%"
-COMMAND_LIST_TEMPLATE_TAG	= "%_LIST_%"
-ENDING_TEMPLATE_TAG			= "%_ENDING_%"
+USAGE_TEMPLATE_TAG					= '%_USAGE_%'
+DESCRIPTION_TEMPLATE_TAG			= '%_DESCRIPTION_%'
+PREFIX_TEMPLATE_TAG					= "%_PREFIX_%"
+POSTFIX_TEMPLATE_TAG				= "%_POSTFIX_%"
+AUTOCOMPLETE_TEMPLATE_TAG			= "%_AUTOCOMPLETE_%"
+COMMAND_LIST_TEMPLATE_TAG			= "%_LIST_%"
+ENDING_TEMPLATE_TAG					= "%_ENDING_%"
 
-HELP_ENTRY_TEMPLATE=f'''<tr><td>{USAGE_TEMPLATE_TAG}&nbsp;</td><td>{DESCRIPTION_TEMPLATE_TAG}</td></tr>'''
-HELP_ENTRY_COMMAND_TEMPLATE=f'''{USAGE_TEMPLATE_TAG}&nbsp;&nbsp;-&nbsp;&nbsp;{DESCRIPTION_TEMPLATE_TAG}'''
+HELP_ENTRY_TEMPLATE					= f'''<tr><td>{USAGE_TEMPLATE_TAG}&nbsp;</td><td>{DESCRIPTION_TEMPLATE_TAG}</td></tr>'''
+HELP_ENTRY_COMMAND_TEMPLATE			= f'''{USAGE_TEMPLATE_TAG}&nbsp;&nbsp;-&nbsp;&nbsp;{DESCRIPTION_TEMPLATE_TAG}'''
 
-HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
+HELP_DISPLAY_TEMPLATE				= f'''<table style="width: 100%" border="0">
 	<tbody>
 				<tr>
 					<td><center><b>{APPLICATION_NAME} Commands</b></center></td>
@@ -447,23 +447,23 @@ HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 			</tbody>
 		</table>'''
 
-AUTOCOMPLETE_ON_MESSAGE = "Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command."
-AUTOCOMPLETE_OFF_MESSAGE = "Command autocomplete is turned off."
+AUTOCOMPLETE_ON_MESSAGE				= "Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command."
+AUTOCOMPLETE_OFF_MESSAGE			= "Command autocomplete is turned off."
 
 # |-----------------------------|
 # | Plugin generation templates |
 # |-----------------------------|
 
-PLUGIN_VERSION_TEMPLATE_TAG = "%_VERSION_%"
-PLUGIN_DATE_TEMPLATE_TAG	= "%_DATE_%"
-PLUGIN_NAME_TEMPLATE_TAG	= "%_NAME_%"
-PLUGIN_AUTHOR_TEMPLATE_TAG	= "%_AUTHOR_%"
-PLUGIN_URL_TEMPLATE_TAG		= "%_URL_%"
+PLUGIN_VERSION_TEMPLATE_TAG 		= "%_VERSION_%"
+PLUGIN_DATE_TEMPLATE_TAG			= "%_DATE_%"
+PLUGIN_NAME_TEMPLATE_TAG			= "%_NAME_%"
+PLUGIN_AUTHOR_TEMPLATE_TAG			= "%_AUTHOR_%"
+PLUGIN_URL_TEMPLATE_TAG				= "%_URL_%"
 
-EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_VERSION_TEMPLATE_TAG, f"{APPLICATION_NAME} {APPLICATION_VERSION}")
-EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace(PLUGIN_DATE_TEMPLATE_TAG, f"{datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')}")
+EXAMPLE_PLUGIN						= EXAMPLE_PLUGIN.replace(PLUGIN_VERSION_TEMPLATE_TAG, f"{APPLICATION_NAME} {APPLICATION_VERSION}")
+EXAMPLE_PLUGIN						= EXAMPLE_PLUGIN.replace(PLUGIN_DATE_TEMPLATE_TAG, f"{datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')}")
 
-DEFAULT_PLUGIN_README = f"""%_NAME_% {PLUGIN_VERSION_TEMPLATE_TAG}
+DEFAULT_PLUGIN_README				= f"""%_NAME_% {PLUGIN_VERSION_TEMPLATE_TAG}
 By {PLUGIN_AUTHOR_TEMPLATE_TAG}
 {PLUGIN_URL_TEMPLATE_TAG}
 Generated by {APPLICATION_NAME} {APPLICATION_VERSION}
@@ -480,13 +480,13 @@ Install this plugin with {APPLICATION_NAME}'s Plugin Manager, or extract this ZI
 
 # Connect dialog descriptions
 
-CONNECT_SCRIPT_SERVER_TEMPLATE_TAG = "%_SERVER_%"
+CONNECT_SCRIPT_SERVER_TEMPLATE_TAG	= "%_SERVER_%"
 
-CONNECT_SCRIPT_SHORT_DESCRIPTION = f"""
+CONNECT_SCRIPT_SHORT_DESCRIPTION	= f"""
 		<center><b>{CONNECT_SCRIPT_SERVER_TEMPLATE_TAG}</b></center>
 		"""
 
-CONNECT_SCRIPT_LONG_DESCRIPTION = f"""
+CONNECT_SCRIPT_LONG_DESCRIPTION		= f"""
 		<small>
 		Execute these commands upon connection to <b>{CONNECT_SCRIPT_SERVER_TEMPLATE_TAG}</b>.
 		To insert a pause in between commands, use the <b>wait</b> command, passing the number
@@ -494,7 +494,7 @@ CONNECT_SCRIPT_LONG_DESCRIPTION = f"""
 		</small>
 		"""
 
-CONNECT_USER_DESCRIPTION = """
+CONNECT_USER_DESCRIPTION			= """
 		<small>
 		<b>Nickname</b> is the nickname you want to use, and <b>alternate</b> (optional) is used
 		if your primary choice is taken. If both <b>nickname</b> and <b>alternate</b> are taken,
@@ -505,7 +505,7 @@ CONNECT_USER_DESCRIPTION = """
 		</small>
 		"""
 
-CONNECT_SERVER_DESCRIPTION = """
+CONNECT_SERVER_DESCRIPTION			= """
 		<small>
 		Select a server below, or enter connection information by hand. To automatically
 		reconnect on disconnection, check the <b>Reconnect</b> checkbox. To login
@@ -517,9 +517,9 @@ CONNECT_SERVER_DESCRIPTION = """
 
 # Log manager description
 
-LOG_LENGTH_TEMPLATE_TAG = "%_LENGTH_%"
+LOG_LENGTH_TEMPLATE_TAG				= "%_LENGTH_%"
 
-LOG_MANAGER_DESCRIPTION = f"""
+LOG_MANAGER_DESCRIPTION				= f"""
 		<small>
 		Here, you can view, search, and export log files. The panel on the left contains a list of all
 		<b>logs</b> saved to {APPLICATION_NAME}; select a <b>log</b> to view and search that <b>log</b>.
@@ -536,12 +536,12 @@ LOG_MANAGER_DESCRIPTION = f"""
 
 # Text style editor description
 
-TEXT_STYLER_INTRO_TEMPLATE_TAG = "%_INTRO_%"
+TEXT_STYLER_INTRO_TEMPLATE_TAG		= "%_INTRO_%"
 
-TEXT_STYLER_INTRO = """Select what text style you'd like to edit with the <b>Currently editing text style</b> control, which lists
+TEXT_STYLER_INTRO					= """Select what text style you'd like to edit with the <b>Currently editing text style</b> control, which lists
 				all chat and server windows that are currently open."""
 
-TEXT_STYLER_DESCRIPTION = f"""
+TEXT_STYLER_DESCRIPTION				= f"""
 		<small>%_INTRO_%
 		Click <b>Text Color</b> to set the color of text, and <b>Background Color</b>
 		to set the color of the chat and userlist background. Clicking <b>Set colors
@@ -558,95 +558,97 @@ TEXT_STYLER_DESCRIPTION = f"""
 # | Other constants |
 # |-----------------|
 
-# Window types
+# Subwindow types
 
-CHANNEL_WINDOW = 0
-SERVER_WINDOW = 1
-PRIVATE_WINDOW = 2
-EDITOR_WINDOW = 3
-LIST_WINDOW = 4
-README_WINDOW = 5
-LOG_MANAGER_WINDOW = 6
-HTML_WINDOW = 7
-HOTKEY_WINDOW = 8
-IGNORE_WINDOW = 9
-PLUGIN_WINDOW = 10
-PLUGIN_CONSOLE = 11
-TIPS_WINDOW = 12
-LOGDUMP_WINDOW = 13
+CHANNEL_WINDOW						= 0
+SERVER_WINDOW						= 1
+PRIVATE_WINDOW						= 2
+EDITOR_WINDOW						= 3
+LIST_WINDOW							= 4
+README_WINDOW						= 5
+LOG_MANAGER_WINDOW					= 6
+HTML_WINDOW							= 7
+HOTKEY_WINDOW						= 8
+IGNORE_WINDOW						= 9
+PLUGIN_WINDOW						= 10
+PLUGIN_CONSOLE						= 11
+TIPS_WINDOW							= 12
+LOGDUMP_WINDOW						= 13
 
 # Message types
 
-SYSTEM_MESSAGE = 0
-ERROR_MESSAGE = 1
-ACTION_MESSAGE = 2
-CHAT_MESSAGE = 3
-SELF_MESSAGE = 4
-NOTICE_MESSAGE = 5
-SERVER_MESSAGE = 6
-PRIVATE_MESSAGE = 7
-RAW_SYSTEM_MESSAGE = 8
-HORIZONTAL_RULE_MESSAGE = 9
-HARD_HORIZONTAL_RULE_MESSAGE = 10
-TEXT_HORIZONTAL_RULE_MESSAGE = 11
-WHOIS_MESSAGE = 12
-DATE_MESSAGE = 13
+SYSTEM_MESSAGE						= 0
+ERROR_MESSAGE						= 1
+ACTION_MESSAGE						= 2
+CHAT_MESSAGE						= 3
+SELF_MESSAGE						= 4
+NOTICE_MESSAGE						= 5
+SERVER_MESSAGE						= 6
+PRIVATE_MESSAGE						= 7
+RAW_SYSTEM_MESSAGE					= 8
+HORIZONTAL_RULE_MESSAGE				= 9
+HARD_HORIZONTAL_RULE_MESSAGE		= 10
+TEXT_HORIZONTAL_RULE_MESSAGE		= 11
+WHOIS_MESSAGE						= 12
+DATE_MESSAGE						= 13
 
 # Shortcut error codes
 
-GOOD_SHORTCUT = 0
-BAD_SHORTCUT = 1
-SHORTCUT_IN_USE = 2
+GOOD_SHORTCUT						= 0
+BAD_SHORTCUT						= 1
+SHORTCUT_IN_USE 					= 2
 
-# Error codes
+# Settings error codes
 
-INVALID_STYLE = 1
-INVALID_JUSTIFY = 2
-INVALID_COLOR = 3
-INVALID_LANGUAGE = 4
-INVALID_TEXT_STYLE = 5
-INVALID_ORDER = 6
-INVALID_SOUND = 7
-INVALID_TIME = 8
-INVALID_IMAGE = 9
-INVALID_VALUE = 10
-INVALID_MDI_STYLE = 11
-INVALID_NICK_LENGTH = 12
-INVALID_NICK = 13
-INVALID_NICK_NUMBER = 14
-INVALID_SORTING = 15
-INVALID_CODEC = 16
-ALL_VALID_SETTINGS = 0
+INVALID_STYLE						= 1
+INVALID_JUSTIFY						= 2
+INVALID_COLOR						= 3
+INVALID_LANGUAGE					= 4
+INVALID_TEXT_STYLE					= 5
+INVALID_ORDER						= 6
+INVALID_SOUND						= 7
+INVALID_TIME						= 8
+INVALID_IMAGE						= 9
+INVALID_VALUE						= 10
+INVALID_MDI_STYLE					= 11
+INVALID_NICK_LENGTH					= 12
+INVALID_NICK						= 13
+INVALID_NICK_NUMBER					= 14
+INVALID_SORTING						= 15
+INVALID_CODEC						= 16
+ALL_VALID_SETTINGS					= 0
 
 # Plugin method error codes
 
-EVENT_METHOD = 0
-BUILT_IN_METHOD = 1
-NO_METHOD = 2
-VALID_METHOD = 3
-INVALID_METHOD = 4
+EVENT_METHOD						= 0
+BUILT_IN_METHOD						= 1
+NO_METHOD							= 2
+VALID_METHOD						= 3
+INVALID_METHOD						= 4
 
-# Other error codes
+# Connection dialog error codes
 
-CONNECTION_MISSING_INFO_ERROR = 1
-CONNECTION_DIALOG_CANCELED = 2
+CONNECTION_MISSING_INFO_ERROR		= 1
+CONNECTION_DIALOG_CANCELED			= 2
 
-# Scripting constants
+# Scripting constants - File I/O
 
-READ_OPERATION = 0
-WRITE_OPERATION = 1
-APPEND_OPERATION = 2
+READ_OPERATION						= 0
+WRITE_OPERATION						= 1
+APPEND_OPERATION					= 2
 
-INPUT_DIALOG = 0
-NUMBER_DIALOG = 1
-MESSAGE_DIALOG = 2
-HALT_DIALOG = 3
-FILE_DIALOG = 4
-DECIMAL_DIALOG = 5
+# Scripting constants - Dialogs
+
+INPUT_DIALOG						= 0
+NUMBER_DIALOG						= 1
+MESSAGE_DIALOG						= 2
+HALT_DIALOG							= 3
+FILE_DIALOG							= 4
+DECIMAL_DIALOG						= 5
 
 # Settings constants
 
-SYSTEM_PREPEND_OPTIONS = [
+SYSTEM_PREPEND_OPTIONS				= [
 	"Nothing",
 	"&diams;",
 	"&loz;",
@@ -683,83 +685,83 @@ SYSTEM_PREPEND_OPTIONS = [
 
 # Sizes and layout stuff
 
-CHAT_WINDOW_WIDGET_SPACING						= 5
-CUSTOM_MENU_ICON_SIZE							= 24
-NETWORK_MENU_ICON_SIZE							= 32
-MAXIMUM_ERRONEOUS_NICKNAME_LENGTH				= 9
-USERLIST_ICON_SIZE_ADDON						= 5
-STYLE_COLOR_BUTTON_ADDON_SIZE					= 0
-SETTINGS_BUTTON_ADDON_SIZE						= 6
-INTERFACE_BUTTON_SIZE							= 18
-INTERFACE_BUTTON_ICON_SIZE						= 18
-OPTION_BUTTON_ICON_SIZE							= 10
-OPTION_BUTTON_BUTTON_SIZE						= 15
-CHANNEL_STATUS_ICON_SIZE_PERCENT				= 0.75
-CHANNEL_ID_ITEM_ADDON_HEIGHT					= 4
-MAXIMUM_USERLIST_PERCENTAGE						= 0.95
-USER_MENU_AWAY_ELIDE							= 29
-USER_MENU_HOSTMASK_ELIDE						= 25
-MENUBAR_ENTRY_SPACING							= 8
-MENUBAR_ADDON_HEIGHT							= 15
-WINDOWBAR_ENTRY_SPACING							= 8
-WINDOWBAR_ADDON_HEIGHT							= 12
-WINDOWBAR_SPILLOVER_TRIGGER_SIZE				= 0.75
+CHAT_WINDOW_WIDGET_SPACING			= 5
+CUSTOM_MENU_ICON_SIZE				= 24
+NETWORK_MENU_ICON_SIZE				= 32
+MAXIMUM_ERRONEOUS_NICKNAME_LENGTH	= 9
+USERLIST_ICON_SIZE_ADDON			= 5
+STYLE_COLOR_BUTTON_ADDON_SIZE		= 0
+SETTINGS_BUTTON_ADDON_SIZE			= 6
+INTERFACE_BUTTON_SIZE				= 18
+INTERFACE_BUTTON_ICON_SIZE			= 18
+OPTION_BUTTON_ICON_SIZE				= 10
+OPTION_BUTTON_BUTTON_SIZE			= 15
+CHANNEL_STATUS_ICON_SIZE_PERCENT	= 0.75
+CHANNEL_ID_ITEM_ADDON_HEIGHT		= 4
+MAXIMUM_USERLIST_PERCENTAGE			= 0.95
+USER_MENU_AWAY_ELIDE				= 29
+USER_MENU_HOSTMASK_ELIDE			= 25
+MENUBAR_ENTRY_SPACING				= 8
+MENUBAR_ADDON_HEIGHT				= 15
+WINDOWBAR_ENTRY_SPACING				= 8
+WINDOWBAR_ADDON_HEIGHT				= 12
+WINDOWBAR_SPILLOVER_TRIGGER_SIZE	= 0.75
 
 # Times
 
-MINIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP		= 120
-MAXIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP		= 180
-MINIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP	= 20
-MAXIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP	= 30
-MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE			= 3
-MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE			= 10
-PAUSE_TO_PREVENT_APP_FREEZE						= 10
-PAUSE_FOR_DELAYED_CHANNEL_LIST					= 60
-SECOND_PAUSE_FOR_DELAYED_CHANNEL_LIST			= 120
-PAUSE_FOR_SCROLL_ON_RESIZE_EVENT				= 100
-PAUSE_FOR_WINDOWBAR_REBUILD_ON_RESIZE			= 200
-PING_REMOVAL_TIME_IN_MILLISECONDS				= 120000
-USERLIST_SAVE_PAUSE								= 1000
+MIN_RERENDER_TIME_W_HOSTMASK		= 120
+MAX_RERENDER_TIME_W_HOSTMASK		= 180
+MIN_RERENDER_TIME_WO_HOSTMASK		= 20
+MAX_RERENDER_TIME_WO_HOSTMASK		= 30
+MIN_RERENDER_TIME_COLORCHANGE		= 3
+MAX_RERENDER_TIME_COLORCHANGE		= 10
+PAUSE_TO_PREVENT_APP_FREEZE			= 10
+PAUSE_FOR_DELAYED_CHANNEL_LIST		= 60
+DELAYED_CHANNELLIST_PAUSE			= 120
+PAUSE_FOR_SCROLL_ON_RESIZE_EVENT	= 100
+WBAR_REBUILD_RESIZE_TIME			= 200
+PING_REMOVAL_TIME_IN_MILLISECONDS	= 120000
+USERLIST_SAVE_PAUSE					= 1000
 
 # Colors
 
 IRC_COLORS = {
-	'00': '#FFFFFF',
-	'01': '#000000',
-	'02': '#00007F',
-	'03': '#009300',
-	'04': '#FF0000',
-	'05': '#7F0000',
-	'06': '#9C009C',
-	'07': '#FC7F00',
-	'08': '#FFFF00',
-	'09': '#00FC00',
-	'10': '#009393',
-	'11': '#00FFFF',
-	'12': '#0000FC',
-	'13': '#FF00FF',
-	'14': '#7F7F7F',
-	'15': '#D2D2D2',
+									'00': '#FFFFFF',
+									'01': '#000000',
+									'02': '#00007F',
+									'03': '#009300',
+									'04': '#FF0000',
+									'05': '#7F0000',
+									'06': '#9C009C',
+									'07': '#FC7F00',
+									'08': '#FFFF00',
+									'09': '#00FC00',
+									'10': '#009393',
+									'11': '#00FFFF',
+									'12': '#0000FC',
+									'13': '#FF00FF',
+									'14': '#7F7F7F',
+									'15': '#D2D2D2',
 }
 
-MODE_AND_USER_DISPLAY_BORDER					= "1px solid"
-MODE_AND_USER_DISPLAY_PADDING					= "0px"
-HTML_RED_COLOR									= "red"
-HTML_RED_COLOR_DARK_MODE						= "lightcoral"
-LOG_VIEWER_TEXT_COLOR							= "black"
-LOG_VIEWER_TEXT_BACKGROUND						= "white"
-LOG_VIEWER_NICK_COLOR							= "02"		# Blue
-LOG_VIEWER_SYSTEM_COLOR							= "04"		# Red
+MODE_AND_USER_DISPLAY_BORDER		= "1px solid"
+MODE_AND_USER_DISPLAY_PADDING		= "0px"
+HTML_RED_COLOR						= "red"
+HTML_RED_COLOR_DARK_MODE			= "lightcoral"
+LOG_VIEWER_TEXT_COLOR				= "black"
+LOG_VIEWER_TEXT_BACKGROUND			= "white"
+LOG_VIEWER_NICK_COLOR				= "02"		# Blue
+LOG_VIEWER_SYSTEM_COLOR				= "04"		# Red
 
 # Channel status names
 
-CHANNEL_ADMIN_TITLE								= "Channel Administrator"
-CHANNEL_OWNER_TITLE								= "Channel Owner"
-CHANNEL_OP_TITLE								= "Channel Operator"
-CHANNEL_HALFOP_TITLE							= "Channel Half-Operator"
-CHANNEL_VOICE_TITLE								= "Voiced User"
-CHANNEL_NORMAL_TITLE							= "Normal User"
-CHANNEL_PROTECTED_TITLE							= "Protected User"
+CHANNEL_ADMIN_TITLE					= "Channel Administrator"
+CHANNEL_OWNER_TITLE					= "Channel Owner"
+CHANNEL_OP_TITLE					= "Channel Operator"
+CHANNEL_HALFOP_TITLE				= "Channel Half-Operator"
+CHANNEL_VOICE_TITLE					= "Voiced User"
+CHANNEL_NORMAL_TITLE				= "Normal User"
+CHANNEL_PROTECTED_TITLE				= "Protected User"
 
 # |=========|
 # | CLASSES |

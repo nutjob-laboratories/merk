@@ -319,6 +319,23 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         message = args["message"]
 
+    # |=======|
+    # | input |
+    # |=======|
+    #
+    # This event is triggered whenever someone types something
+    # into the text input widget. Unlike all of the other events,
+    # it has *actual* arguments, and must return a string. If it
+    # returns nothing, this event will be ignored.
+    #
+    # Arguments:
+    #   window = MERK Window
+    #   user_input = What was typed into the input widget
+    #
+    def input(self,window,user_input):
+
+        return None
+
     # |========|
     # | invite |
     # |========|

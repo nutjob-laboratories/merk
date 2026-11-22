@@ -493,9 +493,11 @@ SHOW_USERMODE_DISPLAY = True
 USE_KEEPALIVE_HEARTBEAT = True
 DO_NOT_RESPOND_TO_CTCP = False
 PLUGIN_CTCP = True
+PLUGIN_INPUT = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_input_event": PLUGIN_INPUT,
 		"enable_plugin_ctcp_event": PLUGIN_CTCP,
 		"do_not_respond_to_ctcp_queries": DO_NOT_RESPOND_TO_CTCP,
 		"use_twisted_irc_client_heartbeat": USE_KEEPALIVE_HEARTBEAT,
@@ -948,6 +950,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_input_event" in settings:
+		settings["enable_plugin_input_event"] = PLUGIN_INPUT
 	if not "enable_plugin_ctcp_event" in settings:
 		settings["enable_plugin_ctcp_event"] = PLUGIN_CTCP
 	if not "do_not_respond_to_ctcp_queries" in settings:
@@ -2293,6 +2297,7 @@ def load_settings(filename):
 	global USE_KEEPALIVE_HEARTBEAT
 	global DO_NOT_RESPOND_TO_CTCP
 	global PLUGIN_CTCP
+	global PLUGIN_INPUT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2302,6 +2307,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_INPUT = settings["enable_plugin_input_event"]
 		PLUGIN_CTCP = settings["enable_plugin_ctcp_event"]
 		DO_NOT_RESPOND_TO_CTCP = settings["do_not_respond_to_ctcp_queries"]
 		USE_KEEPALIVE_HEARTBEAT = settings["use_twisted_irc_client_heartbeat"]

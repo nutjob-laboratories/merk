@@ -272,13 +272,13 @@ class Window(QMainWindow):
 			# Set the rerender timer to a random
 			# amount of seconds from 2 minutes to
 			# 3 minutes
-			self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP)
+			self.force_chat_log_rerender = random.randint(MIN_RERENDER_TIME_W_HOSTMASK, MAX_RERENDER_TIME_W_HOSTMASK)
 
 			# If the server supports hostmasks in NAMES
 			# replies, then set the rerender timer for a
 			# shorter time
 			if self.client.support_hostmasks_in_names:
-				self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP)
+				self.force_chat_log_rerender = random.randint(MIN_RERENDER_TIME_WO_HOSTMASK, MAX_RERENDER_TIME_WO_HOSTMASK)
 
 			# Turn off rerendering if the config file
 			# says to
@@ -2231,10 +2231,10 @@ class Window(QMainWindow):
 		if (self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW) and config.AUTOMATICALLY_RERENDER_CHAT and config.HIGHLIGHT_NICKS_IN_CHAT:
 			if self.force_chat_log_rerender==0 or self.rerendered_chat==True:
 				self.rerendered_chat = False
-				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP)
+				self.force_chat_log_rerender = self.uptime + random.randint(MIN_RERENDER_TIME_W_HOSTMASK, MAX_RERENDER_TIME_W_HOSTMASK)
 
 				if self.client.support_hostmasks_in_names:
-					self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP)
+					self.force_chat_log_rerender = self.uptime + random.randint(MIN_RERENDER_TIME_WO_HOSTMASK, MAX_RERENDER_TIME_WO_HOSTMASK)
 		else:
 			self.rerendered_chat = True
 			self.force_chat_log_rerender = 0
@@ -2497,7 +2497,7 @@ class Window(QMainWindow):
 				if do_rerender:
 					if c.rerendered_chat!=False:
 						c.rerendered_chat = False
-						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+						c.force_chat_log_rerender = c.uptime + random.randint(MIN_RERENDER_TIME_COLORCHANGE,MAX_RERENDER_TIME_COLORCHANGE)
 
 	def menuDoColorChange(self,user_nick,user_hostmask):
 		self.setNicknameColor(user_nick,user_hostmask)
@@ -2514,7 +2514,7 @@ class Window(QMainWindow):
 				if do_rerender:
 					if c.rerendered_chat!=False:
 						c.rerendered_chat = False
-						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+						c.force_chat_log_rerender = c.uptime + random.randint(MIN_RERENDER_TIME_COLORCHANGE,MAX_RERENDER_TIME_COLORCHANGE)
 
 	def is_hidden_by_nickname(self,user_nick):
 		if user_nick.lower() in config.IGNORE_LIST: return True
@@ -4110,6 +4110,10 @@ class Window(QMainWindow):
 		# ==============================
 		# END COMMAND HISTORY MANAGEMENT
 		# ==============================
+
+		# Plugin call event
+		retval = plugins.input_call(self.parent,self,user_input)
+		if retval!=None: user_input = f"{retval}"
 
 		# Interpolate aliases
 		if config.INTERPOLATE_ALIASES_INTO_INPUT==True:

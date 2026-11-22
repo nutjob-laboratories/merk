@@ -339,6 +339,76 @@ class Dialog(QDialog):
 		self.centerMDI.setEnabled(False)
 		self.tileMDI.setEnabled(False)
 
+	def changedSettingHeartbeat(self):
+		if self.useHeartbeat.isChecked():
+			self.heartbeatLength.setEnabled(True)
+		else:
+			self.heartbeatLength.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingListTime(self):
+		if self.automaticList.isChecked():
+			self.listInterval.setEnabled(True)
+		else:
+			self.listInterval.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingSnapWindow(self):
+		if self.snapWindows.isChecked():
+			self.snapDistance.setEnabled(True)
+		else:
+			self.snapDistance.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingSaveLog(self):
+		if self.intermittentLog.isChecked():
+			self.logInterval.setEnabled(True)
+		else:
+			self.logInterval.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingViewSize(self):
+		if self.logViewSize.isChecked():
+			self.logViewLimit.setEnabled(True)
+		else:
+			self.logViewLimit.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingRegisDisco(self):
+		if self.doConnectionTimeout.isChecked():
+			self.timeoutLength.setEnabled(True)
+		else:
+			self.timeoutLength.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingDelay(self):
+		if self.delayReconnect.isChecked():
+			self.delayTime.setEnabled(True)
+		else:
+			self.delayTime.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSettingCTCP(self):
 
 		if self.noCTCP.isChecked():
@@ -832,6 +902,7 @@ class Dialog(QDialog):
 			self.plugNak.setEnabled(True)
 			self.plugAck.setEnabled(True)
 			self.plugCtcp.setEnabled(True)
+			self.plugInput.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -894,6 +965,7 @@ class Dialog(QDialog):
 			self.plugNak.setEnabled(False)
 			self.plugAck.setEnabled(False)
 			self.plugCtcp.setEnabled(False)
+			self.plugInput.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -1156,8 +1228,10 @@ class Dialog(QDialog):
 	def changedSettingRerenderHighlight(self,state):
 		if self.highlightNick.isChecked():
 			self.autoRerender.setEnabled(True)
+			self.nickLengthHighlight.setEnabled(True)
 		else:
 			self.autoRerender.setEnabled(False)
+			self.nickLengthHighlight.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
@@ -3041,7 +3115,7 @@ class Dialog(QDialog):
 
 		self.delayReconnect = QCheckBox("Delay reconnection by",self)
 		if config.DELAY_AUTO_RECONNECTION: self.delayReconnect.setChecked(True)
-		self.delayReconnect.stateChanged.connect(self.changedSetting)
+		self.delayReconnect.stateChanged.connect(self.changedSettingDelay)
 
 		self.delayTimeLabelSpec = QLabel(" seconds")
 		self.delayTime = QSpinBox()
@@ -3054,6 +3128,9 @@ class Dialog(QDialog):
 		delayLayout.addWidget(self.delayTime)
 		delayLayout.addWidget(self.delayTimeLabelSpec)
 		delayLayout.addStretch()
+
+		if not config.DELAY_AUTO_RECONNECTION:
+			self.delayTime.setEnabled(False)
 
 		self.saveHistory = QCheckBox("Save connection history",self)
 		if config.SAVE_CONNECTION_HISTORY: self.saveHistory.setChecked(True)
@@ -3073,7 +3150,7 @@ class Dialog(QDialog):
 
 		self.automaticList = QCheckBox("Refresh channel list every",self)
 		if config.AUTOMATICALLY_REFRESH_CHANNEL_LIST: self.automaticList.setChecked(True)
-		self.automaticList.stateChanged.connect(self.changedSetting)
+		self.automaticList.stateChanged.connect(self.changedSettingListTime)
 
 		self.listInterval = QComboBox(self)
 		added = False
@@ -3101,19 +3178,25 @@ class Dialog(QDialog):
 		refreshLayout.addWidget(self.listInterval)
 		refreshLayout.addStretch()
 
+		if not config.AUTOMATICALLY_REFRESH_CHANNEL_LIST:
+			self.listInterval.setEnabled(False)
+
 		self.failSasl = QCheckBox("Disconnect on SASL authentication failure",self)
 		if config.DISCONNECT_ON_SASL_FAIL: self.failSasl.setChecked(True)
 		self.failSasl.stateChanged.connect(self.changedSetting)
 
 		self.doConnectionTimeout = QCheckBox("Disconnect if registration takes more than",self)
 		if config.TIMEOUT_CONNECTIONS: self.doConnectionTimeout.setChecked(True)
-		self.doConnectionTimeout.stateChanged.connect(self.changedSetting)
+		self.doConnectionTimeout.stateChanged.connect(self.changedSettingRegisDisco)
 
 		self.timeoutLengthSpec = QLabel(" seconds to complete")
 		self.timeoutLength = QSpinBox()
 		self.timeoutLength.setRange(1,999)
 		self.timeoutLength.setValue(self.CONNECTION_TIMEOUT)
 		self.timeoutLength.valueChanged.connect(self.updateConnectionTimeout)
+
+		if not config.TIMEOUT_CONNECTIONS:
+			self.timeoutLength.setEnabled(False)
 
 		self.useSasl = QCheckBox("Always use SASL logins",self)
 		if config.ALWAYS_USE_SASL_LOGINS: self.useSasl.setChecked(True)
@@ -3129,13 +3212,16 @@ class Dialog(QDialog):
 
 		self.useHeartbeat = QCheckBox("Ping server every",self)
 		if config.USE_KEEPALIVE_HEARTBEAT: self.useHeartbeat.setChecked(True)
-		self.useHeartbeat.stateChanged.connect(self.changedSetting)
+		self.useHeartbeat.stateChanged.connect(self.changedSettingHeartbeat)
 
 		self.heartbeatLabelSpec = QLabel(" seconds")
 		self.heartbeatLength = QSpinBox()
 		self.heartbeatLength.setRange(1,300)
 		self.heartbeatLength.setValue(self.heartbeat)
 		self.heartbeatLength.valueChanged.connect(self.updateHeartbeat)
+
+		if not config.USE_KEEPALIVE_HEARTBEAT:
+			self.heartbeatLength.setEnabled(False)
 
 		hbLayout = QHBoxLayout()
 		hbLayout.addWidget(self.useHeartbeat)
@@ -3863,7 +3949,7 @@ class Dialog(QDialog):
 
 		self.intermittentLog = QCheckBox("Save logs every",self)
 		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
-		self.intermittentLog.stateChanged.connect(self.changedSetting)
+		self.intermittentLog.stateChanged.connect(self.changedSettingSaveLog)
 
 		self.logInterval = QComboBox(self)
 		added = False
@@ -3893,6 +3979,9 @@ class Dialog(QDialog):
 		if config.LOG_SAVE_INTERVAL!=10800000: self.logInterval.addItem("3 hours")
 		if config.LOG_SAVE_INTERVAL!=14400000: self.logInterval.addItem("4 hours")
 		self.logInterval.currentIndexChanged.connect(self.intervalChange)
+
+		if not config.DO_INTERMITTENT_LOG_SAVES:
+			self.logInterval.setEnabled(False)
 
 		intervalBox = QHBoxLayout()
 		intervalBox.addWidget(self.intermittentLog)
@@ -3995,13 +4084,16 @@ class Dialog(QDialog):
 
 		self.logViewSize = QCheckBox("Log viewer only displays last",self)
 		if config.LIMIT_LOG_VIEW: self.logViewSize.setChecked(True)
-		self.logViewSize.stateChanged.connect(self.changedSetting)
+		self.logViewSize.stateChanged.connect(self.changedSettingViewSize)
 
 		self.logViewLimitLabelSpec = QLabel(" lines")
 		self.logViewLimit = QSpinBox()
 		self.logViewLimit.setRange(1,99999)
 		self.logViewLimit.setValue(self.MAX_LOG_DISPLAY_SIZE)
 		self.logViewLimit.valueChanged.connect(self.updateLogLimit)
+
+		if not config.LIMIT_LOG_VIEW:
+			self.logViewLimit.setEnabled(False)
 
 		logViewLayout = QHBoxLayout()
 		logViewLayout.addWidget(self.logViewSize)
@@ -5237,13 +5329,16 @@ class Dialog(QDialog):
 
 		self.snapWindows = QCheckBox("Snap subwindows together within",self)
 		if config.SUBWINDOW_SNAPPING: self.snapWindows.setChecked(True)
-		self.snapWindows.stateChanged.connect(self.changedSetting)
+		self.snapWindows.stateChanged.connect(self.changedSettingSnapWindow)
 
 		self.snapDistanceSpec = QLabel(" pixels")
 		self.snapDistance = QSpinBox()
 		self.snapDistance.setRange(1,9999)
 		self.snapDistance.setValue(self.SUBWINDOW_SNAP_DISTANCE)
 		self.snapDistance.valueChanged.connect(self.updateDistance)
+
+		if not config.SUBWINDOW_SNAPPING:
+			self.snapDistance.setEnabled(False)
 
 		distanceLayout = QHBoxLayout()
 		distanceLayout.addWidget(self.snapWindows)
@@ -6670,10 +6765,16 @@ class Dialog(QDialog):
 		if config.PLUGIN_CTCP: self.plugCtcp.setChecked(True)
 		self.plugCtcp.stateChanged.connect(self.changedSetting)
 
+		self.plugInput = QCheckBox("input",self)
+		if config.PLUGIN_INPUT: self.plugInput.setChecked(True)
+		self.plugInput.stateChanged.connect(self.changedSetting)
+		self.plugInput.setFont(f)
+
 		if not config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
 			self.reloadInit.setEnabled(False)
 
 		if not config.ENABLE_PLUGINS:
+			self.plugInput.setEnabled(False)
 			self.plugUnpause.setEnabled(False)
 			self.plugPause.setEnabled(False)
 			self.plugUptime.setEnabled(False)
@@ -6749,71 +6850,78 @@ class Dialog(QDialog):
 		row4Layout.addWidget(self.plugError)
 
 		row5Layout = QHBoxLayout()
+		row5Layout.addWidget(self.plugInput)
 		row5Layout.addWidget(self.plugInit)
 		row5Layout.addWidget(self.plugInvite)
-		row5Layout.addWidget(self.pluginIson)
 
 		row6Layout = QHBoxLayout()
+		row6Layout.addWidget(self.pluginIson)
 		row6Layout.addWidget(self.plugSupport)
 		row6Layout.addWidget(self.plugJoin)
-		row6Layout.addWidget(self.plugJoined)
 
 		row7Layout = QHBoxLayout()
+		row7Layout.addWidget(self.plugJoined)
 		row7Layout.addWidget(self.plugKick)
 		row7Layout.addWidget(self.plugKicked)
-		row7Layout.addWidget(self.plugLeft)
 
 		row8Layout = QHBoxLayout()
+		row8Layout.addWidget(self.plugLeft)
 		row8Layout.addWidget(self.plugIn)
 		row8Layout.addWidget(self.plugOut)
-		row8Layout.addWidget(self.plugLost)
 
 		row9Layout = QHBoxLayout()
+		row9Layout.addWidget(self.plugLost)
 		row9Layout.addWidget(self.plugMe)
 		row9Layout.addWidget(self.plugMessage)
-		row9Layout.addWidget(self.plugMode)
 
 		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugMode)
 		row10Layout.addWidget(self.plugMotd)
 		row10Layout.addWidget(self.plugNak)
-		row10Layout.addWidget(self.plugNick)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugNick)
 		row11Layout.addWidget(self.plugNotice)
 		row11Layout.addWidget(self.plugPart)
-		row11Layout.addWidget(self.plugPause)
 
 		row12Layout = QHBoxLayout()
+		row12Layout.addWidget(self.plugPause)
 		row12Layout.addWidget(self.plugQuit)
 		row12Layout.addWidget(self.plugRename)
-		row12Layout.addWidget(self.plugServer)
 
 		row13Layout = QHBoxLayout()
+		row13Layout.addWidget(self.plugServer)
 		row13Layout.addWidget(self.plugSubwindow)
 		row13Layout.addWidget(self.plugTick)
-		row13Layout.addWidget(self.plugTopic)
 
 		row14Layout = QHBoxLayout()
+		row14Layout.addWidget(self.plugTopic)
 		row14Layout.addWidget(self.pluginUninstall)
 		row14Layout.addWidget(self.plugUnload)
-		row14Layout.addWidget(self.plugUnmode)
 
 		row15Layout = QHBoxLayout()
+		row15Layout.addWidget(self.plugUnmode)
 		row15Layout.addWidget(self.plugUnpause)
 		row15Layout.addWidget(self.plugUptime)
-		row15Layout.addWidget(QLabel(' '))
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
+		self.plugDescription = QLabel(f"""
+			<small>
+			For more information on plugins, the plugin API, or how to write and use plugins, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
+			</small>
+			""")
+		self.plugDescription.setWordWrap(True)
+		self.plugDescription.setAlignment(Qt.AlignJustify)
+		self.plugDescription.setOpenExternalLinks(True)
+
 		self.eventDescription = QLabel(f"""
 			<small>
-			Uncheck an <b>event</b> to prevent that event from being triggered. Events that are <b>{APPLICATION_NAME}</b> specific
-			are shown in <b>bold</b>. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
+			<center>Events in <b>bold</b> are {APPLICATION_NAME} specific.</center>
 			</small>
 			""")
 		self.eventDescription.setWordWrap(True)
 		self.eventDescription.setAlignment(Qt.AlignJustify)
-		self.eventDescription.setOpenExternalLinks(True)
 
 		allEvents = QVBoxLayout()
 		allEvents.setSpacing(0)
@@ -6839,12 +6947,8 @@ class Dialog(QDialog):
 
 		pBottom = QVBoxLayout()
 		pBottom.setSpacing(0)
-		pBottom.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
+		pBottom.addWidget(widgets.textSeparatorLabel(self,"<b>enable or disable plugin events</b>"))
 		pBottom.addWidget(self.eventDescription)
-
-		plugLayout = QHBoxLayout()
-		plugLayout.addWidget(self.enablePlugins)
-		plugLayout.addWidget(self.plugEditor)
 
 		plugLayout = QFormLayout()
 		plugLayout.setSpacing(0)
@@ -6860,9 +6964,12 @@ class Dialog(QDialog):
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.setSpacing(0)
 		pluginsLayout.addLayout(pTop)
+		pluginsLayout.addWidget(self.plugDescription)
+		pluginsLayout.addStretch()
 		pluginsLayout.addLayout(plugLayout)
 		pluginsLayout.addStretch()
 		pluginsLayout.addLayout(pBottom)
+		pluginsLayout.addStretch()
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
 
@@ -6976,6 +7083,9 @@ class Dialog(QDialog):
 		self.nickLengthHighlight.setRange(0,50)
 		self.nickLengthHighlight.setValue(self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING)
 		self.nickLengthHighlight.valueChanged.connect(self.updateNickHighlightLength)
+
+		if not config.HIGHLIGHT_NICKS_IN_CHAT:
+			self.nickLengthHighlight.setEnabled(False)
 
 		nickHighlightLayout = QHBoxLayout()
 		nickHighlightLayout.addWidget(self.highlightNick)
@@ -7955,6 +8065,7 @@ class Dialog(QDialog):
 		config.USE_KEEPALIVE_HEARTBEAT = self.useHeartbeat.isChecked()
 		config.DO_NOT_RESPOND_TO_CTCP = self.noCTCP.isChecked()
 		config.PLUGIN_CTCP = self.plugCtcp.isChecked()
+		config.PLUGIN_INPUT = self.plugInput.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

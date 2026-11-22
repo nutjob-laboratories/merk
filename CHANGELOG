@@ -19,6 +19,7 @@ What's new:
 - **CTCP replies can now be completely disabled**. By default, MERK replies to CTCP queries. This can be disabled in the "Settings" dialog, on the "User" section, or with the `/config` command. If CTCP query notification is turned on, the client will still display that a request has been made, it will just not respond.
 - **New plugin API event: `ctcp`**. This triggeres every time the client receives a CTCP reply from another user.
 - **New plugin API `Window` class method: `ping()`**. This method sends a CTCP PING to a user.
+- **New plugin API event: `input`**. This triggeres every time the user types something into the text input widget and presses "enter"; this allows plugins to manipulate or replace things the user has typed before it is sent to the server.
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -102,6 +103,9 @@ What's new:
 * If CTCP replies are disabled, the client can still be notified if a CTCP
   request has been made, even though the client is no longer replying to it.
 * Bugfix: fixed a typo in the plugin skeleton.
+* Settings in the "settings" dialog that have both a checkbox AND some other
+  kind of data entry (like a combobox) will have that data entry disabled if
+  the settings is unchecked.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -112,6 +116,9 @@ What's new:
 * New plugin event: ctcp() (which triggeres every time the client receives a
   CTCP reply from another user).
 * New Window class method: ping() (which sends a CTCP ping to a user).
+* New plugin event: input() (which triggeres when a user types something into
+  the text input widget and presses "enter"; this allows plugins to replace or
+  manipulate what is typed in before it is sent to the server).
 
 |------------------------------------------------------------------------------|
 |                                    0.500.050                                 |
