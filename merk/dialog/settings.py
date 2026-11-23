@@ -1736,7 +1736,6 @@ class Dialog(QDialog):
 			self.logEverything.setEnabled(True)
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
-			self.enablePing.setEnabled(True)
 			self.maxChatLabel.setEnabled(True)
 			self.maxChat.setEnabled(True)
 			self.maxChatLabelSpec.setEnabled(True)
@@ -1756,7 +1755,6 @@ class Dialog(QDialog):
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
-			self.enablePing.setEnabled(False)
 			self.maxChatLabel.setEnabled(False)
 			self.maxChat.setEnabled(False)
 			self.maxChatLabelSpec.setEnabled(False)
@@ -1818,11 +1816,6 @@ class Dialog(QDialog):
 
 			self.maxChat.setValue(config.IRC_MAX_PAYLOAD_LENGTH)
 			self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
-
-			if config.SHOW_PINGS_IN_CONSOLE:
-				self.enablePing.setChecked(True)
-			else:
-				self.enablePing.setChecked(False)
 
 			self.alias_symbol.setText(config.ALIAS_INTERPOLATION_SYMBOL)
 
@@ -2699,37 +2692,6 @@ class Dialog(QDialog):
 		self.stack.addWidget(self.applicationPage)
 		self.stack.setCurrentWidget(self.applicationPage)
 
-		f = self.parent.app.font()
-		fs = f.toString()
-		pfs = fs.split(',')
-		font_name = pfs[0]
-		font_size = pfs[1]
-
-		self.fontLabel = QLabel(f"&nbsp;Font: <b>{font_name}, {font_size} pt</b>",self)
-
-		fontButton = QPushButton("")
-		fontButton.clicked.connect(self.menuFont)
-		fontButton.setAutoDefault(False)
-
-		fontDefault = QPushButton("Reset to default")
-		fontDefault.clicked.connect(self.setFontDefault)
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		fontDefault.setFixedHeight(fheight + SETTINGS_BUTTON_ADDON_SIZE)
-		fontDefault.setAutoDefault(False)
-
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		fontButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
-		fontButton.setIcon(QIcon(FONT_ICON))
-		fontButton.setToolTip("Change font")
-
-		fontLayout = QHBoxLayout()
-		fontLayout.addWidget(fontButton)
-		fontLayout.addWidget(self.fontLabel)
-		fontLayout.addStretch()
-		fontLayout.addWidget(fontDefault)
-
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
@@ -2847,17 +2809,15 @@ class Dialog(QDialog):
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.setSpacing(0)
-		applicationLayout.addLayout(logLayout)
 		applicationLayout.addStretch()
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application font</b>"))
-		applicationLayout.addLayout(fontLayout)
+		applicationLayout.addLayout(logLayout)
 		applicationLayout.addStretch()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window settings</b>"))
 		applicationLayout.addLayout(mwsLayout)
-		applicationLayout.addStretch()
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application title settings</b>"))
 		applicationLayout.addLayout(titleLayout)
-		applicationLayout.addStretch()
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		applicationLayout.addLayout(misLayout)
 		applicationLayout.addStretch()
@@ -4361,6 +4321,37 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.appearancePage)
 
+		f = self.parent.app.font()
+		fs = f.toString()
+		pfs = fs.split(',')
+		font_name = pfs[0]
+		font_size = pfs[1]
+
+		self.fontLabel = QLabel(f"&nbsp;Font: <b>{font_name}, {font_size} pt</b>",self)
+
+		fontButton = QPushButton("")
+		fontButton.clicked.connect(self.menuFont)
+		fontButton.setAutoDefault(False)
+
+		fontDefault = QPushButton("Reset to default")
+		fontDefault.clicked.connect(self.setFontDefault)
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		fontDefault.setFixedHeight(fheight + SETTINGS_BUTTON_ADDON_SIZE)
+		fontDefault.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		fontButton.setFixedSize(fheight + SETTINGS_BUTTON_ADDON_SIZE,fheight + SETTINGS_BUTTON_ADDON_SIZE)
+		fontButton.setIcon(QIcon(FONT_ICON))
+		fontButton.setToolTip("Change font")
+
+		fontLayout = QHBoxLayout()
+		fontLayout.addWidget(fontButton)
+		fontLayout.addWidget(self.fontLabel)
+		fontLayout.addStretch()
+		fontLayout.addWidget(fontDefault)
+
 		self.styleDescription = QLabel("""
 			<small>
 			This setting controls how <b>subwindows</b> and <b>widgets</b> look. Different <b>styles</b>
@@ -4575,6 +4566,9 @@ class Dialog(QDialog):
 		mdiOpts.addStretch()
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.setSpacing(0)
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>font</b>"))
+		appearanceLayout.addLayout(fontLayout)
+		appearanceLayout.addStretch()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
@@ -6908,7 +6902,7 @@ class Dialog(QDialog):
 
 		self.plugDescription = QLabel(f"""
 			<small>
-			For more information on plugins, the plugin API, or how to write and use plugins, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
+			For more information on plugins, how to install plugins, or how to write and use plugins, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
 			</small>
 			""")
 		self.plugDescription.setWordWrap(True)
@@ -7371,11 +7365,6 @@ class Dialog(QDialog):
 		self.writeFile.stateChanged.connect(self.changedSettingAdvanced)
 		self.writeFile.setEnabled(False)
 
-		self.enablePing = QCheckBox("Show server pings in server subwindows",self)
-		if config.SHOW_PINGS_IN_CONSOLE: self.enablePing.setChecked(True)
-		self.enablePing.stateChanged.connect(self.changedSettingAdvanced)
-		self.enablePing.setEnabled(False)
-
 		self.searchInstall = QCheckBox(f"Search install directory for files",self)
 		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: self.searchInstall.setChecked(True)
 		self.searchInstall.stateChanged.connect(self.changedSettingAdvanced)
@@ -7487,7 +7476,6 @@ class Dialog(QDialog):
 		asetLayout = QFormLayout()
 		asetLayout.setSpacing(0)
 		asetLayout.addRow(self.floodProtection)
-		asetLayout.addRow(self.enablePing)
 		asetLayout.addRow(self.scanLogs)
 		asetLayout.addRow(self.prevIllegal)
 		asetLayout.addRow(self.prevChannel)
@@ -7843,7 +7831,6 @@ class Dialog(QDialog):
 		config.SHOW_MISSPELLED_WORDS_IN_ITALICS = self.spellcheckItalics.isChecked()
 		config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = self.spellcheckStrikout.isChecked()
 		config.ENABLE_SCRIPTING_ENGINE = self.enableScripts.isChecked()
-		config.SHOW_PINGS_IN_CONSOLE = self.enablePing.isChecked()
 		config.CLOSING_SERVER_WINDOW_DISCONNECTS = self.enableDisconnect.isChecked()
 		config.SHOW_IGNORE_STATUS_IN_USERLISTS = self.ignoreUserlist.isChecked()
 		config.WINDOWBAR_SHOW_UNREAD_MESSAGES = self.windowbarUnread.isChecked()

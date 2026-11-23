@@ -4111,7 +4111,7 @@ class Window(QMainWindow):
 		# END COMMAND HISTORY MANAGEMENT
 		# ==============================
 
-		# Plugin call event
+		# Plugin input event
 		retval = plugins.input_call(self.parent,self,user_input)
 		if retval!=None: user_input = f"{retval}"
 

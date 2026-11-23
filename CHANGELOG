@@ -20,6 +20,7 @@ What's new:
 - **New plugin API event: `ctcp`**. This triggeres every time the client receives a CTCP reply from another user.
 - **New plugin API `Window` class method: `ping()`**. This method sends a CTCP PING to a user.
 - **New plugin API event: `input`**. This triggeres every time the user types something into the text input widget and presses "enter"; this allows plugins to manipulate or replace things the user has typed before it is sent to the server.
+- **The channel status icons are more visible**. The icons were lightened, so that they were easier to see and distinguish.
 - **Many bugfixes**.
 
 |==============================================================================|
@@ -106,6 +107,12 @@ What's new:
 * Settings in the "settings" dialog that have both a checkbox AND some other
   kind of data entry (like a combobox) will have that data entry disabled if
   the settings is unchecked.
+* Removed the "display server pings in server window" setting as it never worked
+  very well, anyway. Documentation has been updated to reflect this, as has the
+  "settings" dialog.
+* Moved the font selector from the "Application" tab to the "Appearance" tab in
+  the "settings" dialog.
+* Lightened the channel status icons, for visibility.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

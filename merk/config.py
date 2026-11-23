@@ -235,7 +235,6 @@ SHOW_MISSPELLED_WORDS_IN_BOLD = False
 SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = False
 SHOW_MISSPELLED_WORDS_IN_COLOR = False
 ENABLE_SCRIPTING_ENGINE = True
-SHOW_PINGS_IN_CONSOLE = False
 CLOSING_SERVER_WINDOW_DISCONNECTS = False
 SHOW_IGNORE_STATUS_IN_USERLISTS = True
 MAXIMUM_INSERT_DEPTH = 10
@@ -754,7 +753,6 @@ def build_settings():
 		"maximum_insert_file_depth": MAXIMUM_INSERT_DEPTH,
 		"show_ignore_status_in_userlists": SHOW_IGNORE_STATUS_IN_USERLISTS,
 		"closing_server_window_disconnects_from_server": CLOSING_SERVER_WINDOW_DISCONNECTS,
-		"display_server_pings_in_server_window": SHOW_PINGS_IN_CONSOLE,
 		"enable_scripting": ENABLE_SCRIPTING_ENGINE,
 		"spellcheck_in_color": SHOW_MISSPELLED_WORDS_IN_COLOR,
 		"spellcheck_in_strikeout": SHOW_MISSPELLED_WORDS_IN_STRIKEOUT,
@@ -1464,8 +1462,6 @@ def patch_settings(settings):
 		settings["show_ignore_status_in_userlists"] = SHOW_IGNORE_STATUS_IN_USERLISTS
 	if not "closing_server_window_disconnects_from_server" in settings:
 		settings["closing_server_window_disconnects_from_server"] = CLOSING_SERVER_WINDOW_DISCONNECTS
-	if not "display_server_pings_in_server_window" in settings:
-		settings["display_server_pings_in_server_window"] = SHOW_PINGS_IN_CONSOLE
 	if not "enable_scripting" in settings:
 		settings["enable_scripting"] = ENABLE_SCRIPTING_ENGINE
 	if not "spellcheck_in_color" in settings:
@@ -2040,7 +2036,6 @@ def load_settings(filename):
 	global SHOW_MISSPELLED_WORDS_IN_STRIKEOUT
 	global SHOW_MISSPELLED_WORDS_IN_COLOR
 	global ENABLE_SCRIPTING_ENGINE
-	global SHOW_PINGS_IN_CONSOLE
 	global CLOSING_SERVER_WINDOW_DISCONNECTS
 	global SHOW_IGNORE_STATUS_IN_USERLISTS
 	global MAXIMUM_INSERT_DEPTH
@@ -2564,7 +2559,6 @@ def load_settings(filename):
 		MAXIMUM_INSERT_DEPTH = settings["maximum_insert_file_depth"]
 		SHOW_IGNORE_STATUS_IN_USERLISTS = settings["show_ignore_status_in_userlists"]
 		CLOSING_SERVER_WINDOW_DISCONNECTS = settings["closing_server_window_disconnects_from_server"]
-		SHOW_PINGS_IN_CONSOLE = settings["display_server_pings_in_server_window"]
 		ENABLE_SCRIPTING_ENGINE = settings["enable_scripting"]
 		SHOW_MISSPELLED_WORDS_IN_COLOR = settings["spellcheck_in_color"]
 		SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = settings["spellcheck_in_strikeout"]
