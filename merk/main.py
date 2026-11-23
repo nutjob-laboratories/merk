@@ -1172,24 +1172,21 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
 		sm.addAction(entry)
 
-		if config.ENABLE_STYLE_EDITOR:
-			entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
-			entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
-			sm.addAction(entry)
+		entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
+		entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
+		sm.addAction(entry)
 
 		entry = QAction(QIcon(LOG_MENU_ICON),"Logs directory",self)
 		entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
 		sm.addAction(entry)
 
-		if config.ENABLE_PLUGINS:
-			entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
-			entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
-			sm.addAction(entry)
+		entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
+		entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
+		sm.addAction(entry)
 
-		if config.ENABLE_SCRIPTING_ENGINE:
-			entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
-			entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
-			sm.addAction(entry)
+		entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
+		entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
+		sm.addAction(entry)
 
 		self.trayLinks = am.addMenu(QIcon(LINK_MENU_ICON),"Links")
 
@@ -5775,24 +5772,21 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
 		sm.addAction(entry)
 
-		if config.ENABLE_STYLE_EDITOR:
-			entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
-			entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
-			sm.addAction(entry)
+		entry = QAction(QIcon(STYLE_MENU_ICON),"Styles directory",self)
+		entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
+		sm.addAction(entry)
 
 		entry = QAction(QIcon(LOG_MENU_ICON),"Logs directory",self)
 		entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
 		sm.addAction(entry)
 
-		if config.ENABLE_PLUGINS:
-			entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
-			entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
-			sm.addAction(entry)
+		entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
+		entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
+		sm.addAction(entry)
 
-		if config.ENABLE_SCRIPTING_ENGINE:
-			entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
-			entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
-			sm.addAction(entry)
+		entry = QAction(QIcon(SCRIPT_MENU_ICON),"Scripts directory",self)
+		entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
+		sm.addAction(entry)
 
 	def buildHelpMenu(self):
 

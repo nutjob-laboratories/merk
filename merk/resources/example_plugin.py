@@ -29,98 +29,21 @@ EXAMPLE_PLUGIN="""# Edit this code to create a new MERK plugin
 
 from merk import Plugin
 
-# |====================|
-# | BEGIN PLUGIN CLASS |
-# |====================|
-
 class ExamplePlugin(Plugin):
 
-    # |------------------------|
-    # | BEGIN PLUGIN ATTIBUTES |
-    # |------------------------|
-
-    NAME = "Example Plugin"
-    AUTHOR = "MERK"
+    NAME    = "Example Plugin"
+    AUTHOR  = "MERK"
     VERSION = "1.0"
-    SOURCE = "https://github.com/nutjob-laboratories/merk"
-
-    # |-----------------------|
-    # | END PLUGIN ATTRIBUTES |
-    # |-----------------------|
+    SOURCE  = "https://github.com/nutjob-laboratories/merk"
 
     # |---------------------|
     # | BEGIN PLUGIN EVENTS |
     # |---------------------|
 
     # All arguments to events are strings unless
-    # otherwise noted.
-
-    # |======|
-    # | init |
-    # |======|
-    #
-    # This event is triggered whenever the plugin is
-    # loaded or reloaded.
-    #
-    # Arguments:
-    #   None
-    #
-    def init(self):
-        pass
-
-    # |===========|
-    # | uninstall |
-    # |===========|
-    #
-    # This event is triggered whenever the plugin is
-    # uninstalled with the plugin manager.
-    #
-    # Arguments:
-    #   None
-    #
-    def uninstall(self):
-        pass
-
-    # |========|
-    # | unload |
-    # |========|
-    #
-    # This event is triggered whenever the plugin is
-    # unloaded. This will be triggered when the plugin
-    # list is reloaded, when the plugin is uninstalled,
-    # and on application exit.
-    #
-    # Arguments:
-    #   None
-    #
-    def unload(self):
-        pass
-
-    # |=======|
-    # | pause |
-    # |=======|
-    #
-    # This event is triggered whenever the plugin is
-    # paused.
-    #
-    # Arguments:
-    #   None
-    #
-    def pause(self):
-        pass
-
-    # |=========|
-    # | unpause |
-    # |=========|
-    #
-    # This event is triggered whenever the plugin is
-    # unpaused.
-    #
-    # Arguments:
-    #   None
-    #
-    def unpause(self):
-        pass
+    # otherwise noted. Please see the MERK User Guide
+    # for more information about these events and
+    # how they work.
 
     # |=====|
     # | ack |
@@ -148,7 +71,8 @@ class ExamplePlugin(Plugin):
     # if the window can't be found.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow the
+    #            message was sent to
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel where the event occurred
     #   user = The user that sent the message
@@ -173,7 +97,8 @@ class ExamplePlugin(Plugin):
     # or private chat window gains focus.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow
+    #            that triggered the event
     #
     def activate(self,**args):
         window = args["window"]
@@ -231,7 +156,8 @@ class ExamplePlugin(Plugin):
     # if the window can't be found.
     #
     # Arguments:
-    #   window = MERK Window object
+    #   window = The MERK Window class of the server subwindow
+    #            that triggered the event
     #   client = The Twisted IRC object that triggered the event
     #
     def connected(self,**args):
@@ -319,6 +245,19 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         message = args["message"]
 
+    # |======|
+    # | init |
+    # |======|
+    #
+    # This event is triggered whenever the plugin is
+    # loaded or reloaded.
+    #
+    # Arguments:
+    #   None
+    #
+    def init(self):
+        pass
+
     # |=======|
     # | input |
     # |=======|
@@ -329,7 +268,8 @@ class ExamplePlugin(Plugin):
     # returns nothing, this event will be ignored.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = MERK Window class of the subwindow that
+    #            triggered the event
     #   user_input = What was typed into the input widget
     #
     def input(self,window,user_input):
@@ -392,7 +332,8 @@ class ExamplePlugin(Plugin):
     # if the window can't be found.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the user joined
     #   user = The user joined
@@ -426,7 +367,8 @@ class ExamplePlugin(Plugin):
     # if the window can't be found.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the user was kicked from
     #   user = The user that issued the kick
@@ -529,7 +471,8 @@ class ExamplePlugin(Plugin):
     # open for it, the "window" argument will be set to None.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   client = The Twisted IRC object that sent the message
     #   target = The channel or user the message was sent to
     #   message = The message
@@ -550,7 +493,8 @@ class ExamplePlugin(Plugin):
     # be set to None if the window can't be found.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the message was sent to
     #   user = The user that sent the message
@@ -647,7 +591,8 @@ class ExamplePlugin(Plugin):
     # be set to None if the window can't be found.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the notice was sent to
     #   user = The user that sent the notice
@@ -673,7 +618,8 @@ class ExamplePlugin(Plugin):
     # window can't be found.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the user left
     #   user = The user that left
@@ -683,6 +629,19 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         channel = args["channel"]
         user = args["user"]
+
+    # |=======|
+    # | pause |
+    # |=======|
+    #
+    # This event is triggered whenever the plugin is
+    # paused.
+    #
+    # Arguments:
+    #   None
+    #
+    def pause(self):
+        pass
 
     # |======|
     # | quit |
@@ -740,7 +699,8 @@ class ExamplePlugin(Plugin):
     # created.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #
     def subwindow(self,**args):
         window = args["window"]
@@ -773,7 +733,8 @@ class ExamplePlugin(Plugin):
     # window can't be found.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   client = The Twisted IRC object that triggered the event
     #   user = The user that set the topic. This may be the
     #          server's name
@@ -786,6 +747,34 @@ class ExamplePlugin(Plugin):
         user = args["user"]
         channel = args["channel"]
         topic = args["topic"]
+
+    # |===========|
+    # | uninstall |
+    # |===========|
+    #
+    # This event is triggered whenever the plugin is
+    # uninstalled with the plugin manager.
+    #
+    # Arguments:
+    #   None
+    #
+    def uninstall(self):
+        pass
+
+    # |========|
+    # | unload |
+    # |========|
+    #
+    # This event is triggered whenever the plugin is
+    # unloaded. This will be triggered when the plugin
+    # list is reloaded, when the plugin is uninstalled,
+    # and on application exit.
+    #
+    # Arguments:
+    #   None
+    #
+    def unload(self):
+        pass
 
     # |========|
     # | unmode |
@@ -809,6 +798,19 @@ class ExamplePlugin(Plugin):
         mode = args["mode"]
         arguments = args["arguments"]
 
+    # |=========|
+    # | unpause |
+    # |=========|
+    #
+    # This event is triggered whenever the plugin is
+    # unpaused.
+    #
+    # Arguments:
+    #   None
+    #
+    def unpause(self):
+        pass
+
     # |========|
     # | uptime |
     # |========|
@@ -817,7 +819,8 @@ class ExamplePlugin(Plugin):
     # channel, or private chat window is in existence.
     #
     # Arguments:
-    #   window = MERK Window
+    #   window = The MERK Window class of the subwindow that
+    #            triggered the event
     #   uptime = Integer. How many seconds the window has been open
     #
     def uptime(self,**args):
@@ -827,8 +830,4 @@ class ExamplePlugin(Plugin):
     # |-------------------|
     # | END PLUGIN EVENTS |
     # |-------------------|
-
-# |==================|
-# | END PLUGIN CLASS |
-# |==================|
 """

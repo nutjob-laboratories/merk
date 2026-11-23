@@ -2,27 +2,6 @@
 |                                    0.500.100                                 |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **Connections to servers not in a network are now made clearer in the client**. Instead of "unknown", the client will no longer attempt to display a network name, and will just display the name of the server. Styles and logs for these connections will no longer be loaded, but are not deleted. Instead of "uknown" being used as the filename prefix for these files, the prefix "[no_network]" is used. The log files can still be viewed in the log viewer, under the "unknown" network, and style files can be loaded with the style editor so they do not have to be recreated. For connections to servers ON a network, nothing will change, and files will still be saved/loaded normally.
-- **The log manager description has been re-added to the client**. If "simplified dialogs" is turned off (the default), a short descriptive text will appear at the top of the log manager dialog describing how to use the log manager and what it does.
-- **The `README` now contains a section on MERK "markdown"**.
-- **New built-in alias: `$_ME`**. This contains the client's hostname or IP address as reported by the server. If the server doesn't report a hostname or IP address, this is set to `unknown`.
-- **New built-in alias: `$_WHEN`**. This contains the date and time the server that the current window is connected to connected to the server. This will use all settings used for timestamps for their display (for example, if timestamps are displayed in UTC, the alias will use UTC).
-- **New built-in alias: `$_CREATED`**. This contains the time the server that the current window is connected to, as reported by the server. If the server does not report a creation time, this will be set to `unknown`.
-- **New built-in alias: `$_MAX`**. This contains the maximum number of users on the server the window is connected to, or `0` if unknown.
-- **New built-in alias: `$_USERS`**. This contains the number of users on the server the window is connected to, or `0` if unknown.
-- **The usermode display can now be hidden**. The usermode display in the nickname display can now be toggled, allowing for usermodes to be hidden.
-- **The "keep alive" heartbeat is now functional**. Whether MERK uses it or not (it's on by default) can be set in the "Settings" dialog or with the `/config` command, as well as the length of the heartbeat.
-- **The "Settings" dialog has been re-arranged**. IRC related settings have been moved to the top of the section selector, while GUI and interface options are now lower.
-- **The `ping` plugin event has been removed**.
-- **CTCP replies can now be completely disabled**. By default, MERK replies to CTCP queries. This can be disabled in the "Settings" dialog, on the "User" section, or with the `/config` command. If CTCP query notification is turned on, the client will still display that a request has been made, it will just not respond.
-- **New plugin API event: `ctcp`**. This triggeres every time the client receives a CTCP reply from another user.
-- **New plugin API `Window` class method: `ping()`**. This method sends a CTCP PING to a user.
-- **New plugin API event: `input`**. This triggeres every time the user types something into the text input widget and presses "enter"; this allows plugins to manipulate or replace things the user has typed before it is sent to the server.
-- **The channel status icons are more visible**. The icons were lightened, so that they were easier to see and distinguish.
-- **Many bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -113,6 +92,21 @@ What's new:
 * Moved the font selector from the "Application" tab to the "Appearance" tab in
   the "settings" dialog.
 * Lightened the channel status icons, for visibility.
+* Bugfix: channels with blank topics could still have empty tooltips displayed,
+  if that option is turned on.
+* Bugfix: the script editor's "Run" menu still displayed networks for servers
+  that do not have a network.
+* Updated all the screenshots in the documentation to reflect the current state
+  of the application.
+* Added an option to disable plugins to the initial connection dialog. This will
+  save the setting to the config file no matter what, even if "save settings" is
+  disabled.
+* All directories are now visible in the "Tools" directory and in the system
+  tray menu, even if certain settings are disabled.
+* Bugfix: topics could be displayed improperly in certain, very rare instances.
+* Cleaned up the documentation, and made some things clearer.
+* Added links to the MERK source code mirrors and the donation site to the
+  documentation.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

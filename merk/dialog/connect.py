@@ -128,6 +128,13 @@ class Dialog(QDialog):
 			retval = ConnectInfo(None,None,None,None,None,None,None,None,None,None)
 			return retval
 
+		if self.initial:
+			if self.disable_plugins:
+				config.ENABLE_PLUGINS = False
+			else:
+				config.ENABLE_PLUGINS = True
+			config.save_settings(config.CONFIG_FILE)
+
 		if self.check_input():
 
 			user_history = list(user.HISTORY)
@@ -506,6 +513,12 @@ class Dialog(QDialog):
 			layout_height = self.tlayout.sizeHint().height()
 			self.pixmap = self.pixmap.scaledToHeight(layout_height, Qt.SmoothTransformation)
 
+	def clickDisable(self):
+		if self.disable_plugins:
+			self.disable_plugins = False
+		else:
+			self.disable_plugins = True
+
 	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False,initial=False):
 		super(Dialog,self).__init__(parent)
 
@@ -519,6 +532,7 @@ class Dialog(QDialog):
 		self.initial = initial
 		self.skipping = False
 		self.use_profile = False
+		self.disable_plugins = False
 
 		config.DO_NOT_SAVE = bool(self.donotsave)
 
@@ -767,7 +781,7 @@ class Dialog(QDialog):
 		self.userDescription.setWordWrap(True)
 		self.userDescription.setAlignment(Qt.AlignJustify)
 
-		self.saveU = QCheckBox("Save to user settings file",self)
+		self.saveU = QCheckBox("Save to user settings",self)
 		self.saveU.stateChanged.connect(self.clickSave)
 		self.saveU.setFont(less_smaller_font)
 
@@ -876,12 +890,27 @@ class Dialog(QDialog):
 			bannerTabs.setSpacing(0)
 			bannerTabs.addWidget(discoMessage)
 			bannerTabs.addWidget(self.tabs)
-			bannerTabs.addWidget(self.saveU)
 		else:
 			bannerTabs = QVBoxLayout()
 			bannerTabs.setSpacing(0)
 			bannerTabs.addWidget(self.tabs)
-			bannerTabs.addWidget(self.saveU)
+
+			if self.initial:
+
+				self.noPlugins = QCheckBox("Disable plugins",self)
+				self.noPlugins.stateChanged.connect(self.clickDisable)
+				self.noPlugins.setFont(less_smaller_font)
+
+				if not config.ENABLE_PLUGINS:
+					self.noPlugins.setChecked(True)
+				
+				bottomSettings = QHBoxLayout()
+				bottomSettings.addWidget(self.saveU)
+				bottomSettings.addStretch()
+				bottomSettings.addWidget(self.noPlugins)
+				bannerTabs.addLayout(bottomSettings)
+			else:
+				bannerTabs.addWidget(self.saveU)
 
 		finalLayout = QVBoxLayout()
 		if self.initial:

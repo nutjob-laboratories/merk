@@ -2716,7 +2716,9 @@ class Window(QMainWindow):
 		else:
 			ICON = USER_MENU_ICON
 			OTHER_TEXT = CHANNEL_NORMAL_TITLE
-		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT!="": OTHER_TEXT = OTHER_TEXT+" (Bot)"
+
+		# Mark bots in the userlist menu
+		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT!="": OTHER_TEXT = f"{OTHER_TEXT} (Bot)"
 		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT=="": OTHER_TEXT = "Bot"
 
 		# Bold channel status text, if it's going to be displayed
@@ -3779,7 +3781,7 @@ class Window(QMainWindow):
 				if config.SHOW_AWAY_NICKNAME_IN_ITALICS:
 					self.nick_display.setText(f"<i>{self.client.nickname}&nbsp;</i>")
 				else:
-					self.nick_display.setText(self.client.nickname+" ")
+					self.nick_display.setText(f"{self.client.nickname} ")
 				if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP:
 					self.nick_display.setToolTip(f"{strip_color(self.client.away_msg)}")
 				else:
@@ -4734,11 +4736,12 @@ class TopicEdit(QPlainTextEdit):
 		else:
 			self.setPlainText(strip_color(text))
 
-		if string_has_irc_formatting_codes(text):
-			text = strip_color(text)
-
 		if config.SHOW_TOPIC_IN_EDITOR_TOOLTIP:
-			self.setToolTip('<div style="white-space:normal;">'+html.escape(strip_color(text))+'</div>')
+			cleaned_topic = html.escape(strip_color(text))
+			if len(cleaned_topic)==0:
+				self.setToolTip('')
+			else:
+				self.setToolTip(f'<div style="white-space:normal;">{cleaned_topic}</div>')
 		else:
 			self.setToolTip('')
 

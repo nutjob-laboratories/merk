@@ -1422,7 +1422,7 @@ class IRC_Connection(irc.IRCClient):
 		realname = params[5]
 
 		if nick in self.request_whois:
-			self.gui.updateHostmask(self,nick,username+"@"+host)
+			self.gui.updateHostmask(self,nick,f"{username}@{host}")
 			return
 
 		if nick in self.whoisdata:

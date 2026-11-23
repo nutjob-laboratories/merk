@@ -1518,7 +1518,10 @@ class Window(QMainWindow):
 			for window in servers:
 				c = window.widget()
 				if hasattr(c.client,"network"):
-					network = c.client.network
+					if c.client.network==config.UNKNOWN_NETWORK_NAME:
+						network = ''
+					else:
+						network = f"{c.client.network}"
 				else:
 					network = "Unknown network"
 				if hasattr(c.client,"server"):
@@ -1530,14 +1533,20 @@ class Window(QMainWindow):
 					cname = c.name
 
 				rma = lambda u=c: self.executeScript(u)
-				runmenuAction = RunMenuItem(self,CONSOLE_WINDOW_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE,rma)
+				if network=='':
+					runmenuAction = RunMenuItem(self,CONSOLE_WINDOW_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+"<br>Execute on server window",CUSTOM_MENU_ICON_SIZE,rma)
+				else:
+					runmenuAction = RunMenuItem(self,CONSOLE_WINDOW_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE,rma)
 				self.runMenu.addAction(runmenuAction)
 
 				chats = self.parent.getAllConnectedChatWindows(c.client)
 				for window in chats:
 					c = window.widget()
 					if hasattr(c.client,"network"):
-						network = c.client.network
+						if c.client.network==config.UNKNOWN_NETWORK_NAME:
+							network = ''
+						else:
+							network = f"{c.client.network}"
 					else:
 						network = "Unknown network"
 					if hasattr(c.client,"hostname"):
@@ -1554,7 +1563,10 @@ class Window(QMainWindow):
 						icon = PRIVATE_MENU_ICON
 
 					rma = lambda u=c: self.executeScript(u)
-					runmenuAction = RunMenuItem(self,icon,"Run on "+c.name+"&nbsp;","<b>Host:</b> "+cname+" ("+network+")<br>Execute on "+ctype+" window",CUSTOM_MENU_ICON_SIZE,rma)
+					if network=='':
+						runmenuAction = RunMenuItem(self,icon,"Run on "+c.name+"&nbsp;","<b>Host:</b> "+cname+"<br>Execute on "+ctype+" window",CUSTOM_MENU_ICON_SIZE,rma)
+					else:
+						runmenuAction = RunMenuItem(self,icon,"Run on "+c.name+"&nbsp;","<b>Host:</b> "+cname+" ("+network+")<br>Execute on "+ctype+" window",CUSTOM_MENU_ICON_SIZE,rma)
 					self.runMenu.addAction(runmenuAction)
 
 				self.runMenu.addSeparator()

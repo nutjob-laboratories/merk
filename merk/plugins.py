@@ -89,7 +89,7 @@ class Window():
 				if hasattr(self._window.client,"network"):
 					starter = self._window.client.network
 				else:
-					starter = self._window.client.server+"-"+str(self._window.client.port)
+					starter = f"{self._window.client.server}-{self._window.client.port}"
 
 				fname = styles.encodeStyleName(starter,self._window.name)
 				fname = os.path.join(styles.STYLE_DIRECTORY,fname)
@@ -216,7 +216,7 @@ class Window():
 						text = strip_color(self._window.channel_topic)
 						if len(text)>0:
 							if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
-								self._window.setWindowTitle(self._window.name+" - "+text)
+								self._window.setWindowTitle(f"{self._window.name} - {text}")
 							else:
 								self._window.setWindowTitle(text)
 						else:
