@@ -499,11 +499,11 @@ CONNECT_SCRIPT_LONG_DESCRIPTION		= f"""
 
 CONNECT_USER_DESCRIPTION			= """
 		<small>
-		<b>Nickname</b> is the nickname you want to use, and <b>alternate</b> (optional) is used
-		if your primary choice is taken. If both <b>nickname</b> and <b>alternate</b> are taken,
-		a random number will be attached to <b>nickname</b>, and that will be used as the nickname.
-		All settings are saved when you click <b>Connect</b>, unless you uncheck <b>Save to user
-		settings file</b> below. Click <b>Save as server profile</b> if you'd like to use this user
+		<b>Nickname</b> is the nickname you want to use, and <b>Alternate</b> is used
+		if your primary choice is taken. If both <b>Nickname</b> and <b>Alternate</b> are taken,
+		a random number will be attached to <b>Nickname</b>, and that will be used as the nickname.
+		All settings are saved when you click <b>Connect</b>, unless you uncheck <b>Save
+		settings</b> below. Click <b>Save as server profile</b> if you'd like to use this user
 		information every time you connect to this specific server.
 		</small>
 		"""
@@ -755,6 +755,8 @@ LOG_VIEWER_TEXT_COLOR				= "black"
 LOG_VIEWER_TEXT_BACKGROUND			= "white"
 LOG_VIEWER_NICK_COLOR				= "02"		# Blue
 LOG_VIEWER_SYSTEM_COLOR				= "04"		# Red
+HTML_BLACK_COLOR					= "#000000"
+HTML_WHITE_COLOR					= "#FFFFFF"
 
 # Channel status names
 

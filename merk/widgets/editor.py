@@ -500,7 +500,7 @@ class Window(QMainWindow):
 		else:
 			script = self.editor.toPlainText()
 			self.highlight = None
-			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor','#000000','#FFFFFF'))
+			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor',HTML_BLACK_COLOR,HTML_WHITE_COLOR))
 			self.editor.setPlainText(script)
 			self.editor.highlight_current_line(True)
 			if reset:

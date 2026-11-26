@@ -154,8 +154,8 @@ def parseColor(style):
 		return text_color
 
 def parseBackgroundAndForegroundColor(style):
-		background_color = "#FFFFFF"
-		text_color = "#000000"
+		background_color = HTML_WHITE_COLOR
+		text_color = HTML_BLACK_COLOR
 		ps = style.split(";")
 		for e in ps:
 			px = e.split(':')

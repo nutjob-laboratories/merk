@@ -584,7 +584,7 @@ class Dialog(QDialog):
 			self.exeTemplate = CONNECT_SCRIPT_LONG_DESCRIPTION
 
 		if self.initial:
-			self.setWindowTitle(f"{APPLICATION_NAME} IRC Client")
+			self.setWindowTitle(f"{APPLICATION_NAME} {APPLICATION_VERSION}")
 			self.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 		else:
 			if self.disconnect_message=='':
@@ -740,6 +740,7 @@ class Dialog(QDialog):
 			serverInfoLayout.addStretch()
 		else:
 			serverInfoLayout.addStretch()
+			serverInfoLayout.addWidget(QLabel(' '))
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)
@@ -761,16 +762,10 @@ class Dialog(QDialog):
 		self.commands.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 		self.commands.highlight_current_line(True)
 
-		# Set the height of the connection script editor
-		height = self.servers.sizeHint().height()+self.reconnect.sizeHint().height()
-		fm = QFontMetrics(self.font())
-		height = (fm.height()*9)+10
-		if self.not_simplified: height = height + (fm.height()*4)
-		self.commands.setFixedHeight(height)
-
 		commandsLayout = QVBoxLayout()
 		commandsLayout.setSpacing(0)
 		commandsLayout.addWidget(self.commandHost)
+		if self.not_simplified: commandsLayout.addWidget(QLabel(' '))
 		commandsLayout.addWidget(self.commands)
 
 		self.tabs = QTabWidget()
@@ -914,32 +909,6 @@ class Dialog(QDialog):
 				bannerTabs.addWidget(self.saveU)
 
 		finalLayout = QVBoxLayout()
-		if self.initial:
-			if not config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG:
-				splash = QLabel()
-				self.pixmap = QPixmap(SPLASH_LOGO)
-				splash.setPixmap(self.pixmap)
-
-				self.tlayout = QVBoxLayout()
-				self.tlayout.setSpacing(0)
-				self.tlayout.addStretch()
-				self.tlayout.addWidget(QLabel("<small><b>&nbsp;Free And Open Source</b></small>"))
-				self.tlayout.addWidget(QLabel("<small><b>&nbsp;Internet Relay Chat</b></small>"))
-				self.tlayout.addWidget(QLabel(f"<small><b>&nbsp;Version {APPLICATION_VERSION}</b></small>"))
-				self.tlayout.addStretch()
-
-				spLayout = QHBoxLayout()
-				spLayout.setSpacing(0)
-				spLayout.addStretch()
-				spLayout.addWidget(splash)
-				spLayout.addStretch()
-				spLayout.addLayout(self.tlayout)
-				spLayout.addStretch()
-
-				vLayout = QVBoxLayout()
-				vLayout.addLayout(spLayout)
-
-				finalLayout.addLayout(vLayout)
 		finalLayout.addLayout(bannerTabs)
 		if self.initial:
 			finalLayout.addLayout(initialLayout)

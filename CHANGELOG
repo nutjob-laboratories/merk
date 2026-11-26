@@ -2,6 +2,13 @@
 |                                    0.500.150                                 |
 |------------------------------------------------------------------------------|
 
+What's new:
+
+- **The "write outgoing private messages to the server window" setting's default value has been changed to `false`**.
+- **The logo has been removed from the initial connection dialog**. The setting to toggle that display has also been removed.
+- **The layout of the connection dialog has been re-worked**. The dialog was getting a little too "big", and it has been "shrunk" considerably.
+- **Many, many bugfixes**.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -20,6 +27,17 @@
   from the log list.
 * The "/window layout" command now timestamps the generated script with the
   application timestamp settings.
+* Reworked the "Messages" page in the "settings" dialog.
+* Changed the default setting for the "write private messages to the server
+  subwindow" from "true" to "false".
+* Bugfix: if the "create subwindows for outgoing private messages" setting was
+  turned on, and "display outgoing private messages" setting was also turned
+  on, both would occur. Now, the "create subwindow" setting takes precedence,
+  and if that setting is enabled, displaying the private message in the current
+  window no longer occurs.
+* Re-wrote the descriptive text on the "user" tab.
+* Removed the logo from the initial connection dialog, and removed the option to
+  toggle that logo from the configuration file and the "settings" dialog.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.100                                 |

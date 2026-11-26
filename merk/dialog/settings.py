@@ -1019,6 +1019,15 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingOutgoing(self):
+		if self.createWindowOut.isChecked():
+			self.writeMessageOut.setEnabled(False)
+		else:
+			self.writeMessageOut.setEnabled(True)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSettingFlood(self):
 		if self.floodProtection.isChecked():
 			self.maxChatLabel.setEnabled(True)
@@ -2711,10 +2720,6 @@ class Dialog(QDialog):
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE: self.noAppNameTitle.setChecked(True)
 		self.noAppNameTitle.stateChanged.connect(self.changedSetting)
 		
-		self.noConnectLogo = QCheckBox(f"Hide {APPLICATION_NAME} logo on the initial connection dialog",self)
-		if config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG: self.noConnectLogo.setChecked(True)
-		self.noConnectLogo.stateChanged.connect(self.changedSetting)
-		
 		self.showConnect = QCheckBox("Show connection dialog on startup",self)
 		if config.ASK_FOR_SERVER_ON_STARTUP: self.showConnect.setChecked(True)
 		self.showConnect.stateChanged.connect(self.changedSetting)
@@ -2763,7 +2768,6 @@ class Dialog(QDialog):
 		misLayout.addWidget(self.showTips)
 		misLayout.addWidget(self.appShortcuts)
 		misLayout.addWidget(self.showConnect)
-		misLayout.addWidget(self.noConnectLogo)
 		misLayout.addWidget(self.enableDnD)
 		misLayout.addWidget(self.managerTop)
 		
@@ -4163,15 +4167,15 @@ class Dialog(QDialog):
 		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
 		self.showLinks.stateChanged.connect(self.changedSettingRerender)
 
-		self.createWindow = QCheckBox("Create subwindows for incoming private messages",self)
+		self.createWindow = QCheckBox("Create subwindows for incoming messages",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
 		self.createWindow.stateChanged.connect(self.changedSetting)
 		
-		self.createWindowOut = QCheckBox("Create subwindows for outgoing private messages",self)
+		self.createWindowOut = QCheckBox("Create subwindows for outgoing messages",self)
 		if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES: self.createWindowOut.setChecked(True)
-		self.createWindowOut.stateChanged.connect(self.changedSetting)
+		self.createWindowOut.stateChanged.connect(self.changedSettingOutgoing)
 		
-		self.writePrivate = QCheckBox("Write private messages to server subwindow",self)
+		self.writePrivate = QCheckBox("Write messages to server subwindow",self)
 		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
 		self.writePrivate.stateChanged.connect(self.changedSetting)
 		
@@ -4201,13 +4205,16 @@ class Dialog(QDialog):
 		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
 		self.ignoreCreateWindow.stateChanged.connect(self.changedSetting)
 		
-		self.createNotice = QCheckBox("Create subwindows for incoming private notices",self)
+		self.createNotice = QCheckBox("Create subwindows for incoming notices",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
 		self.createNotice.stateChanged.connect(self.changedSetting)
 
-		self.writeMessageOut = QCheckBox("Write outgoing private messages to the current\nsubwindow",self)
+		self.writeMessageOut = QCheckBox("Write outgoing messages to the current subwindow",self)
 		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
 		self.writeMessageOut.stateChanged.connect(self.changedSetting)
+
+		if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
+			self.writeMessageOut.setEnabled(False)
 
 		self.showFullMode = QCheckBox("Full user info in mode messages",self)
 		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES: self.showFullMode.setChecked(True)
@@ -4233,7 +4240,7 @@ class Dialog(QDialog):
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
 
-		self.dblNick = QCheckBox("Double click nicks in chat to private message",self)
+		self.dblNick = QCheckBox("Double click nicks in chat to message",self)
 		if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE: self.dblNick.setChecked(True)
 		self.dblNick.stateChanged.connect(self.changedSetting)
 
@@ -4266,13 +4273,14 @@ class Dialog(QDialog):
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
-		pmLayout.addWidget(self.dblNick)
+		
 		pmLayout.addWidget(self.createWindow)
 		pmLayout.addWidget(self.createNotice)
-		pmLayout.addWidget(self.ignoreCreateWindow)
 		pmLayout.addWidget(self.createWindowOut)
-		pmLayout.addWidget(self.writePrivate)
 		pmLayout.addWidget(self.writeMessageOut)
+		pmLayout.addWidget(self.writePrivate)
+		pmLayout.addWidget(self.ignoreCreateWindow)
+		pmLayout.addWidget(self.dblNick)
 
 		self.partMsg = EmojiQuitAutocomplete(self)
 		self.partMsg.setText(self.default_quit_part)
@@ -7825,7 +7833,6 @@ class Dialog(QDialog):
 		config.SHOW_DATES_IN_LOGS = self.showDates.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = self.autoAliasAway.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = self.autoAliasQuit.isChecked()
-		config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = self.noConnectLogo.isChecked()
 		config.ASK_FOR_SERVER_ON_STARTUP = self.showConnect.isChecked()
 		config.PROMPT_FOR_SCRIPT_FILE = self.promptScript.isChecked()
 		config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = self.serverHidden.isChecked()

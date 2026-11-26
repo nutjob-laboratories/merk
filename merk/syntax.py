@@ -40,6 +40,7 @@ import re
 import platform
 
 from . import config
+from .resources import *
 
 class PythonHighlighter(QSyntaxHighlighter):
 	def __init__(self, document):
@@ -160,7 +161,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			if c in special:
 				c = '\\'+c
 			aliassymbol = aliassymbol + c
-
 
 		merk = [
 			cmdsymbol+"part",
@@ -458,6 +458,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_ALIASES: 
 			STYLES['alias'] = format(config.SYNTAX_FOREGROUND,'')
 
+
+		# Build syntax highlighting rules
+
 		rules = []
 
 		# Commands
@@ -504,6 +507,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		self.rules = [(QRegExp(pat), index, fmt)
 			for (pat, index, fmt) in rules]
 
+		# Apply syntax highlighting
+
 		self.string_highlighting.append((QRegExp(r'"[^"\\]*(\\.[^"\\]*)*"'), STYLES['string']))
 		self.string_highlighting.append((QRegExp(r"'[^'\\]*(\\.[^'\\]*)*'"), STYLES['string']))
 
@@ -532,12 +537,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 class IRCFullHighlighter(QSyntaxHighlighter):
 	def __init__(self, parent=None):
 		super().__init__(parent)
-		self.irc_colors = {
-			"00": "#FFFFFF", "01": "#000000", "02": "#00007F", "03": "#009300",
-			"04": "#FF0000", "05": "#7F0000", "06": "#9C009C", "07": "#FC7F00",
-			"08": "#FFFF00", "09": "#00FC00", "10": "#009393", "11": "#00FFFF",
-			"12": "#0000FC", "13": "#FF00FF", "14": "#7F7F7F", "15": "#D2D2D2",
-		}
 
 	def highlightBlock(self, text):
 		pattern = r"\x03(\d{1,2})?(?:,(\d{1,2}))?|[\x02\x1d\x1f\x1e\x0f]"
@@ -558,11 +557,11 @@ class IRCFullHighlighter(QSyntaxHighlighter):
 			if token.startswith("\x03"):
 				fg, bg = match.captured(1), match.captured(2)
 				if fg:
-					current_format.setForeground(QColor(self.irc_colors.get(fg.zfill(2), "#000000")))
+					current_format.setForeground(QColor(IRC_COLORS.get(fg.zfill(2), HTML_BLACK_COLOR)))
 				if bg:
-					current_format.setBackground(QColor(self.irc_colors.get(bg.zfill(2), "#FFFFFF")))
+					current_format.setBackground(QColor(IRC_COLORS.get(bg.zfill(2), HTML_WHITE_COLOR)))
 				if not fg and not bg:
-					current_format.setForeground(QColor("#000000"))
+					current_format.setForeground(QColor(HTML_BLACK_COLORHTML_BLACK_COLOR))
 					current_format.setBackground(Qt.transparent)
 
 			elif token == "\x02": # Bold

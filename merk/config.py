@@ -52,7 +52,7 @@ DICTIONARY = [
 NICKNAME_PAD_LENGTH = 15
 DISPLAY_TIMESTAMP = True
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = True
-WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = True
+WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = False
 ISSUE_COMMAND_SYMBOL = '/'
 DEFAULT_QUIT_MESSAGE = APPLICATION_NAME+" $_VERSION"
 DEFAULT_SPELLCHECK_LANGUAGE = "en"
@@ -250,7 +250,6 @@ LOG_CHANNEL_NOTICE = True
 SHOW_DATES_IN_LOGS = True
 INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = True
 INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = True
-HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = False
 ASK_FOR_SERVER_ON_STARTUP = True
 PROMPT_FOR_SCRIPT_FILE = False
 SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = True
@@ -737,7 +736,6 @@ def build_settings():
 		"show_hidden_server_windows_in_windowbar": SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR,
 		"prompt_for_file_on_calling_script_with_no_arguments": PROMPT_FOR_SCRIPT_FILE,
 		"show_connection_dialog_on_startup": ASK_FOR_SERVER_ON_STARTUP,
-		"hide_logo_on_initial_connection_dialog": HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG,
 		"interpolate_aliases_into_quit_message": INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE,
 		"interpolate_aliases_into_away_message": INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE,
 		"display_dates_in_logs": SHOW_DATES_IN_LOGS,
@@ -848,7 +846,7 @@ def build_settings():
 		"display_timestamp": DISPLAY_TIMESTAMP,
 		"timestamp_format": TIMESTAMP_FORMAT,
 		"create_window_for_incoming_private_messages": CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES,
-		"write_private_messages_to_server_window": WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW,
+		"write_private_message_to_server_subwindow": WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW,
 		"issue_command_symbol": ISSUE_COMMAND_SYMBOL,
 		"quit_message": DEFAULT_QUIT_MESSAGE,
 		"default_spellcheck_language": DEFAULT_SPELLCHECK_LANGUAGE,
@@ -1430,8 +1428,6 @@ def patch_settings(settings):
 		settings["prompt_for_file_on_calling_script_with_no_arguments"] = PROMPT_FOR_SCRIPT_FILE
 	if not "show_connection_dialog_on_startup" in settings:
 		settings["show_connection_dialog_on_startup"] = ASK_FOR_SERVER_ON_STARTUP
-	if not "hide_logo_on_initial_connection_dialog" in settings:
-		settings["hide_logo_on_initial_connection_dialog"] = HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
 	if not "interpolate_aliases_into_quit_message" in settings:
 		settings["interpolate_aliases_into_quit_message"] = INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE
 	if not "interpolate_aliases_into_away_message" in settings:
@@ -1798,8 +1794,8 @@ def patch_settings(settings):
 		settings["timestamp_format"] = TIMESTAMP_FORMAT
 	if not "create_window_for_incoming_private_messages" in settings:
 		settings["create_window_for_incoming_private_messages"] = CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES
-	if not "write_private_messages_to_server_window" in settings:
-		settings["write_private_messages_to_server_window"] = WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
+	if not "write_private_message_to_server_subwindow" in settings:
+		settings["write_private_message_to_server_subwindow"] = WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
 	if not "issue_command_symbol" in settings:
 		settings["issue_command_symbol"] = ISSUE_COMMAND_SYMBOL
 	if not "quit_message" in settings:
@@ -2051,7 +2047,6 @@ def load_settings(filename):
 	global SHOW_DATES_IN_LOGS
 	global INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE
 	global INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE
-	global HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
 	global ASK_FOR_SERVER_ON_STARTUP
 	global PROMPT_FOR_SCRIPT_FILE
 	global SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR
@@ -2543,7 +2538,6 @@ def load_settings(filename):
 		SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = settings["show_hidden_server_windows_in_windowbar"]
 		PROMPT_FOR_SCRIPT_FILE = settings["prompt_for_file_on_calling_script_with_no_arguments"]
 		ASK_FOR_SERVER_ON_STARTUP = settings["show_connection_dialog_on_startup"]
-		HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = settings["hide_logo_on_initial_connection_dialog"]
 		INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = settings["interpolate_aliases_into_quit_message"]
 		INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = settings["interpolate_aliases_into_away_message"]
 		SHOW_DATES_IN_LOGS = settings["display_dates_in_logs"]
@@ -2717,7 +2711,7 @@ def load_settings(filename):
 		DISPLAY_TIMESTAMP = settings["display_timestamp"]
 		TIMESTAMP_FORMAT = settings["timestamp_format"]
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = settings["create_window_for_incoming_private_messages"]
-		WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = settings["write_private_messages_to_server_window"]
+		WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = settings["write_private_message_to_server_subwindow"]
 		ISSUE_COMMAND_SYMBOL = settings["issue_command_symbol"]
 		DEFAULT_QUIT_MESSAGE = settings["quit_message"]
 		DEFAULT_SPELLCHECK_LANGUAGE = settings["default_spellcheck_language"]

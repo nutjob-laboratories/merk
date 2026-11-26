@@ -6529,7 +6529,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
 						w = gui.newPrivateWindow(target,window.client)
 
-				if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
+				if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW and not config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
 					if not is_script:
 						t = Message(ACTION_MESSAGE,PRIVATE_MESSAGE_INDICATOR+target+" "+window.client.nickname,msg)
 						window.writeText(t)
@@ -9030,7 +9030,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 			window.client.msg(target,msg)
 
-			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
+			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW and not config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
 				if not is_script:
 					if window.name!=target:
 						t = Message(SELF_MESSAGE,PRIVATE_MESSAGE_INDICATOR+target,msg)
