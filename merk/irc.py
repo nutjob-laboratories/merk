@@ -2002,7 +2002,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		config.load_settings(config.CONFIG_FILE)
 
 		# Get HTML server log dump
-		html_log_dump = self.kwargs["gui"].log_dump.pop(f"{self.kwargs["client_id"]}","Server log not found")
+		html_log_dump = self.kwargs["gui"].log_dump.pop(f"{self.kwargs['client_id']}","Server log not found")
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
@@ -2021,7 +2021,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			return
 
 		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
-			msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.</b>"
+			msg = f"<b>Connection to {self.kwargs['server']}:{self.kwargs['port']} lost.</b>"
 			msgBox = QMessageBox()
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(msg)
@@ -2040,7 +2040,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			
 			rval = msgBox.exec()
 			if rval == QMessageBox.RejectRole:
-				self.kwargs["gui"].newLogdumpWindow(html_log_dump,f"{self.kwargs["server"]}:{self.kwargs["port"]}")
+				self.kwargs["gui"].newLogdumpWindow(html_log_dump,f"{self.kwargs['server']}:{self.kwargs['port']}")
 			else:
 				return
 
@@ -2059,11 +2059,11 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
 		if config.PROMPT_ON_FAILED_CONNECTION:
-			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+			msg = f"Connection to {self.kwargs['server']}:{self.kwargs['port']} failed."
 			self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
 		else:
 			if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
-				msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed.</b>"
+				msg = f"<b>Connection to {self.kwargs['server']}:{self.kwargs['port']} failed.</b>"
 
 				msgBox = QMessageBox()
 				msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
@@ -2090,7 +2090,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		config.load_settings(config.CONFIG_FILE)
 
 		# Get HTML server log dump
-		html_log_dump = self.kwargs["gui"].log_dump.pop(f"{self.kwargs["client_id"]}","Server log not found")
+		html_log_dump = self.kwargs["gui"].log_dump.pop(f"{self.kwargs['client_id']}","Server log not found")
 
 		if not self.kwargs["client_id"] in CONNECTIONS: return
 
@@ -2150,7 +2150,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			return
 
 		if config.ASK_BEFORE_RECONNECT:
-			msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.</b><br><br>Try to reconnect?"
+			msg = f"<b>Connection to {self.kwargs['server']}:{self.kwargs['port']} lost.</b><br><br>Try to reconnect?"
 			msgBox = QMessageBox()
 			msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 			msgBox.setText(msg)
@@ -2237,11 +2237,11 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
 		else:
 			if config.PROMPT_ON_FAILED_CONNECTION:
-				msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+				msg = f"Connection to {self.kwargs['server']}:{self.kwargs['port']} failed."
 				self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
 			else:
 				if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
-					msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed.</b>"
+					msg = f"<b>Connection to {self.kwargs['server']}:{self.kwargs['port']} failed.</b>"
 					msgBox = QMessageBox()
 					msgBox.setWindowIcon(QIcon(APPLICATION_MENU_ICON))
 					msgBox.setText(msg)

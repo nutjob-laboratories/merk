@@ -254,6 +254,8 @@ class Window(QMainWindow):
 
 		self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
 
+		self.packlist.setCurrentRow(-1)
+
 		self.dump.setText('')
 
 	def closeEvent(self, event):

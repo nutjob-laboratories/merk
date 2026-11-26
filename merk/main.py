@@ -2055,10 +2055,11 @@ class Merk(QMainWindow):
 				plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 		# Write the notice to the server window
-		w = self.getServerWindow(client)
-		if w:
+		# Thanks to Brian for the bugfix!
+		sw = self.getServerWindow(client)
+		if sw and sw is not w:
 			t = Message(NOTICE_MESSAGE,user,msg)
-			w.writeText(t)
+			sw.writeText(t)
 
 	def gotTime(self,client,server,time):
 
@@ -3575,7 +3576,7 @@ class Merk(QMainWindow):
 		return None
 
 	def getSubWindowCommand(self,channel,client):
-		if channel=='&':
+		if channel==BLANK_OR_SERVER_WINDOW_SYMBOL:
 			for window in self.MDI.subWindowList():
 				c = window.widget()
 				if hasattr(c,"client"):

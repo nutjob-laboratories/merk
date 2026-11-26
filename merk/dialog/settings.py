@@ -1019,6 +1019,19 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingFlood(self):
+		if self.floodProtection.isChecked():
+			self.maxChatLabel.setEnabled(True)
+			self.maxChat.setEnabled(True)
+			self.maxChatLabelSpec.setEnabled(True)
+		else:
+			self.maxChatLabel.setEnabled(False)
+			self.maxChat.setEnabled(False)
+			self.maxChatLabelSpec.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedAutoAway(self,state):
 		if self.autoAway.isChecked():
 			self.autoawayInterval.setEnabled(True)
@@ -1736,10 +1749,6 @@ class Dialog(QDialog):
 			self.logEverything.setEnabled(True)
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
-			self.maxChatLabel.setEnabled(True)
-			self.maxChat.setEnabled(True)
-			self.maxChatLabelSpec.setEnabled(True)
-			self.floodProtection.setEnabled(True)
 			self.errorConsole.setEnabled(True)
 			self.searchInstall.setEnabled(True)
 			self.prevIllegal.setEnabled(True)
@@ -1755,10 +1764,6 @@ class Dialog(QDialog):
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
-			self.maxChatLabel.setEnabled(False)
-			self.maxChat.setEnabled(False)
-			self.maxChatLabelSpec.setEnabled(False)
-			self.floodProtection.setEnabled(False)
 			self.errorConsole.setEnabled(False)
 			self.searchInstall.setEnabled(False)
 			self.prevIllegal.setEnabled(False)
@@ -1808,14 +1813,6 @@ class Dialog(QDialog):
 				self.errorConsole.setChecked(True)
 			else:
 				self.errorConsole.setChecked(False)
-
-			if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
-				self.floodProtection.setChecked(True)
-			else:
-				self.floodProtection.setChecked(False)
-
-			self.maxChat.setValue(config.IRC_MAX_PAYLOAD_LENGTH)
-			self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
 
 			self.alias_symbol.setText(config.ALIAS_INTERPOLATION_SYMBOL)
 
@@ -2809,9 +2806,7 @@ class Dialog(QDialog):
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.setSpacing(0)
-		applicationLayout.addStretch()
 		applicationLayout.addLayout(logLayout)
-		applicationLayout.addStretch()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window settings</b>"))
 		applicationLayout.addLayout(mwsLayout)
 		applicationLayout.addWidget(QLabel(' '))
@@ -3100,14 +3095,6 @@ class Dialog(QDialog):
 		if config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS: self.notifyRepeated.setChecked(True)
 		self.notifyRepeated.stateChanged.connect(self.changedSetting)
 
-		self.ircErrors = QCheckBox("Display server errors in the current subwindow",self)
-		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW: self.ircErrors.setChecked(True)
-		self.ircErrors.stateChanged.connect(self.changedSetting)
-
-		self.ircAllErrors = QCheckBox("Display all server errors, even those handled\nautomatically",self)
-		if config.SHOW_ALL_SERVER_ERRORS: self.ircAllErrors.setChecked(True)
-		self.ircAllErrors.stateChanged.connect(self.changedSetting)
-
 		self.automaticList = QCheckBox("Refresh channel list every",self)
 		if config.AUTOMATICALLY_REFRESH_CHANNEL_LIST: self.automaticList.setChecked(True)
 		self.automaticList.stateChanged.connect(self.changedSettingListTime)
@@ -3183,6 +3170,28 @@ class Dialog(QDialog):
 		if not config.USE_KEEPALIVE_HEARTBEAT:
 			self.heartbeatLength.setEnabled(False)
 
+		self.maxChatLabel = QLabel("Maximum message length: ")
+		self.maxChatLabelSpec = QLabel(" characters")
+		self.maxChat = QSpinBox()
+		self.maxChat.setRange(1,450)
+		self.maxChat.setValue(self.IRC_MAX_PAYLOAD_LENGTH)
+		self.maxChat.valueChanged.connect(self.updateMaxChat)
+
+		maxLayout = QHBoxLayout()
+		maxLayout.addWidget(self.maxChatLabel)
+		maxLayout.addWidget(self.maxChat)
+		maxLayout.addWidget(self.maxChatLabelSpec)
+		maxLayout.addStretch()
+
+		self.floodProtection = QCheckBox("Flood protection for long messages",self)
+		if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES: self.floodProtection.setChecked(True)
+		self.floodProtection.stateChanged.connect(self.changedSettingFlood)
+
+		if not config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
+			self.maxChatLabel.setEnabled(False)
+			self.maxChat.setEnabled(False)
+			self.maxChatLabelSpec.setEnabled(False)
+
 		hbLayout = QHBoxLayout()
 		hbLayout.addWidget(self.useHeartbeat)
 		hbLayout.addWidget(self.heartbeatLength)
@@ -3205,7 +3214,6 @@ class Dialog(QDialog):
 
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(0)
-		csLayout.addLayout(hbLayout)
 		csLayout.addWidget(self.saveHistory)
 		csLayout.addWidget(self.askBeforeDisconnect)
 		csLayout.addWidget(self.notifyOnLostConnection)
@@ -3213,13 +3221,14 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.askBeforeReconnect)
 		csLayout.addLayout(delayLayout)
 		csLayout.addWidget(self.notifyRepeated)
+		csLayout.addLayout(connTimeoutLayout)
 		csLayout.addWidget(self.connectMultiple)
 		csLayout.addWidget(self.useSasl)
 		csLayout.addWidget(self.failSasl)
-		csLayout.addLayout(connTimeoutLayout)
+		csLayout.addWidget(self.floodProtection)
+		csLayout.addLayout(maxLayout)
+		csLayout.addLayout(hbLayout)
 		csLayout.addWidget(self.showNetLinks)
-		csLayout.addWidget(self.ircErrors)
-		csLayout.addWidget(self.ircAllErrors)
 		csLayout.addWidget(self.showFullUser)
 		csLayout.addWidget(self.requestList)
 		csLayout.addWidget(self.showList)
@@ -3255,6 +3264,7 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addLayout(csLayout)
 		connectionsLayout.addStretch()
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>erroneous nickname fallback</b>"))
 		connectionsLayout.addWidget(self.erroneousDescription)
 		connectionsLayout.addLayout(eLayout)
 		connectionsLayout.addStretch()
@@ -3306,7 +3316,7 @@ class Dialog(QDialog):
 		if config.CHANNEL_MODE_CONTEXT_MENU: self.chanMode.setChecked(True)
 		self.chanMode.stateChanged.connect(self.changeChannelModeMenu)
 
-		self.changeChanMode = QCheckBox("Change modes in menu",self)
+		self.changeChanMode = QCheckBox("Set modes in menu",self)
 		if config.CHANGE_CHANNEL_MODE_FROM_MODE_MENU: self.changeChanMode.setChecked(True)
 		self.changeChanMode.stateChanged.connect(self.changedSetting)
 
@@ -3471,10 +3481,10 @@ class Dialog(QDialog):
 		chanButtonLayout = QVBoxLayout()
 		chanButtonLayout.setSpacing(0)
 		chanButtonLayout.addLayout(cbL1)
+		chanButtonLayout.addLayout(cbL4)
 		chanButtonLayout.addLayout(cbL2)
 		chanButtonLayout.addLayout(cbL3)
-		chanButtonLayout.addLayout(cbL4)
-
+		
 		ulistDisplay1 = QFormLayout()
 		ulistDisplay1.setSpacing(0)
 		ulistDisplay1.addRow(self.showUserlists,self.showUserlistLeft)
@@ -3700,7 +3710,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.awayPage)
 
-		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided\nwith the {config.ISSUE_COMMAND_SYMBOL}away command or when pressing the\n\"Set status to away\" button on the server\nsubwindow toolbar or menus",self)
+		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided",self)
 		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
 		self.promptAway.stateChanged.connect(self.changedSetting)
 
@@ -4108,7 +4118,7 @@ class Dialog(QDialog):
 		logLayout.setSpacing(0)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
-		logLayout.addStretch()
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addLayout(chanLayout)
 		logLayout.addLayout(privLayout)
 		logLayout.addStretch()
@@ -4231,6 +4241,14 @@ class Dialog(QDialog):
 		if config.UNDERLINE_MENTION: self.undMention.setChecked(True)
 		self.undMention.stateChanged.connect(self.changedSettingRerender)
 
+		self.ircErrors = QCheckBox("Display server errors in the current subwindow",self)
+		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW: self.ircErrors.setChecked(True)
+		self.ircErrors.stateChanged.connect(self.changedSetting)
+
+		self.ircAllErrors = QCheckBox("Display all server errors",self)
+		if config.SHOW_ALL_SERVER_ERRORS: self.ircAllErrors.setChecked(True)
+		self.ircAllErrors.stateChanged.connect(self.changedSetting)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -4243,6 +4261,8 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.showLusers)
 		msLayout.addWidget(self.showIson)
 		msLayout.addWidget(self.autoJoin)
+		msLayout.addWidget(self.ircErrors)
+		msLayout.addWidget(self.ircAllErrors)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
@@ -6004,19 +6024,19 @@ class Dialog(QDialog):
 		if config.CLICK_SYSTRAY_ICON_TO_TOGGLE_VISIBILITY: self.doubleclickRestore.setChecked(True)
 		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
 		
-		self.stmConnections = QCheckBox("Connections",self)
+		self.stmConnections = QCheckBox("Active connections",self)
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
 		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
 
-		self.stmNick = QCheckBox("Nicks",self)
+		self.stmNick = QCheckBox("Set nickname ",self)
 		if config.SHOW_NICK_IN_SYSTRAY_MENU: self.stmNick.setChecked(True)
 		self.stmNick.stateChanged.connect(self.changedSetting)
 
-		self.stmJoin = QCheckBox("Channel join",self)
+		self.stmJoin = QCheckBox("Channel join ",self)
 		if config.SHOW_JOIN_IN_SYSTRAY_MENU: self.stmJoin.setChecked(True)
 		self.stmJoin.stateChanged.connect(self.changedSetting)
 
-		self.stmAway = QCheckBox("Away/back",self)
+		self.stmAway = QCheckBox("Set away/back",self)
 		if config.SHOW_AWAY_IN_SYSTRAY_MENU: self.stmAway.setChecked(True)
 		self.stmAway.stateChanged.connect(self.changedSetting)
 
@@ -6033,6 +6053,7 @@ class Dialog(QDialog):
 		menuRow3.addStretch()
 
 		menuBox = QVBoxLayout()
+		menuBox.setSpacing(0)
 		menuBox.addLayout(menuRow1)
 		menuBox.addLayout(menuRow3)
 
@@ -7302,10 +7323,10 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC color \"markup\"</b>"))
 		miscLayout.addLayout(inputOptionsLayout)
 		miscLayout.addStretch()
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list search settings</b>"))
 		miscLayout.addLayout(setLayout)
 		miscLayout.addStretch()
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkey settings</b>"))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow hotkey settings</b>"))
 		miscLayout.addLayout(hkLayout)
 		miscLayout.addStretch()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored configuration settings</b>"))
@@ -7346,7 +7367,8 @@ class Dialog(QDialog):
 			prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br><br>
 			<small>If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag, which will reset all
-			settings to the default. For more information,
+			settings to the default. Alternately, if you delete <b>settings.json</b> in the settings directory, <b>{APPLICATION_NAME}</b>
+			will recreate this file with all default settings. For more information,
 			please see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
 			</small>
 			
@@ -7374,28 +7396,6 @@ class Dialog(QDialog):
 		aoLayout.addStretch()
 		aoLayout.addWidget(self.advancedEnable)
 		aoLayout.addStretch()
-
-		self.maxChatLabel = QLabel("Max message length:")
-		self.maxChatLabelSpec = QLabel("characters")
-		self.maxChat = QSpinBox()
-		self.maxChat.setRange(1,450)
-		self.maxChat.setValue(self.IRC_MAX_PAYLOAD_LENGTH)
-		self.maxChat.valueChanged.connect(self.updateMaxChat)
-
-		maxLayout = QHBoxLayout()
-		maxLayout.addWidget(self.maxChatLabel)
-		maxLayout.addWidget(self.maxChat)
-		maxLayout.addWidget(self.maxChatLabelSpec)
-		maxLayout.addStretch()
-
-		self.maxChatLabel.setEnabled(False)
-		self.maxChat.setEnabled(False)
-		self.maxChatLabelSpec.setEnabled(False)
-
-		self.floodProtection = QCheckBox("Flood protection for long messages",self)
-		if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES: self.floodProtection.setChecked(True)
-		self.floodProtection.stateChanged.connect(self.changedSettingAdvanced)
-		self.floodProtection.setEnabled(False)
 
 		self.errorConsole = QCheckBox("Write all script errors to STDOUT",self)
 		if config.PRINT_SCRIPT_ERRORS_TO_STDOUT: self.errorConsole.setChecked(True)
@@ -7475,7 +7475,6 @@ class Dialog(QDialog):
 
 		asetLayout = QFormLayout()
 		asetLayout.setSpacing(0)
-		asetLayout.addRow(self.floodProtection)
 		asetLayout.addRow(self.scanLogs)
 		asetLayout.addRow(self.prevIllegal)
 		asetLayout.addRow(self.prevChannel)
@@ -7495,8 +7494,7 @@ class Dialog(QDialog):
 		advancedLayout.setSpacing(0)
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
-		advancedLayout.addStretch()
-		advancedLayout.addLayout(maxLayout)
+		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addLayout(asetLayout)
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(self.codecDescription)
@@ -7527,23 +7525,6 @@ class Dialog(QDialog):
 		self.cancelButton.clicked.connect(self.close)
 
 		self.restart.hide()
-
-		self.ircAllErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.typeCancelInput.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.allowMultiple.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.doConnectionTimeout.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.timestampUTC.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 

@@ -781,7 +781,7 @@ class Dialog(QDialog):
 		self.userDescription.setWordWrap(True)
 		self.userDescription.setAlignment(Qt.AlignJustify)
 
-		self.saveU = QCheckBox("Save to user settings",self)
+		self.saveU = QCheckBox("Save settings",self)
 		self.saveU.stateChanged.connect(self.clickSave)
 		self.saveU.setFont(less_smaller_font)
 
@@ -890,6 +890,7 @@ class Dialog(QDialog):
 			bannerTabs.setSpacing(0)
 			bannerTabs.addWidget(discoMessage)
 			bannerTabs.addWidget(self.tabs)
+			bannerTabs.addWidget(self.saveU)
 		else:
 			bannerTabs = QVBoxLayout()
 			bannerTabs.setSpacing(0)

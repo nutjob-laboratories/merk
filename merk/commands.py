@@ -817,11 +817,11 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
 	if window.name in window.client.channelmodes and window.window_type==CHANNEL_WINDOW:
 		if window.client.channelmodes[window.name].strip()=='':
-			addTemporaryAlias('_CMODE','&')
+			addTemporaryAlias('_CMODE',BLANK_OR_SERVER_WINDOW_SYMBOL)
 		else:
 			addTemporaryAlias('_CMODE',f"{window.client.channelmodes[window.name]}")
 	else:
-		addTemporaryAlias('_CMODE','&')
+		addTemporaryAlias('_CMODE',BLANK_OR_SERVER_WINDOW_SYMBOL)
 	if window.client.kwargs["ssl"]:
 		addTemporaryAlias('_CONNECTION',"SSL/TLS")
 	else:
@@ -870,7 +870,7 @@ def buildTemporaryAliases(gui,window):
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
 	else:
-		addTemporaryAlias('_MODE','&')
+		addTemporaryAlias('_MODE',BLANK_OR_SERVER_WINDOW_SYMBOL)
 	addTemporaryAlias('_MONTH',month)
 	if hasattr(window.client,"network"):
 		if window.client.network:
@@ -888,7 +888,7 @@ def buildTemporaryAliases(gui,window):
 	if window.window_type==CHANNEL_WINDOW:
 		addTemporaryAlias('_PRESENT'," ".join(window.nicks))
 	else:
-		addTemporaryAlias('_PRESENT','&')
+		addTemporaryAlias('_PRESENT',BLANK_OR_SERVER_WINDOW_SYMBOL)
 	addTemporaryAlias('_REALNAME',window.client.realname)
 	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
 	addTemporaryAlias('_RVERSION',APPLICATION_RELEASE_VERSION)
@@ -945,9 +945,9 @@ def buildTemporaryAliases(gui,window):
 		if window.channel_topic!='':
 			addTemporaryAlias('_TOPIC',window.channel_topic)
 		else:
-			addTemporaryAlias('_TOPIC','&')
+			addTemporaryAlias('_TOPIC',BLANK_OR_SERVER_WINDOW_SYMBOL)
 	else:
-		addTemporaryAlias('_TOPIC','&')
+		addTemporaryAlias('_TOPIC',BLANK_OR_SERVER_WINDOW_SYMBOL)
 	if hasattr(window,"uptime"):
 		addTemporaryAlias('_UPTIME',f"{window.uptime}")
 	else:
@@ -2198,7 +2198,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			hword = tokens.pop(0)
 
-			if hword=='&':
+			if hword==BLANK_OR_SERVER_WINDOW_SYMBOL:
 				config.HIGHLIGHTED_WORDS = {}
 				config.save_settings(config.CONFIG_FILE)
 
@@ -2388,7 +2388,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
-			if target=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if target==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
@@ -2398,7 +2398,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					if is_script: add_halt(script_id)
 				return True
-			elif target=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif target==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -2438,7 +2438,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			if server=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if server==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
@@ -2449,7 +2449,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					if is_script: add_halt(script_id)
 				return True
-			elif server=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif server==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -2541,7 +2541,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0)
 
-			if target=="&":
+			if target==BLANK_OR_SERVER_WINDOW_SYMBOL:
 				QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: gui.reRenderAll(True))
 				window.input.setFocus()
 				return True
@@ -2622,7 +2622,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
-			if target=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if target==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
@@ -2631,7 +2631,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			elif target=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif target==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -2669,7 +2669,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			if server=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if server==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
@@ -2679,7 +2679,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			elif server=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif server==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -3425,7 +3425,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			seq = tokens.pop(0)
 
-			if seq=='&':
+			if seq==BLANK_OR_SERVER_WINDOW_SYMBOL:
 				gui.remove_all_shortcuts()
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"All binds removed")
@@ -4216,7 +4216,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_setting = tokens.pop(0)
 			my_value = ' '.join(tokens)
 
-			if my_value=='&': my_value = ''
+			if my_value==BLANK_OR_SERVER_WINDOW_SYMBOL: my_value = ''
 
 			if my_setting.lower()=='nickname' or my_setting.lower()=='alternate' or my_setting.lower()=='username':
 				if not is_allowed_nickname(my_value) and config.PREVENT_ILLEGAL_NICKNAMES:
@@ -5075,7 +5075,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
-			if target=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if target==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
@@ -5084,7 +5084,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			elif target=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif target==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -5124,7 +5124,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			if server=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if server==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
@@ -5134,7 +5134,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			elif server=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif server==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -5379,7 +5379,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout script")
 
-				current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%H:%M:%S %A %B %d, %Y')
+				if config.TIMESTAMP_24_HOUR:
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' UTC %m/%d/%Y')
+					else:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT+' %m/%d/%Y')
+				else:
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' %p UTC %m/%d/%Y')
+					else:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
+
 				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Generated at {current_date}\n")
 
 				calling_window_is_visible = True
@@ -5390,7 +5400,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					y_val = w.y()
 					opacity = w.widget().opacity
 					if w.widget().window_type==SERVER_WINDOW:
-						win_name = '&'
+						win_name = BLANK_OR_SERVER_WINDOW_SYMBOL
 					else:
 						win_name = w.widget().name
 					results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server} {win_name} {width} {height}")
@@ -5406,7 +5416,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				if calling_window_is_visible:
 					if window.window_type==SERVER_WINDOW:
-						win_name = '&'
+						win_name = BLANK_OR_SERVER_WINDOW_SYMBOL
 					else:
 						win_name = window.name
 					results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem Set focus on the calling subwindow")
@@ -5434,7 +5444,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout script")
 
-				current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%H:%M:%S %A %B %d, %Y')
+				if config.TIMESTAMP_24_HOUR:
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' UTC %m/%d/%Y')
+					else:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT+' %m/%d/%Y')
+				else:
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' %p UTC %m/%d/%Y')
+					else:
+						current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT+' %p %m/%d/%Y')
 				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Generated at {current_date}\n")
 
 				calling_window_is_visible = True
@@ -5445,7 +5464,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					y_val = w.y()
 					opacity = w.widget().opacity
 					if w.widget().window_type==SERVER_WINDOW:
-						win_name = '&'
+						win_name = BLANK_OR_SERVER_WINDOW_SYMBOL
 					else:
 						win_name = w.widget().name
 					results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server} {win_name} {width} {height}")
@@ -5461,7 +5480,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				if calling_window_is_visible:
 					if window.window_type==SERVER_WINDOW:
-						win_name = '&'
+						win_name = BLANK_OR_SERVER_WINDOW_SYMBOL
 					else:
 						win_name = window.name
 					results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem Set focus on the calling subwindow")
@@ -6512,7 +6531,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
 					if not is_script:
-						t = Message(ACTION_MESSAGE,"&rarr;"+target+" "+window.client.nickname,msg)
+						t = Message(ACTION_MESSAGE,PRIVATE_MESSAGE_INDICATOR+target+" "+window.client.nickname,msg)
 						window.writeText(t)
 
 				window.client.describe(target,msg)
@@ -6668,7 +6687,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0).lower()
 
-			if target=='&':
+			if target==BLANK_OR_SERVER_WINDOW_SYMBOL:
 				config.IGNORE_LIST = []
 				t = Message(SYSTEM_MESSAGE,'',f"Unignoring all users")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -6958,8 +6977,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if str(my_value).lower()=='true': my_value = True
 					if str(my_value).lower()=='false': my_value = False
 
-				if my_setting=="mdi_workspace_background" and my_value=='&': my_value=""
-				if my_setting=="subwindow_background" and my_value=='&': my_value=""
+				if my_setting=="mdi_workspace_background" and my_value==BLANK_OR_SERVER_WINDOW_SYMBOL: my_value=""
+				if my_setting=="subwindow_background" and my_value==BLANK_OR_SERVER_WINDOW_SYMBOL: my_value=""
 
 				if type(my_value)!= type(settings[my_setting]):
 					if type(settings[my_setting]).__name__=='bool':
@@ -7801,7 +7820,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
-			if target=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if target==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
@@ -7810,7 +7829,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			elif target=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif target==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -7850,7 +7869,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			if server=='&' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			if server==BLANK_OR_SERVER_WINDOW_SYMBOL and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
@@ -7860,7 +7879,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			elif server=='&' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+			elif server==BLANK_OR_SERVER_WINDOW_SYMBOL and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -7978,7 +7997,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			server = tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			target = '&'
+			target = BLANK_OR_SERVER_WINDOW_SYMBOL
 
 			displayed = False
 			swins = gui.getAllServerWindows()
@@ -8043,7 +8062,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			server = tokens.pop(0)
 
-			target = '&'
+			target = BLANK_OR_SERVER_WINDOW_SYMBOL
 			
 			swins = gui.getAllServerWindows()
 			for win in swins:
@@ -8083,7 +8102,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			server = tokens.pop(0)
 
-			target = '&'
+			target = BLANK_OR_SERVER_WINDOW_SYMBOL
 
 			displayed = False
 			swins = gui.getAllServerWindows()
@@ -8178,7 +8197,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			server = tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			target = '&'
+			target = BLANK_OR_SERVER_WINDOW_SYMBOL
 
 			displayed = False
 			swins = gui.getAllServerWindows()
@@ -9014,7 +9033,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
 				if not is_script:
 					if window.name!=target:
-						t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
+						t = Message(SELF_MESSAGE,PRIVATE_MESSAGE_INDICATOR+target,msg)
 						window.writeText(t)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
@@ -9522,11 +9541,11 @@ def execute_read(data):
 			contents = f.read()
 			f.close()
 
-			if len(contents.strip())==0: contents = '&'
+			if len(contents.strip())==0: contents = BLANK_OR_SERVER_WINDOW_SYMBOL
 
 			gui.scripts[script_id].set_input(f"{contents}")
 		except:
-			gui.scripts[script_id].set_input('&')
+			gui.scripts[script_id].set_input(BLANK_OR_SERVER_WINDOW_SYMBOL)
 	elif operation==APPEND_OPERATION:
 		contents = data[4]
 
@@ -10501,7 +10520,7 @@ class ScriptThread(QThread):
 				if len(self.arguments)>0:
 					self.addTemporaryAlias(f"_0",' '.join(self.arguments))
 				else:
-					self.addTemporaryAlias(f"_0",'&')
+					self.addTemporaryAlias(f"_0",BLANK_OR_SERVER_WINDOW_SYMBOL)
 					
 				self.addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
 
@@ -10590,7 +10609,7 @@ class ScriptThread(QThread):
 													if self.user_input!=None and len(self.user_input.strip())!=0:
 														self.addAlias(a,f"{self.user_input}")
 													else:
-														self.addAlias(a,f'&')
+														self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 													self.user_input = None
 													script_only_command = True
 												else:
@@ -10605,7 +10624,7 @@ class ScriptThread(QThread):
 														if self.user_input!=None and len(self.user_input.strip())!=0:
 															self.addAlias(a,f"{self.user_input}")
 														else:
-															self.addAlias(a,f'&')
+															self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 														self.user_input = None
 														script_only_command = True
 													else:
@@ -10654,7 +10673,7 @@ class ScriptThread(QThread):
 													if self.user_input!=None and len(self.user_input.strip())!=0:
 														self.addAlias(a,f"{self.user_input}")
 													else:
-														self.addAlias(a,f'&')
+														self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 													self.user_input = None
 													script_only_command = True
 												else:
@@ -10669,7 +10688,7 @@ class ScriptThread(QThread):
 														if self.user_input!=None and len(self.user_input.strip())!=0:
 															self.addAlias(a,f"{self.user_input}")
 														else:
-															self.addAlias(a,f'&')
+															self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 														self.user_input = None
 														script_only_command = True
 													else:
@@ -10821,7 +10840,7 @@ class ScriptThread(QThread):
 														self.addAlias(a,f"{h}")
 														script_only_command = True
 													else:
-														self.addAlias(a,f'&')
+														self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 														script_only_command = True
 												else:
 													error_message = f"\"{a}\" is not a valid alias token"
@@ -10832,7 +10851,7 @@ class ScriptThread(QThread):
 														self.addAlias(a,f"{h}")
 														script_only_command = True
 													else:
-														self.addAlias(a,f'&')
+														self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 														script_only_command = True
 												else:
 													error_message = f"\"{a}\" already exists in another scope"
@@ -10917,7 +10936,7 @@ class ScriptThread(QThread):
 													if self.user_input!=None and len(self.user_input.strip())!=0:
 														self.addAlias(a,f"{self.user_input}")
 													else:
-														self.addAlias(a,'&')
+														self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 													self.user_input = None
 													script_only_command = True
 												else:
@@ -10932,7 +10951,7 @@ class ScriptThread(QThread):
 														if self.user_input!=None and len(self.user_input.strip())!=0:
 															self.addAlias(a,f"{self.user_input}")
 														else:
-															self.addAlias(a,'&')
+															self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 														self.user_input = None
 														script_only_command = True
 													else:
@@ -10996,7 +11015,7 @@ class ScriptThread(QThread):
 													if self.user_input!=None and len(self.user_input.strip())!=0:
 														self.addAlias(a,f"{self.user_input}")
 													else:
-														self.addAlias(a,'&')
+														self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 													self.user_input = None
 													script_only_command = True
 												else:
@@ -11011,7 +11030,7 @@ class ScriptThread(QThread):
 														if self.user_input!=None and len(self.user_input.strip())!=0:
 															self.addAlias(a,f"{self.user_input}")
 														else:
-															self.addAlias(a,'&')
+															self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 														self.user_input = None
 														script_only_command = True
 													else:
@@ -11060,7 +11079,7 @@ class ScriptThread(QThread):
 													if self.user_input!=None and len(self.user_input.strip())!=0:
 														self.addAlias(a,f"{self.user_input}")
 													else:
-														self.addAlias(a,f'&')
+														self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 													self.user_input = None
 													script_only_command = True
 												else:
@@ -11075,7 +11094,7 @@ class ScriptThread(QThread):
 														if self.user_input!=None and len(self.user_input.strip())!=0:
 															self.addAlias(a,f"{self.user_input}")
 														else:
-															self.addAlias(a,f'&')
+															self.addAlias(a,BLANK_OR_SERVER_WINDOW_SYMBOL)
 														self.user_input = None
 														script_only_command = True
 													else:
@@ -11848,7 +11867,7 @@ class ScriptThread(QThread):
 									script_only_command = True
 								else:
 									if window_target!=None and is_valid==True:
-										if other_target=='&' and window_target.window_type==SERVER_WINDOW:
+										if other_target==BLANK_OR_SERVER_WINDOW_SYMBOL and window_target.window_type==SERVER_WINDOW:
 											self.window = window_target
 											is_valid = True
 											found = True

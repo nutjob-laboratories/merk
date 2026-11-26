@@ -1,4 +1,27 @@
 |------------------------------------------------------------------------------|
+|                                    0.500.150                                 |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Moved server error display settings from the "Connections" page to the
+  "Messages" page in the "settings" dialog.
+* Reworked the layout of the "Advanced" page in the "settings" dialog.
+* Moved "long message" settings and the flood protection toggle to the
+  "Connections" page, and off of the "Advanced" page.
+* Bugfix: some entries in the "settings" dialog appeared wrong when running in
+  "dark mode". Thanks to Brian Olliff for the help!
+* Bugfix: server notices were being written to server subwindows twice. Thanks
+  to Brian Olliff for the bugfix!
+* Cleaned up some of the entries and layouts of the "settings" dialog.
+* Bugfix: deleting a log file in the "Log Manager" now removes any log selection
+  from the log list.
+* The "/window layout" command now timestamps the generated script with the
+  application timestamp settings.
+
+|------------------------------------------------------------------------------|
 |                                    0.500.100                                 |
 |------------------------------------------------------------------------------|
 

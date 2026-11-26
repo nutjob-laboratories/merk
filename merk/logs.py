@@ -260,7 +260,7 @@ def dumpLogCSV(filename,linedelim="\n"):
 			else:
 				l[3] = ''
 			if l[2]=='': l[2] = '*'
-			if l[2].startswith('&rarr;'): l[2] = l[2].replace('&rarr;','->',1)
+			if l[2].startswith(PRIVATE_MESSAGE_INDICATOR): l[2] = l[2].replace(PRIVATE_MESSAGE_INDICATOR,'->',1)
 
 			if l[1]==ACTION_MESSAGE:
 				p = l[2].split('!')
@@ -337,8 +337,8 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 			# prefix HTML entity with an appropriate text
 			# representation
 			if message_type==SELF_MESSAGE:
-				if username.startswith('&rarr;'):
-					username = username.replace('&rarr;','->',1)
+				if username.startswith(PRIVATE_MESSAGE_INDICATOR):
+					username = username.replace(PRIVATE_MESSAGE_INDICATOR,'->',1)
 
 			# Since the background of the log viewer is white,
 			# we need to make sure that white colored text is
@@ -466,7 +466,7 @@ def dumpLogJson(filename,epoch=True):
 			else:
 				l[3] = ''
 			if l[2]=='': l[2] = '*'
-			if l[2].startswith('&rarr;'): l[2] = l[2].replace('&rarr;','-> ',1)
+			if l[2].startswith(PRIVATE_MESSAGE_INDICATOR): l[2] = l[2].replace(PRIVATE_MESSAGE_INDICATOR,'-> ',1)
 
 			if l[1]==ACTION_MESSAGE:
 				p = l[2].split('!')

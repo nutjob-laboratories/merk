@@ -280,6 +280,9 @@ if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
 
 LOG_AND_STYLE_FILENAME_DELIMITER	= "-"
 
+PRIVATE_MESSAGE_INDICATOR			= "&rarr;"
+BLANK_OR_SERVER_WINDOW_SYMBOL		= '&'
+
 # |---------------------------|
 # | Message display templates |
 # |---------------------------|
@@ -726,22 +729,22 @@ USERLIST_SAVE_PAUSE					= 1000
 # Colors
 
 IRC_COLORS = {
-									'00': '#FFFFFF',
-									'01': '#000000',
-									'02': '#00007F',
-									'03': '#009300',
-									'04': '#FF0000',
-									'05': '#7F0000',
-									'06': '#9C009C',
-									'07': '#FC7F00',
-									'08': '#FFFF00',
-									'09': '#00FC00',
-									'10': '#009393',
-									'11': '#00FFFF',
-									'12': '#0000FC',
-									'13': '#FF00FF',
-									'14': '#7F7F7F',
-									'15': '#D2D2D2',
+									'00': '#FFFFFF',	# White
+									'01': '#000000',	# Black
+									'02': '#00007F',	# Blue
+									'03': '#009300',	# Green
+									'04': '#FF0000',	# Light red
+									'05': '#7F0000',	# Brown
+									'06': '#9C009C',	# Purple
+									'07': '#FC7F00',	# Orange
+									'08': '#FFFF00',	# Yellow
+									'09': '#00FC00',	# Light green
+									'10': '#009393',	# Cyan
+									'11': '#00FFFF',	# Light cyan
+									'12': '#0000FC',	# Light blue
+									'13': '#FF00FF',	# Pink
+									'14': '#7F7F7F',	# Grey
+									'15': '#D2D2D2',	# Light grey
 }
 
 MODE_AND_USER_DISPLAY_BORDER		= "1px solid"
