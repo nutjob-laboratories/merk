@@ -561,7 +561,7 @@ class IRCFullHighlighter(QSyntaxHighlighter):
 				if bg:
 					current_format.setBackground(QColor(IRC_COLORS.get(bg.zfill(2), HTML_WHITE_COLOR)))
 				if not fg and not bg:
-					current_format.setForeground(QColor(HTML_BLACK_COLORHTML_BLACK_COLOR))
+					current_format.setForeground(QColor(HTML_BLACK_COLOR))
 					current_format.setBackground(Qt.transparent)
 
 			elif token == "\x02": # Bold

@@ -220,10 +220,6 @@ CHANNEL_WINDOW_ICON					= ":/icon-channel_menu.png"
 
 SPLASH_LOGO							= ":/gui-splash.png"
 DISCONNECT_DIALOG_IMAGE				= ":/gui-disconnect_dialog.png"
-HORIZONTAL_DOTTED_BACKGROUND		= ":/gui-horizontal_dotted.png"
-HORIZONTAL_RULE_BACKGROUND			= ":/gui-horizontal_rule.png"
-LIGHT_HORIZONTAL_DOTTED_BACKGROUND	= ":/gui-light_horizontal_dotted.png"
-LIGHT_HORIZONTAL_RULE_BACKGROUND	= ":/gui-light_horizontal_rule.png"
 COFFEE_LOGO							= ":/gui-coffee.png"
 SPLASH_FULL_LOGO					= ":/gui-splash_full.png"
 
@@ -323,60 +319,13 @@ SYSTEM_TEMPLATE						= f"""
 MESSAGE_STYLE_TEMPLATE				= f"""<td style="text-align: left; vertical-align: top;"><div style="{MESSAGE_STYLE_TEMPLATE_TAG}">{MESSAGE_TEMPLATE_TAG}</div></td>"""
 MESSAGE_NO_STYLE_TEMPLATE			= f"""<td style="text-align: left; vertical-align: top;">{MESSAGE_TEMPLATE_TAG}</td>"""
 
-HORIZONTAL_RULE						= f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-		</tr>
-	</tbody>
-</table>'''
-
-HARD_HORIZONTAL_RULE				= f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-		</tr>
-	</tbody>
-</table>'''
-
-LIGHT_HORIZONTAL_RULE				= f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-		</tr>
-	</tbody>
-</table>'''
-
-HARD_LIGHT_HORIZONTAL_RULE			= f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-		</tr>
-	</tbody>
-</table>'''
-
 TEXT_HORIZONTAL_RULE_TEMPLATE		= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td>&nbsp;</td>
 			<td><small><center>{MESSAGE_TEMPLATE_TAG}</center></small></td>
-			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-		</tr>
-	</tbody>
-</table>'''
-
-LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE	= f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-			<td><small><center>{MESSAGE_TEMPLATE_TAG}</center></small></td>
-			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td>&nbsp;</td>
 		</tr>
 	</tbody>
 </table>'''
@@ -385,20 +334,9 @@ DATE_MESSAGE_TEMPLATE				= f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td>&nbsp;</td>
 			<td><center><small><b>{MESSAGE_TEMPLATE_TAG}</b></small></center></td>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-		</tr>
-	</tbody>
-</table>'''
-
-LIGHT_DATE_MESSAGE_TEMPLATE			= f'''
-<table width="100%" border="0">
-	<tbody>
-		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
-			<td><center><small><b>{MESSAGE_TEMPLATE_TAG}</b></small></center></td>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;</td>
+			<td>&nbsp;</td>
 		</tr>
 	</tbody>
 </table>'''
@@ -589,8 +527,6 @@ NOTICE_MESSAGE						= 5
 SERVER_MESSAGE						= 6
 PRIVATE_MESSAGE						= 7
 RAW_SYSTEM_MESSAGE					= 8
-HORIZONTAL_RULE_MESSAGE				= 9
-HARD_HORIZONTAL_RULE_MESSAGE		= 10
 TEXT_HORIZONTAL_RULE_MESSAGE		= 11
 WHOIS_MESSAGE						= 12
 DATE_MESSAGE						= 13

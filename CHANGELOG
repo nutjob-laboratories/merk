@@ -7,6 +7,8 @@ What's new:
 - **The "write outgoing private messages to the server window" setting's default value has been changed to `false`**.
 - **The logo has been removed from the initial connection dialog**. The setting to toggle that display has also been removed.
 - **The layout of the connection dialog has been re-worked**. The dialog was getting a little too "big", and it has been "shrunk" considerably.
+- **New default notification sound**. Thanks to maximilianfeix for the new WAV file!
+- **The settings dialog no longer has a limit to the font size**. The settings dialog will now appear in whatever font size is set for the application.
 - **Many, many bugfixes**.
 
 |==============================================================================|
@@ -38,6 +40,19 @@ What's new:
 * Re-wrote the descriptive text on the "user" tab.
 * Removed the logo from the initial connection dialog, and removed the option to
   toggle that logo from the configuration file and the "settings" dialog.
+* Changed the default notification sound. The new file was created by
+  maximilianfeix, and can be listened to at his repo, located at
+  https://maximilianfeix.github.io/plinkfx/. The sound chosen is "message".
+  All sounds are CC0 (public domain) at the time of download.
+* maximilianfeix was added to the "credits" in the "about" dialog.
+* Removed the code to limit the font size in the "settings" dialog. Some
+  settings "enforcing" this limit were removed from the configuration file.
+* Bugfix: re-wrote the "text separator" widget for menus and the "settings"
+  dialog to use HTML horizontal rules rather than a table background; this will
+  fix how "bad" the separator looked when using large font sizes.
+* Removed horizontal rules from chat displays for date and miscellaneous text
+  (like with the "/config" command response header). The images used for the
+  horizontal rule have been removed from the resource file.
 
 |------------------------------------------------------------------------------|
 |                                    0.500.100                                 |

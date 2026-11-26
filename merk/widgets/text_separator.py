@@ -34,11 +34,9 @@ TEXT_SEPARATOR = f'''
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
-			</td>
+			<td><hr></td>
 			<td><center><small>!TEXT!</small></center></td>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
-			</td>
+			<td><hr></td>
 		</tr>
 	</tbody>
 </table>'''
@@ -47,11 +45,9 @@ LIGHT_TEXT_SEPARATOR = f'''
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
-			</td>
+			<td><hr></td>
 			<td><center><small>!TEXT!</small></center></td>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
-			</td>
+			<td><hr></td>
 		</tr>
 	</tbody>
 </table>'''

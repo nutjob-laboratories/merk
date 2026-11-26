@@ -391,7 +391,6 @@ CLOSE_EDITOR_ON_UNINSTALL = True
 PLUGIN_PAUSE = True
 PLUGIN_UNPAUSE = True
 SHOW_TIPS_AT_START = True
-MAXIMUM_FONT_SIZE_FOR_SETTINGS = 12
 FLASH_SYSTRAY_CHANNEL = True
 DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = True
 ALLOW_TOPIC_EDIT = True
@@ -409,7 +408,6 @@ PREVENT_ILLEGAL_NICKNAMES = True
 REGISTRATION_NICK_ERROR_LIMIT = 3
 PREVENT_ILLEGAL_CHANNELS = True
 CHANNEL_MODE_CONTEXT_MENU = True
-SETTINGS_FONT_POINT_SIZE = 10
 ENABLE_READ_WRITE_AND_APPEND_COMMANDS = True
 DISCONNECT_ON_SASL_FAIL = True
 EXECUTE_GLOBAL_SCRIPT = True
@@ -577,7 +575,6 @@ def build_settings():
 		"execute_global_script": EXECUTE_GLOBAL_SCRIPT,
 		"disconnect_on_sasl_failure": DISCONNECT_ON_SASL_FAIL,
 		"enable_read_and_write_command": ENABLE_READ_WRITE_AND_APPEND_COMMANDS,
-		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
 		"channel_mode_right_click_menu": CHANNEL_MODE_CONTEXT_MENU,
 		"prevent_illegal_channel_input": PREVENT_ILLEGAL_CHANNELS,
 		"nick_attempts_during_registration": REGISTRATION_NICK_ERROR_LIMIT,
@@ -594,7 +591,6 @@ def build_settings():
 		"enable_topic_editor": ALLOW_TOPIC_EDIT,
 		"display_server_errors_in_current_window": DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW,
 		"systray_notification_channel": FLASH_SYSTRAY_CHANNEL,
-		"maximum_font_size_for_settings_dialog": MAXIMUM_FONT_SIZE_FOR_SETTINGS,
 		"show_tips_at_startup": SHOW_TIPS_AT_START,
 		"enable_plugin_pause_event": PLUGIN_PAUSE,
 		"enable_plugin_unpause_event": PLUGIN_UNPAUSE,
@@ -1110,8 +1106,6 @@ def patch_settings(settings):
 		settings["disconnect_on_sasl_failure"] = DISCONNECT_ON_SASL_FAIL
 	if not "enable_read_and_write_command" in settings:
 		settings["enable_read_and_write_command"] = ENABLE_READ_WRITE_AND_APPEND_COMMANDS
-	if not "settings_dialog_font_size" in settings:
-		settings["settings_dialog_font_size"] = SETTINGS_FONT_POINT_SIZE
 	if not "channel_mode_right_click_menu" in settings:
 		settings["channel_mode_right_click_menu"] = CHANNEL_MODE_CONTEXT_MENU
 	if not "prevent_illegal_channel_input" in settings:
@@ -1144,8 +1138,6 @@ def patch_settings(settings):
 		settings["display_server_errors_in_current_window"] = DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW
 	if not "systray_notification_channel" in settings:
 		settings["systray_notification_channel"] = FLASH_SYSTRAY_CHANNEL
-	if not "maximum_font_size_for_settings_dialog" in settings:
-		settings["maximum_font_size_for_settings_dialog"] = MAXIMUM_FONT_SIZE_FOR_SETTINGS
 	if not "show_tips_at_startup" in settings:
 		settings["show_tips_at_startup"] = SHOW_TIPS_AT_START
 	if not "enable_plugin_pause_event" in settings:
@@ -2188,7 +2180,6 @@ def load_settings(filename):
 	global PLUGIN_PAUSE
 	global PLUGIN_UNPAUSE
 	global SHOW_TIPS_AT_START
-	global MAXIMUM_FONT_SIZE_FOR_SETTINGS
 	global FLASH_SYSTRAY_CHANNEL
 	global DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW
 	global ALLOW_TOPIC_EDIT
@@ -2205,7 +2196,6 @@ def load_settings(filename):
 	global REGISTRATION_NICK_ERROR_LIMIT
 	global PREVENT_ILLEGAL_CHANNELS
 	global CHANNEL_MODE_CONTEXT_MENU
-	global SETTINGS_FONT_POINT_SIZE
 	global ENABLE_READ_WRITE_AND_APPEND_COMMANDS
 	global DISCONNECT_ON_SASL_FAIL
 	global EXECUTE_GLOBAL_SCRIPT
@@ -2379,7 +2369,6 @@ def load_settings(filename):
 		EXECUTE_GLOBAL_SCRIPT = settings["execute_global_script"]
 		DISCONNECT_ON_SASL_FAIL = settings["disconnect_on_sasl_failure"]
 		ENABLE_READ_WRITE_AND_APPEND_COMMANDS = settings["enable_read_and_write_command"]
-		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]
 		CHANNEL_MODE_CONTEXT_MENU = settings["channel_mode_right_click_menu"]
 		PREVENT_ILLEGAL_CHANNELS = settings["prevent_illegal_channel_input"]
 		REGISTRATION_NICK_ERROR_LIMIT = settings["nick_attempts_during_registration"]
@@ -2396,7 +2385,6 @@ def load_settings(filename):
 		ALLOW_TOPIC_EDIT = settings["enable_topic_editor"]
 		DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = settings["display_server_errors_in_current_window"]
 		FLASH_SYSTRAY_CHANNEL = settings["systray_notification_channel"]
-		MAXIMUM_FONT_SIZE_FOR_SETTINGS = settings["maximum_font_size_for_settings_dialog"]
 		SHOW_TIPS_AT_START = settings["show_tips_at_startup"]
 		PLUGIN_PAUSE = settings["enable_plugin_pause_event"]
 		PLUGIN_UNPAUSE = settings["enable_plugin_unpause_event"]

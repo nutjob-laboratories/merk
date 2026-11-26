@@ -180,6 +180,10 @@ class Dialog(QDialog):
 		irc_credit.setAlignment(Qt.AlignCenter)
 		irc_credit.setOpenExternalLinks(True)
 
+		sound_credit = QLabel(f"<b><small><a href=\"https://maximilianfeix.github.io/plinkfx/\">Notification sound</a> by <a href=\"https://github.com/maximilianfeix\">maximilianfeix</a></small></b>")
+		sound_credit.setAlignment(Qt.AlignCenter)
+		sound_credit.setOpenExternalLinks(True)
+
 		if is_running_from_pyinstaller():
 
 			if not "Linux" in platform.system():
@@ -242,6 +246,7 @@ class Dialog(QDialog):
 		creditsLayout.addWidget(irc_credit)
 		creditsLayout.addWidget(icons_credit)
 		creditsLayout.addWidget(font_credit)
+		creditsLayout.addWidget(sound_credit)
 		creditsLayout.addWidget(spellcheck_credit)
 		creditsLayout.addWidget(emoji_credit)
 		creditsLayout.addWidget(asciimoji_credit)

@@ -304,20 +304,6 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 
 class Dialog(QDialog):
 
-	def limit_all_widget_fonts(self, max_size=12):
-		all_widgets = self.findChildren(QWidget)
-		
-		widgets_to_check = all_widgets + [self]
-
-		for widget in widgets_to_check:
-			current_font = widget.font()
-			if current_font.pointSize() > max_size:
-				current_font.setPointSize(max_size)
-				widget.setFont(current_font)
-			elif current_font.pixelSize() > max_size:
-				current_font.setPixelSize(max_size)
-				widget.setFont(current_font)
-
 	def boldApply(self):
 		font = QFont()
 		font.setBold(True)
@@ -2530,11 +2516,6 @@ class Dialog(QDialog):
 		# Load in config settings
 		config.load_settings(config.CONFIG_FILE)
 
-		# Force the font to a strict size
-		f = self.parent.app.font()
-		f.setPointSize(config.SETTINGS_FONT_POINT_SIZE)
-		self.setFont(f)
-
 		self.newfont = None
 		self.default_font = False
 		self.subWidth = config.DEFAULT_SUBWINDOW_WIDTH
@@ -2655,9 +2636,6 @@ class Dialog(QDialog):
 
 		f = self.selector.font()
 		f.setBold(True)
-		ssize = config.MAXIMUM_FONT_SIZE_FOR_SETTINGS-2
-		if ssize<config.MINIMUM_FONT_SIZE: ssize = config.MINIMUM_FONT_SIZE
-		f.setPointSize(ssize)
 		self.selector.setFont(f)
 
 		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
@@ -2883,8 +2861,8 @@ class Dialog(QDialog):
 
 		self.userDescription = QLabel(f"""
 			<small>
-			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP queries</b>.
-			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
+			These settings will be used as the defaults in the <b>connection dialog</b>.
+			Changes to <b>Nickname</b>, <b>Username</b>, and <b>Realname</b> will not be reflected in any
 			current connections. <b>Alternate</b> is completely optional.<br>
 			</small>
 			""")
@@ -2893,9 +2871,10 @@ class Dialog(QDialog):
 
 		self.ctcpDescription = QLabel(f"""
 			<small>
+			Control how <b>{APPLICATION_NAME}</b> responds to and displays <b>CTCP</b> queries here.
 			Changes to <b>USERINFO</b> and <b>FINGER</b> replies will be used immediately.
-			Both of these values are optional. If not set to a value, <b>{APPLICATION_NAME}</b>
-			will not reply to the CTCP query.<br>
+			Both of these values are optional; if not set to a value, <b>{APPLICATION_NAME}</b>
+			will not reply to the <b>CTCP</b> query.<br>
 			</small>
 			""")
 		self.ctcpDescription.setWordWrap(True)
@@ -7533,8 +7512,6 @@ class Dialog(QDialog):
 		self.cancelButton.clicked.connect(self.close)
 
 		self.restart.hide()
-
-		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 
 		# Set the max width of the "page" selector
 		font_metrics = QFontMetrics(self.selector.font())

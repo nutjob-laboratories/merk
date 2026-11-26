@@ -167,10 +167,8 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 		WHOIS_MESSAGE: "server",
 	}
 	horizontal_rule_messages = {
-		HORIZONTAL_RULE_MESSAGE: (HORIZONTAL_RULE if is_background_light else LIGHT_HORIZONTAL_RULE),
-		HARD_HORIZONTAL_RULE_MESSAGE: (HARD_HORIZONTAL_RULE if is_background_light else HARD_LIGHT_HORIZONTAL_RULE),
-		TEXT_HORIZONTAL_RULE_MESSAGE: (TEXT_HORIZONTAL_RULE_TEMPLATE if is_background_light else LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE),
-		DATE_MESSAGE: (DATE_MESSAGE_TEMPLATE if is_background_light else LIGHT_DATE_MESSAGE_TEMPLATE),
+		TEXT_HORIZONTAL_RULE_MESSAGE: TEXT_HORIZONTAL_RULE_TEMPLATE,
+		DATE_MESSAGE: DATE_MESSAGE_TEMPLATE,
 	}
 	if not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		output = message_templates.get(message.type, MESSAGE_TEMPLATE)
@@ -194,9 +192,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 		replacements[MESSAGE_STYLE_TEMPLATE_TAG] = output_style
 
 	# Handle timestamps
-	if (message.type != HORIZONTAL_RULE_MESSAGE and
-		message.type != HARD_HORIZONTAL_RULE_MESSAGE and
-		message.type != TEXT_HORIZONTAL_RULE_MESSAGE and
+	if (message.type != TEXT_HORIZONTAL_RULE_MESSAGE and
 		message.type != DATE_MESSAGE):
 		if config.DISPLAY_TIMESTAMP:
 			if config.SHOW_TIMESTAMPS_IN_UTC:
